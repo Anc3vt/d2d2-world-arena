@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ru.ancevt.d2d2world</groupId>
+    <artifactId>d2d2</artifactId>
+    <version>1.0.0.0-alpha</version>
+
+    <name>D2D2 Main maven project</name>
+    <url>hhtps://github.com/Anc3vt/d2d2</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3 (GPLv3)</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>ancevt</id>
+            <name>Ancevt</name>
+            <email>i@ancevt.ru</email>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>ancevt</id>
+            <url>https://maven.ancevt.ru/releases</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>ancevt</id>
+            <url>https://maven.ancevt.ru/releases</url>
+        </repository>
+    </repositories>
+
+    <modules>
+        <module>d2d2-core</module>
+        <module>d2d2-panels</module>
+        <module>d2d2-world</module>
+        <module>d2d2-world-editor</module>
+        <module>d2d2-world-game</module>
+        <module>d2d2-world-server</module>
+        <module>network-messaging</module>
+        <module>ttf2bmf</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.deploy.plugin.version>3.0.0-M1</maven.deploy.plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven.deploy.plugin.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
