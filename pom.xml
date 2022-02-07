@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.ancevt.d2d2world</groupId>
+    <groupId>ru.ancevt.d2d2</groupId>
     <artifactId>d2d2</artifactId>
     <version>1.0.0.0-alpha</version>
 
@@ -53,9 +53,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.deploy.plugin.version>3.0.0-M1</maven.deploy.plugin.version>
+        <java.version>17</java.version>
+
+        <!-- Plugins -->
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     </properties>
 
     <dependencies>
