@@ -44,6 +44,7 @@ d2d2-core/
 d2d2-panels/
 d2d2-world/
 d2d2-world-editor/
+d2d2-world-network-common/
 d2d2-world-game/
 d2d2-world-server/
 network-messaging/

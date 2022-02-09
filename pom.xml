@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>D2D2 Main maven project</name>
-    <url>hhtps://github.com/Anc3vt/d2d2</url>
+    <url>https://github.com/Anc3vt/d2d2</url>
 
     <licenses>
         <license>
@@ -30,14 +30,14 @@
     <distributionManagement>
         <repository>
             <id>ancevt</id>
-            <url>https://maven.ancevt.ru/releases</url>
+            <url>https://packages.ancevt.ru/releases</url>
         </repository>
     </distributionManagement>
 
     <repositories>
         <repository>
             <id>ancevt</id>
-            <url>https://maven.ancevt.ru/releases</url>
+            <url>https://packages.ancevt.ru/releases</url>
         </repository>
     </repositories>
 
@@ -46,6 +46,7 @@
         <module>d2d2-panels</module>
         <module>d2d2-world</module>
         <module>d2d2-world-editor</module>
+        <module>d2d2-world-network-common</module>
         <module>d2d2-world-game</module>
         <module>d2d2-world-server</module>
         <module>network-messaging</module>
@@ -64,14 +65,55 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ru.ancevt.util</groupId>
+                <artifactId>args</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.util</groupId>
+                <artifactId>repl</artifactId>
+                <version>0.0.10</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.d2d2</groupId>
+                <artifactId>d2d2-core</artifactId>
+                <version>1.0.0.12-alpha</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.d2d2</groupId>
+                <artifactId>d2d2-world</artifactId>
+                <version>1.0.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.d2d2</groupId>
+                <artifactId>d2d2-panels</artifactId>
+                <version>1.0.0.0-alpha</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.net</groupId>
+                <artifactId>network-messaging</artifactId>
+                <version>1.0.0.0-alpha</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.20</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.d2d2world</groupId>
+                <artifactId>d2d2-world-network-common</artifactId>
+                <version>1.0.0.0-alpha</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
