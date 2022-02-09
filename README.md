@@ -8,6 +8,7 @@
 - **d2d2-world-editor**: Map editor 
 - **d2d2-world-game**: Game client 
 - **d2d2-world-server**: Server 
+- **d2d2-world-client**: Client (And client-server protocol implementation classes with Server in common)
 - **network-messaging**: Networking library 
 - **ttf2bmf**: BMF font utils (well be deleted and rewrited later)
 
