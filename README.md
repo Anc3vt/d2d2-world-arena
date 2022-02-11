@@ -9,7 +9,7 @@
 - **d2d2-world-game**: Game client 
 - **d2d2-world-server**: Server 
 - **d2d2-world-client**: Client (And client-server protocol implementation classes with Server in common)
-- **network-messaging**: Networking library 
-- **ttf2bmf**: BMF font utils (well be deleted and rewrited later)
+- **d2d2-network-messaging**: TCP Network Messaging Library 
+- **D2D2-ttf2bmf**: BMF font utils (well be deleted and rewrited later)
 
 All of these directories are added to .gitignore, each in their own repository in my GitHub account.

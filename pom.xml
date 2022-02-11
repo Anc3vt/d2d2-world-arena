@@ -49,8 +49,8 @@
         <module>d2d2-world-client</module>
         <module>d2d2-world-game</module>
         <module>d2d2-world-server</module>
-        <module>network-messaging</module>
-        <module>ttf2bmf</module>
+        <module>d2d2-network-messaging</module>
+        <module>d2d2-ttf2bmf</module>
     </modules>
 
     <properties>
@@ -64,7 +64,6 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <assembly-main-class></assembly-main-class>
     </properties>
 
     <dependencyManagement>
@@ -73,6 +72,11 @@
                 <groupId>ru.ancevt.util</groupId>
                 <artifactId>args</artifactId>
                 <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.commons</groupId>
+                <artifactId>ancevt-commons</artifactId>
+                <version>1.0.0.0</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.util</groupId>
@@ -90,14 +94,20 @@
                 <version>1.0.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>ru.ancevt.d2d2world</groupId>
+                <artifactId>d2d2-network-messaging</artifactId>
+                <version>1.0.0.0-alpha</version>
+            </dependency>
+            <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
                 <artifactId>d2d2-panels</artifactId>
                 <version>1.0.0.0-alpha</version>
             </dependency>
             <dependency>
-                <groupId>ru.ancevt.net</groupId>
-                <artifactId>network-messaging</artifactId>
+                <groupId>ru.ancevt.d2d2</groupId>
+                <artifactId>d2d2-world-server</artifactId>
                 <version>1.0.0.0-alpha</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -120,11 +130,6 @@
                 <version>1.0.1</version>
             </dependency>
             <dependency>
-                <groupId>ru.ancevt.commons</groupId>
-                <artifactId>ancevt-commons</artifactId>
-                <version>1.0.0.0</version>
-            </dependency>
-            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>5.7.0</version>
@@ -134,12 +139,6 @@
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-all</artifactId>
                 <version>1.3</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>ru.ancevt.d2d2</groupId>
-                <artifactId>d2d2-world-server</artifactId>
-                <version>1.0.0.0-alpha</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -163,7 +162,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.7.0</version>
         </dependency>
     </dependencies>
 
