@@ -47,7 +47,7 @@
         <module>d2d2-world</module>
         <module>d2d2-world-editor</module>
         <module>d2d2-world-client</module>
-        <module>d2d2-world-game</module>
+        <module>d2d2-world-desktop</module>
         <module>d2d2-world-server</module>
         <module>d2d2-network-messaging</module>
         <module>d2d2-ttf2bmf</module>
