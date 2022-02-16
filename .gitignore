@@ -40,6 +40,9 @@ nb-configuration.xml
 *.swp
 *-non-free.bmf
 
+playername.txt
+
+old-code-samples/
 d2d2-core/
 d2d2-panels/
 d2d2-world/
@@ -48,5 +51,5 @@ d2d2-world-client/
 d2d2-world-desktop/
 d2d2-world-server/
 d2d2-network-messaging/
-old-code-samples/
 d2d2-ttf2bmf/
+
