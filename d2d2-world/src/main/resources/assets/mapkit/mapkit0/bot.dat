@@ -1,0 +1,13 @@
+30000 | 3 | bot0 |
+    idle = 880,48,48,48; 928,48,48,48 |
+    walk = 976,48,48,48; 640,96,48,48; 688,96,48,48; 736,96,48,48 |
+    attack = 832,96,48,48; 784,96,48,48 |
+    jump = 880,96,48,48 |
+    fall = 928,96,48,48 |
+    collision-area = -8,-16,16,32 |
+    weight = 0.4 |
+    speed = 0.7 |
+    max-health = 20 |
+    direction = 2 |
+    snd-damage = bot_damage.mp3 |
+    snd-death = bot_death.mp3

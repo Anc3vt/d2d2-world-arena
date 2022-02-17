@@ -1,0 +1,173 @@
+map | name = Test map | usingMapkit = mapkit0 | startRoomId = start-room | gravity = 1.0 
+
+room | id = 2 | width = 992 | height = 512 | backgroundColor = 22 
+id = 2 | item = brick1 | layer = 1 | name = _displayObject120 | x = 64.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 4 | item = brick1 | layer = 1 | name = _displayObject121 | x = 112.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 6 | item = brick1 | layer = 1 | name = _displayObject122 | x = 160.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 14 | item = brick1 | layer = 1 | name = _displayObject123 | x = 208.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+
+room | id = 22 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 23 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 24 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 25 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 26 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 3 привет я сообщение в чате | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 3123 | width = 992 | height = 512 | backgroundColor = e2e2 
+
+room | id = 4 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 5 | width = 128 | height = 128 | backgroundColor = 11 
+
+room | id = 6 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 6alksdlskd | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 7 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 8 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 9123 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = ____ | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = start-room | width = 1024 | height = 512 | backgroundColor = 11 
+id = 46 | item = brick2 | layer = 0 | name = _46 | x = 0.0 | y = -64.0 | repeatX = 54 | repeatY = 32 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 0.1 
+id = 10 | item = brick1 | layer = 1 | name = _10 | x = -288.0 | y = -64.0 | repeatX = 18 | repeatY = 16 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 11 | item = brick1 | layer = 1 | name = _11 | x = 0.0 | y = 160.0 | repeatX = 23 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 12 | item = brick1 | layer = 1 | name = _12 | x = 112.0 | y = 0.0 | repeatX = 7 | repeatY = 8 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 13 | item = brick1 | layer = 1 | name = _13 | x = 288.0 | y = 0.0 | repeatX = 2 | repeatY = 6 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 15 | item = brick1 | layer = 1 | name = _15 | x = 288.0 | y = 128.0 | repeatX = 2 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 16 | item = brick1 | layer = 1 | name = _16 | x = 368.0 | y = 0.0 | repeatX = 5 | repeatY = 6 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 17 | item = brick1 | layer = 1 | name = _17 | x = 32.0 | y = -64.0 | repeatX = 85 | repeatY = 4 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 18 | item = brick1 | layer = 1 | name = _18 | x = -320.0 | y = 192.0 | repeatX = 43 | repeatY = 29 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 24 | item = brick1 | layer = 1 | name = _16 | x = 448.0 | y = 0.0 | repeatX = 59 | repeatY = 4 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 25 | item = brick1 | layer = 1 | name = _16 | x = 368.0 | y = 448.0 | repeatX = 64 | repeatY = 13 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 26 | item = brick1 | layer = 1 | name = _16 | x = 864.0 | y = 64.0 | repeatX = 33 | repeatY = 24 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 27 | item = brick1 | layer = 1 | name = _16 | x = 368.0 | y = 128.0 | repeatX = 5 | repeatY = 4 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 28 | item = brick1 | layer = 1 | name = _28 | x = 432.0 | y = 400.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 29 | item = brick1 | layer = 1 | name = _28 | x = 656.0 | y = 208.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 39 | item = brick1 | layer = 1 | name = _28 | x = 432.0 | y = 304.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 40 | item = brick1 | layer = 1 | name = _28 | x = 656.0 | y = 304.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 41 | item = brick1 | layer = 1 | name = _28 | x = 432.0 | y = 208.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 42 | item = brick1 | layer = 1 | name = _28 | x = 657.0 | y = 401.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 43 | item = brick1 | layer = 1 | name = _28 | x = 576.0 | y = 256.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 45 | item = brick1 | layer = 1 | name = _28 | x = 544.0 | y = 160.0 | repeatX = 7 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 53 | item = brick1 | layer = 1 | name = _28 | x = 368.0 | y = 352.0 | repeatX = 2 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 57 | item = brick1 | layer = 1 | name = _28 | x = 448.0 | y = 128.0 | repeatX = 4 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 58 | item = brick1 | layer = 1 | name = _28 | x = 624.0 | y = 112.0 | repeatX = 14 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 44 | item = brick1 | layer = 1 | name = _28 | x = 576.0 | y = 352.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 47 | item = brick1 | layer = 1 | name = _28 | x = 368.0 | y = 256.0 | repeatX = 2 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 48 | item = brick1 | layer = 1 | name = _28 | x = 832.0 | y = 256.0 | repeatX = 2 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 49 | item = brick1 | layer = 1 | name = _28 | x = 832.0 | y = 352.0 | repeatX = 2 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 64 | item = blacksquare | layer = 2 | name = _64 | x = 128.0 | y = 128.0 | repeatX = 6 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 65 | item = blackcorner2 | layer = 2 | name = _65 | x = 112.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 66 | item = blackcorner | layer = 2 | name = _63 | x = 240.0 | y = 96.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 63 | item = blacksquare | layer = 2 | name = _63 | x = 224.0 | y = 112.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 67 | item = blacksquare | layer = 2 | name = _67 | x = 240.0 | y = 112.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 68 | item = blacksquare | layer = 2 | name = _68 | x = 272.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 69 | item = blackcorner2 | layer = 2 | name = _69 | x = 256.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 70 | item = blackcorner | layer = 2 | name = _70 | x = 272.0 | y = 112.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 71 | item = blacksquare | layer = 2 | name = _71 | x = 224.0 | y = 0.0 | repeatX = 1 | repeatY = 6 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 73 | item = blacksquare | layer = 2 | name = _73 | x = 368.0 | y = 192.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 74 | item = blacksquare | layer = 2 | name = _74 | x = 320.0 | y = 0.0 | repeatX = 1 | repeatY = 7 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 75 | item = blacksquare | layer = 2 | name = _75 | x = 304.0 | y = 96.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 76 | item = blackcorner2 | layer = 2 | name = _76 | x = 288.0 | y = 96.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 77 | item = blacksquare | layer = 2 | name = _77 | x = 240.0 | y = 0.0 | repeatX = 3 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 78 | item = blacksquare | layer = 2 | name = _78 | x = 336.0 | y = 0.0 | repeatX = 2 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 79 | item = blacksquare | layer = 2 | name = _79 | x = 384.0 | y = 96.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 80 | item = blacksquare | layer = 2 | name = _80 | x = 448.0 | y = 64.0 | repeatX = 1 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 81 | item = blacksquare | layer = 2 | name = _68 | x = 224.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 82 | item = blackcorner2 | layer = 2 | name = _82 | x = 368.0 | y = 96.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 83 | item = blacksquare | layer = 2 | name = _83 | x = 464.0 | y = 64.0 | repeatX = 25 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 84 | item = blackcorner2 | layer = 2 | name = _84 | x = 32.0 | y = 0.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 85 | item = blacksquare | layer = 2 | name = _85 | x = 48.0 | y = 0.0 | repeatX = 4 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 86 | item = blackcorner2 | layer = 2 | name = _86 | x = 624.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 87 | item = blacksquare | layer = 2 | name = _87 | x = 640.0 | y = 128.0 | repeatX = 13 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 88 | item = blacksquare | layer = 2 | name = _88 | x = 848.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 89 | item = blackcorner | layer = 2 | name = _89 | x = 848.0 | y = 112.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 90 | item = blackcorner2 | layer = 2 | name = _90 | x = 656.0 | y = 320.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 91 | item = blackcorner | layer = 2 | name = _91 | x = 800.0 | y = 304.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 92 | item = blacksquare | layer = 2 | name = _92 | x = 672.0 | y = 320.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 93 | item = blackcorner2 | layer = 2 | name = _90 | x = 656.0 | y = 224.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 94 | item = blacksquare | layer = 2 | name = _92 | x = 672.0 | y = 224.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 95 | item = blackcorner | layer = 2 | name = _91 | x = 800.0 | y = 208.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 96 | item = blackcorner2 | layer = 2 | name = _90 | x = 656.0 | y = 416.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 97 | item = blacksquare | layer = 2 | name = _92 | x = 672.0 | y = 416.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 98 | item = blackcorner | layer = 2 | name = _91 | x = 800.0 | y = 400.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 99 | item = blackcorner2 | layer = 2 | name = _90 | x = 432.0 | y = 320.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 100 | item = blacksquare | layer = 2 | name = _92 | x = 448.0 | y = 320.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 101 | item = blackcorner | layer = 2 | name = _91 | x = 576.0 | y = 304.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 102 | item = blackcorner2 | layer = 2 | name = _90 | x = 432.0 | y = 416.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 103 | item = blacksquare | layer = 2 | name = _92 | x = 448.0 | y = 416.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 104 | item = blackcorner | layer = 2 | name = _91 | x = 576.0 | y = 400.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 72 | item = blacksquare | layer = 2 | name = _92 | x = 448.0 | y = 224.0 | repeatX = 9 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 105 | item = blackcorner2 | layer = 2 | name = _90 | x = 432.0 | y = 224.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 106 | item = blackcorner | layer = 2 | name = _91 | x = 576.0 | y = 208.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 107 | item = blacksquare | layer = 2 | name = _92 | x = 560.0 | y = 176.0 | repeatX = 7 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 108 | item = blackcorner2 | layer = 2 | name = _90 | x = 544.0 | y = 176.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 109 | item = blackcorner | layer = 2 | name = _91 | x = 656.0 | y = 160.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 110 | item = blackcorner2 | layer = 2 | name = _90 | x = 576.0 | y = 272.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 111 | item = blacksquare | layer = 2 | name = _92 | x = 592.0 | y = 272.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 112 | item = blackcorner | layer = 2 | name = _91 | x = 656.0 | y = 256.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 113 | item = blackcorner | layer = 2 | name = _91 | x = 656.0 | y = 352.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 114 | item = blacksquare | layer = 2 | name = _92 | x = 592.0 | y = 368.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 115 | item = blackcorner2 | layer = 2 | name = _90 | x = 576.0 | y = 368.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 116 | item = blackcorner | layer = 2 | name = _91 | x = 400.0 | y = 256.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 117 | item = blackcorner | layer = 2 | name = _91 | x = 400.0 | y = 352.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 118 | item = blacksquare | layer = 2 | name = _118 | x = 368.0 | y = 272.0 | repeatX = 3 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 119 | item = blacksquare | layer = 2 | name = _118 | x = 368.0 | y = 368.0 | repeatX = 3 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 120 | item = blacksquare | layer = 2 | name = _120 | x = 448.0 | y = 144.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 121 | item = blackcorner | layer = 2 | name = _121 | x = 512.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 123 | item = blacksquare | layer = 2 | name = _122 | x = 848.0 | y = 368.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 122 | item = blacksquare | layer = 2 | name = _122 | x = 848.0 | y = 272.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 124 | item = blackcorner2 | layer = 2 | name = _124 | x = 832.0 | y = 272.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 125 | item = blackcorner2 | layer = 2 | name = _124 | x = 832.0 | y = 368.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 126 | item = blacksquare | layer = 2 | name = _126 | x = 0.0 | y = -64.0 | repeatX = 1 | repeatY = 14 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 127 | item = blacksquare | layer = 2 | name = _127 | x = 320.0 | y = 144.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 128 | item = blacksquare | layer = 2 | name = _128 | x = 448.0 | y = 160.0 | repeatX = 1 | repeatY = 3 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 129 | item = blacksquare | layer = 2 | name = _129 | x = 368.0 | y = 384.0 | repeatX = 1 | repeatY = 4 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 130 | item = blacksquare | layer = 2 | name = _130 | x = 368.0 | y = 208.0 | repeatX = 1 | repeatY = 3 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 131 | item = blacksquare | layer = 2 | name = _131 | x = 368.0 | y = 288.0 | repeatX = 1 | repeatY = 4 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 132 | item = blackcorner | layer = 2 | name = _132 | x = 320.0 | y = 128.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 59 | item = brick1 | layer = 8 | name = _59 | x = 224.0 | y = 96.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 60 | item = brick1 | layer = 8 | name = _60 | x = 256.0 | y = 112.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 61 | mapkit = areas | item = collision | layer = 8 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _61 | x = 224.0 | y = 96.0 | width = 16.0 | height = 16.0 
+id = 62 | mapkit = areas | item = collision | layer = 8 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _62 | x = 256.0 | y = 112.0 | width = 16.0 | height = 16.0 
+id = 1 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 64.60266 | collisionHeight = 544.99634 | name = _1 | x = -64.0 | y = 0.0 | width = 64.60266 | height = 544.99634 
+id = 3 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 368.60266 | collisionHeight = 32.996338 | name = _3 | x = 0.0 | y = 160.0 | width = 368.60266 | height = 32.996338 
+id = 5 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 112.60266 | collisionHeight = 128.99634 | name = _5 | x = 112.0 | y = 0.0 | width = 112.60266 | height = 128.99634 
+id = 7 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.60266 | collisionHeight = 32.996338 | name = _7 | x = 288.0 | y = 128.0 | width = 32.60266 | height = 32.996338 
+id = 8 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.60266 | collisionHeight = 96.99634 | name = _8 | x = 288.0 | y = 0.0 | width = 32.60266 | height = 96.99634 
+id = 9 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 80.04736 | collisionHeight = 96.0 | name = _9 | x = 368.0 | y = 0.0 | width = 80.04736 | height = 96.0 
+id = 19 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.3143 | collisionHeight = 320.6667 | name = _19 | x = 336.0 | y = 192.0 | width = 32.3143 | height = 320.6667 
+id = 20 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 656.7161 | collisionHeight = 64.309296 | name = _20 | x = 368.0 | y = 448.0 | width = 656.7161 | height = 64.309296 
+id = 21 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 80.04736 | collisionHeight = 64.33333 | name = _21 | x = 368.0 | y = 128.0 | width = 80.04736 | height = 64.33333 
+id = 22 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 576.3807 | collisionHeight = 64.33333 | name = _22 | x = 448.0 | y = 0.0 | width = 576.3807 | height = 64.33333 
+id = 23 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 160.38068 | collisionHeight = 384.66666 | name = _23 | x = 864.0 | y = 64.0 | width = 160.38068 | height = 384.66666 
+id = 30 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 144.38068 | collisionHeight = 16.666656 | name = _30 | x = 432.0 | y = 400.0 | width = 144.38068 | height = 16.666656 
+id = 31 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 144.38068 | collisionHeight = 16.666656 | name = _30 | x = 656.0 | y = 400.0 | width = 144.38068 | height = 16.666656 
+id = 32 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 80.715576 | collisionHeight = 16.642548 | name = _30 | x = 576.0 | y = 352.0 | width = 80.715576 | height = 16.642548 
+id = 33 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 80.715576 | collisionHeight = 16.642548 | name = _30 | x = 576.0 | y = 256.0 | width = 80.715576 | height = 16.642548 
+id = 34 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 144.38068 | collisionHeight = 16.666656 | name = _30 | x = 656.0 | y = 304.0 | width = 144.38068 | height = 16.666656 
+id = 35 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 144.38068 | collisionHeight = 16.666656 | name = _30 | x = 432.0 | y = 304.0 | width = 144.38068 | height = 16.666656 
+id = 36 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 112.18439 | collisionHeight = 16.662949 | name = _30 | x = 544.0 | y = 160.0 | width = 112.18439 | height = 16.662949 
+id = 37 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 144.38068 | collisionHeight = 16.666656 | name = _30 | x = 656.0 | y = 208.0 | width = 144.38068 | height = 16.666656 
+id = 38 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 144.38068 | collisionHeight = 16.666656 | name = _30 | x = 432.0 | y = 208.0 | width = 144.38068 | height = 16.666656 
+id = 55 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 224.85107 | collisionHeight = 16.662941 | name = _30 | x = 624.0 | y = 112.0 | width = 224.85107 | height = 16.662941 
+id = 56 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 64.51773 | collisionHeight = 16.329605 | name = _30 | x = 448.0 | y = 128.0 | width = 64.51773 | height = 16.329605 
+id = 50 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.517426 | collisionHeight = 16.996216 | name = _30 | x = 368.0 | y = 256.0 | width = 32.517426 | height = 16.996216 
+id = 51 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.517426 | collisionHeight = 16.996216 | name = _30 | x = 368.0 | y = 352.0 | width = 32.517426 | height = 16.996216 
+id = 52 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.517426 | collisionHeight = 16.996216 | name = _30 | x = 832.0 | y = 352.0 | width = 32.517426 | height = 16.996216 
+id = 54 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.517426 | collisionHeight = 16.996216 | name = _30 | x = 832.0 | y = 256.0 | width = 32.517426 | height = 16.996216 
+
+room | id = to-delete | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = to-delete 2 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = привет я сообщение в чате | width = 992 | height = 512 | backgroundColor = ffffff 

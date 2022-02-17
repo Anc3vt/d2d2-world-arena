@@ -38,11 +38,3 @@ nb-configuration.xml
 
 ### Other ###
 *.swp
-*-non-free.bmf
-
-playername.txt
-gist/
-
-old-code-samples/
-
-deploy-server.sh

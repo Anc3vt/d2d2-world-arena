@@ -1,0 +1,2 @@
+#!/bin/bash
+java -jar target/*dep* --server ancevt.ru:2245

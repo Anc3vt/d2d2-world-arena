@@ -1,0 +1,63 @@
+map | name = Test map | usingMapkit = mapkit0 | startRoomId = start-room | gravity = 1.0 
+
+room | id = 2 | width = 992 | height = 512 | backgroundColor = 22 
+id = 2 | item = brick1 | layer = 1 | name = _displayObject120 | x = 64.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 4 | item = brick1 | layer = 1 | name = _displayObject121 | x = 112.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 6 | item = brick1 | layer = 1 | name = _displayObject122 | x = 160.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 14 | item = brick1 | layer = 1 | name = _displayObject123 | x = 208.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+
+room | id = 22 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 23 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 24 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 25 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 26 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 3 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 3123 | width = 992 | height = 512 | backgroundColor = e2e2 
+
+room | id = 4 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 5 | width = 128 | height = 128 | backgroundColor = 11 
+
+room | id = 6 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 6alksdlskd | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 7 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 8 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = 9123 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = ____ | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = start-room | width = 1024 | height = 512 | backgroundColor = 11 
+id = 5 | item = brick3 | layer = 1 | name = _displayObject124 | x = 0.0 | y = 272.0 | repeatX = 5 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 7 | item = brick1 | layer = 1 | name = _displayObject125 | x = 0.0 | y = 224.0 | repeatX = 22 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 8 | item = brick1 | layer = 1 | name = _displayObject126 | x = 0.0 | y = 192.0 | repeatX = 22 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 10 | item = brick1 | layer = 2 | name = _displayObject127 | x = 0.0 | y = 80.0 | repeatX = 7 | repeatY = 5 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 19 | item = brick1 | layer = 2 | name = _displayObjec34t128 | x = -112.0 | y = -80.0 | repeatX = 3 | repeatY = 4 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 17 | item = brick1 | layer = 2 | name = _displayObject129 | x = -192.0 | y = 16.0 | repeatX = 4 | repeatY = 3 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 15 | item = brick1 | layer = 2 | name = _displayObject130 | x = -80.0 | y = 96.0 | repeatX = 4 | repeatY = 4 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 11 | item = brick1 | layer = 3 | name = _displayObject131 | x = 0.0 | y = 0.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 9 | item = brick1 | layer = 3 | name = _displayObject132 | x = 32.0 | y = 48.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 3 | item = brick2 | layer = 3 | name = _displayObject133 | x = 0.0 | y = 160.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 20 | mapkit = areas | item = damaging | layer = 3 | damagingPower = 20 | collisionEnabled = true | collisionWidth = 16.0 | collisionHeight = 16.0 | collisionX = 0.0 | collisionY = 0.0 | collisionVisible = false | name = _displayObject134 | x = 192.0 | y = 64.0 | width = 16.0 | height = 16.0 
+id = 12 | item = brick1 | layer = 5 | name = _displayObject141 | x = -96.0 | y = 32.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 13 | item = brick1 | layer = 5 | name = _displayObject142 | x = -96.0 | y = 64.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 23 | item = brick3 | layer = 5 | name = _displayObject143 | x = 0.0 | y = 240.0 | repeatX = 5 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 1 | mapkit = areas | item = damaging | layer = 9 | damagingPower = 20 | collisionEnabled = true | collisionWidth = 80.0 | collisionHeight = 32.0 | collisionX = 0.0 | collisionY = 0.0 | collisionVisible = false | name = _displayObject144 | x = 0.0 | y = -96.0 | width = 80.0 | height = 32.0 
+id = 21 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionWidth = 16.0 | collisionHeight = 16.0 | collisionX = 0.0 | collisionY = 0.0 | collisionVisible = false | name = _displayObject151 | x = 176.0 | y = 96.0 | width = 16.0 | height = 16.0 
+id = 22 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionWidth = 112.125 | collisionHeight = 16.375 | collisionX = 0.0 | collisionY = 0.0 | collisionVisible = false | name = _displayObject158 | x = 48.0 | y = 160.0 | width = 112.125 | height = 16.375 
+id = 16 | mapkit = areas | item = checkpoint | layer = 9 | direction = 1 | name = _displayObject165 | x = 112.0 | y = 0.0 | collisionEnabled = true | collisionWidth = 64.625 | collisionHeight = 32.375 | collisionX = 0.0 | collisionY = 0.0 | collisionVisible = false | width = 64.625 | height = 32.375 
+
+room | id = to-delete | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = to-delete 2 | width = 992 | height = 512 | backgroundColor = 22 
+
+room | id = zzz to delete | width = 992 | height = 512 | backgroundColor = ffffff 

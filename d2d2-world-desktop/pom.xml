@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>d2d2</artifactId>
+        <groupId>ru.ancevt.d2d2</groupId>
+        <version>1.0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>d2d2-world-desktop</artifactId>
+    <version>1.0.0.0-SNAPSHOT</version>
+
+    <name>D2D2 World Arena Desktop</name>
+    <url>https://github.com/Anc3vt/d2d2-world-desktop</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3 (GPLv3)</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>ancevt</id>
+            <name>Ancevt</name>
+            <email>i@ancevt.ru</email>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>ancevt</id>
+            <url>https://packages.ancevt.ru/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>ancevt-snapshots</id>
+            <url>https://packages.ancevt.ru/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>ancevt</id>
+            <url>https://packages.ancevt.ru/releases</url>
+        </repository>
+        <repository>
+            <id>ancevt-snapshots</id>
+            <url>https://packages.ancevt.ru/snapshots</url>
+        </repository>
+    </repositories>
+
+    <properties>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>ru.ancevt.d2d2</groupId>
+            <artifactId>d2d2-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.ancevt.d2d2</groupId>
+            <artifactId>d2d2-world</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.ancevt.d2d2world</groupId>
+            <artifactId>d2d2-world-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.ancevt.d2d2</groupId>
+            <artifactId>d2d2-panels</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.ancevt.util</groupId>
+            <artifactId>args</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.ancevt.d2d2world</groupId>
+            <artifactId>d2d2-network-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.ancevt.util</groupId>
+            <artifactId>repl</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>assembly</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>${maven-assembly-plugin.version}</version>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addClasspath/>
+                                    <mainClass>ru.ancevt.d2d2world.game.D2D2WorldDesktopMain</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                                <phase>package</phase> <!-- bind to the packaging phase -->
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
