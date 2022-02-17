@@ -54,3 +54,4 @@ d2d2-world-server/
 d2d2-network-messaging/
 d2d2-ttf2bmf/
 
+deploy-server.sh
