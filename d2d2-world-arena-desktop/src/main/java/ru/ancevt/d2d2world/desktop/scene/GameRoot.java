@@ -60,8 +60,9 @@ public class GameRoot extends Root implements ClientListener {
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
             var e = (ChatEvent) event;
             String text = e.getText();
-            if(text.startsWith("/")) {
+            if(text.startsWith("/") || text.startsWith("\\")) {
                 // if typed command is one of registered client command then don't send that command text to the server
+                text = text.replace('\\', '/');
                 if(clientCommand(text)) return;
             }
             if(client.isConnected()) {
@@ -85,7 +86,7 @@ public class GameRoot extends Root implements ClientListener {
                 }
 
                 case KeyCode.F6 -> {
-                    if (!chat.isInputOpened()) chat.openInput();
+                    if (!chat.isInputOpened()) chat.openInput(); else chat.closeInput();
                 }
             }
         });

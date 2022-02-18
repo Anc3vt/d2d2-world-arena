@@ -236,7 +236,6 @@ public class Chat extends DisplayObjectContainer {
                 case TextInputEvent.TEXT_ENTER -> {
                     String text = textInputEvent.getText();
                     if (!text.isBlank()) {
-                        text = text.trim();
                         dispatchEvent(new ChatEvent(ChatEvent.CHAT_TEXT_ENTER, this, text));
                         historyIndex = 0;
                     }

@@ -36,6 +36,7 @@ public class ClientCommandProcessor {
         Args args = new Args(text);
 
         String command = args.get(String.class, 0);
+
         switch (command) {
             case "/exit", "/q", "/quit" -> {
                 Client.INSTANCE.sendExitRequest();

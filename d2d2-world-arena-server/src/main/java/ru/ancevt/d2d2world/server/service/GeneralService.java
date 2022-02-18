@@ -207,7 +207,13 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
     @Override
     public void playerTextToChat(int playerId, String text) {
         playerManager.getPlayerById(playerId).ifPresent(
-                player -> chat.playerText(text, player.getId(), player.getName(), player.getColor())
+                player -> {
+                    if(text.startsWith("/")) {
+                        playerTextCommand(playerId, text);
+                    } else {
+                        chat.playerText(text, playerId, player.getName(), player.getColor());
+                    }
+                }
         );
     }
 
@@ -293,6 +299,10 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
     }
 
     public void normalServerExit() {
+
+    }
+
+    private void playerTextCommand(int playerId, @NotNull String commandText) {
 
     }
 
