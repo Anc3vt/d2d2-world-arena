@@ -7,7 +7,7 @@
 
     <groupId>ru.ancevt.d2d2</groupId>
     <artifactId>d2d2-panels</artifactId>
-    <version>1.0.0.0-preview</version>
+    <version>1.0.0.1-SNAPSHOT</version>
 
     <name>D2D2 Panels</name>
     <url>https://github.com/Anc3vt/d2d2-panels</url>
@@ -65,8 +65,8 @@
     <dependencies>
         <dependency>
             <groupId>ru.ancevt.d2d2</groupId>
-    <artifactId>d2d2-core</artifactId>
-    <version>1.0.0.12-preview</version>
+            <artifactId>d2d2-core</artifactId>
+            <version>1.0.0.13-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

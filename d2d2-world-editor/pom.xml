@@ -7,11 +7,11 @@
     <parent>
         <artifactId>d2d2</artifactId>
         <groupId>ru.ancevt.d2d2</groupId>
-        <version>1.0.0.0-preview</version>
+        <version>1.0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>d2d2-world-editor</artifactId>
-    <version>1.0.0.0-preview</version>
+    <version>1.0.0.1-SNAPSHOT</version>
 
     <name>D2D2 World Editor</name>
     <url>https://github.com/Anc3vt/d2d2-world-editor</url>
