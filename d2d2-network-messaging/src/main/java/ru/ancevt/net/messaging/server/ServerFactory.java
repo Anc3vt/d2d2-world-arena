@@ -19,7 +19,7 @@ package ru.ancevt.net.messaging.server;
 
 public class ServerFactory {
 
-    public static IServer createTcpServer() {
-        return new TcpServer();
+    public static IServer createTcpB254Server() {
+        return new TcpB254Server();
     }
 }

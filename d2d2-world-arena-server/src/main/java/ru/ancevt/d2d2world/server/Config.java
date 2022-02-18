@@ -10,7 +10,7 @@ import java.util.Properties;
 @Slf4j
 public class Config {
 
-    public static final Config CONFIG = new Config();
+    public static final Config INSTANCE = new Config();
 
     private static final String FILE_NAME = "d2d2-world-arena-server.conf";
 

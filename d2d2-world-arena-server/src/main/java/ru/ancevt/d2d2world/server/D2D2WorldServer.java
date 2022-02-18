@@ -18,17 +18,9 @@
 package ru.ancevt.d2d2world.server;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
-import ru.ancevt.d2d2world.server.chat.Chat;
-import ru.ancevt.d2d2world.server.player.PlayerManager;
-import ru.ancevt.d2d2world.server.repl.ServerRepl;
-import ru.ancevt.d2d2world.server.service.GeneralService;
-import ru.ancevt.d2d2world.server.service.ServerSender;
-import ru.ancevt.d2d2world.server.service.SyncService;
 import ru.ancevt.net.messaging.CloseStatus;
 import ru.ancevt.net.messaging.connection.IConnection;
 import ru.ancevt.net.messaging.server.IServer;
-import ru.ancevt.net.messaging.server.ServerFactory;
 import ru.ancevt.net.messaging.server.ServerListener;
 import ru.ancevt.util.args.Args;
 
@@ -36,13 +28,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static ru.ancevt.d2d2world.server.Config.CONFIG;
-
 @Slf4j
 public class D2D2WorldServer implements ServerListener, Thread.UncaughtExceptionHandler {
-
-    private static final int DEFAULT_PORT = 2245;
-    private static final String DEFAULT_HOST = "0.0.0.0";
 
     public static void main(String[] args) {
         Args a = new Args(args);
@@ -54,11 +41,11 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
             return;
         }
 
-        CONFIG.load();
+        Modules.CONFIG.load();
 
-        String host = a.get(new String[]{"--host", "-h"}, CONFIG.serverHost());
-        int port = a.get(Integer.class, new String[]{"--port", "-p"}, CONFIG.serverPort());
-        String serverName = a.get(String.class, new String[] {"-n", "--name"}, CONFIG.serverName());
+        String host = a.get(new String[]{"--host", "-h"}, Modules.CONFIG.serverHost());
+        int port = a.get(Integer.class, new String[]{"--port", "-p"}, Modules.CONFIG.serverPort());
+        String serverName = a.get(String.class, new String[] {"-n", "--name"}, Modules.CONFIG.serverName());
 
         D2D2WorldServer server = new D2D2WorldServer(host, port, serverName, version);
         server.start();
@@ -67,14 +54,6 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     private final String host;
     private final int port;
 
-    private final ServerProtocolImpl protocolImpl;
-    private final IServer serverUnit;
-    private final ServerSender serverSender;
-    private final GeneralService generalService;
-    private final PlayerManager playerManager;
-    private final Chat chat;
-    private final Timer timer;
-    private final SyncService syncService;
     private final String serverVersion;
     private String serverName;
 
@@ -83,40 +62,28 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
         this.port = port;
         this.serverName = serverName;
         this.serverVersion = serverVersion;
-        this.protocolImpl = new ServerProtocolImpl();
-        this.serverUnit = ServerFactory.createTcpServer();
-        this.serverSender = new ServerSender(serverUnit);
-        this.playerManager = new PlayerManager();
-        this.chat = new Chat();
-        this.timer = new Timer();
-        this.syncService = new SyncService(playerManager, serverSender);
-        this.generalService = new GeneralService(playerManager, protocolImpl, serverUnit, serverSender, chat, syncService);
 
         ServerInfo.INSTANCE.setName(serverName);
         ServerInfo.INSTANCE.setVersion(getServerVersion());
 
-        serverUnit.addServerListener(this);
-        timer.setTimerListener(generalService);
+        Modules.SERVER_UNIT.addServerListener(this);
+        Modules.TIMER.setTimerListener(Modules.GENERAL_SERVICE);
 
         Thread.setDefaultUncaughtExceptionHandler(this);
 
-        ServerRepl repl = new ServerRepl(generalService, playerManager, serverSender, chat, syncService);
-        repl.start();
+        Modules.COMMAND_PROCESSOR.start();
+    }
+
+    public IServer getSERVER_UNIT() {
+        return Modules.SERVER_UNIT;
     }
 
     public void start() {
-        if(!serverUnit.asyncListenAndAwait(host, port, 2, TimeUnit.SECONDS)) {
+        if(!Modules.SERVER_UNIT.asyncListenAndAwait(host, port, 2, TimeUnit.SECONDS)) {
             System.err.println("Unable to start");
             System.exit(1);
         }
-        timer.start();
-    }
-
-    public void exit() {
-        timer.stop();
-        generalService.normalServerExit();
-        serverUnit.close();
-        log.info("Server exit");
+        Modules.TIMER.start();
     }
 
     public static String getServerVersion() {
@@ -144,12 +111,12 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     @Override
     public void connectionClosed(IConnection connection, CloseStatus status) {
         log.info("Connection closed {}, status: {}", connection.toString(), status.toString());
-        generalService.disconnectPlayer(connection.getId());
+        Modules.GENERAL_SERVICE.disconnectPlayer(connection.getId());
     }
 
     @Override
     public void connectionBytesReceived(IConnection connection, byte[] bytes) {
-        protocolImpl.bytesReceived(connection.getId(), bytes);
+        Modules.SERVER_PROTOCOL_IMPL.bytesReceived(connection.getId(), bytes);
     }
 
     @Override

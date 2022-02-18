@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Chat {
+public class ServerChat {
+    public static final ServerChat INSTANCE = new ServerChat();
+
     private static final int MAX_MESSAGES = 1024;
     private static final int DELETE_MESSAGES = MAX_MESSAGES / 4;
 
@@ -33,7 +35,7 @@ public class Chat {
 
     private final List<ChatListener> chatListeners;
 
-    public Chat() {
+    private ServerChat() {
         messages = new LinkedList<>();
         chatListeners = new ArrayList<>();
     }

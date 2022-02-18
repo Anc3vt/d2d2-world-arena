@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.desktop;
 
+import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
@@ -56,7 +57,7 @@ public class ClientCommandProcessor {
                 TextTable tt = new TextTable();
                 tt.setDecorEnabled(false);
 
-                tt.setColumnNames(new String[]{"id", "name", "ping", "color"});
+                tt.setColumnNames(new String[]{"id", "name", "ping"});
 
                 tt.addRow(
                         Client.INSTANCE.getLocalPlayerId(),
@@ -66,13 +67,24 @@ public class ClientCommandProcessor {
                 );
 
                 pm.getRemotePlayerList().forEach(
-                        p -> tt.addRow(p.getId(), p.getName(), p.getPing(), Integer.toString(p.getColor()), 16));
+                        p -> tt.addRow(p.getId(), p.getName(), p.getPing()));
 
                 String[] lines = tt.render().split("\n");
                 for (String line : lines) {
                     Chat.INSTANCE.addMessage(line);
                 }
                 return true;
+            }
+
+            case "/rcon" -> {
+                // if the second (at index 1) token from command text is 'login'
+                if("login".equals(args.get(String.class, 1, ""))) {
+                    String passwordHash = MD5.hash(args.get(String.class, 2, ""));
+                    Client.INSTANCE.sendRconLoginRequest(passwordHash);
+                } else {
+                    Client.INSTANCE.sendRconCommand(text.substring(6));
+                }
+
             }
         }
 

@@ -35,6 +35,8 @@ public class Player {
     private int lastSeenChatMessageId;
     private int ping;
 
+    private boolean rconLoggedIn;
+
     public Player(int id,
                   String name,
                   int color,
@@ -46,6 +48,14 @@ public class Player {
         this.address = address;
         this.color = color;
         this.clientProtocolVersion = clientProtocolVersion;
+    }
+
+    public boolean isRconLoggedIn() {
+        return rconLoggedIn;
+    }
+
+    public void setRconLoggedIn(boolean rconLoggedIn) {
+        this.rconLoggedIn = rconLoggedIn;
     }
 
     public int getLastSeenChatMessageId() {

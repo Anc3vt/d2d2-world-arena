@@ -18,26 +18,20 @@
 package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
-import ru.ancevt.d2d2world.server.player.PlayerManager;
+import ru.ancevt.d2d2world.server.Modules;
 
 @Slf4j
 public class SyncService {
 
-    private final PlayerManager playerManager;
-    private final ServerSender serverSender;
+    public static SyncService INSTANCE = new SyncService();
 
-    public SyncService(@NotNull PlayerManager playerManager,
-                       @NotNull ServerSender serverSender) {
-
-        this.playerManager = playerManager;
-        this.serverSender = serverSender;
+    private SyncService() {
     }
 
     public void syncFirstLevel() {
-        playerManager.getPlayerList().forEach(p ->
-                serverSender.sendToAllExcluding(
+        Modules.PLAYER_MANAGER.getPlayerList().forEach(p ->
+                Modules.SENDER.sendToAllExcluding(
                         ServerProtocolImpl.createMessageRemotePlayerControllerAndXY(
                                 p.getId(),
                                 p.getControllerState(),
@@ -57,8 +51,8 @@ public class SyncService {
     }
 
     private void sendPings() {
-        playerManager.getPlayerList().forEach(p -> {
-            serverSender.sendToAllExcluding(
+        Modules.PLAYER_MANAGER.getPlayerList().forEach(p -> {
+            Modules.SENDER.sendToAllExcluding(
                     ServerProtocolImpl.createMessageRemotePlayerPingValue(p.getId(), p.getPingValue()),
                     p.getId()
             );

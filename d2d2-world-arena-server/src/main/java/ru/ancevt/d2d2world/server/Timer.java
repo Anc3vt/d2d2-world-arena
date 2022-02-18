@@ -19,14 +19,16 @@ package ru.ancevt.d2d2world.server;
 
 public class Timer {
 
-    public static final int DEFAULT_INTERVAL = 1;
+    public static final Timer INSTANCE = new Timer();
+
+    private static final int DEFAULT_INTERVAL = 0;
 
     private long tickCounter;
     private int interval;
     private boolean active;
     private GlobalTimerListener timerListener;
 
-    public Timer() {
+    private Timer() {
         setInterval(DEFAULT_INTERVAL);
     }
 

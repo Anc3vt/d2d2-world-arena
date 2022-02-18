@@ -18,20 +18,20 @@
 package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.ancevt.net.messaging.server.IServer;
+import ru.ancevt.d2d2world.server.Modules;
+
 
 @Slf4j
 public class ServerSender {
 
-    private final IServer serverUnit;
+    public static final ServerSender INSTANCE = new ServerSender();
 
-    public ServerSender(IServer serverUnit) {
-        this.serverUnit = serverUnit;
+    private ServerSender() {
     }
 
     public void sendToPlayer(int playerId, byte[] bytes) {
         try {
-            serverUnit.getConnections()
+            Modules.SERVER_UNIT.getConnections()
                     .stream()
                     .filter(c -> c.getId() == playerId)
                     .findAny()
@@ -44,7 +44,7 @@ public class ServerSender {
 
     public void sendToAllExcluding(byte[] bytes, int excludingPlayerId) {
         try {
-            serverUnit.getConnections()
+            Modules.SERVER_UNIT.getConnections()
                     .stream()
                     .filter(c -> c.getId() != excludingPlayerId)
                     .forEach(c -> c.send(bytes));
@@ -55,7 +55,7 @@ public class ServerSender {
 
     public void sendToAll(byte[] bytes) {
         try {
-            serverUnit.sendToAll(bytes);
+            Modules.SERVER_UNIT.sendToAll(bytes);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

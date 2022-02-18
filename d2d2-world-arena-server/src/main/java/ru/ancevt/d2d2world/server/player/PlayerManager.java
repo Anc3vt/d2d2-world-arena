@@ -28,12 +28,14 @@ import java.util.Optional;
 
 public class PlayerManager {
 
+    public static final PlayerManager INSTANCE = new PlayerManager();
+
     private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
 
     private final Map<Integer, Player> playerMap;
     private final List<Player> playerList;
 
-    public PlayerManager() {
+    private PlayerManager() {
         playerMap = new HashMap<>();
         playerList = new ArrayList<>();
     }

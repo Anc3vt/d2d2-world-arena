@@ -19,7 +19,6 @@ package ru.ancevt.d2d2world.net.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
@@ -32,6 +31,16 @@ import ru.ancevt.net.messaging.connection.IConnection;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerControllerAndXYReport;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerEnterRequest;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerExitRequest;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerPingReport;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerPingRequest;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerTextToChat;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageRconCommand;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageRconLogin;
+import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;
 
 @Slf4j
 public class Client implements ConnectionListener, ClientProtocolImplListener {
@@ -183,7 +192,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void playerPingResponse() {
         long pingResponseTime = System.currentTimeMillis();
         ping = (int) (pingResponseTime - pingRequestTime);
-        sender.send(ClientProtocolImpl.createMessagePlayerPingReport(ping));
+        sender.send(createMessagePlayerPingReport(ping));
     }
 
     /**
@@ -217,22 +226,29 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         clientListeners.forEach(l -> l.playerChat(chatMessageId, playerId, playerName, playerColor, chatMessageText));
     }
 
+    /**
+     * {@link ClientProtocolImplListener} method
+     */
     @Override
     public void serverInfoResponse(@NotNull ServerInfoRetrieveResult result) {
         clientListeners.forEach(l -> l.serverInfo(result));
     }
 
+    /**
+     * {@link ClientProtocolImplListener} method
+     */
+    @Override
+    public void serverTextToPlayer(@NotNull String text) {
+        clientListeners.forEach(l -> l.serverTextToPlayer(text));
+    }
+
     public void sendPlayerEnterRequest() {
-        sender.send(ClientProtocolImpl.createMessagePlayerEnterRequest(
-                        localPlayerName,
-                        ClientProtocolImpl.PROTOCOL_VERSION,
-                        ""
-                )
+        sender.send(createMessagePlayerEnterRequest(localPlayerName, PROTOCOL_VERSION, "")
         );
     }
 
     public void sendLocalPlayerControllerAndXYReport(int controllerState, float x, float y) {
-        sender.send(ClientProtocolImpl.createMessagePlayerControllerAndXYReport(controllerState, x, y));
+        sender.send(createMessagePlayerControllerAndXYReport(controllerState, x, y));
     }
 
     public boolean isEnteredServer() {
@@ -241,7 +257,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     public void pingRequest() {
         pingRequestTime = System.currentTimeMillis();
-        sender.send(ClientProtocolImpl.createMessagePlayerPingRequest());
+        sender.send(createMessagePlayerPingRequest());
     }
 
     public void connect(String host, int port) {
@@ -328,17 +344,20 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         return connection != null && connection.isOpen();
     }
 
-
     public void sendChatMessage(String text) {
-        sender.send(
-                ClientProtocolImpl.createMessagePlayerTextToChat(text)
-        );
+        sender.send(createMessagePlayerTextToChat(text));
     }
 
     public void sendExitRequest() {
-        sender.send(
-                ClientProtocolImpl.createMessagePlayerExitRequest()
-        );
+        sender.send(createMessagePlayerExitRequest());
+    }
+
+    public void sendRconLoginRequest(String passwordHash) {
+        sender.send(createMessageRconLogin(passwordHash));
+    }
+
+    public void sendRconCommand(String rconCommandText) {
+        sender.send(createMessageRconCommand(rconCommandText, ""));
     }
 }
 

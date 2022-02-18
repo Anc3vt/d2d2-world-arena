@@ -18,10 +18,7 @@
 package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.Pair;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
-
-import java.util.List;
 
 public non-sealed interface ClientProtocolImplListener extends ProtocolImplListener {
 
@@ -59,5 +56,7 @@ public non-sealed interface ClientProtocolImplListener extends ProtocolImplListe
                     int playerColor,
                     @NotNull String chatMessageText);
 
-    void serverInfoResponse(ServerInfoRetrieveResult result);
+    void serverInfoResponse(@NotNull ServerInfoRetrieveResult result);
+
+    void serverTextToPlayer(@NotNull String text);
 }

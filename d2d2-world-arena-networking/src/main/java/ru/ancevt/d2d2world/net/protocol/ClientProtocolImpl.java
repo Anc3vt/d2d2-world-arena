@@ -58,13 +58,19 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 case MessageType.SERVER_INFO_RESPONSE -> {
                     log("received SERVER_INFO_RESPONSE");
                     ServerInfoRetrieveResult result = readServerInfoResponseBytes(bytes);
-                    clientProtocolImplListeners.forEach(l->l.serverInfoResponse(result));
+                    clientProtocolImplListeners.forEach(l -> l.serverInfoResponse(result));
                 }
 
                 case MessageType.SERVER_RCON_RESPONSE -> {
                     log("received SERVER_RCON_RESPONSE");
                     String rconResponseData = in.readUtf(int.class);
                     clientProtocolImplListeners.forEach(l -> l.rconResponse(rconResponseData));
+                }
+
+                case MessageType.SERVER_TEXT_TO_PLAYER -> {
+                    log("received SERVER_TEXT_TO_PLAYER");
+                    String text = in.readUtf(byte.class);
+                    clientProtocolImplListeners.forEach(l->l.serverTextToPlayer(text));
                 }
 
                 case MessageType.SERVER_REMOTE_PLAYER_ENTER -> {
@@ -182,7 +188,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         String modName = in.readUtf(byte.class);
 
         List<RemotePlayer> players = new ArrayList<>();
-        while(in.hasNextData())
+        while (in.hasNextData())
             players.add(new RemotePlayer(in.readShort(), in.readUtf(byte.class), 0));
 
         return new ServerInfoRetrieveResult(
@@ -200,10 +206,9 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         return new byte[]{MessageType.CLIENT_SERVER_INFO_REQUEST};
     }
 
-    public static byte[] createMessageRconLogin(@NotNull String login, @NotNull String passwordHash) {
+    public static byte[] createMessageRconLogin(@NotNull String passwordHash) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.CLIENT_RCON_LOGIN)
-                .writeUtf(byte.class, login)
                 .writeUtf(byte.class, passwordHash)
                 .toArray();
     }

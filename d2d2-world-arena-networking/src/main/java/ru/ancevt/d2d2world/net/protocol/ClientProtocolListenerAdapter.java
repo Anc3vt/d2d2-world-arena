@@ -1,10 +1,7 @@
 package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.Pair;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
-
-import java.util.List;
 
 public class ClientProtocolListenerAdapter implements ClientProtocolImplListener {
     @Override
@@ -69,6 +66,11 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
 
     @Override
     public void serverInfoResponse(ServerInfoRetrieveResult result) {
+
+    }
+
+    @Override
+    public void serverTextToPlayer(@NotNull String text) {
 
     }
 }

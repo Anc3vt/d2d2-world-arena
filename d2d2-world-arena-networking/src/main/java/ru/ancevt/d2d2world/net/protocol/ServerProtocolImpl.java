@@ -86,9 +86,8 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
             case MessageType.CLIENT_RCON_LOGIN -> {
                 log.debug("received CLIENT_RCON_LOGIN");
-                String login = in.readUtf(byte.class);
                 String passwordHash = in.readUtf(byte.class);
-                serverProtocolImplListeners.forEach(l -> l.rconLogin(connectionId, login, passwordHash));
+                serverProtocolImplListeners.forEach(l -> l.rconLogin(connectionId, passwordHash));
             }
 
             case MessageType.CLIENT_RCON_COMMAND -> {
@@ -123,6 +122,13 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 serverProtocolImplListeners.forEach(l -> l.errorFromPlayer(errorCode, errorMessage, errorDetails));
             }
         }
+    }
+
+    public static byte[] createMessageTextToPlayer(@NotNull String text) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.SERVER_TEXT_TO_PLAYER)
+                .writeUtf(byte.class, text)
+                .toArray();
     }
 
     public static byte[] createMessageServerInfoResponse(@NotNull String serverName,

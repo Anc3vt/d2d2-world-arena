@@ -33,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class TcpServer implements IServer {
+public class TcpB254Server implements IServer {
 
     private static final int MAX_CONNECTIONS = Integer.MAX_VALUE;
 
@@ -46,7 +46,7 @@ public class TcpServer implements IServer {
 
     private boolean alive;
 
-    public TcpServer() {
+    public TcpB254Server() {
         connections = new CopyOnWriteArraySet<>();
         serverListeners = new HashSet<>();
     }
@@ -218,7 +218,7 @@ public class TcpServer implements IServer {
 
     @Override
     public String toString() {
-        return "TcpServer{" +
+        return "TcpB254Server{" +
                 "connections=" + connections.size() +
                 ", serverListeners=" + serverListeners +
                 ", serverSocket=" + serverSocket +

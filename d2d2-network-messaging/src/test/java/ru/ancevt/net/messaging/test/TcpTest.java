@@ -36,7 +36,7 @@ public class TcpTest {
 
     @BeforeEach
     void beforeEach() {
-        server = ServerFactory.createTcpServer();
+        server = ServerFactory.createTcpB254Server();
     }
 
     private void serverStart() {

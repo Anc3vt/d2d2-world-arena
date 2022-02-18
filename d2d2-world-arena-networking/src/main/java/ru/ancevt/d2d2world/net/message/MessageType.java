@@ -73,7 +73,7 @@ public class MessageType {
     public static final int CLIENT_RCON_LOGIN = 254;
 
     /**
-     * b)t b) S)command text i) S)extraData
+     * b)t b)S)commandText i) S)extraData
      */
     public static final int CLIENT_RCON_COMMAND = 255;
 
@@ -108,7 +108,6 @@ public class MessageType {
     public static final int CLIENT_PLAYER_PING_REPORT = 6;
 
 
-
     //                                           CLIENT <=== SERVER
 
     /**
@@ -139,9 +138,14 @@ public class MessageType {
     public static final int SERVER_REMOTE_PLAYER_INTRODUCE = 103;
 
     /**
-     * b)t i)chatMessageId b) S)text [ s) playerId b) S)playerName i)playerColor ]
+     * b)t i)chatMessageId b) S)text s) playerId b) S)playerName i)playerColor
      */
     public static final int SERVER_CHAT = 104;
+
+    /**
+     * b)t b)S)text
+     */
+    public static final int SERVER_TEXT_TO_PLAYER = 109;
 
     /**
      * b)t s)playerId b)controllerState f)x f)y

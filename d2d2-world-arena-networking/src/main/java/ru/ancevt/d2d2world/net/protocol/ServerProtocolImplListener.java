@@ -17,25 +17,27 @@
  */
 package ru.ancevt.d2d2world.net.protocol;
 
+import org.jetbrains.annotations.NotNull;
+
 public non-sealed interface ServerProtocolImplListener extends ProtocolImplListener {
 
-    void playerEnterRequest(int playerId, String playerName, String clientProtocolVersion, String extraData);
+    void playerEnterRequest(int playerId, @NotNull String playerName, @NotNull String clientProtocolVersion, @NotNull String extraData);
 
     void playerExitRequest(int playerId);
 
     void playerControllerAndXYReport(int playerId, int controllerState, float x, float y);
 
-    void playerTextToChat(int playerId, String text);
+    void playerTextToChat(int playerId, @NotNull String text);
 
     void playerPingReport(int playerId, int ping);
 
-    void extraFromPlayer(int playerId, String extraData);
+    void extraFromPlayer(int playerId, @NotNull String extraData);
 
-    void rconLogin(int playerId, String login, String passwordHash);
+    void rconLogin(int playerId, @NotNull String passwordHash);
 
-    void rconCommand(int playerId, String commandText, String extraData);
+    void rconCommand(int playerId, @NotNull String commandText, @NotNull String extraData);
 
-    void errorFromPlayer(int errorCode, String errorMessage, String errorDetails);
+    void errorFromPlayer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails);
 
     void playerPingRequest(int playerId);
 
