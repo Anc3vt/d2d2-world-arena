@@ -7,8 +7,8 @@
 - **d2d2-world**: Base game engine classes 
 - **d2d2-world-editor**: Map editor 
 - **d2d2-world-game**: Game client 
-- **d2d2-world-server**: Server 
-- **d2d2-world-client**: Client (And client-server protocol implementation classes with Server in common)
+- **d2d2-world-arena-server**: Server 
+- **d2d2-world-arena-networking**: Client (And client-server protocol implementation classes with Server in common)
 - **d2d2-network-messaging**: TCP Network Messaging Library 
 - **D2D2-ttf2bmf**: BMF font utils (well be deleted and rewrited later)
 

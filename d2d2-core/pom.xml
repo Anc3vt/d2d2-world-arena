@@ -57,7 +57,8 @@
         <platform>linux</platform>
 
         <!-- Ancevt -->
-        <ancevt-commons.version>1.0.0.0-preview</ancevt-commons.version>
+        <ancevt-commons.version>1.0.0.0</ancevt-commons.version>
+        <texttable.version>0.0.1</texttable.version>
 
         <!-- LWJGL -->
         <joml.version>1.10.4</joml.version>
@@ -233,11 +234,10 @@
             <version>${lwjgl_util.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>ru.ancevt.util</groupId>
             <artifactId>texttable</artifactId>
-            <version>0.0.1-preview</version>
+            <version>${texttable.version}</version>
         </dependency>
 
         <!-- Testing -->

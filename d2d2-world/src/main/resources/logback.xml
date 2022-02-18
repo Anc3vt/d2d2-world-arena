@@ -7,9 +7,9 @@
         </encoder>
     </appender>
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/d2d2-world-server.log</file>
+        <file>log/d2d2-world-arena-server.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/d2d2-world-server.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>log/d2d2-world-arena-server.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>365</maxHistory>
         </rollingPolicy>
 

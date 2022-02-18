@@ -54,10 +54,10 @@
         <module>d2d2-panels</module>
         <module>d2d2-world</module>
         <module>d2d2-world-editor</module>
-        <module>d2d2-world-desktop</module>
         <module>d2d2-network-messaging</module>
-        <module>d2d2-world-client</module>
-        <module>d2d2-world-server</module>
+        <module>d2d2-world-arena-desktop</module>
+        <module>d2d2-world-arena-networking</module>
+        <module>d2d2-world-arena-server</module>
         <module>d2d2-ttf2bmf</module>
     </modules>
 
@@ -79,17 +79,17 @@
             <dependency>
                 <groupId>ru.ancevt.util</groupId>
                 <artifactId>args</artifactId>
-                <version>2.0.1-preview</version>
+                <version>2.0.1</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.commons</groupId>
                 <artifactId>ancevt-commons</artifactId>
-                <version>1.0.0.0-preview</version>
+                <version>1.0.0.0</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.util</groupId>
                 <artifactId>repl</artifactId>
-                <version>0.0.10-preview</version>
+                <version>0.0.10</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
@@ -113,13 +113,13 @@
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
-                <artifactId>d2d2-world-server</artifactId>
+                <artifactId>d2d2-world-arena-server</artifactId>
                 <version>1.0.0.0-preview</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2world</groupId>
-                <artifactId>d2d2-world-client</artifactId>
+                <artifactId>d2d2-world-arena-networking</artifactId>
                 <version>1.0.0.0-preview</version>
             </dependency>
             <dependency>
