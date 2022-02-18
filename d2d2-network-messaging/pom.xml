@@ -6,7 +6,7 @@
 
     <groupId>ru.ancevt.d2d2world</groupId>
     <artifactId>d2d2-network-messaging</artifactId>
-    <version>1.0.0.1-SNAPSHOT</version>
+    <version>1.0.0.1-preview</version>
 
     <name>D2D2 Network Messaging</name>
     <url>https://github.com/Anc3vt/d2d2-network-messaging</url>

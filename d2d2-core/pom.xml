@@ -9,7 +9,7 @@
 
     <groupId>ru.ancevt.d2d2</groupId>
     <artifactId>d2d2-core</artifactId>
-    <version>1.0.0.12-SNAPSHOT</version>
+    <version>1.0.0.12-preview</version>
 
     <url>https://github.com/Anc3vt/d2d2-core</url>
 
@@ -57,7 +57,7 @@
         <platform>linux</platform>
 
         <!-- Ancevt -->
-        <ancevt-commons.version>1.0.0.0-SNAPSHOT</ancevt-commons.version>
+        <ancevt-commons.version>1.0.0.0-preview</ancevt-commons.version>
 
         <!-- LWJGL -->
         <joml.version>1.10.4</joml.version>
@@ -237,7 +237,7 @@
         <dependency>
             <groupId>ru.ancevt.util</groupId>
             <artifactId>texttable</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1-preview</version>
         </dependency>
 
         <!-- Testing -->

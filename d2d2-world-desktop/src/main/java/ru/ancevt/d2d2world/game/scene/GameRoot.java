@@ -114,7 +114,7 @@ public class GameRoot extends Root implements ClientListener {
      * {@link ClientListener} method
      */
     @Override
-    public void remotePlayerEnterServer(int remotePlayerId, String remotePlayerName, int remotePlayerColor) {
+    public void remotePlayerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
 
     }
 
