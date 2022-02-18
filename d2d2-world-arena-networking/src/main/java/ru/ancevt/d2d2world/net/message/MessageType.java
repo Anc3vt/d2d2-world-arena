@@ -68,7 +68,7 @@ public class MessageType {
     public static final int CLIENT_SERVER_INFO_REQUEST = 0;
 
     /**
-     * b)t b) S)login b) S)passHash
+     * b)t b)S)passHash
      */
     public static final int CLIENT_RCON_LOGIN = 254;
 
