@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.scene;
+package ru.ancevt.d2d2world.desktop.scene;
 
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.concurrent.Lock;
@@ -25,10 +25,10 @@ import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
-import ru.ancevt.d2d2world.game.ClientCommandProcessor;
-import ru.ancevt.d2d2world.game.ui.TextInputProcessor;
-import ru.ancevt.d2d2world.game.ui.chat.Chat;
-import ru.ancevt.d2d2world.game.ui.chat.ChatEvent;
+import ru.ancevt.d2d2world.desktop.ClientCommandProcessor;
+import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
+import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
+import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.ClientListener;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;

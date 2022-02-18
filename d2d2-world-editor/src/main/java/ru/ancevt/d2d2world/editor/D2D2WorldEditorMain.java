@@ -41,7 +41,7 @@ public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
         MapSaver.mapDirectory = a.get("--map-directory", "/home/ancevt/workspace/pet/d2d2/d2d2-world/src/main/resources/assets/map/");
-        MapSaver.mapFileName = a.get("--map", "map0.dat");
+        MapSaver.mapFileName = a.get("--map", "map0.wam");
 
 
         D2D2.init(new LWJGLStarter(1000, 700, "D2D2 World (floating)"));
@@ -51,7 +51,7 @@ public class D2D2WorldEditorMain {
 
         DisplayObjectContainer cameraLayer = new DisplayObjectContainer();
 
-        GameMap map = MapIO.load("map0.dat");
+        GameMap map = MapIO.load("map0.wam");
 
         World world = new World();
         cameraLayer.add(world);

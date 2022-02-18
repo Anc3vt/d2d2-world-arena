@@ -15,26 +15,31 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.ui.chat;
+package ru.ancevt.d2d2world.desktop.ui;
 
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.IEventDispatcher;
 
-public class ChatEvent extends Event {
+public class TextInputEvent extends Event {
 
-    public static final String CHAT_TEXT_ENTER = "chatTextEnter";
-    public static String CHAT_INPUT_OPEN = "chatInputOpen";
-    public static String CHAT_INPUT_CLOSE = "chatInputClose";
+    public static final String TEXT_CHANGE = "textChange";
+    public static final String TEXT_ENTER = "textEnter";
+    public static final String TEXT_INPUT_KEY_DOWN = "textInputKeyDown";
 
     private final String text;
+    private final int keyCode;
 
-    public ChatEvent(String type, IEventDispatcher source, String text) {
+    public TextInputEvent(String type, IEventDispatcher source, String text, int keyCode) {
         super(type, source);
-
         this.text = text;
+        this.keyCode = keyCode;
     }
 
     public String getText() {
         return text;
+    }
+
+    public int getKeyCode() {
+        return keyCode;
     }
 }

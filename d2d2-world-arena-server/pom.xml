@@ -71,11 +71,6 @@
             <version>0.0.1</version>
         </dependency>
         <dependency>
-            <groupId>ru.ancevt.ini</groupId>
-            <artifactId>ini</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>ru.ancevt.d2d2world</groupId>
             <artifactId>d2d2-network-messaging</artifactId>
         </dependency>

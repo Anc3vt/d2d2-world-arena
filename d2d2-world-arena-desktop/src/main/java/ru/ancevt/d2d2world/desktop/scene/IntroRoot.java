@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.scene;
+package ru.ancevt.d2d2world.desktop.scene;
 
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.D2D2;
@@ -27,11 +27,11 @@ import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.panels.Button;
-import ru.ancevt.d2d2world.game.ui.Font;
-import ru.ancevt.d2d2world.game.ui.TextInputEvent;
-import ru.ancevt.d2d2world.game.ui.TextInputProcessor;
-import ru.ancevt.d2d2world.game.ui.UiText;
-import ru.ancevt.d2d2world.game.ui.UiTextInput;
+import ru.ancevt.d2d2world.desktop.ui.Font;
+import ru.ancevt.d2d2world.desktop.ui.TextInputEvent;
+import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
+import ru.ancevt.d2d2world.desktop.ui.UiText;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
 
 import java.io.IOException;

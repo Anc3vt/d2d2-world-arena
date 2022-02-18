@@ -15,26 +15,19 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.scene;
+package ru.ancevt.d2d2world.desktop.ui;
 
-import ru.ancevt.d2d2.display.DisplayObjectContainer;
-import ru.ancevt.d2d2.display.Sprite;
-import ru.ancevt.d2d2.display.texture.Texture;
-import ru.ancevt.d2d2world.game.ui.Font;
-import ru.ancevt.d2d2world.game.ui.UiText;
+import ru.ancevt.d2d2.display.text.BitmapFont;
 
-public class ThanksTo extends DisplayObjectContainer {
+public class Font {
 
-    public ThanksTo(Texture texture, String name) {
-        Sprite sprite = new Sprite(texture);
+    private static final String BMF_FILE_NAME = "Terminus_Bold_8x16_spaced_shadowed_v1.bmf";
+    private static BitmapFont bitmapFont;
 
-        add(sprite);
-        UiText uiText = new UiText();
-        uiText.setText(name);
-
-        int textWidth = name.length() * Font.getBitmapFont().getCharInfo('0').width();
-
-        uiText.setXY((sprite.getWidth() - textWidth) / 2, sprite.getHeight() + 10);
-        add(uiText);
+    public static BitmapFont getBitmapFont() {
+        if (bitmapFont == null) {
+            bitmapFont = BitmapFont.loadBitmapFont(BMF_FILE_NAME);
+        }
+        return bitmapFont;
     }
 }

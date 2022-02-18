@@ -18,9 +18,9 @@
 package ru.ancevt.d2d2world.server;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.server.chat.Chat;
 import ru.ancevt.d2d2world.server.player.PlayerManager;
-import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.server.repl.ServerRepl;
 import ru.ancevt.d2d2world.server.service.GeneralService;
 import ru.ancevt.d2d2world.server.service.ServerSender;
@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import static ru.ancevt.d2d2world.server.Config.CONFIG;
+
 @Slf4j
 public class D2D2WorldServer implements ServerListener, Thread.UncaughtExceptionHandler {
 
@@ -45,16 +47,20 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     public static void main(String[] args) {
         Args a = new Args(args);
 
+        String version = getServerVersion();
+
         if (a.contains("-v", "--version")) {
-            System.out.println(getServerVersion());
+            System.out.println(version);
             return;
         }
 
-        String host = a.get(new String[]{"--host", "-h"}, DEFAULT_HOST);
-        int port = a.get(Integer.class, new String[]{"--port", "-p"}, DEFAULT_PORT);
-        String serverName = a.get(String.class, new String[] {"-n", "--name"}, "D2D2 World Arena Server");
+        CONFIG.load();
 
-        D2D2WorldServer server = new D2D2WorldServer(host, port, serverName);
+        String host = a.get(new String[]{"--host", "-h"}, CONFIG.serverHost());
+        int port = a.get(Integer.class, new String[]{"--port", "-p"}, CONFIG.serverPort());
+        String serverName = a.get(String.class, new String[] {"-n", "--name"}, CONFIG.serverName());
+
+        D2D2WorldServer server = new D2D2WorldServer(host, port, serverName, version);
         server.start();
     }
 
@@ -69,12 +75,14 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     private final Chat chat;
     private final Timer timer;
     private final SyncService syncService;
+    private final String serverVersion;
     private String serverName;
 
-    public D2D2WorldServer(String host, int port, String serverName) {
+    public D2D2WorldServer(String host, int port, String serverName, String serverVersion) {
         this.host = host;
         this.port = port;
         this.serverName = serverName;
+        this.serverVersion = serverVersion;
         this.protocolImpl = new ServerProtocolImpl();
         this.serverUnit = ServerFactory.createTcpServer();
         this.serverSender = new ServerSender(serverUnit);
@@ -124,6 +132,7 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
 
     @Override
     public void serverStarted() {
+        log.info("Version: " + serverVersion);
         log.info("Server started at {}:{}", host, port);
     }
 

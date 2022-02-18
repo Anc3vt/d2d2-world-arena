@@ -15,19 +15,26 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.ui;
+package ru.ancevt.d2d2world.desktop.ui.chat;
 
-import ru.ancevt.d2d2.display.text.BitmapFont;
+import ru.ancevt.d2d2.event.Event;
+import ru.ancevt.d2d2.event.IEventDispatcher;
 
-public class Font {
+public class ChatEvent extends Event {
 
-    private static final String BMF_FILE_NAME = "Terminus_Bold_8x16_spaced_shadowed_v1.bmf";
-    private static BitmapFont bitmapFont;
+    public static final String CHAT_TEXT_ENTER = "chatTextEnter";
+    public static String CHAT_INPUT_OPEN = "chatInputOpen";
+    public static String CHAT_INPUT_CLOSE = "chatInputClose";
 
-    public static BitmapFont getBitmapFont() {
-        if (bitmapFont == null) {
-            bitmapFont = BitmapFont.loadBitmapFont(BMF_FILE_NAME);
-        }
-        return bitmapFont;
+    private final String text;
+
+    public ChatEvent(String type, IEventDispatcher source, String text) {
+        super(type, source);
+
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
     }
 }

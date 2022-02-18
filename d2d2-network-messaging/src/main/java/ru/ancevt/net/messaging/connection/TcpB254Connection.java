@@ -17,6 +17,7 @@
  */
 package ru.ancevt.net.messaging.connection;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.io.ByteOutput;
 import ru.ancevt.net.messaging.CloseStatus;
 
@@ -31,6 +32,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class TcpB254Connection implements IConnection {
 
     private static final int MAX_CHUNK_SIZE = 254;
@@ -79,7 +81,7 @@ public class TcpB254Connection implements IConnection {
 
             while (isOpen()) {
                 int len = in.readUnsignedByte();
-                bytesLoaded ++;
+                bytesLoaded++;
 
                 if (len == 0) {
                     int left = MAX_CHUNK_SIZE;
@@ -214,7 +216,8 @@ public class TcpB254Connection implements IConnection {
 
     @Override
     public void closeIfOpen() {
-        if(isOpen()) close();;
+        if (isOpen()) close();
+        ;
     }
 
     @Override
@@ -239,8 +242,15 @@ public class TcpB254Connection implements IConnection {
         }
     }
 
-    private void dispatchConnectionBytesReceived(byte[] bytes) {
-        listeners.forEach(l -> l.connectionBytesReceived(bytes));
+    private synchronized void dispatchConnectionBytesReceived(byte[] bytes) {
+        listeners.forEach(l -> {
+            try {
+                l.connectionBytesReceived(bytes);
+            } catch (Exception e) {
+                // TODO: improve
+                log.error(e.getMessage(), e);
+            }
+        });
     }
 
 

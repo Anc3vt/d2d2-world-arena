@@ -15,9 +15,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game;
+package ru.ancevt.d2d2world.desktop;
 
-import ru.ancevt.d2d2world.game.ui.chat.Chat;
+import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
 import ru.ancevt.util.args.Args;

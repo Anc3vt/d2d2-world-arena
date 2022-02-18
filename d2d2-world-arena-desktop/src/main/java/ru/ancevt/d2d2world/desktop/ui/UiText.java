@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.ui;
+package ru.ancevt.d2d2world.desktop.ui;
 
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;

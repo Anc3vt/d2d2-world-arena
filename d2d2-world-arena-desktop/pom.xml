@@ -109,7 +109,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>ru.ancevt.d2d2world.game.D2D2WorldDesktopMain</mainClass>
+                                    <mainClass>ru.ancevt.d2d2world.desktop.D2D2WorldDesktopMain</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

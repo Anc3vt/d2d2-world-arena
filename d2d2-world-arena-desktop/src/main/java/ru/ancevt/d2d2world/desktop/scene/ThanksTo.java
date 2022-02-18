@@ -15,31 +15,26 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.ui;
+package ru.ancevt.d2d2world.desktop.scene;
 
-import ru.ancevt.d2d2.event.Event;
-import ru.ancevt.d2d2.event.IEventDispatcher;
+import ru.ancevt.d2d2.display.DisplayObjectContainer;
+import ru.ancevt.d2d2.display.Sprite;
+import ru.ancevt.d2d2.display.texture.Texture;
+import ru.ancevt.d2d2world.desktop.ui.Font;
+import ru.ancevt.d2d2world.desktop.ui.UiText;
 
-public class TextInputEvent extends Event {
+public class ThanksTo extends DisplayObjectContainer {
 
-    public static final String TEXT_CHANGE = "textChange";
-    public static final String TEXT_ENTER = "textEnter";
-    public static final String TEXT_INPUT_KEY_DOWN = "textInputKeyDown";
+    public ThanksTo(Texture texture, String name) {
+        Sprite sprite = new Sprite(texture);
 
-    private final String text;
-    private final int keyCode;
+        add(sprite);
+        UiText uiText = new UiText();
+        uiText.setText(name);
 
-    public TextInputEvent(String type, IEventDispatcher source, String text, int keyCode) {
-        super(type, source);
-        this.text = text;
-        this.keyCode = keyCode;
-    }
+        int textWidth = name.length() * Font.getBitmapFont().getCharInfo('0').width();
 
-    public String getText() {
-        return text;
-    }
-
-    public int getKeyCode() {
-        return keyCode;
+        uiText.setXY((sprite.getWidth() - textWidth) / 2, sprite.getHeight() + 10);
+        add(uiText);
     }
 }

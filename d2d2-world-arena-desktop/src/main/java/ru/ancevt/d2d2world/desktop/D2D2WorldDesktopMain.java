@@ -15,13 +15,13 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game;
+package ru.ancevt.d2d2world.desktop;
 
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
-import ru.ancevt.d2d2world.game.scene.IntroRoot;
+import ru.ancevt.d2d2world.desktop.scene.IntroRoot;
 import ru.ancevt.util.args.Args;
 
 import java.io.IOException;

@@ -15,16 +15,16 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.game.scene;
+package ru.ancevt.d2d2world.desktop.scene;
 
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2world.control.Controller;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
-import ru.ancevt.d2d2world.game.ui.UiText;
-import ru.ancevt.d2d2world.game.ui.chat.Chat;
-import ru.ancevt.d2d2world.game.ui.chat.ChatEvent;
+import ru.ancevt.d2d2world.desktop.ui.UiText;
+import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
+import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.gameobject.character.Blake;
 import ru.ancevt.d2d2world.map.GameMap;
@@ -84,7 +84,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.reset();
 
         try {
-            GameMap gameMap = MapIO.load("map0.dat");
+            GameMap gameMap = MapIO.load("map0.wam");
             world.setMap(gameMap);
         } catch (IOException e) {
             throw new IllegalStateException(e);
