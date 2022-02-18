@@ -20,12 +20,9 @@ package ru.ancevt.d2d2.display.text;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.asset.Assets;
 import ru.ancevt.d2d2.display.texture.TextureAtlas;
-import ru.ancevt.d2d2.platform.Platform;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,54 +82,17 @@ public class BitmapFont {
     }
 
     public static BitmapFont loadBitmapFont(String bmfAssetPath) {
-        System.out.println("Load bitmap font " + bmfAssetPath);
-
         BitmapFont fromCache = cache.get(bmfAssetPath);
 
         if(fromCache != null) {
             return fromCache;
         }
 
-        try (DataInputStream dataInputStream = new DataInputStream(new FileInputStream(
-                "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-desktop/target/classes/assets/bitmapfonts/Terminus_Bold_8x16_spaced_shadowed_v1.bmf"
-        ))) {
-            int test = dataInputStream.readUnsignedShort();
-            System.out.println("test2: " + test);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try (DataInputStream dataInputStream = new DataInputStream(Assets.getAssetAsStream(BITMAP_FONTS_DIR + bmfAssetPath))) {
-            System.out.println("test3: " + dataInputStream.readUnsignedShort());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        InputStream in = BitmapFont.class.getClassLoader().getResourceAsStream(
-                Platform.ASSETS_DIRECTORY_PATH + BITMAP_FONTS_DIR + bmfAssetPath
-        );
-
-        try {
-            System.out.println("test4: " + new DataInputStream(in).readUnsignedShort());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(BITMAP_FONTS_DIR + bmfAssetPath);
-
-
-
-
-
         try (DataInputStream dataInputStream = new DataInputStream(Assets.getAssetAsStream(BITMAP_FONTS_DIR + bmfAssetPath))) {
 
             BitmapCharInfo[] charInfos = new BitmapCharInfo[MAX_CHARS];
 
             int metaSize = dataInputStream.readUnsignedShort();
-
-            System.out.println(metaSize);
-
 
             while (metaSize > 0) {
                 char character = dataInputStream.readChar();

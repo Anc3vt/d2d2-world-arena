@@ -53,6 +53,8 @@ public class WorldScene extends DisplayObjectContainer {
     private final List<PlayerActor> remotePlayerActors;
     private final Map<RemotePlayer, PlayerActor> remotePlayerMap;
 
+    private long frameCounter;
+
     public WorldScene(Client client, Chat chat) {
         this.client = client;
         this.chat = chat;
@@ -64,7 +66,6 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setAttachedTo(localPlayerActor);
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
-
 
         remotePlayers = new CopyOnWriteArrayList<>();
         remotePlayerActors = new CopyOnWriteArrayList<>();
@@ -135,6 +136,13 @@ public class WorldScene extends DisplayObjectContainer {
             playerActor.setXY(remotePlayer.getX(), remotePlayer.getY());
             playerActor.getController().applyState(remotePlayer.getControllerState());
         });
+
+        if(frameCounter % 500 == 0) {
+            client.pingRequest();///
+        }
+
+
+        frameCounter++;
     }
 
     public LocalPlayerController getLocalPlayerController() {

@@ -63,6 +63,11 @@ public class MessageType {
     //                                        CLIENT ===> SERVER
 
     /**
+     * b)t
+     */
+    public static final int CLIENT_SERVER_INFO_REQUEST = 0;
+
+    /**
      * b)t b) S)login b) S)passHash
      */
     public static final int CLIENT_RCON_LOGIN = 254;
@@ -102,6 +107,8 @@ public class MessageType {
      */
     public static final int CLIENT_PLAYER_PING_REPORT = 6;
 
+
+
     //                                           CLIENT <=== SERVER
 
     /**
@@ -109,10 +116,17 @@ public class MessageType {
      */
     public static final int SERVER_RCON_RESPONSE = 253;
 
+
+    /**
+     * b)t b)S)serverName b)S)serverVersion b)S)serverProtocolVersion b)S) mapName b)S)mapkitName b)S)modeName
+     * ( s)playerId b)S)playerName )...
+     */
+    public static final int SERVER_INFO_RESPONSE = 100;
+
     /**
      * b)t s) playerId b) playerName i)playerColor
      */
-    public static final int SERVER_REMOTE_PLAYER_ENTER = 100;
+    public static final int SERVER_REMOTE_PLAYER_ENTER = 101;
 
     /**
      * b)t s)playerId i)color b) S)serverProtocolVersion

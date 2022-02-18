@@ -53,7 +53,6 @@ public class SyncService {
     }
 
     public void syncThirdLevel() {
-        log.debug("syncThirdLevel");
         sendPings();
     }
 

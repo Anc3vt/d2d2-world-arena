@@ -213,6 +213,11 @@ public class TcpB254Connection implements IConnection {
     }
 
     @Override
+    public void closeIfOpen() {
+        if(isOpen()) close();;
+    }
+
+    @Override
     public boolean isOpen() {
         return dataOutputStream != null;
     }

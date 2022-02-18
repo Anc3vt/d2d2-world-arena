@@ -18,7 +18,10 @@
 package ru.ancevt.d2d2world.net.client;
 
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.commons.Pair;
 import ru.ancevt.net.messaging.CloseStatus;
+
+import java.util.List;
 
 public interface ClientListener {
 
@@ -36,9 +39,11 @@ public interface ClientListener {
                     int playerColor,
                     @NotNull String chatMessageText);
 
-    void clientConnectionClosed(CloseStatus status);
+    void clientConnectionClosed(@NotNull CloseStatus status);
 
     void clientConnectionEstablished();
 
-    void remotePlayerEnterServer(int remotePlayerId, String remotePlayerName, int remotePlayerColor);
+    void remotePlayerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
+
+    void serverInfo(@NotNull ServerInfoRetrieveResult result);
 }

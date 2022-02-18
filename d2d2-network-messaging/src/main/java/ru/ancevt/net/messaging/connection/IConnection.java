@@ -43,6 +43,8 @@ public interface IConnection {
 
     void close();
 
+    void closeIfOpen();
+
     void addConnectionListener(ConnectionListener listener);
 
     void removeConnectionListener(ConnectionListener listener);

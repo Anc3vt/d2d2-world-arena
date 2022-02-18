@@ -25,12 +25,14 @@ import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
+import ru.ancevt.d2d2world.game.ClientCommandProcessor;
 import ru.ancevt.d2d2world.game.ui.TextInputProcessor;
 import ru.ancevt.d2d2world.game.ui.chat.Chat;
 import ru.ancevt.d2d2world.game.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.ClientListener;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
+import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
 import ru.ancevt.net.messaging.CloseStatus;
 
 import java.util.concurrent.TimeUnit;
@@ -49,15 +51,21 @@ public class GameRoot extends Root implements ClientListener {
 
         setBackgroundColor(Color.DARK_BLUE);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
-        chat = new Chat(0, null);
+        chat = Chat.INSTANCE;
 
-        client = new Client();
+        client = Client.INSTANCE;
         client.addClientListener(this);
 
+
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
+            var e = (ChatEvent) event;
+            String text = e.getText();
+            if(text.startsWith("/")) {
+                // if typed command is one of registered client command then don't send that command text to the server
+                if(clientCommand(text)) return;
+            }
             if(client.isConnected()) {
-                var e = (ChatEvent) event;
-                client.sendChatMessage(e.getText());
+                client.sendChatMessage(text);
             }
         });
 
@@ -88,6 +96,10 @@ public class GameRoot extends Root implements ClientListener {
         add(chat, 10, 10);
     }
 
+    private boolean clientCommand(String text) {
+        return ClientCommandProcessor.INSTANCE.process(text);
+    }
+
     /**
      * {@link ClientListener} method
      */
@@ -98,8 +110,19 @@ public class GameRoot extends Root implements ClientListener {
         worldScene.addRemotePlayer(remotePlayer);
     }
 
+    /**
+     * {@link ClientListener} method
+     */
     @Override
     public void remotePlayerEnterServer(int remotePlayerId, String remotePlayerName, int remotePlayerColor) {
+
+    }
+
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void serverInfo(@NotNull ServerInfoRetrieveResult result) {
 
     }
 

@@ -46,22 +46,15 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
         Args a = new Args(args);
 
         if (a.contains("-v", "--version")) {
-            Properties properties = new Properties();
-            try {
-                properties.load(D2D2WorldServer.class.getClassLoader().getResourceAsStream("project.properties"));
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                throw new IllegalStateException(e);
-            }
-            System.out.println(properties.getProperty("project.name") + " " + properties.getProperty("project.version"));
-            System.exit(0);
+            System.out.println(getServerVersion());
+            return;
         }
-
 
         String host = a.get(new String[]{"--host", "-h"}, DEFAULT_HOST);
         int port = a.get(Integer.class, new String[]{"--port", "-p"}, DEFAULT_PORT);
+        String serverName = a.get(String.class, new String[] {"-n", "--name"}, "D2D2 World Server");
 
-        D2D2WorldServer server = new D2D2WorldServer(host, port);
+        D2D2WorldServer server = new D2D2WorldServer(host, port, serverName);
         server.start();
     }
 
@@ -76,10 +69,12 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     private final Chat chat;
     private final Timer timer;
     private final SyncService syncService;
+    private String serverName;
 
-    public D2D2WorldServer(String host, int port) {
+    public D2D2WorldServer(String host, int port, String serverName) {
         this.host = host;
         this.port = port;
+        this.serverName = serverName;
         this.protocolImpl = new ServerProtocolImpl();
         this.serverUnit = ServerFactory.createTcpServer();
         this.serverSender = new ServerSender(serverUnit);
@@ -88,6 +83,9 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
         this.timer = new Timer();
         this.syncService = new SyncService(playerManager, serverSender);
         this.generalService = new GeneralService(playerManager, protocolImpl, serverUnit, serverSender, chat, syncService);
+
+        ServerInfo.INSTANCE.setName(serverName);
+        ServerInfo.INSTANCE.setVersion(getServerVersion());
 
         serverUnit.addServerListener(this);
         timer.setTimerListener(generalService);
@@ -111,6 +109,17 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
         generalService.normalServerExit();
         serverUnit.close();
         log.info("Server exit");
+    }
+
+    public static String getServerVersion() {
+        Properties properties = new Properties();
+        try {
+            properties.load(D2D2WorldServer.class.getClassLoader().getResourceAsStream("project.properties"));
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new IllegalStateException(e);
+        }
+        return properties.getProperty("project.version");
     }
 
     @Override

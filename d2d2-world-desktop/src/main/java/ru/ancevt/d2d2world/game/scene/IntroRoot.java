@@ -24,12 +24,15 @@ import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.event.Event;
+import ru.ancevt.d2d2.event.InputEvent;
+import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.panels.Button;
 import ru.ancevt.d2d2world.game.ui.Font;
 import ru.ancevt.d2d2world.game.ui.TextInputEvent;
 import ru.ancevt.d2d2world.game.ui.TextInputProcessor;
 import ru.ancevt.d2d2world.game.ui.UiText;
 import ru.ancevt.d2d2world.game.ui.UiTextInput;
+import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -111,6 +114,18 @@ public class IntroRoot extends Root {
         labelVersion = new UiText();
         labelVersion.setText(version);
         labelVersion.setWidth(1000);
+
+        this.addEventListener(InputEvent.KEY_DOWN, event -> {
+            var e = (InputEvent) event;
+            switch (e.getKeyCode()) {
+                case KeyCode.F1 -> {
+                    String host = uiTextInputServer.getText().split(":")[0];
+                    int port = Integer.parseInt(uiTextInputServer.getText().split(":")[1]);
+
+                    ServerInfoRetriever.retrieve(host, port, System.out::println, System.out::println);
+                }
+            }
+        });
     }
 
     public void enter(String server, String localPlayerName) {

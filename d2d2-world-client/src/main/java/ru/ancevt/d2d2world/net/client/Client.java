@@ -19,6 +19,7 @@ package ru.ancevt.d2d2world.net.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
@@ -35,6 +36,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public class Client implements ConnectionListener, ClientProtocolImplListener {
 
+    public static final Client INSTANCE = new Client();
+
     private IConnection connection;
     private final ClientProtocolImpl protocolImpl;
     private final RemotePlayerManager remotePlayerManager;
@@ -47,8 +50,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     private int localPlayerId;
     private int localPlayerColor;
 
-    public Client() {
-        remotePlayerManager = new RemotePlayerManager();
+    private Client() {
+        remotePlayerManager = RemotePlayerManager.INSTANCE;
         clientListeners = new CopyOnWriteArrayList<>();
 
         protocolImpl = new ClientProtocolImpl();
@@ -81,7 +84,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void remotePlayerEnter(int remotePlayerId, String remotePlayerName, int remotePlayerColor) {
-       clientListeners.forEach(l -> l.remotePlayerEnterServer(remotePlayerId, remotePlayerName, remotePlayerColor));
+        clientListeners.forEach(l -> l.remotePlayerEnterServer(remotePlayerId, remotePlayerName, remotePlayerColor));
     }
 
     /**
@@ -189,7 +192,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     @Override
     public void remotePlayerPing(int remotePlayerId, int remotePlayerPing) {
         remotePlayerManager.getRemotePlayer(remotePlayerId).ifPresent(
-                remotePlayer -> remotePlayer.setPing(remotePlayerId)
+                remotePlayer -> remotePlayer.setPing(remotePlayerPing)
         );
     }
 
@@ -212,6 +215,11 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                            @NotNull String chatMessageText) {
 
         clientListeners.forEach(l -> l.playerChat(chatMessageId, playerId, playerName, playerColor, chatMessageText));
+    }
+
+    @Override
+    public void serverInfoResponse(@NotNull ServerInfoRetrieveResult result) {
+        clientListeners.forEach(l -> l.serverInfo(result));
     }
 
     public void sendPlayerEnterRequest() {
@@ -324,6 +332,12 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void sendChatMessage(String text) {
         sender.send(
                 ClientProtocolImpl.createMessagePlayerTextToChat(text)
+        );
+    }
+
+    public void sendExitRequest() {
+        sender.send(
+                ClientProtocolImpl.createMessagePlayerExitRequest()
         );
     }
 }

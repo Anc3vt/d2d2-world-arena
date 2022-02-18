@@ -63,7 +63,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
 
     private static final Color BACKGROUND_COLOR = Color.BLACK;
     private static final Color SELECTION_COLOR = Color.DARK_GRAY;
-    private static final float BACKGROUND_ALPHA = 0.5f;
+    private static final float BACKGROUND_ALPHA = 0.75f;
     private static final int DEFAULT_WIDTH = 200;
     private static final int DEFAULT_HEIGHT = 30;
 

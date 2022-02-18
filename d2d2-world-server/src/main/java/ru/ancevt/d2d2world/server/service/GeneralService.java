@@ -19,11 +19,13 @@ package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.server.GlobalTimerListener;
+import ru.ancevt.d2d2world.server.ServerInfo;
 import ru.ancevt.d2d2world.server.chat.Chat;
 import ru.ancevt.d2d2world.server.chat.ChatListener;
 import ru.ancevt.d2d2world.server.chat.ChatMessage;
@@ -32,7 +34,6 @@ import ru.ancevt.d2d2world.server.player.PlayerManager;
 import ru.ancevt.net.messaging.connection.IConnection;
 import ru.ancevt.net.messaging.server.IServer;
 
-import java.io.EOFException;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,30 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
 
         protocolImpl.addServerProtocolImplListener(this);
         chat.addChatListener(this);
+    }
+
+    @Override
+    public void serverInfoRequest(int connectionId) {
+        ServerInfo si = ServerInfo.INSTANCE;
+
+        List<Pair<Integer, String>> players =
+                playerManager.getPlayerList()
+                        .stream()
+                        .map(player -> Pair.of(player.getId(), player.getName()))
+                        .toList();
+
+        sender.sendToPlayer(connectionId,
+                ServerProtocolImpl.createMessageServerInfoResponse(
+                        si.getName(),
+                        si.getVersion(),
+                        si.getMap(),
+                        si.getMapKit(),
+                        si.getMod(),
+                        players
+                )
+        );
+
+        getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
     }
 
     /**
@@ -279,16 +304,20 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
                     chat.text("Player " + player.getName() + "(" + playerId + ") lost connection");
                 },
                 // Or else if player does not exist in player manager, it will be NORMAL_EXIT exit cause
-                () -> sender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT))
+                () -> {
+                    sender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
+                    System.out.println("player normal exited");
+                }
+
         );
 
 
     }
 
-    public @NotNull Optional<IConnection> getConnection(int playerId) {
+    public @NotNull Optional<IConnection> getConnection(int connectionId) {
         return serverUnit.getConnections()
                 .stream()
-                .filter(c -> c.getId() == playerId)
+                .filter(c -> c.getId() == connectionId)
                 .findAny();
     }
 }

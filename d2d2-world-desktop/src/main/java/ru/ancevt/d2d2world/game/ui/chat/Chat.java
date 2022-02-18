@@ -39,6 +39,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Chat extends DisplayObjectContainer {
 
+    public static final Chat INSTANCE = new Chat();
+
     private static final int MAX_MESSAGES = 100;
 
     private static final float DEFAULT_WIDTH = 900.0f / 2.0f;
@@ -57,9 +59,7 @@ public class Chat extends DisplayObjectContainer {
     private String localPlayerName;
     private String typedBefore;
 
-    public Chat(int localPlayerId, String localPlayerName) {
-        this.localPlayerId = localPlayerId;
-        this.localPlayerName = localPlayerName;
+    private Chat() {
 
         input = new UiTextInput();
         messages = new CopyOnWriteArrayList<>();
@@ -179,13 +179,13 @@ public class Chat extends DisplayObjectContainer {
 
     public void addMessage(int id, int playerId, String playerName, int playerColor, String messageText) {
         addMessage(new ChatMessage(id, playerId, playerName, playerColor, messageText));
-        if(id != 0) lastChatMessageId = id;
+        if (id != 0) lastChatMessageId = id;
         redraw();
     }
 
     public void addMessage(int id, String messageText) {
         addMessage(new ChatMessage(id, messageText));
-        if(id != 0) lastChatMessageId = id;
+        if (id != 0) lastChatMessageId = id;
         redraw();
     }
 
@@ -292,7 +292,9 @@ public class Chat extends DisplayObjectContainer {
 
         Holder<Integer> idCounter = new Holder<>(1);
 
-        Chat chat = new Chat(1, "Ancevt");
+        Chat chat = new Chat();
+        chat.setLocalPlayerId(1);
+        chat.setLocalPlayerName("TestPlayer");
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
             if (event instanceof ChatEvent chatEvent) {
                 String text = chatEvent.getText();

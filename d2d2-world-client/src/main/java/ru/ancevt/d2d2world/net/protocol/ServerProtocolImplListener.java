@@ -38,4 +38,6 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
     void errorFromPlayer(int errorCode, String errorMessage, String errorDetails);
 
     void playerPingRequest(int playerId);
+
+    void serverInfoRequest(int connectionId);
 }

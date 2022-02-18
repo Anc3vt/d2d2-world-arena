@@ -25,9 +25,11 @@ import java.util.Map;
 import java.util.Optional;
 
 public class RemotePlayerManager {
+    public static final RemotePlayerManager INSTANCE = new RemotePlayerManager();
+
     private final Map<Integer, RemotePlayer> remotePlayerMap;
 
-    public RemotePlayerManager() {
+    private RemotePlayerManager() {
         remotePlayerMap = new HashMap<>();
     }
 

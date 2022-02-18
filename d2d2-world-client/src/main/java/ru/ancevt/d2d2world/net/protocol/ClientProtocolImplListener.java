@@ -17,18 +17,24 @@
  */
 package ru.ancevt.d2d2world.net.protocol;
 
+import org.jetbrains.annotations.NotNull;
+import ru.ancevt.commons.Pair;
+import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
+
+import java.util.List;
+
 public non-sealed interface ClientProtocolImplListener extends ProtocolImplListener {
 
-    void rconResponse(String rconResponseData);
+    void rconResponse(@NotNull String rconResponseData);
 
-    void playerEnterResponse(int playerId, int color, String serverProtocolVersion);
+    void playerEnterResponse(int playerId, int color, @NotNull String serverProtocolVersion);
 
-    void remotePlayerEnter(int remotePlayerId, String remotePlayerName, int remotePlayerColor);
+    void remotePlayerEnter(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
 
     void remotePlayerIntroduce(int remotePlayerId,
-                               String remotePlayerName,
+                               @NotNull String remotePlayerName,
                                int remotePlayerColor,
-                               String remotePlayerExtraData);
+                               @NotNull String remotePlayerExtraData);
 
     void remotePlayerControllerAndXY(int remotePlayerId,
                                      int remotePlayerControllerState,
@@ -37,15 +43,21 @@ public non-sealed interface ClientProtocolImplListener extends ProtocolImplListe
 
     void remotePlayerExit(int remotePlayerId, int remotePlayerExitCause);
 
-    void extraFromServer(String extraDataFromServer);
+    void extraFromServer(@NotNull String extraDataFromServer);
 
-    void errorFromServer(int errorCode, String errorMessage, String errorDetails);
+    void errorFromServer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails);
 
     void playerPingResponse();
 
     void remotePlayerPing(int remotePlayerId, int remotePlayerPing);
     
-    void serverChat(int chatMessageId, String chatMessageText);
+    void serverChat(int chatMessageId, @NotNull String chatMessageText);
 
-    void playerChat(int chatMessageId, int playerId, String playerName, int playerColor, String chatMessageText);
+    void playerChat(int chatMessageId,
+                    int playerId,
+                    @NotNull String playerName,
+                    int playerColor,
+                    @NotNull String chatMessageText);
+
+    void serverInfoResponse(ServerInfoRetrieveResult result);
 }
