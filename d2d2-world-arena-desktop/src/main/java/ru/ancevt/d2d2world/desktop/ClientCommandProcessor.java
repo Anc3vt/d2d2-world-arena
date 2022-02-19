@@ -82,6 +82,7 @@ public class ClientCommandProcessor {
                     String passwordHash = MD5.hash(args.get(String.class, 2, ""));
                     Client.INSTANCE.sendRconLoginRequest(passwordHash);
                 } else {
+                    // send rcon command String beginning from 6 index
                     Client.INSTANCE.sendRconCommand(text.substring(6));
                 }
 
