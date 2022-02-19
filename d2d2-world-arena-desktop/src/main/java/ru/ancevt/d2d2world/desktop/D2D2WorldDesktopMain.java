@@ -30,23 +30,36 @@ import java.util.Properties;
 public class D2D2WorldDesktopMain {
 
     public static void main(String[] args) throws IOException {
-        Args a = new Args(args);
+        // Load config properties
+        Config config = new Config();
+        config.load();
+        for (String arg : args) {
+            if (arg.startsWith("-P")) {
+                arg = arg.substring(2);
+                String[] split = arg.split("=");
+                String key = split[0];
+                String value = split[1];
+                config.setProperty(key, value);
+            }
+        }
 
-        String server = a.get(String.class, "--server", "ancevt.ru:2245");
-        String autoEnter = a.get(String.class, "--auto-enter");
+        System.out.println(config);
 
+        // Load project properties
         Properties properties = new Properties();
         properties.load(D2D2WorldDesktopMain.class.getClassLoader().getResourceAsStream("project.properties"));
         String projectName = properties.getProperty("project.name");
         String version = properties.getProperty("project.version");
 
-        D2D2.init(new LWJGLStarter(900, 600, "D2D2 World (preview) (floating)"));
+        String autoEnterPlayerName = config.getString(Config.PLAYER_NAME, "");
 
-        IntroRoot root = new IntroRoot(server, projectName + " " + version);
+        D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
 
-        if (autoEnter != null) {
+        IntroRoot root = new IntroRoot(projectName + " " + version);
+
+        if (!autoEnterPlayerName.isEmpty()) {
             root.addEventListener(Event.ADD_TO_STAGE, e -> {
-                root.enter(server, autoEnter);
+                root.enter(config.getString(Config.SERVER_ADDRESS, "localhost:2245"), autoEnterPlayerName);
             });
         }
 

@@ -22,6 +22,8 @@ import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2world.control.Controller;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
+import ru.ancevt.d2d2world.desktop.ModuleContainer;
+import ru.ancevt.d2d2world.desktop.motion.Motion;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
@@ -58,6 +60,8 @@ public class WorldScene extends DisplayObjectContainer {
     public WorldScene(Client client, Chat chat) {
         this.client = client;
         this.chat = chat;
+
+        ModuleContainer.INSTANCE.addModule(this);
 
         localPlayerActor = new Blake();
         localPlayerActor.setController(localPlayerController);
@@ -133,7 +137,7 @@ public class WorldScene extends DisplayObjectContainer {
         );
 
         remotePlayerMap.forEach((remotePlayer, playerActor) -> {
-            playerActor.setXY(remotePlayer.getX(), remotePlayer.getY());
+            Motion.moveTo(playerActor, remotePlayer.getX(), remotePlayer.getY());
             playerActor.getController().applyState(remotePlayer.getControllerState());
         });
 

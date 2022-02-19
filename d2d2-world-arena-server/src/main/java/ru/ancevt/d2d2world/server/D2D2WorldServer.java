@@ -41,8 +41,6 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
             return;
         }
 
-        Modules.CONFIG.load();
-
         String host = a.get(new String[]{"--host", "-h"}, Modules.CONFIG.serverHost());
         int port = a.get(Integer.class, new String[]{"--port", "-p"}, Modules.CONFIG.serverPort());
         String serverName = a.get(String.class, new String[] {"-n", "--name"}, Modules.CONFIG.serverName());

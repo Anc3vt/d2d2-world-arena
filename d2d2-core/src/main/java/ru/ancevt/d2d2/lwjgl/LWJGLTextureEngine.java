@@ -91,8 +91,6 @@ public class LWJGLTextureEngine implements ITextureEngine {
         try {
             BufferedImage bufferedImage = ImageIO.read(pngInputStream);
 
-            System.out.println(bufferedImage == null);
-
             TextureAtlas textureAtlas = createTextureAtlasFromBufferedImage(bufferedImage);
             mapping.images().put(textureAtlas.getId(), bufferedImage);
             return textureAtlas;

@@ -18,6 +18,7 @@
 package ru.ancevt.d2d2world.desktop;
 
 import ru.ancevt.commons.hash.MD5;
+import ru.ancevt.d2d2world.desktop.motion.Motion;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
@@ -30,13 +31,14 @@ public class ClientCommandProcessor {
 
     public ClientCommandProcessor(Chat chat) {
         this.chat = chat;
+
+        ModuleContainer.INSTANCE.addModule(this);
     }
 
-
     public boolean process(String text) {
-        Args args = new Args(text);
+        Args tokens = new Args(text);
 
-        String command = args.get(String.class, 0);
+        String command = tokens.get(String.class, 0);
 
         switch (command) {
             case "/exit", "/q", "/quit" -> {
@@ -50,6 +52,13 @@ public class ClientCommandProcessor {
                 }
                 System.exit(0);
 
+            }
+
+            case "//smooth" -> {
+                if (tokens.getElements().length > 1) {
+                    Motion.setDefaultSmoothFactor(tokens.get(float.class, 1));
+                }
+                chat.addMessage("Smooth factor is " + Motion.getDefaultSmoothFactor());
             }
 
             case "//players" -> {
@@ -78,8 +87,8 @@ public class ClientCommandProcessor {
 
             case "/rcon" -> {
                 // if the second (at index 1) token from command text is 'login'
-                if ("login".equals(args.get(String.class, 1, ""))) {
-                    String passwordHash = MD5.hash(args.get(String.class, 2, ""));
+                if ("login".equals(tokens.get(String.class, 1, ""))) {
+                    String passwordHash = MD5.hash(tokens.get(String.class, 2, ""));
                     Client.INSTANCE.sendRconLoginRequest(passwordHash);
                 } else {
                     // send rcon command String beginning from 6 index

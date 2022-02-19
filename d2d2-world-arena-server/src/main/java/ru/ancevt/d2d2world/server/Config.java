@@ -10,13 +10,12 @@ import java.util.Properties;
 @Slf4j
 public class Config {
 
+    private static final Properties properties = new Properties();
+    private static final String FILE_NAME = "d2d2-world-arena-server.conf";
     public static final Config INSTANCE = new Config();
 
-    private static final String FILE_NAME = "d2d2-world-arena-server.conf";
-
-    private static final Properties properties = new Properties();
-
     private Config() {
+        load();
     }
 
     public void load() {
@@ -60,6 +59,10 @@ public class Config {
 
     public String worldDefaultMod() {
         return properties.getProperty("world.default-mod", "mod0.js");
+    }
+
+    public int getLoopDelay() {
+        return Integer.parseInt(properties.getProperty("server.loop-delay", "1"));
     }
 }
 

@@ -19,6 +19,7 @@ package ru.ancevt.d2d2world.desktop.scene;
 
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.concurrent.Lock;
+import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2.debug.FpsMeter;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.Root;
@@ -26,6 +27,8 @@ import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.desktop.ClientCommandProcessor;
+import ru.ancevt.d2d2world.desktop.Config;
+import ru.ancevt.d2d2world.desktop.ModuleContainer;
 import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
@@ -46,9 +49,12 @@ public class GameRoot extends Root implements ClientListener {
     private String server;
     private WorldScene worldScene;
     private final ClientCommandProcessor clientCommandProcessor;
+    private final Config config = ModuleContainer.INSTANCE.getModule(Config.class);
 
     public GameRoot() {
         TextInputProcessor.enableRoot(this);
+
+        ModuleContainer.INSTANCE.addModule(this);
 
         setBackgroundColor(Color.DARK_BLUE);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
@@ -154,6 +160,9 @@ public class GameRoot extends Root implements ClientListener {
     public void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion) {
         chat.addMessage(0, "Your id is " + localPlayerId + ", server protocol version is " + serverProtocolVersion);
         worldScene.start();
+
+        String rconPassword = config.getString(Config.RCON_PASSWORD);
+        client.sendRconLoginRequest(MD5.hash(rconPassword));
     }
 
     /**

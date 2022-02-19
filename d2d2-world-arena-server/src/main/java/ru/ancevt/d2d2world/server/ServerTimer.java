@@ -17,19 +17,17 @@
  */
 package ru.ancevt.d2d2world.server;
 
-public class Timer {
+public class ServerTimer {
 
-    public static final Timer INSTANCE = new Timer();
-
-    private static final int DEFAULT_INTERVAL = 0;
+    public static final ServerTimer INSTANCE = new ServerTimer();
 
     private long tickCounter;
     private int interval;
     private boolean active;
-    private GlobalTimerListener timerListener;
+    private ServerTimerListener timerListener;
 
-    private Timer() {
-        setInterval(DEFAULT_INTERVAL);
+    private ServerTimer() {
+        setInterval(Modules.CONFIG.getLoopDelay());
     }
 
     public void start() {
@@ -73,11 +71,11 @@ public class Timer {
         return interval;
     }
 
-    public void setTimerListener(GlobalTimerListener timerListener) {
+    public void setTimerListener(ServerTimerListener timerListener) {
         this.timerListener = timerListener;
     }
 
-    public GlobalTimerListener getTimerListener() {
+    public ServerTimerListener getTimerListener() {
         return timerListener;
     }
 }

@@ -24,7 +24,7 @@ import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
-import ru.ancevt.d2d2world.server.GlobalTimerListener;
+import ru.ancevt.d2d2world.server.ServerTimerListener;
 import ru.ancevt.d2d2world.server.Modules;
 import ru.ancevt.d2d2world.server.ServerInfo;
 import ru.ancevt.d2d2world.server.chat.ChatListener;
@@ -45,7 +45,7 @@ import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageS
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageTextToPlayer;
 
 @Slf4j
-public class GeneralService implements ServerProtocolImplListener, ChatListener, GlobalTimerListener {
+public class GeneralService implements ServerProtocolImplListener, ChatListener, ServerTimerListener {
 
     public static final GeneralService INSTANCE = new GeneralService();
 
@@ -257,7 +257,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
     }
 
     /**
-     * {@link GlobalTimerListener} method
+     * {@link ServerTimerListener} method
      */
     @Override
     public void globalTimerTick(long count) {

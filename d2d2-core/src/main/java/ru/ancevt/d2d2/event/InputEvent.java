@@ -7,9 +7,6 @@ public class InputEvent extends Event {
     public static final String MOUSE_DOWN = "mouseDown";
     public static final String MOUSE_UP = "mouseUp";
     public static final String MOUSE_WHEEL = "mouseWheel";
-    public static final String SCREEN_TOUCH_DOWN = "screenTouchDown";
-    public static final String SCREEN_TOUCH_UP = "screenTouchUp";
-    public static final String SCREEN_DRAG = "screenDrag";
     public static final String KEY_DOWN = "keyDown";
     public static final String KEY_UP = "keyUp";
     public static final String KEY_TYPE = "keyType";

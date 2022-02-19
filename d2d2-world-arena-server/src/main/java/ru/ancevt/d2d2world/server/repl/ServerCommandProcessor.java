@@ -27,6 +27,11 @@ public class ServerCommandProcessor {
     private void registerCommands() {
         repl.addCommand("players", this::cmd_players);
         repl.addCommand("exit", this::cmd_exit);
+        repl.addCommand("timer", this::cmd_timer);
+    }
+
+    private void cmd_timer(Args args) {
+        Modules.TIMER.setInterval(args.get(int.class, 0, 1));
     }
 
     private void cmd_exit(Args args) {

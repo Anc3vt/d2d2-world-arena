@@ -1,7 +1,9 @@
 package ru.ancevt.d2d2world.net.client;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.net.messaging.connection.IConnection;
 
+@Slf4j
 public class ClientSender {
     private final IConnection connection;
 
@@ -10,6 +12,10 @@ public class ClientSender {
     }
 
     public void send(byte[] bytes) {
-        connection.send(bytes);
+        try {
+            connection.send(bytes);
+        } catch(Exception e) { // failsafe purposes
+            log.error(e.getMessage(), e);
+        }
     }
 }
