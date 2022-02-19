@@ -43,8 +43,6 @@ public class D2D2WorldDesktopMain {
             }
         }
 
-        System.out.println(config);
-
         // Load project properties
         Properties properties = new Properties();
         properties.load(D2D2WorldDesktopMain.class.getClassLoader().getResourceAsStream("project.properties"));

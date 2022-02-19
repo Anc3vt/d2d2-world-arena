@@ -26,7 +26,6 @@ import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.server.Config;
-import ru.ancevt.d2d2world.server.D2D2WorldServer;
 import ru.ancevt.d2d2world.server.ServerStateInfo;
 import ru.ancevt.d2d2world.server.ServerTimer;
 import ru.ancevt.d2d2world.server.ServerTimerListener;
@@ -99,7 +98,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void rconLogin(int playerId, @NotNull String passwordHash) {
-        if (MD5.hash(config.rconPassword()).equals(passwordHash)) {
+        if (MD5.hash(config.getString(Config.RCON_PASSWORD)).equals(passwordHash)) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setRconLoggedIn(true));
             serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin"));
         } else {

@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.server;
 
+import static ru.ancevt.d2d2world.server.Config.SERVER_LOOP_DELAY;
 import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 public class ServerTimer {
@@ -27,7 +28,7 @@ public class ServerTimer {
     private ServerTimerListener timerListener;
 
     ServerTimer() {
-        setInterval(modules.get(Config.class).getLoopDelay());
+        setInterval(modules.get(Config.class).getInt(SERVER_LOOP_DELAY, 1));
     }
 
     public void start() {

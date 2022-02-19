@@ -28,8 +28,6 @@ import ru.ancevt.d2d2world.server.service.ServerUnit;
 import ru.ancevt.d2d2world.server.service.SyncService;
 import ru.ancevt.net.messaging.CloseStatus;
 import ru.ancevt.net.messaging.connection.IConnection;
-import ru.ancevt.net.messaging.server.IServer;
-import ru.ancevt.net.messaging.server.ServerFactory;
 import ru.ancevt.net.messaging.server.ServerListener;
 import ru.ancevt.util.args.Args;
 
@@ -37,17 +35,31 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import static ru.ancevt.d2d2world.server.Config.SERVER_HOST;
+import static ru.ancevt.d2d2world.server.Config.SERVER_NAME;
+import static ru.ancevt.d2d2world.server.Config.SERVER_PORT;
 import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 @Slf4j
 public class D2D2WorldServer implements ServerListener, Thread.UncaughtExceptionHandler {
 
-    public static void main(String[] args) {
-        Args a = new Args(args);
-
-        // The order is important
+    public static void main(String[] args) throws IOException {
+        // Load config properties
         Config config = new Config();
         config.load();
+        for (String arg : args) {
+            if (arg.startsWith("-P")) {
+                arg = arg.substring(2);
+                String[] split = arg.split("=");
+                String key = split[0];
+                String value = split[1];
+                config.setProperty(key, value);
+            }
+        }
+
+        Args a = new Args(args);
+
+        // Modules initialization section: THE ORDER IS IMPORTANT!
         modules.add(config);
         modules.add(new ServerUnit());
         modules.add(new ServerSender());
@@ -67,23 +79,23 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
             return;
         }
 
-        String host = a.get(new String[]{"--host", "-h"}, config.serverHost());
-        int port = a.get(Integer.class, new String[]{"--port", "-p"}, config.serverPort());
-        String serverName = a.get(String.class, new String[] {"-n", "--name"}, config.serverName());
+        String host = a.get(new String[]{"--host", "-h"}, config.getString(SERVER_HOST, "0.0.0.0"));
+        int port = a.get(Integer.class, new String[]{"--port", "-p"}, config.getInt(SERVER_PORT, 2245));
+        String serverName = a.get(String.class, new String[]{"-n", "--name"},
+                config.getString(SERVER_NAME, "D2D2 World Arena Server"));
 
         D2D2WorldServer server = new D2D2WorldServer(host, port, serverName, version);
         server.start();
     }
+
     private final String host;
     private final int port;
 
     private final String serverVersion;
-    private String serverName;
 
     public D2D2WorldServer(String host, int port, String serverName, String serverVersion) {
         this.host = host;
         this.port = port;
-        this.serverName = serverName;
         this.serverVersion = serverVersion;
 
         modules.get(ServerStateInfo.class).setName(serverName);
