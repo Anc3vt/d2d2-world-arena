@@ -122,7 +122,6 @@ public class TcpB254Connection implements IConnection {
 
         } catch (IOException e) {
             closeIfOpen();
-            dispatchConnectionClosed(new CloseStatus(e));
         }
 
         closeIfOpen();
@@ -211,6 +210,7 @@ public class TcpB254Connection implements IConnection {
         try {
             socket.close();
             dataOutputStream = null;
+            dispatchConnectionClosed(new CloseStatus());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -219,7 +219,6 @@ public class TcpB254Connection implements IConnection {
     @Override
     public void closeIfOpen() {
         if (isOpen()) close();
-        ;
     }
 
     @Override
@@ -292,7 +291,7 @@ public class TcpB254Connection implements IConnection {
             }
 
         } catch (SocketException e) {
-          log.debug("Socket closed when send data");
+            log.debug("Socket closed when send data");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -320,12 +319,14 @@ public class TcpB254Connection implements IConnection {
 
     @Override
     public String toString() {
-        return "Tcp254Connection{" +
+        return "TcpB254Connection{" +
                 "id=" + id +
                 ", host='" + host + '\'' +
-                ", remoteAddress='" + remoteAddress + '\'' +
                 ", port=" + port +
+                ", remoteAddress='" + remoteAddress + '\'' +
                 ", remotePort=" + remotePort +
+                ", socket=" + socket +
+                ", isOpen=" + isOpen() +
                 ", bytesLoaded=" + bytesLoaded +
                 ", bytesSent=" + bytesSent +
                 '}';

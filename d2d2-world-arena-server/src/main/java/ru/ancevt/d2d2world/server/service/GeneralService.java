@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
+import ru.ancevt.commons.regex.PatternMatcher;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
@@ -54,6 +55,8 @@ import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
+
+    public static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
     private final Config config = modules.get(Config.class);
     private final IServer serverUnit = modules.get(ServerUnit.class).server;
@@ -122,8 +125,26 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                    @NotNull String playerName,
                                    @NotNull String clientProtocolVersion,
                                    @NotNull String extraData) {
+        // validate player name
+        if (!PatternMatcher.check(playerName, NAME_PATTERN)) {
+            // if invalid close connection and return
+            getConnection(playerId).ifPresent(IConnection::close);
+            return;
+        }
+
         // save player list before new player actually added to server player list
         List<Player> oldPlayerList = serverPlayerManager.getPlayerList();
+
+
+        // check if the same name is already exists
+        Optional<Player> player = oldPlayerList.stream()
+                .filter(p -> p.getName().equals(playerName))
+                .findAny();
+        if (player.isPresent()) {
+            // if the same name is present close the connection and return
+            getConnection(playerId).ifPresent(IConnection::close);
+            return;
+        }
 
         // create new player in player manager
         Player newPlayer = serverPlayerManager.createPlayer(
@@ -237,7 +258,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
         });
 
-        getConnection(playerId).orElseThrow().close();
+        getConnection(playerId).ifPresent(IConnection::closeIfOpen);
     }
 
     /**

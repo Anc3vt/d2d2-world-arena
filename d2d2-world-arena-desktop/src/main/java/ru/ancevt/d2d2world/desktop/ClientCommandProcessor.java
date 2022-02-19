@@ -18,7 +18,6 @@
 package ru.ancevt.d2d2world.desktop;
 
 import ru.ancevt.commons.hash.MD5;
-import ru.ancevt.d2d2world.desktop.motion.Motion;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
@@ -54,13 +53,6 @@ public class ClientCommandProcessor {
                 }
                 System.exit(0);
 
-            }
-
-            case "//smooth" -> {
-                if (tokens.getElements().length > 1) {
-                    Motion.setDefaultSmoothFactor(tokens.get(float.class, 1));
-                }
-                chat.addMessage("Smooth factor is " + Motion.getDefaultSmoothFactor());
             }
 
             case "//players" -> {

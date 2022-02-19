@@ -34,10 +34,8 @@ import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.d2d2world.world.World;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
@@ -45,22 +43,16 @@ public class WorldScene extends DisplayObjectContainer {
 
     private final World world = new World();
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
-    private final Client client;
-    private final Chat chat;
+    private final Client client = modules.get(Client.class);
+    private final Chat chat = modules.get(Chat.class);
     private final PlayerActor localPlayerActor;
-    private final BitmapText debug;
     private boolean eventsAdded;
 
-    private final List<RemotePlayer> remotePlayers;
-    private final List<PlayerActor> remotePlayerActors;
     private final Map<RemotePlayer, PlayerActor> remotePlayerMap;
 
     private long frameCounter;
 
     public WorldScene() {
-        this.client = modules.get(Client.class);
-        this.chat = modules.get(Chat.class);
-
         localPlayerActor = new Blake();
         localPlayerActor.setController(localPlayerController);
         localPlayerController.setEnabled(true);
@@ -69,15 +61,13 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
 
-        remotePlayers = new CopyOnWriteArrayList<>();
-        remotePlayerActors = new CopyOnWriteArrayList<>();
         remotePlayerMap = new ConcurrentHashMap<>();
 
         setScale(2f, 2f);
 
         add(world);
 
-        debug = new BitmapText();
+        BitmapText debug = new BitmapText();
         debug.setText("debug");
         //add(debug);
     }
@@ -109,7 +99,6 @@ public class WorldScene extends DisplayObjectContainer {
         if (!eventsAdded) {
             getRoot().addEventListener(InputEvent.KEY_DOWN, event -> {
                 var e = (InputEvent) event;
-
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
             });
             getRoot().addEventListener(InputEvent.KEY_UP, event -> {
@@ -163,7 +152,6 @@ public class WorldScene extends DisplayObjectContainer {
 
     public void addRemotePlayer(RemotePlayer remotePlayer) {
         System.out.println("Add remote player " + remotePlayer);
-        remotePlayers.add(remotePlayer);
 
         UiText uiText = new UiText();
         uiText.setShadowEnabled(false);
@@ -190,8 +178,6 @@ public class WorldScene extends DisplayObjectContainer {
         if (playerActor != null) {
             world.removeGameObject(playerActor, false);
             remotePlayerMap.remove(remotePlayer);
-            remotePlayers.remove(remotePlayer);
-            remotePlayerActors.remove(playerActor);
         }
     }
 }

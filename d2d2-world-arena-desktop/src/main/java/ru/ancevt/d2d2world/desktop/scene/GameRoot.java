@@ -45,12 +45,12 @@ public class GameRoot extends Root implements ClientListener {
 
     public static final int DEFAULT_PORT = 2245;
 
-    private final Client client;
-    private final Chat chat;
-    private String server;
-    private WorldScene worldScene;
-    private final ClientCommandProcessor clientCommandProcessor;
+    private final Client client = modules.get(Client.class);
     private final Config config = modules.get(Config.class);
+    private final Chat chat= modules.get(Chat.class);
+    private String server;
+    private final WorldScene worldScene;
+    private final ClientCommandProcessor clientCommandProcessor = modules.get(ClientCommandProcessor.class);
 
     public GameRoot() {
         TextInputProcessor.enableRoot(this);
@@ -58,12 +58,7 @@ public class GameRoot extends Root implements ClientListener {
         setBackgroundColor(Color.DARK_BLUE);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
 
-        client = modules.get(Client.class);
         client.addClientListener(this);
-
-        clientCommandProcessor = modules.get(ClientCommandProcessor.class);
-
-        chat = modules.get(Chat.class);
 
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
             var e = (ChatEvent) event;

@@ -18,6 +18,9 @@
 package ru.ancevt.d2d2world.desktop.scene;
 
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.commons.Holder;
+import ru.ancevt.commons.concurrent.Lock;
+import ru.ancevt.commons.regex.PatternMatcher;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
@@ -33,15 +36,20 @@ import ru.ancevt.d2d2world.desktop.ui.TextInputEvent;
 import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
+import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
+import static java.lang.Integer.parseInt;
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
 public class IntroRoot extends Root {
+
+    private static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
     private final DisplayObjectContainer panel;
     private final PlainRect panelRect;
@@ -50,7 +58,6 @@ public class IntroRoot extends Root {
     private final UiText labelVersion;
 
     public IntroRoot(@NotNull String version) {
-
 
         D2D2.getTextureManager().loadTextureDataInfo("thanksto-texturedata.inf");
 
@@ -68,9 +75,15 @@ public class IntroRoot extends Root {
 
         uiTextInputPlayerName = new UiTextInput();
         uiTextInputPlayerName.focus();
-        uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_ENTER, e -> {
-            TextInputEvent event = (TextInputEvent) e;
-            enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+        uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_ENTER, event -> {
+            var e = (TextInputEvent) event;
+            if (PatternMatcher.check(e.getText(), NAME_PATTERN))
+                enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+        });
+        uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_CHANGE, event -> {
+            var e = (TextInputEvent) event;
+            boolean valid = PatternMatcher.check(e.getText(), NAME_PATTERN);
+            uiTextInputPlayerName.setColor(valid ? Color.WHITE : Color.RED);
         });
 
         try {
@@ -123,7 +136,7 @@ public class IntroRoot extends Root {
             switch (e.getKeyCode()) {
                 case KeyCode.F1 -> {
                     String host = uiTextInputServer.getText().split(":")[0];
-                    int port = Integer.parseInt(uiTextInputServer.getText().split(":")[1]);
+                    int port = parseInt(uiTextInputServer.getText().split(":")[1]);
 
                     ServerInfoRetriever.retrieve(host, port, System.out::println, System.out::println);
                 }
@@ -138,9 +151,17 @@ public class IntroRoot extends Root {
             throw new IllegalStateException(ex);
         }
 
-        GameRoot gameRoot = new GameRoot();
-        D2D2.getStage().setRoot(gameRoot);
-        gameRoot.start(uiTextInputServer.getText(), localPlayerName);
+        retrieveServerInfo(server).getPlayers()
+                .stream()
+                .filter(p -> p.getName().equals(localPlayerName))
+                .findAny()
+                .ifPresentOrElse(p -> {
+                    labelVersion.setText("The name \"" + localPlayerName + "\" is already taken!");
+                }, () -> {
+                    GameRoot gameRoot = new GameRoot();
+                    D2D2.getStage().setRoot(gameRoot);
+                    gameRoot.start(uiTextInputServer.getText(), localPlayerName);
+                });
     }
 
     private void addToStage(Event event) {
@@ -153,6 +174,27 @@ public class IntroRoot extends Root {
         int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
 
         add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
+    }
+
+    private @NotNull ServerInfoRetrieveResult retrieveServerInfo(String server) {
+        String host = server.split(":")[0];
+        int port = parseInt(server.split(":")[1]);
+
+        Lock lock = new Lock();
+        Holder<ServerInfoRetrieveResult> resultHolder = new Holder<>();
+        ServerInfoRetriever.retrieve(host, port, result -> {
+            resultHolder.setValue(result);
+            lock.unlockIfLocked();
+        }, closeStatus -> {
+            throw new IllegalStateException("error when retrieving server info", closeStatus.getThrowable());
+        });
+        lock.lock(5, TimeUnit.SECONDS);
+
+        if (resultHolder.isEmpty()) {
+            throw new IllegalStateException("no server info retrieve result");
+        }
+
+        return resultHolder.getValue();
     }
 
 }

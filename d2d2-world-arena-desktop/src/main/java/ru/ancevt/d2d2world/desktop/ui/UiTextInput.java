@@ -107,6 +107,14 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         touchButton.addEventListener(TouchEvent.TOUCH_DOWN, this);
     }
 
+    public void setColor(Color color) {
+        uiText.setColor(color);
+    }
+
+    public Color getColor() {
+        return uiText.getColor();
+    }
+
     public void setSelection(int fromIndex, int toIndex) {
         if (fromIndex < toIndex) {
             int temp = fromIndex;
