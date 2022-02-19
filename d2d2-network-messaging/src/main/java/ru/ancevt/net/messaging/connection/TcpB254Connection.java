@@ -89,8 +89,7 @@ public class TcpB254Connection implements IConnection {
                         final int a = in.available();
                         if (a == 0) continue;
                         byte[] bytes = new byte[Math.min(a, left)];
-                        int readResult = in.read(bytes);
-                        left -= readResult;
+                        left -= in.read(bytes);
                         byteOutput.write(bytes);
                     }
                     continue;
@@ -109,8 +108,7 @@ public class TcpB254Connection implements IConnection {
                     final int a = in.available();
                     if (a == 0) continue;
                     byte[] bytes = new byte[Math.min(a, left)];
-                    int readResult = in.read(bytes);
-                    left -= readResult;
+                    left -= in.read(bytes);
                     byteOutput.write(bytes);
                     byte[] array = byteOutput.toArray();
                     bytesLoaded += array.length;
