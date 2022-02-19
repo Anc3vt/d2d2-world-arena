@@ -25,14 +25,16 @@ import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
 import ru.ancevt.util.args.Args;
 import ru.ancevt.util.texttable.TextTable;
 
+import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+
 public class ClientCommandProcessor {
 
     private final Chat chat;
+    private final Client client;
 
-    public ClientCommandProcessor(Chat chat) {
-        this.chat = chat;
-
-        ModuleContainer.INSTANCE.addModule(this);
+    public ClientCommandProcessor() {
+        client = modules.get(Client.class);
+        chat = modules.get(Chat.class);
     }
 
     public boolean process(String text) {
@@ -42,7 +44,7 @@ public class ClientCommandProcessor {
 
         switch (command) {
             case "/exit", "/q", "/quit" -> {
-                Client.INSTANCE.sendExitRequest();
+                client.sendExitRequest();
 
                 // TODO: improve this crack
                 try {
@@ -69,10 +71,10 @@ public class ClientCommandProcessor {
                 tt.setColumnNames(new String[]{"id", "name", "ping"});
 
                 tt.addRow(
-                        Client.INSTANCE.getLocalPlayerId(),
-                        Client.INSTANCE.getLocalPlayerName(),
-                        Client.INSTANCE.getPing(),
-                        Integer.toString(Client.INSTANCE.getLocalPlayerColor(), 16)
+                        client.getLocalPlayerId(),
+                        client.getLocalPlayerName(),
+                        client.getPing(),
+                        Integer.toString(client.getLocalPlayerColor(), 16)
                 );
 
                 pm.getRemotePlayerList().forEach(
@@ -89,10 +91,10 @@ public class ClientCommandProcessor {
                 // if the second (at index 1) token from command text is 'login'
                 if ("login".equals(tokens.get(String.class, 1, ""))) {
                     String passwordHash = MD5.hash(tokens.get(String.class, 2, ""));
-                    Client.INSTANCE.sendRconLoginRequest(passwordHash);
+                    client.sendRconLoginRequest(passwordHash);
                 } else {
                     // send rcon command String beginning from 6 index
-                    Client.INSTANCE.sendRconCommand(text.substring(6));
+                    client.sendRconCommand(text.substring(6));
                 }
 
             }

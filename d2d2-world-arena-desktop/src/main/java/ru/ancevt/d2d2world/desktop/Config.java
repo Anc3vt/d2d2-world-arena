@@ -1,5 +1,6 @@
 package ru.ancevt.d2d2world.desktop;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -9,18 +10,18 @@ import java.util.Properties;
 
 import static java.lang.Integer.parseInt;
 
+@Slf4j
 public class Config {
 
     public static final String FILE_NAME = "d2d2-world-arena-desktop.conf";
 
-    public static final String SERVER_ADDRESS = "server";
-    public static final String PLAYER_NAME = "player";
+    public static final String SERVER = "server";
+    public static final String PLAYER = "player";
     public static final String RCON_PASSWORD = "rcon-password";
 
     private final Properties properties;
 
     public Config() {
-        ModuleContainer.INSTANCE.addModule(this);
         properties = new Properties();
     }
 
@@ -29,7 +30,9 @@ public class Config {
         File file = new File(FILE_NAME);
         if (file.exists()) {
             properties.load(new FileInputStream(file));
+            log.info("Config loaded");
         }
+        log.warn("No config file detected");
     }
 
     public void setProperty(@NotNull String key, @NotNull Object value) {

@@ -22,10 +22,13 @@ import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.desktop.scene.IntroRoot;
-import ru.ancevt.util.args.Args;
+import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
+import ru.ancevt.d2d2world.net.client.Client;
 
 import java.io.IOException;
 import java.util.Properties;
+
+import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
 public class D2D2WorldDesktopMain {
 
@@ -43,26 +46,36 @@ public class D2D2WorldDesktopMain {
             }
         }
 
+        System.out.println(config);
+
         // Load project properties
         Properties properties = new Properties();
         properties.load(D2D2WorldDesktopMain.class.getClassLoader().getResourceAsStream("project.properties"));
         String projectName = properties.getProperty("project.name");
         String version = properties.getProperty("project.version");
 
-        String autoEnterPlayerName = config.getString(Config.PLAYER_NAME, "");
+
+        String autoEnterPlayerName = config.getString(Config.PLAYER, "");
 
         D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
 
-        IntroRoot root = new IntroRoot(projectName + " " + version);
+        // Module initialization section: THE ORDER IS IMPORTANT!
+        modules.add(config);
+        modules.add(new Client());
+        modules.add(new Chat());
+        modules.add(new ClientCommandProcessor());
+        //
+
+        IntroRoot introRoot = new IntroRoot(projectName + " " + version);
 
         if (!autoEnterPlayerName.isEmpty()) {
-            root.addEventListener(Event.ADD_TO_STAGE, e -> {
-                root.enter(config.getString(Config.SERVER_ADDRESS, "localhost:2245"), autoEnterPlayerName);
+            introRoot.addEventListener(Event.ADD_TO_STAGE, e -> {
+                introRoot.enter(
+                        config.getString(Config.SERVER, "localhost:2245"), autoEnterPlayerName);
             });
         }
 
-        D2D2.getStage().setRoot(root);
-
+        D2D2.getStage().setRoot(introRoot);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
         System.exit(0);

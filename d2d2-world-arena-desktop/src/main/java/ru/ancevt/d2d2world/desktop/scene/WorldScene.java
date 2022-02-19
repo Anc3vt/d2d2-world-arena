@@ -22,7 +22,6 @@ import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2world.control.Controller;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
-import ru.ancevt.d2d2world.desktop.ModuleContainer;
 import ru.ancevt.d2d2world.desktop.motion.Motion;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -41,6 +40,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+
 public class WorldScene extends DisplayObjectContainer {
 
     private final World world = new World();
@@ -57,11 +58,9 @@ public class WorldScene extends DisplayObjectContainer {
 
     private long frameCounter;
 
-    public WorldScene(Client client, Chat chat) {
-        this.client = client;
-        this.chat = chat;
-
-        ModuleContainer.INSTANCE.addModule(this);
+    public WorldScene() {
+        this.client = modules.get(Client.class);
+        this.chat = modules.get(Chat.class);
 
         localPlayerActor = new Blake();
         localPlayerActor.setController(localPlayerController);

@@ -28,7 +28,6 @@ import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.panels.Button;
 import ru.ancevt.d2d2world.desktop.Config;
-import ru.ancevt.d2d2world.desktop.ModuleContainer;
 import ru.ancevt.d2d2world.desktop.ui.Font;
 import ru.ancevt.d2d2world.desktop.ui.TextInputEvent;
 import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
@@ -40,20 +39,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+
 public class IntroRoot extends Root {
 
-    private final String version;
     private final DisplayObjectContainer panel;
     private final PlainRect panelRect;
     private final UiTextInput uiTextInputServer;
     private final UiTextInput uiTextInputPlayerName;
-    private UiText labelVersion;
-    private Config config = ModuleContainer.INSTANCE.getModule(Config.class);
+    private final UiText labelVersion;
 
     public IntroRoot(@NotNull String version) {
-        this.version = version;
 
-        ModuleContainer.INSTANCE.addModule(this);
 
         D2D2.getTextureManager().loadTextureDataInfo("thanksto-texturedata.inf");
 
@@ -66,7 +63,8 @@ public class IntroRoot extends Root {
         labelPlayerName.setText("Player name:");
 
         uiTextInputServer = new UiTextInput();
-        uiTextInputServer.setText(config.getString(Config.SERVER_ADDRESS, "localhost:2245"));
+        Config config = modules.get(Config.class);
+        uiTextInputServer.setText(config.getString(Config.SERVER, "localhost:2245"));
 
         uiTextInputPlayerName = new UiTextInput();
         uiTextInputPlayerName.focus();

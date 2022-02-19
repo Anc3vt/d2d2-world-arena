@@ -28,7 +28,6 @@ import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import ru.ancevt.d2d2world.desktop.Config;
-import ru.ancevt.d2d2world.desktop.ModuleContainer;
 import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
@@ -40,6 +39,8 @@ import ru.ancevt.net.messaging.CloseStatus;
 
 import java.util.concurrent.TimeUnit;
 
+import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+
 public class GameRoot extends Root implements ClientListener {
 
     public static final int DEFAULT_PORT = 2245;
@@ -49,21 +50,19 @@ public class GameRoot extends Root implements ClientListener {
     private String server;
     private WorldScene worldScene;
     private final ClientCommandProcessor clientCommandProcessor;
-    private final Config config = ModuleContainer.INSTANCE.getModule(Config.class);
+    private final Config config = modules.get(Config.class);
 
     public GameRoot() {
         TextInputProcessor.enableRoot(this);
-
-        ModuleContainer.INSTANCE.addModule(this);
 
         setBackgroundColor(Color.DARK_BLUE);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
         chat = new Chat();
 
-        client = Client.INSTANCE;
+        client = modules.get(Client.class);
         client.addClientListener(this);
 
-        clientCommandProcessor = new ClientCommandProcessor(chat);
+        clientCommandProcessor = modules.get(ClientCommandProcessor.class);
 
 
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
@@ -82,25 +81,16 @@ public class GameRoot extends Root implements ClientListener {
         addEventListener(InputEvent.KEY_DOWN, e -> {
             var event = (InputEvent) e;
             switch (event.getKeyCode()) {
-                case KeyCode.PAGE_UP -> {
-                    chat.setScroll(chat.getScroll() - 10);
-                }
-
-                case KeyCode.PAGE_DOWN -> {
-                    chat.setScroll(chat.getScroll() + 10);
-                }
-
-                case KeyCode.F8 -> {
-                    chat.setShadowEnabled(!chat.getShadowEnabled());
-                }
-
+                case KeyCode.PAGE_UP -> chat.setScroll(chat.getScroll() - 10);
+                case KeyCode.PAGE_DOWN -> chat.setScroll(chat.getScroll() + 10);
+                case KeyCode.F8 -> chat.setShadowEnabled(!chat.getShadowEnabled());
                 case KeyCode.F6 -> {
                     if (!chat.isInputOpened()) chat.openInput(); else chat.closeInput();
                 }
             }
         });
 
-        worldScene = new WorldScene(client, chat);
+        worldScene = new WorldScene();
         add(worldScene);
 
         add(chat, 10, 10);

@@ -45,8 +45,6 @@ import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;
 @Slf4j
 public class Client implements ConnectionListener, ClientProtocolImplListener {
 
-    public static final Client INSTANCE = new Client();
-
     private IConnection connection;
     private final ClientProtocolImpl protocolImpl;
     private final RemotePlayerManager remotePlayerManager;
@@ -59,7 +57,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     private int localPlayerId;
     private int localPlayerColor;
 
-    private Client() {
+    public Client() {
         remotePlayerManager = RemotePlayerManager.INSTANCE;
         clientListeners = new CopyOnWriteArrayList<>();
 
