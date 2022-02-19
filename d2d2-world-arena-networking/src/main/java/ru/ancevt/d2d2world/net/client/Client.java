@@ -90,7 +90,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      * {@link ClientProtocolImplListener} method
      */
     @Override
-    public void remotePlayerEnter(int remotePlayerId, String remotePlayerName, int remotePlayerColor) {
+    public void remotePlayerEnter(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
         clientListeners.forEach(l -> l.remotePlayerEnterServer(remotePlayerId, remotePlayerName, remotePlayerColor));
     }
 
