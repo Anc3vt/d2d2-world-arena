@@ -38,6 +38,7 @@ public class KeyCode {
     public static final int TAB = 258;
     public static final int HOME = 268;
     public static final int END = 269;
+    public static final int SPACE = 32;
 
     public static final int F1 = 290;
     public static final int F2 = 291;

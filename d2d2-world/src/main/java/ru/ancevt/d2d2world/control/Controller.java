@@ -17,8 +17,6 @@
  */
 package ru.ancevt.d2d2world.control;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
-
 public class Controller {
 
     private boolean up, down, left, right, a, b, c, back;

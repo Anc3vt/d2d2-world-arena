@@ -17,8 +17,6 @@
  */
 package ru.ancevt.d2d2world.editor;
 
-import ru.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
-import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.IDisplayObject;
@@ -27,6 +25,7 @@ import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2.event.InputEvent;
+import ru.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import ru.ancevt.d2d2world.editor.panels.MapkitToolsPanelEvent;
 import ru.ancevt.d2d2world.world.World;
 
@@ -45,8 +44,6 @@ public class EditorDisplayObject extends DisplayObjectContainer implements Event
 
     private final List<IDisplayObject> panels;
 
-    private final PlainRect hudRect;
-
     public EditorDisplayObject(Root root, World world) {
         this.world = world;
         this.grid = new Grid();
@@ -54,11 +51,6 @@ public class EditorDisplayObject extends DisplayObjectContainer implements Event
         world.add(grid);
 
         editor = new Editor(this, world);
-
-
-        hudRect = new PlainRect(2000, 30, Color.BLACK);
-        hudRect.setAlpha(0.5f);
-        add(hudRect);
 
         infoBitmapText = new BitmapText(Editor.getBitmapFont());
         infoBitmapTextShadow = new BitmapText(Editor.getBitmapFont());
@@ -77,8 +69,8 @@ public class EditorDisplayObject extends DisplayObjectContainer implements Event
         root.addEventListener(InputEvent.KEY_UP, this);
 
         add(MapkitToolsPanel.getInstance(), 100, 100);
-        MapkitToolsPanel.getInstance().addEventListener(MapkitToolsPanelEvent.MAPKIT_ITEM_SELECT, e->{
-            editor.getGameObjectEditor().setPlacingMapkitItem(((MapkitToolsPanelEvent)e).getMapkitItem());
+        MapkitToolsPanel.getInstance().addEventListener(MapkitToolsPanelEvent.MAPKIT_ITEM_SELECT, e -> {
+            editor.getGameObjectEditor().setPlacingMapkitItem(((MapkitToolsPanelEvent) e).getMapkitItem());
         });
 
         panels = new ArrayList<>();
@@ -132,9 +124,8 @@ public class EditorDisplayObject extends DisplayObjectContainer implements Event
     }
 
     private boolean isMouseAtPanels(float mouseX, float mouseY) {
-        return panels.stream().anyMatch(
-                panel -> isMouseAtArea(mouseX, mouseY, panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight())
-        );
+        return panels.stream().anyMatch(panel ->
+                isMouseAtArea(mouseX, mouseY, panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight()));
     }
 
     private boolean isMouseAtArea(float x, float y, float ax, float ay, float aw, float ah) {

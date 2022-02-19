@@ -21,11 +21,10 @@ import static ru.ancevt.d2d2.input.KeyCode.DOWN;
 import static ru.ancevt.d2d2.input.KeyCode.ENTER;
 import static ru.ancevt.d2d2.input.KeyCode.ESCAPE;
 import static ru.ancevt.d2d2.input.KeyCode.LEFT;
-import static ru.ancevt.d2d2.input.KeyCode.LEFT_ALT;
 import static ru.ancevt.d2d2.input.KeyCode.LEFT_CONTROL;
 import static ru.ancevt.d2d2.input.KeyCode.RIGHT;
-import static ru.ancevt.d2d2.input.KeyCode.RIGHT_ALT;
 import static ru.ancevt.d2d2.input.KeyCode.RIGHT_CONTROL;
+import static ru.ancevt.d2d2.input.KeyCode.SPACE;
 import static ru.ancevt.d2d2.input.KeyCode.UP;
 
 public class LocalPlayerController extends Controller {
@@ -50,8 +49,8 @@ public class LocalPlayerController extends Controller {
             case RIGHT -> setRight(down);
             case UP -> setUp(down);
             case DOWN -> setDown(down);
-            case LEFT_CONTROL, RIGHT_CONTROL -> setA(down);
-            case LEFT_ALT, RIGHT_ALT -> setB(down);
+            case SPACE -> setA(down);
+            case LEFT_CONTROL, RIGHT_CONTROL -> setB(down);
             case ENTER -> setC(down);
             case ESCAPE -> setBack(down);
         }
