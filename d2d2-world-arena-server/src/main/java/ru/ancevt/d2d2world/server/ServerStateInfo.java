@@ -1,15 +1,15 @@
 package ru.ancevt.d2d2world.server;
 
-public class ServerInfo {
-    public static final ServerInfo INSTANCE = new ServerInfo();
+import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
+public class ServerStateInfo {
     private String name;
     private String version;
     private String mapKit;
     private String map;
     private String mod;
 
-    private ServerInfo() {
+    ServerStateInfo() {
         name = "";
         version = "";
         mapKit = "";

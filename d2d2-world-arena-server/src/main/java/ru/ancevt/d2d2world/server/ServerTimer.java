@@ -17,17 +17,17 @@
  */
 package ru.ancevt.d2d2world.server;
 
-public class ServerTimer {
+import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
-    public static final ServerTimer INSTANCE = new ServerTimer();
+public class ServerTimer {
 
     private long tickCounter;
     private int interval;
     private boolean active;
     private ServerTimerListener timerListener;
 
-    private ServerTimer() {
-        setInterval(Modules.CONFIG.getLoopDelay());
+    ServerTimer() {
+        setInterval(modules.get(Config.class).getLoopDelay());
     }
 
     public void start() {

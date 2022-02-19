@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ServerChat {
-    public static final ServerChat INSTANCE = new ServerChat();
+import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
+public class ServerChat {
     private static final int MAX_MESSAGES = 1024;
     private static final int DELETE_MESSAGES = MAX_MESSAGES / 4;
 
@@ -33,19 +33,19 @@ public class ServerChat {
 
     private final List<ChatMessage> messages;
 
-    private final List<ChatListener> chatListeners;
+    private final List<ServerChatListener> serverChatListeners;
 
-    private ServerChat() {
+    public ServerChat() {
         messages = new LinkedList<>();
-        chatListeners = new ArrayList<>();
+        serverChatListeners = new ArrayList<>();
     }
 
-    public void addChatListener(ChatListener l) {
-        chatListeners.add(l);
+    public void addChatListener(ServerChatListener l) {
+        serverChatListeners.add(l);
     }
 
-    public void removeChatListener(ChatListener l) {
-        chatListeners.remove(l);
+    public void removeChatListener(ServerChatListener l) {
+        serverChatListeners.remove(l);
     }
 
     public int getNewChatMessageId() {
@@ -58,14 +58,14 @@ public class ServerChat {
     public void text(@NotNull String text) {
         ChatMessage chatMessage = new ChatMessage(getNewChatMessageId(), text);
         messages.add(chatMessage);
-        chatListeners.forEach(l -> l.chatMessage(chatMessage));
+        serverChatListeners.forEach(l -> l.chatMessage(chatMessage));
         checkAndFixMessageListSize();
     }
 
     public void playerText(@NotNull String text, int playerId, String playerName, int playerColor) {
         ChatMessage chatMessage = new ChatMessage(getNewChatMessageId(), text, playerId, playerName, playerColor);
         messages.add(chatMessage);
-        chatListeners.forEach(l -> l.chatMessage(chatMessage));
+        serverChatListeners.forEach(l -> l.chatMessage(chatMessage));
         checkAndFixMessageListSize();
     }
 

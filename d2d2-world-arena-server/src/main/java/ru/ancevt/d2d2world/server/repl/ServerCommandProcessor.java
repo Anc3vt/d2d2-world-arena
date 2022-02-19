@@ -1,21 +1,21 @@
 package ru.ancevt.d2d2world.server.repl;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.ancevt.d2d2world.server.D2D2WorldServer;
-import ru.ancevt.d2d2world.server.Modules;
+import ru.ancevt.d2d2world.server.ServerTimer;
+import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
+import ru.ancevt.d2d2world.server.service.GeneralService;
 import ru.ancevt.util.args.Args;
 import ru.ancevt.util.repl.ReplInterpreter;
 import ru.ancevt.util.texttable.TextTable;
 
+import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
+
 @Slf4j
 public class ServerCommandProcessor {
 
-    public static final ServerCommandProcessor INSTANCE = new ServerCommandProcessor();
-
-
     private final ReplInterpreter repl;
 
-    private ServerCommandProcessor() {
+    public ServerCommandProcessor() {
         repl = new ReplInterpreter();
         registerCommands();
     }
@@ -31,11 +31,11 @@ public class ServerCommandProcessor {
     }
 
     private void cmd_timer(Args args) {
-        Modules.TIMER.setInterval(args.get(int.class, 0, 1));
+        modules.get(ServerTimer.class).setInterval(args.get(int.class, 0, 1));
     }
 
     private void cmd_exit(Args args) {
-        Modules.GENERAL_SERVICE.exit();
+        modules.get(GeneralService.class).exit();
     }
 
     private void cmd_players(Args args) {
@@ -44,7 +44,7 @@ public class ServerCommandProcessor {
                 "id", "hash", "name", "color", "clntProtVer", "address", "ping", "lastChatMsgId", "ctrlr", "x", "y"
         });
 
-        Modules.PLAYER_MANAGER.getPlayerList().forEach(p -> {
+        modules.get(ServerPlayerManager.class).getPlayerList().forEach(p -> {
             table.addRow(
                     p.getId(),
                     p.hashCode(),

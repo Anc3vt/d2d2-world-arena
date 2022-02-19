@@ -12,10 +12,8 @@ public class Config {
 
     private static final Properties properties = new Properties();
     private static final String FILE_NAME = "d2d2-world-arena-server.conf";
-    public static final Config INSTANCE = new Config();
 
-    private Config() {
-        load();
+    public Config() {
     }
 
     public void load() {

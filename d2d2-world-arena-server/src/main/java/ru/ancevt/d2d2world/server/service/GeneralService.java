@@ -23,15 +23,22 @@ import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
+import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
+import ru.ancevt.d2d2world.server.Config;
+import ru.ancevt.d2d2world.server.D2D2WorldServer;
+import ru.ancevt.d2d2world.server.ServerStateInfo;
+import ru.ancevt.d2d2world.server.ServerTimer;
 import ru.ancevt.d2d2world.server.ServerTimerListener;
-import ru.ancevt.d2d2world.server.Modules;
-import ru.ancevt.d2d2world.server.ServerInfo;
-import ru.ancevt.d2d2world.server.chat.ChatListener;
 import ru.ancevt.d2d2world.server.chat.ChatMessage;
+import ru.ancevt.d2d2world.server.chat.ServerChat;
+import ru.ancevt.d2d2world.server.chat.ServerChatListener;
 import ru.ancevt.d2d2world.server.player.Player;
+import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
+import ru.ancevt.d2d2world.server.repl.ServerCommandProcessor;
 import ru.ancevt.net.messaging.CloseStatus;
 import ru.ancevt.net.messaging.connection.IConnection;
+import ru.ancevt.net.messaging.server.IServer;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,34 +51,42 @@ import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageR
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageRemotePlayerIntroduce;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageServerInfoResponse;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageTextToPlayer;
+import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 @Slf4j
-public class GeneralService implements ServerProtocolImplListener, ChatListener, ServerTimerListener {
+public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
 
-    public static final GeneralService INSTANCE = new GeneralService();
+    private final Config config = modules.get(Config.class);
+    private final IServer serverUnit = D2D2WorldServer.getServerUnit();
+    private final ServerTimer serverTimer = modules.get(ServerTimer.class);
+    private final SyncService syncService = modules.get(SyncService.class);
+    private final ServerChat serverChat = modules.get(ServerChat.class);
+    private final ServerSender serverSender = modules.get(ServerSender.class);
+    private final ServerPlayerManager serverPlayerManager = modules.get(ServerPlayerManager.class);
+    private final ServerStateInfo serverStateInfo = modules.get(ServerStateInfo.class);
+    private final ServerCommandProcessor commandProcessor = modules.get(ServerCommandProcessor.class);
 
     public GeneralService() {
-        Modules.SERVER_PROTOCOL_IMPL.addServerProtocolImplListener(this);
-        Modules.SERVER_CHAT.addChatListener(this);
+        modules.get(ServerProtocolImpl.class).addServerProtocolImplListener(this);
+        modules.get(ServerChat.class).addChatListener(this);
+        modules.get(ServerTimer.class).setTimerListener(this);
     }
 
     @Override
     public void serverInfoRequest(int connectionId) {
-        ServerInfo si = ServerInfo.INSTANCE;
-
         List<Pair<Integer, String>> players =
-                Modules.PLAYER_MANAGER.getPlayerList()
+                serverPlayerManager.getPlayerList()
                         .stream()
                         .map(player -> Pair.of(player.getId(), player.getName()))
                         .toList();
 
-        Modules.SENDER.sendToPlayer(connectionId,
+        serverSender.sendToPlayer(connectionId,
                 createMessageServerInfoResponse(
-                        si.getName(),
-                        si.getVersion(),
-                        si.getMap(),
-                        si.getMapKit(),
-                        si.getMod(),
+                        serverStateInfo.getName(),
+                        serverStateInfo.getVersion(),
+                        serverStateInfo.getMap(),
+                        serverStateInfo.getMapKit(),
+                        serverStateInfo.getMod(),
                         players
                 )
         );
@@ -84,11 +99,11 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void rconLogin(int playerId, @NotNull String passwordHash) {
-        if (MD5.hash(Modules.CONFIG.rconPassword()).equals(passwordHash)) {
-            Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(p -> p.setRconLoggedIn(true));
-            Modules.SENDER.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin"));
+        if (MD5.hash(config.rconPassword()).equals(passwordHash)) {
+            serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setRconLoggedIn(true));
+            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin"));
         } else {
-            Modules.SENDER.sendToPlayer(playerId, createMessageTextToPlayer("Wrong password"));
+            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("Wrong password"));
         }
     }
 
@@ -97,7 +112,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void rconCommand(int playerId, @NotNull String commandText, @NotNull String extraData) {
-        Modules.COMMAND_PROCESSOR.execute(commandText);
+        commandProcessor.execute(commandText);
     }
 
     /**
@@ -109,10 +124,10 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
                                    @NotNull String clientProtocolVersion,
                                    @NotNull String extraData) {
         // save player list before new player actually added to server player list
-        List<Player> oldPlayerList = Modules.PLAYER_MANAGER.getPlayerList();
+        List<Player> oldPlayerList = serverPlayerManager.getPlayerList();
 
         // create new player in player manager
-        Player newPlayer = Modules.PLAYER_MANAGER.createPlayer(
+        Player newPlayer = serverPlayerManager.createPlayer(
                 playerId,
                 playerName,
                 clientProtocolVersion,
@@ -121,7 +136,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
         );
 
         // send to new player info about all others
-        oldPlayerList.forEach(p -> Modules.SENDER.sendToPlayer(
+        oldPlayerList.forEach(p -> serverSender.sendToPlayer(
                         playerId,
                         createMessageRemotePlayerIntroduce(
                                 p.getId(),
@@ -133,7 +148,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
         );
 
         // send to all other player info of new player
-        Modules.SENDER.sendToAllExcluding(
+        serverSender.sendToAllExcluding(
                 createMessageRemotePlayerIntroduce(
                         playerId,
                         playerName,
@@ -144,7 +159,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
         );
 
         // send to new player info about new player (id, color)
-        Modules.SENDER.sendToPlayer(playerId,
+        serverSender.sendToPlayer(playerId,
                 createMessagePlayerEnterResponse(
                         playerId,
                         newPlayer.getColor()
@@ -152,15 +167,15 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
         );
 
         // send everyone else information about the entrance of a new player
-        Modules.SENDER.sendToAllExcluding(
+        serverSender.sendToAllExcluding(
                 createMessageRemotePlayerEnter(playerId, playerName, newPlayer.getColor()),
                 playerId
         );
 
         // send chat history to new player
-        Modules.SERVER_CHAT.getMessagesFromIdExcluding(newPlayer.getLastSeenChatMessageId()).forEach(chatMessage -> {
+        serverChat.getMessagesFromIdExcluding(newPlayer.getLastSeenChatMessageId()).forEach(chatMessage -> {
             if (chatMessage.isFromPlayer()) {
-                Modules.SENDER.sendToPlayer(
+                serverSender.sendToPlayer(
                         playerId,
                         createMessageChat(
                                 chatMessage.getId(),
@@ -171,7 +186,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
                         )
                 );
             } else {
-                Modules.SENDER.sendToPlayer(
+                serverSender.sendToPlayer(
                         playerId,
                         createMessageChat(chatMessage.getId(), chatMessage.getText())
                 );
@@ -182,7 +197,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
 
         // send enter message to all players including new player
 
-        Modules.SERVER_CHAT.text("Player " + playerName + "(" + playerId + ") connected");
+        serverChat.text("Player " + playerName + "(" + playerId + ") connected");
     }
 
     /**
@@ -190,7 +205,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void playerControllerAndXYReport(int playerId, int controllerState, float x, float y) {
-        Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> {
+        serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
             player.setControllerState(controllerState);
             player.setXY(x, y);
         });
@@ -201,12 +216,12 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void playerTextToChat(int playerId, @NotNull String text) {
-        Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(
+        serverPlayerManager.getPlayerById(playerId).ifPresent(
                 player -> {
                     if (text.startsWith("/")) {
                         playerTextCommand(playerId, text);
                     } else {
-                        Modules.SERVER_CHAT.playerText(text, playerId, player.getName(), player.getColor());
+                        serverChat.playerText(text, playerId, player.getName(), player.getColor());
                     }
                 }
         );
@@ -217,10 +232,10 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void playerExitRequest(int playerId) {
-        Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(p -> {
-            Modules.PLAYER_MANAGER.removePlayer(p);
-            Modules.SERVER_CHAT.text("Player " + p.getName() + "(" + playerId + ") exit");
-            Modules.SENDER.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
+        serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+            serverPlayerManager.removePlayer(p);
+            serverChat.text("Player " + p.getName() + "(" + playerId + ") exit");
+            serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
         });
 
         getConnection(playerId).orElseThrow().close();
@@ -239,7 +254,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void playerPingRequest(int playerId) {
-        Modules.SENDER.sendToPlayer(playerId, createMessagePlayerPingResponse());
+        serverSender.sendToPlayer(playerId, createMessagePlayerPingResponse());
     }
 
     /**
@@ -247,7 +262,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void playerPingReport(int playerId, int ping) {
-        Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(p -> p.setPingValue(ping));
+        serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setPingValue(ping));
     }
 
     /**
@@ -263,18 +278,18 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
      */
     @Override
     public void globalTimerTick(long count) {
-        Modules.SYNC_SERVICE.syncFirstLevel();
-        if (count % 1000 == 0) Modules.SYNC_SERVICE.syncSecondLevel();
-        if (count % 10000 == 0) Modules.SYNC_SERVICE.syncThirdLevel();
+        syncService.syncFirstLevel();
+        if (count % 1000 == 0) syncService.syncSecondLevel();
+        if (count % 10000 == 0) syncService.syncThirdLevel();
     }
 
     /**
-     * {@link ChatListener} method
+     * {@link ServerChatListener} method
      */
     @Override
     public void chatMessage(ChatMessage chatMessage) {
         if (chatMessage.isFromPlayer())
-            Modules.SENDER.sendToAll(
+            serverSender.sendToAll(
                     createMessageChat(
                             chatMessage.getId(),
                             chatMessage.getText(),
@@ -284,14 +299,14 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
                     )
             );
         else
-            Modules.SENDER.sendToAll(
+            serverSender.sendToAll(
                     createMessageChat(
                             chatMessage.getId(),
                             chatMessage.getText()
                     )
             );
 
-        Modules.PLAYER_MANAGER.getPlayerList().forEach(p -> p.setLastSeenChatMessageId(chatMessage.getId()));
+        serverPlayerManager.getPlayerList().forEach(p -> p.setLastSeenChatMessageId(chatMessage.getId()));
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {
@@ -300,24 +315,24 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
 
     public void connectionClosed(int playerId, CloseStatus status) {
         // if the player exists in the player manager and has not been deleted yet, it will be CONNECTION_LOST exit cause
-        Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> {
-                    Modules.PLAYER_MANAGER.removePlayer(player);
-                    Modules.SENDER.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.LOST_CONNECTION));
-                    Modules.SERVER_CHAT.text("Player " + player.getName() + "(" + playerId + ") lost connection");
+        serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
+                    serverPlayerManager.removePlayer(player);
+                    serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.LOST_CONNECTION));
+                    serverChat.text("Player " + player.getName() + "(" + playerId + ") lost connection");
                 }
         );
     }
 
     public @NotNull Optional<IConnection> getConnection(int connectionId) {
-        return Modules.SERVER_UNIT.getConnections()
+        return serverUnit.getConnections()
                 .stream()
                 .filter(c -> c.getId() == connectionId)
                 .findAny();
     }
 
     public void exit() {
-        Modules.TIMER.stop();
-        Modules.SERVER_UNIT.close();
+        serverTimer.stop();
+        serverUnit.close();
         log.info("Server exit");
         System.exit(0);
     }

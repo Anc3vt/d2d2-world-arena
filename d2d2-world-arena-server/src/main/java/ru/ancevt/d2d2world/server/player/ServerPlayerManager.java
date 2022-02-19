@@ -17,8 +17,7 @@
  */
 package ru.ancevt.d2d2world.server.player;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,16 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class PlayerManager {
-
-    public static final PlayerManager INSTANCE = new PlayerManager();
-
-    private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
+@Slf4j
+public class ServerPlayerManager {
 
     private final Map<Integer, Player> playerMap;
     private final List<Player> playerList;
 
-    private PlayerManager() {
+    public ServerPlayerManager() {
         playerMap = new HashMap<>();
         playerList = new ArrayList<>();
     }
