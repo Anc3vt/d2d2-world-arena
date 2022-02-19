@@ -18,6 +18,7 @@
 package ru.ancevt.d2d2world.server.player;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class Player {
@@ -27,7 +28,7 @@ public class Player {
     private final String address;
     private final int color;
     private final String clientProtocolVersion;
-
+    private String ip;
     private int controllerState;
     private float x;
     private float y;
@@ -38,16 +39,28 @@ public class Player {
     private boolean rconLoggedIn;
 
     public Player(int id,
-                  String name,
+                  @NotNull String name,
                   int color,
-                  String address,
-                  String clientProtocolVersion) {
+                  @NotNull String address,
+                  @NotNull String clientProtocolVersion) {
 
         this.name = name;
         this.id = id;
         this.address = address;
         this.color = color;
         this.clientProtocolVersion = clientProtocolVersion;
+    }
+
+    public String getIp() {
+        if(ip == null) {
+            String text = getAddress();
+            if (text.startsWith("/")) {
+                text = text.replaceAll("/", "");
+            }
+            String[] split = text.split(":");
+            ip = split[0];
+        }
+        return ip;
     }
 
     public boolean isRconLoggedIn() {
@@ -128,6 +141,7 @@ public class Player {
                 ", y=" + y +
                 ", lastSeenChatMessageId=" + lastSeenChatMessageId +
                 ", ping=" + ping +
+                ", rconLoggedIn=" + rconLoggedIn +
                 '}';
     }
 }

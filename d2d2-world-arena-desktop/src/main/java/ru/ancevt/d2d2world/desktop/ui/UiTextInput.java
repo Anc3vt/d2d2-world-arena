@@ -356,12 +356,12 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         }
     }
 
-    public void focus() {
+    void focus() {
         this.focused = true;
         add(caret);
     }
 
-    public void focusLost() {
+    void focusLost() {
         focused = false;
         caret.removeFromParent();
     }
@@ -413,6 +413,10 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
 
     public void moveCaretToEnd() {
         setCaretPosition(Integer.MAX_VALUE);
+    }
+
+    public void requestFocus() {
+        TextInputProcessor.INSTANCE.focus(this);
     }
 
     private static class Caret extends PlainRect {

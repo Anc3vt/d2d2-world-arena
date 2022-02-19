@@ -325,7 +325,6 @@ public class TcpB254Connection implements IConnection {
                 ", port=" + port +
                 ", remoteAddress='" + remoteAddress + '\'' +
                 ", remotePort=" + remotePort +
-                ", socket=" + socket +
                 ", isOpen=" + isOpen() +
                 ", bytesLoaded=" + bytesLoaded +
                 ", bytesSent=" + bytesSent +

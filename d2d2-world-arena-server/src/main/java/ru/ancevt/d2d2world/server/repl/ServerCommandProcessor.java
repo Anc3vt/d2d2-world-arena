@@ -27,10 +27,10 @@ public class ServerCommandProcessor {
     private void registerCommands() {
         repl.addCommand("players", this::cmd_players);
         repl.addCommand("exit", this::cmd_exit);
-        repl.addCommand("timer", this::cmd_timer);
+        repl.addCommand("loopdelay", this::cmd_loopdelay);
     }
 
-    private void cmd_timer(Args args) {
+    private void cmd_loopdelay(Args args) {
         modules.get(ServerTimer.class).setInterval(args.get(int.class, 0, 1));
     }
 
@@ -60,7 +60,7 @@ public class ServerCommandProcessor {
             );
         });
 
-        log.trace("\n{}", table.render());
+        System.out.println(table.render());
     }
 
     public void start() {

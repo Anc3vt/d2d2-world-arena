@@ -18,6 +18,7 @@
 package ru.ancevt.d2d2world.desktop.scene;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.commons.concurrent.Lock;
 import ru.ancevt.commons.regex.PatternMatcher;
@@ -73,18 +74,17 @@ public class IntroRoot extends Root {
         Config config = modules.get(Config.class);
         uiTextInputServer.setText(config.getString(Config.SERVER, "localhost:2245"));
 
+
         uiTextInputPlayerName = new UiTextInput();
-        uiTextInputPlayerName.focus();
-        uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_ENTER, event -> {
-            var e = (TextInputEvent) event;
-            if (PatternMatcher.check(e.getText(), NAME_PATTERN))
-                enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
-        });
+        uiTextInputPlayerName.requestFocus();
+        uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_ENTER, this::keyEnter);
         uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_CHANGE, event -> {
             var e = (TextInputEvent) event;
             boolean valid = PatternMatcher.check(e.getText(), NAME_PATTERN);
             uiTextInputPlayerName.setColor(valid ? Color.WHITE : Color.RED);
         });
+
+        uiTextInputServer.addEventListener(TextInputEvent.TEXT_ENTER, event -> uiTextInputPlayerName.requestFocus());
 
         try {
             if (Files.exists(Paths.get("playername.txt"))) {
@@ -144,6 +144,12 @@ public class IntroRoot extends Root {
         });
     }
 
+    private void keyEnter(Event event) {
+        var e = (TextInputEvent) event;
+        if (PatternMatcher.check(e.getText(), NAME_PATTERN))
+            enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+    }
+
     public void enter(String server, String localPlayerName) {
         try {
             Files.writeString(Paths.get("playername.txt"), localPlayerName);
@@ -151,17 +157,30 @@ public class IntroRoot extends Root {
             throw new IllegalStateException(ex);
         }
 
-        retrieveServerInfo(server).getPlayers()
-                .stream()
-                .filter(p -> p.getName().equals(localPlayerName))
-                .findAny()
-                .ifPresentOrElse(p -> {
-                    labelVersion.setText("The name \"" + localPlayerName + "\" is already taken!");
-                }, () -> {
-                    GameRoot gameRoot = new GameRoot();
-                    D2D2.getStage().setRoot(gameRoot);
-                    gameRoot.start(uiTextInputServer.getText(), localPlayerName);
-                });
+        if (!server.contains(":")) {
+            server = server.concat(":2245");
+            uiTextInputServer.setText(server);
+        }
+
+        ServerInfoRetrieveResult result = retrieveServerInfo(server);
+
+        if (result != null) {
+            result.getPlayers()
+                    .stream()
+                    .filter(p -> p.getName().equals(localPlayerName))
+                    .findAny()
+                    .ifPresentOrElse(p -> {
+                        labelVersion.setText("The name \"" + localPlayerName + "\" is already taken");
+                        labelVersion.setColor(Color.RED);
+                    }, () -> {
+                        GameRoot gameRoot = new GameRoot();
+                        D2D2.getStage().setRoot(gameRoot);
+                        gameRoot.start(uiTextInputServer.getText(), localPlayerName);
+                    });
+        } else {
+            labelVersion.setText("Server \"" + server + "\" is unavailable");
+            labelVersion.setColor(Color.RED);
+        }
     }
 
     private void addToStage(Event event) {
@@ -176,7 +195,7 @@ public class IntroRoot extends Root {
         add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
     }
 
-    private @NotNull ServerInfoRetrieveResult retrieveServerInfo(String server) {
+    private @Nullable ServerInfoRetrieveResult retrieveServerInfo(String server) {
         String host = server.split(":")[0];
         int port = parseInt(server.split(":")[1]);
 
@@ -186,13 +205,9 @@ public class IntroRoot extends Root {
             resultHolder.setValue(result);
             lock.unlockIfLocked();
         }, closeStatus -> {
-            throw new IllegalStateException("error when retrieving server info", closeStatus.getThrowable());
+            // TODO: log
         });
         lock.lock(5, TimeUnit.SECONDS);
-
-        if (resultHolder.isEmpty()) {
-            throw new IllegalStateException("no server info retrieve result");
-        }
 
         return resultHolder.getValue();
     }

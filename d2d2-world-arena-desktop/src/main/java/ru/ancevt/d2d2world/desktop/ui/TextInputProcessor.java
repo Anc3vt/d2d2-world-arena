@@ -102,7 +102,7 @@ public class TextInputProcessor {
         );
     }
 
-    private void focusPrev() {
+    public void focusPrev() {
         if (uiTextInputs.size() <= 1) return;
 
         index--;
@@ -111,7 +111,7 @@ public class TextInputProcessor {
         focus(uiTextInputs.get(index));
     }
 
-    private void focusNext() {
+    public void focusNext() {
         if (uiTextInputs.size() <= 1) return;
 
         index++;
@@ -120,7 +120,7 @@ public class TextInputProcessor {
         focus(uiTextInputs.get(index));
     }
 
-    void focus(UiTextInput uiTextInput) {
+    public void focus(UiTextInput uiTextInput) {
         uiTextInputs.stream().filter(t -> t != uiTextInput).forEach(UiTextInput::focusLost);
         uiTextInput.setCaretPosition(Integer.MAX_VALUE);
         uiTextInput.focus();

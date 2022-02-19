@@ -47,7 +47,7 @@ public class GameRoot extends Root implements ClientListener {
 
     private final Client client = modules.get(Client.class);
     private final Config config = modules.get(Config.class);
-    private final Chat chat= modules.get(Chat.class);
+    private final Chat chat = modules.get(Chat.class);
     private String server;
     private final WorldScene worldScene;
     private final ClientCommandProcessor clientCommandProcessor = modules.get(ClientCommandProcessor.class);
@@ -148,7 +148,9 @@ public class GameRoot extends Root implements ClientListener {
         worldScene.start();
 
         String rconPassword = config.getString(Config.RCON_PASSWORD);
-        client.sendRconLoginRequest(MD5.hash(rconPassword));
+        if (rconPassword != null) {
+            client.sendRconLoginRequest(MD5.hash(rconPassword));
+        }
     }
 
     /**
