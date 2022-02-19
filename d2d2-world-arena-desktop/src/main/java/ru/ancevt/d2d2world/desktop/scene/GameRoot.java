@@ -45,8 +45,8 @@ public class GameRoot extends Root implements ClientListener {
 
     public static final int DEFAULT_PORT = 2245;
 
-    private final Chat chat;
     private final Client client;
+    private final Chat chat;
     private String server;
     private WorldScene worldScene;
     private final ClientCommandProcessor clientCommandProcessor;
@@ -57,23 +57,23 @@ public class GameRoot extends Root implements ClientListener {
 
         setBackgroundColor(Color.DARK_BLUE);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
-        chat = new Chat();
 
         client = modules.get(Client.class);
         client.addClientListener(this);
 
         clientCommandProcessor = modules.get(ClientCommandProcessor.class);
 
+        chat = modules.get(Chat.class);
 
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
             var e = (ChatEvent) event;
             String text = e.getText();
-            if(text.startsWith("/") || text.startsWith("\\")) {
+            if (text.startsWith("/") || text.startsWith("\\")) {
                 // if typed command is one of registered client command then don't send that command text to the server
                 text = text.replace('\\', '/');
-                if(clientCommand(text)) return;
+                if (clientCommand(text)) return;
             }
-            if(client.isConnected()) {
+            if (client.isConnected()) {
                 client.sendChatMessage(text);
             }
         });
@@ -85,7 +85,8 @@ public class GameRoot extends Root implements ClientListener {
                 case KeyCode.PAGE_DOWN -> chat.setScroll(chat.getScroll() + 10);
                 case KeyCode.F8 -> chat.setShadowEnabled(!chat.getShadowEnabled());
                 case KeyCode.F6 -> {
-                    if (!chat.isInputOpened()) chat.openInput(); else chat.closeInput();
+                    if (!chat.isInputOpened()) chat.openInput();
+                    else chat.closeInput();
                 }
             }
         });
