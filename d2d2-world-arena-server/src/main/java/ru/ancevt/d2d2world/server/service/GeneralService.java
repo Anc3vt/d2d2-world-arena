@@ -114,7 +114,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void rconCommand(int playerId, @NotNull String commandText, @NotNull String extraData) {
-        commandProcessor.execute(commandText);
+        serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+            if (p.isRconLoggedIn()) commandProcessor.execute(commandText);
+        });
     }
 
     /**
