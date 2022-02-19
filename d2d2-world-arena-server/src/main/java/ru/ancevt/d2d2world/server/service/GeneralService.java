@@ -30,6 +30,7 @@ import ru.ancevt.d2d2world.server.ServerInfo;
 import ru.ancevt.d2d2world.server.chat.ChatListener;
 import ru.ancevt.d2d2world.server.chat.ChatMessage;
 import ru.ancevt.d2d2world.server.player.Player;
+import ru.ancevt.net.messaging.CloseStatus;
 import ru.ancevt.net.messaging.connection.IConnection;
 
 import java.util.List;
@@ -297,7 +298,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
 
     }
 
-    public void connectionClosedReport(int playerId) {
+    public void connectionClosed(int playerId, CloseStatus status) {
         // if the player exists in the player manager and has not been deleted yet, it will be CONNECTION_LOST exit cause
         Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> {
                     Modules.PLAYER_MANAGER.removePlayer(player);
@@ -305,8 +306,6 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
                     Modules.SERVER_CHAT.text("Player " + player.getName() + "(" + playerId + ") lost connection");
                 }
         );
-
-
     }
 
     public @NotNull Optional<IConnection> getConnection(int connectionId) {
