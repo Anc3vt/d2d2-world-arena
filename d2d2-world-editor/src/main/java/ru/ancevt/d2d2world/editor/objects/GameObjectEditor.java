@@ -17,12 +17,13 @@
  */
 package ru.ancevt.d2d2world.editor.objects;
 
-import ru.ancevt.d2d2world.editor.Cursor;
-import ru.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import ru.ancevt.d2d2.display.IDisplayObject;
 import ru.ancevt.d2d2.input.KeyCode;
+import ru.ancevt.d2d2world.editor.Cursor;
 import ru.ancevt.d2d2world.editor.Editor;
+import ru.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import ru.ancevt.d2d2world.gameobject.GameObjectUtils;
+import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.gameobject.IMovable;
 import ru.ancevt.d2d2world.gameobject.IRepeatable;
@@ -300,11 +301,6 @@ public class GameObjectEditor {
     }
 
     private void selectGameObjectsInSelectedArea() {
-        float sX = selectArea.getX();
-        float sY = selectArea.getY();
-        float sW = selectArea.getWidth();
-        float sH = selectArea.getHeight();
-
         int currentLayerIndex = gameObjectEditor.getCurrentLayerIndex();
 
         int count = getWorld().getGameObjectCount();
@@ -317,23 +313,48 @@ public class GameObjectEditor {
             if ((worldLayer != null &&
                     (currentLayerIndex == worldLayer.getIndex() || gameObjectEditor.isControlDown()))) {
 
-                float cX = gameObject.getX();
-                float cY = gameObject.getY();
-                float cW = gameObject.getWidth();
-                float cH = gameObject.getHeight();
-
-                if (
-                        sX + sW > cX &&
-                                sX < cX + cW &&
-                                sY + sH > cY &&
-                                sY < cY + cH
-                ) {
+                if (hitTest(selectArea, gameObject)) {
                     select(gameObject);
                 } else {
                     unselect(gameObject);
                 }
             }
         }
+    }
+
+    private static boolean hitTest(float x, float y, IDisplayObject o) {
+        float ox = o.getX(), oy = o.getY(), ow = o.getWidth(), oh = o.getHeight();
+        if (o instanceof ICollision c) {
+            ox += c.getCollisionX();
+            oy += c.getCollisionY();
+        }
+
+        return x >= ox &&
+                x < ox + ow &&
+                y >= oy &&
+                y < oy + oh;
+    }
+
+    private static boolean hitTest(IDisplayObject o1, IDisplayObject o2) {
+
+        float x1 = o1.getX(), y1 = o1.getY(), w1 = o1.getWidth(), h1 = o1.getHeight();
+
+        if (o1 instanceof ICollision c) {
+            x1 += c.getCollisionX();
+            y1 += c.getCollisionY();
+        }
+
+        float x2 = o2.getX(), y2 = o2.getY(), w2 = o2.getWidth(), h2 = o2.getHeight();
+
+        if (o2 instanceof ICollision c) {
+            x2 += c.getCollisionX();
+            y2 += c.getCollisionY();
+        }
+
+        return x1 + w1 > x2 &&
+                x1 < x2 + w2 &&
+                y1 + h1 > y2 &&
+                y1 < y2 + h2;
     }
 
     private void sightLayer(int layerIndex) {
@@ -370,8 +391,8 @@ public class GameObjectEditor {
         throw new IllegalStateException("no selected game objects");
     }
 
-    public final void select(IGameObject gameObject) {
-        if (!selectedGameObjects.contains(gameObject)) selectedGameObjects.add(gameObject);
+    public final void select(IGameObject o) {
+        if (!selectedGameObjects.contains(o)) selectedGameObjects.add(o);
         updateSelecting();
 
         updateSelectedGameObjectsTextInfo();
@@ -425,6 +446,11 @@ public class GameObjectEditor {
         for (final IGameObject gameObject : selectedGameObjects) {
             final Selection selection = new Selection(gameObject);
             selection.setXY(gameObject.getX(), gameObject.getY());
+
+            if (gameObject instanceof ICollision c) {
+                selection.move(c.getCollisionX(), c.getCollisionY());
+            }
+
             selections.add(selection);
             getWorld().add(selection);
         }
@@ -439,13 +465,7 @@ public class GameObjectEditor {
             IGameObject gameObject = getWorld().getGameObject(i);
             if (gameObject.isVisible() && gameObject.hasParent() && gameObject.getParent() instanceof Layer layer) {
                 if (gameObjectEditor.isControlDown() || layerIndex == layer.getIndex()) {
-                    if (x >= gameObject.getX() &&
-                            x < gameObject.getX() + gameObject.getWidth() &&
-                            y >= gameObject.getY() &&
-                            y < gameObject.getY() + gameObject.getHeight()) {
-
-                        return gameObject;
-                    }
+                    if (hitTest(x, y, gameObject)) return gameObject;
                 }
             }
         }

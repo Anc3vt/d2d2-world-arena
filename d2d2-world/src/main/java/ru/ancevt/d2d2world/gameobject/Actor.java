@@ -94,7 +94,7 @@ abstract public class Actor extends Animated implements
             bitmapTextDebug = null;
         }
 
-        if (bitmapTextDebug == null)
+        if (bitmapTextDebug == null) {
             bitmapTextDebug = new BitmapText() {
                 @Override
                 public void onEachFrame() {
@@ -102,6 +102,8 @@ abstract public class Actor extends Animated implements
                     super.onEachFrame();
                 }
             };
+            bitmapTextDebug.setBounds(100, 30);
+        }
 
         bitmapTextDebug.setText(o != null ? o.toString() : null);
         add(bitmapTextDebug);
@@ -382,6 +384,16 @@ abstract public class Actor extends Animated implements
     @Override
     public void process() {
 
+    }
+
+    @Override
+    public float getWidth() {
+        return collisionWidth;
+    }
+
+    @Override
+    public float getHeight() {
+        return collisionHeight;
     }
 
     @Override

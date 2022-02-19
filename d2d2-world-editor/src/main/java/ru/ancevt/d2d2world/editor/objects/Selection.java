@@ -24,6 +24,7 @@ import ru.ancevt.d2d2.display.DisplayObject;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.EventListener;
+import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.gameobject.IRepeatable;
 import ru.ancevt.d2d2world.gameobject.area.Area;
@@ -88,6 +89,10 @@ public class Selection extends DisplayObjectContainer implements EventListener {
                     gameObject.getX(),
                     gameObject.getY()
             );
+
+            if (gameObject instanceof ICollision c) {
+                move(c.getCollisionX(), c.getCollisionY());
+            }
 
             setSize(
                     gameObject.getWidth(),
