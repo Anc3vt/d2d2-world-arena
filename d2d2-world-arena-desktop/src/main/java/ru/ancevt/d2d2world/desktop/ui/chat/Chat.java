@@ -34,42 +34,38 @@ import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
 import ru.ancevt.util.repl.ReplInterpreter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Chat extends DisplayObjectContainer {
 
-    public static final Chat INSTANCE = new Chat();
-
     private static final int MAX_MESSAGES = 100;
 
     private static final float DEFAULT_WIDTH = 900.0f / 2.0f;
     private static final float DEFAULT_HEIGHT = 600.0f / 3.0f;
+    private static final int INPUT_MAX_LENGTH = 80;
 
     private final UiTextInput input;
     private final List<ChatMessage> messages;
     private final List<ChatMessage> displayedMessages;
+    private final List<String> history;
     private float width;
     private float height;
     private int scroll;
     private int lastChatMessageId;
     private boolean shadowEnabled;
     private int historyIndex;
-    private int localPlayerId;
-    private String localPlayerName;
-    private String typedBefore;
 
-    private Chat() {
-
+    public Chat() {
         input = new UiTextInput();
         messages = new CopyOnWriteArrayList<>();
         displayedMessages = new CopyOnWriteArrayList<>();
+        history = new ArrayList<>();
         shadowEnabled = true;
 
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
-
-        typedBefore = "";
 
         input.setWidth(20);
         input.addEventListener(TextInputEvent.TEXT_ENTER, this::textInputEvent);
@@ -77,22 +73,6 @@ public class Chat extends DisplayObjectContainer {
         input.addEventListener(TextInputEvent.TEXT_INPUT_KEY_DOWN, this::textInputEvent);
 
         redraw();
-    }
-
-    public void setLocalPlayerName(String localPlayerName) {
-        this.localPlayerName = localPlayerName;
-    }
-
-    public String getLocalPlayerName() {
-        return localPlayerName;
-    }
-
-    public int getLocalPlayerId() {
-        return localPlayerId;
-    }
-
-    public void setLocalPlayerId(int localPlayerId) {
-        this.localPlayerId = localPlayerId;
     }
 
     public void setShadowEnabled(boolean b) {
@@ -228,30 +208,40 @@ public class Chat extends DisplayObjectContainer {
     public void textInputEvent(Event event) {
         if (event instanceof TextInputEvent textInputEvent) {
             switch (event.getType()) {
+
                 case TextInputEvent.TEXT_CHANGE -> {
                     String text = textInputEvent.getText();
+                    int length = text.length();
+                    if(length > INPUT_MAX_LENGTH) {
+                        input.setText(text.substring(0, INPUT_MAX_LENGTH));
+                        return;
+                    }
                     int w = text.length() * Font.getBitmapFont().getCharInfo('0').width();
                     input.setWidth(w + 20);
                 }
+
                 case TextInputEvent.TEXT_ENTER -> {
                     String text = textInputEvent.getText();
                     if (!text.isBlank()) {
                         dispatchEvent(new ChatEvent(ChatEvent.CHAT_TEXT_ENTER, this, text));
-                        historyIndex = 0;
+                        history.add(text);
+                        historyIndex = history.size();
                     }
                     input.clear();
                     closeInput();
                 }
+
                 case TextInputEvent.TEXT_INPUT_KEY_DOWN -> {
                     switch (textInputEvent.getKeyCode()) {
                         case KeyCode.UP -> {
-                            typedBefore = input.getText();
-                            historyIndex++;
+                            if(historyIndex == history.size()) {
+                                history.add(input.getText());
+                            }
+                            historyIndex--;
                             setTextFromPlayerChatMessageHistory();
                         }
                         case KeyCode.DOWN -> {
-                            historyIndex--;
-                            if (historyIndex <= 0) input.setText(typedBefore);
+                            historyIndex++;
                             setTextFromPlayerChatMessageHistory();
                         }
                         case KeyCode.ESCAPE -> {
@@ -264,22 +254,17 @@ public class Chat extends DisplayObjectContainer {
     }
 
     private void setTextFromPlayerChatMessageHistory() {
-        List<ChatMessage> localPlayerMessages = messages.stream()
-                .filter(m -> m.isFromPlayer() &&
-                        m.getPlayerId() == localPlayerId &&
-                        m.getPlayerName().equals(localPlayerName))
-                .sorted((m1, m2) -> Integer.compare(m2.getId(), m1.getId()))
-                .toList();
-
-        if (historyIndex >= localPlayerMessages.size()) historyIndex = localPlayerMessages.size();
-
-        if (historyIndex <= 0) {
+        if (historyIndex > history.size() - 1) {
             input.moveCaretToEnd();
+            historyIndex = history.size() - 1;
+        }
+
+        if (historyIndex < 0) {
             historyIndex = 0;
             return;
         }
 
-        input.setText(localPlayerMessages.get(historyIndex - 1).getText());
+        input.setText(history.get(historyIndex));
         input.moveCaretToEnd();
     }
 
@@ -292,8 +277,6 @@ public class Chat extends DisplayObjectContainer {
         Holder<Integer> idCounter = new Holder<>(1);
 
         Chat chat = new Chat();
-        chat.setLocalPlayerId(1);
-        chat.setLocalPlayerName("TestPlayer");
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
             if (event instanceof ChatEvent chatEvent) {
                 String text = chatEvent.getText();

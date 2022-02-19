@@ -45,16 +45,19 @@ public class GameRoot extends Root implements ClientListener {
     private final Client client;
     private String server;
     private WorldScene worldScene;
+    private final ClientCommandProcessor clientCommandProcessor;
 
     public GameRoot() {
         TextInputProcessor.enableRoot(this);
 
         setBackgroundColor(Color.DARK_BLUE);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
-        chat = Chat.INSTANCE;
+        chat = new Chat();
 
         client = Client.INSTANCE;
         client.addClientListener(this);
+
+        clientCommandProcessor = new ClientCommandProcessor(chat);
 
 
         chat.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
@@ -98,7 +101,7 @@ public class GameRoot extends Root implements ClientListener {
     }
 
     private boolean clientCommand(String text) {
-        return ClientCommandProcessor.INSTANCE.process(text);
+        return clientCommandProcessor.process(text);
     }
 
     /**
@@ -149,7 +152,6 @@ public class GameRoot extends Root implements ClientListener {
      */
     @Override
     public void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion) {
-        chat.setLocalPlayerId(localPlayerId);
         chat.addMessage(0, "Your id is " + localPlayerId + ", server protocol version is " + serverProtocolVersion);
         worldScene.start();
     }
@@ -207,8 +209,6 @@ public class GameRoot extends Root implements ClientListener {
         chat.addMessage(0, "Connecting to " + server + "...");
         new Lock().lock(100, TimeUnit.MILLISECONDS);
         client.connect(host, port);
-
-        chat.setLocalPlayerName(localPlayerName);
     }
 
 

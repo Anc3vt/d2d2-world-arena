@@ -26,10 +26,10 @@ import ru.ancevt.util.texttable.TextTable;
 
 public class ClientCommandProcessor {
 
-    public static final ClientCommandProcessor INSTANCE = new ClientCommandProcessor();
+    private final Chat chat;
 
-    private ClientCommandProcessor() {
-
+    public ClientCommandProcessor(Chat chat) {
+        this.chat = chat;
     }
 
 
@@ -71,14 +71,14 @@ public class ClientCommandProcessor {
 
                 String[] lines = tt.render().split("\n");
                 for (String line : lines) {
-                    Chat.INSTANCE.addMessage(line);
+                    chat.addMessage(line);
                 }
                 return true;
             }
 
             case "/rcon" -> {
                 // if the second (at index 1) token from command text is 'login'
-                if("login".equals(args.get(String.class, 1, ""))) {
+                if ("login".equals(args.get(String.class, 1, ""))) {
                     String passwordHash = MD5.hash(args.get(String.class, 2, ""));
                     Client.INSTANCE.sendRconLoginRequest(passwordHash);
                 } else {
