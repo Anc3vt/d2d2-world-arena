@@ -24,6 +24,7 @@ import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 import ru.ancevt.d2d2world.server.repl.ServerCommandProcessor;
 import ru.ancevt.d2d2world.server.service.GeneralService;
 import ru.ancevt.d2d2world.server.service.ServerSender;
+import ru.ancevt.d2d2world.server.service.ServerUnit;
 import ru.ancevt.d2d2world.server.service.SyncService;
 import ru.ancevt.net.messaging.CloseStatus;
 import ru.ancevt.net.messaging.connection.IConnection;
@@ -41,16 +42,14 @@ import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 @Slf4j
 public class D2D2WorldServer implements ServerListener, Thread.UncaughtExceptionHandler {
 
-    private static IServer serverUnit;
-
     public static void main(String[] args) {
         Args a = new Args(args);
 
-        serverUnit = ServerFactory.createTcpB254Server();
-
+        // The order is important
         Config config = new Config();
         config.load();
         modules.add(config);
+        modules.add(new ServerUnit());
         modules.add(new ServerSender());
         modules.add(new ServerChat());
         modules.add(new ServerPlayerManager());
@@ -90,19 +89,15 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
         modules.get(ServerStateInfo.class).setName(serverName);
         modules.get(ServerStateInfo.class).setVersion(getServerVersion());
 
-        serverUnit.addServerListener(this);
+        modules.get(ServerUnit.class).server.addServerListener(this);
 
         Thread.setDefaultUncaughtExceptionHandler(this);
 
         modules.get(ServerCommandProcessor.class).start();
     }
 
-    public static IServer getServerUnit() {
-        return serverUnit;
-    }
-
     public void start() {
-        serverUnit.asyncListenAndAwait(host, port, 2, TimeUnit.SECONDS);
+        modules.get(ServerUnit.class).server.asyncListenAndAwait(host, port, 2, TimeUnit.SECONDS);
         modules.get(ServerTimer.class).start();
     }
 

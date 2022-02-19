@@ -18,14 +18,15 @@
 package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.ancevt.d2d2world.server.D2D2WorldServer;
 import ru.ancevt.net.messaging.server.IServer;
+
+import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 
 @Slf4j
 public class ServerSender {
 
-    private final IServer serverUnit = D2D2WorldServer.getServerUnit();
+    private final IServer serverUnit = modules.get(ServerUnit.class).server;
 
     public ServerSender() {
     }

@@ -57,7 +57,7 @@ import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
 
     private final Config config = modules.get(Config.class);
-    private final IServer serverUnit = D2D2WorldServer.getServerUnit();
+    private final IServer serverUnit = modules.get(ServerUnit.class).server;
     private final ServerTimer serverTimer = modules.get(ServerTimer.class);
     private final SyncService syncService = modules.get(SyncService.class);
     private final ServerChat serverChat = modules.get(ServerChat.class);
