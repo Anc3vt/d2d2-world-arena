@@ -71,7 +71,7 @@ public class TcpB254Connection implements IConnection {
         }
     }
 
-    public void read() {
+    public void readLoop() {
         try {
             if (isOpen()) dispatchConnectionEstablished();
 
@@ -151,12 +151,12 @@ public class TcpB254Connection implements IConnection {
             dispatchConnectionClosed(new CloseStatus(e));
         }
 
-        read();
+        readLoop();
     }
 
     @Override
-    public synchronized Thread asyncConnect(String host, int port) {
-        Thread thread = new Thread(() -> connect(host, port), "tcpConn_" + getId() + "to_" + host + "_" + port);
+    public Thread asyncConnect(String host, int port) {
+        Thread thread = new Thread(() -> connect(host, port), "tcpB254Conn_" + getId() + "to_" + host + "_" + port);
         thread.start();
         return thread;
     }
@@ -166,7 +166,7 @@ public class TcpB254Connection implements IConnection {
         countDownLatchForAsync = new CountDownLatch(1);
         asyncConnect(host, port);
         try {
-            return countDownLatchForAsync.await(time, timeUnit);
+            return isOpen() || countDownLatchForAsync.await(time, timeUnit);
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
@@ -263,7 +263,7 @@ public class TcpB254Connection implements IConnection {
     }
 
     @Override
-    public void send(byte[] bytes) {
+    public synchronized void send(byte[] bytes) {
         if (!isOpen()) return;
 
         if (bytes.length > MAX_CHUNK_SIZE) {

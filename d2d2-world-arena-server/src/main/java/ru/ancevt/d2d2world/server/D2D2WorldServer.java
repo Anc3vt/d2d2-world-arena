@@ -109,7 +109,7 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     @Override
     public void connectionClosed(IConnection connection, CloseStatus status) {
         log.info("Connection closed {}, status: {}", connection.toString(), status.toString());
-        Modules.GENERAL_SERVICE.disconnectPlayer(connection.getId());
+        Modules.GENERAL_SERVICE.connectionClosedReport(connection.getId(), status);
     }
 
     @Override

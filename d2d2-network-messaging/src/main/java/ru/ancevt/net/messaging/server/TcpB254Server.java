@@ -94,7 +94,7 @@ public class TcpB254Server implements IServer {
                 dispatchConnectionAccepted(connectionWithClient);
 
                 new Thread(
-                        () -> ((TcpB254Connection) connectionWithClient).read(),
+                        () -> ((TcpB254Connection) connectionWithClient).readLoop(),
                         "tcpConnectionThread" + connectionWithClient.getId()
                 ).start();
             }

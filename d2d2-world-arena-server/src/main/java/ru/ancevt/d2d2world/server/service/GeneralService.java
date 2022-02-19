@@ -219,6 +219,7 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
         Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(p -> {
             Modules.PLAYER_MANAGER.removePlayer(p);
             Modules.SERVER_CHAT.text("Player " + p.getName() + "(" + playerId + ") exit");
+            Modules.SENDER.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
         });
 
         getConnection(playerId).orElseThrow().close();
@@ -296,19 +297,13 @@ public class GeneralService implements ServerProtocolImplListener, ChatListener,
 
     }
 
-    public void disconnectPlayer(int playerId) {
+    public void connectionClosedReport(int playerId) {
         // if the player exists in the player manager and has not been deleted yet, it will be CONNECTION_LOST exit cause
-        Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresentOrElse(player -> {
+        Modules.PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> {
                     Modules.PLAYER_MANAGER.removePlayer(player);
                     Modules.SENDER.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.LOST_CONNECTION));
                     Modules.SERVER_CHAT.text("Player " + player.getName() + "(" + playerId + ") lost connection");
-                },
-                // Or else if player does not exist in player manager, it will be NORMAL_EXIT exit cause
-                () -> {
-                    Modules.SENDER.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
-                    System.out.println("player normal exited");
                 }
-
         );
 
 

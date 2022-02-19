@@ -149,7 +149,7 @@ public class GameRoot extends Root implements ClientListener {
      */
     @Override
     public void remotePlayerExit(@NotNull RemotePlayer remotePlayer) {
-        // chat.addMessage(0, remotePlayer.getName() + "(" + remotePlayer.getId() + ") exit");
+        chat.addMessage(0, remotePlayer.getName() + "(" + remotePlayer.getId() + ") exit");
         worldScene.removeRemotePlayer(remotePlayer);
     }
 
