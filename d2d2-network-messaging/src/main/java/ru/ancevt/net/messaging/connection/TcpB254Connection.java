@@ -27,6 +27,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
@@ -120,8 +121,11 @@ public class TcpB254Connection implements IConnection {
             }
 
         } catch (IOException e) {
+            closeIfOpen();
             dispatchConnectionClosed(new CloseStatus(e));
         }
+
+        closeIfOpen();
     }
 
     @Override
@@ -287,6 +291,8 @@ public class TcpB254Connection implements IConnection {
                 }
             }
 
+        } catch (SocketException e) {
+          log.debug("Socket closed when send data");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
