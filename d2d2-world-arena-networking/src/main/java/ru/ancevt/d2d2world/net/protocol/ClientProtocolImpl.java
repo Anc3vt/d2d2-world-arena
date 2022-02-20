@@ -67,12 +67,6 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                     clientProtocolImplListeners.forEach(l -> l.rconResponse(rconResponseData));
                 }
 
-                case MessageType.SERVER_TEXT_TO_PLAYER -> {
-                    log("received SERVER_TEXT_TO_PLAYER");
-                    String text = in.readUtf(byte.class);
-                    clientProtocolImplListeners.forEach(l->l.serverTextToPlayer(text));
-                }
-
                 case MessageType.SERVER_REMOTE_PLAYER_ENTER -> {
                     log("received SERVER_REMOTE_PLAYER_ENTER");
                     int remotePlayerId = in.readShort();
@@ -105,19 +99,32 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                     log("received SERVER_CHAT");
                     int chatMessageId = in.readInt();
                     String chatMessageText = in.readUtf(byte.class);
+                    int chatMessageTextColor = in.readInt();
 
                     if (in.hasNextData()) {
                         int playerId = in.readShort();
                         String playerName = in.readUtf(byte.class);
                         int playerColor = in.readInt();
-                        clientProtocolImplListeners.forEach(l ->
-                                l.playerChat(chatMessageId, playerId, playerName, playerColor, chatMessageText));
+                        clientProtocolImplListeners.forEach(l -> l.playerChat(
+                                chatMessageId,
+                                playerId,
+                                playerName,
+                                playerColor,
+                                chatMessageText,
+                                chatMessageTextColor));
 
                     } else {
                         clientProtocolImplListeners.forEach(l -> l.serverChat(
-                                chatMessageId, chatMessageText)
+                                chatMessageId, chatMessageText, chatMessageTextColor)
                         );
                     }
+                }
+
+                case MessageType.SERVER_TEXT_TO_PLAYER -> {
+                    log("received SERVER_TEXT_TO_PLAYER");
+                    int textColor = in.readInt();
+                    String text = in.readUtf(byte.class);
+                    clientProtocolImplListeners.forEach(l -> l.serverTextToPlayer(text, textColor));
                 }
 
                 case MessageType.SERVER_REMOTE_PLAYER_CONTROLLER_AND_XY -> {

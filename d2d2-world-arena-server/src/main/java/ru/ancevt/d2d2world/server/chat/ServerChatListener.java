@@ -18,5 +18,5 @@
 package ru.ancevt.d2d2world.server.chat;
 
 public interface ServerChatListener {
-    void chatMessage(ChatMessage chatMessage);
+    void chatMessage(ServerChatMessage serverChatMessage);
 }

@@ -55,12 +55,12 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
     }
 
     @Override
-    public void serverChat(int chatMessageId, @NotNull String chatMessageText) {
+    public void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor) {
 
     }
 
     @Override
-    public void playerChat(int chatMessageId, int playerId, @NotNull String playerName, int playerColor, @NotNull String chatMessageText) {
+    public void playerChat(int chatMessageId, int playerId, @NotNull String playerName, int playerColor, @NotNull String chatMessageText, int chatMessageTextColor) {
 
     }
 
@@ -70,7 +70,7 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
     }
 
     @Override
-    public void serverTextToPlayer(@NotNull String text) {
+    public void serverTextToPlayer(@NotNull String text, int textColor) {
 
     }
 }

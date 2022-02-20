@@ -124,13 +124,6 @@ public final class ServerProtocolImpl extends ProtocolImpl {
         }
     }
 
-    public static byte[] createMessageTextToPlayer(@NotNull String text) {
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_TEXT_TO_PLAYER)
-                .writeUtf(byte.class, text)
-                .toArray();
-    }
-
     public static byte[] createMessageServerInfoResponse(@NotNull String serverName,
                                                          @NotNull String serverVersion,
                                                          @NotNull String mapName,
@@ -192,17 +185,19 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 .toArray();
     }
 
-    public static byte[] createMessageChat(int chatMessageId, @NotNull String text) {
+    public static byte[] createMessageChat(int chatMessageId, @NotNull String text, int textColor) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.SERVER_CHAT)
                 .writeInt(chatMessageId)
                 .writeUtf(byte.class, text)
+                .writeInt(textColor)
                 .toArray();
 
     }
 
     public static byte[] createMessageChat(int chatMessageId,
                                            @NotNull String text,
+                                           int textColor,
                                            int playerId,
                                            @NotNull String playerName,
                                            int playerColor) {
@@ -211,11 +206,20 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 .writeByte(MessageType.SERVER_CHAT)
                 .writeInt(chatMessageId)
                 .writeUtf(byte.class, text)
+                .writeInt(textColor)
                 .writeShort(playerId)
                 .writeUtf(byte.class, playerName)
                 .writeInt(playerColor)
                 .toArray();
 
+    }
+
+    public static byte[] createMessageTextToPlayer(@NotNull String text, int textColor) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.SERVER_TEXT_TO_PLAYER)
+                .writeInt(textColor)
+                .writeUtf(byte.class, text)
+                .toArray();
     }
 
     public static byte[] createMessageRemotePlayerControllerAndXY(int playerId, int controllerState, float x, float y) {

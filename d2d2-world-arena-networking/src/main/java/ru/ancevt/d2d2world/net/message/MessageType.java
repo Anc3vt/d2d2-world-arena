@@ -73,12 +73,12 @@ public class MessageType {
     public static final int CLIENT_RCON_LOGIN = 254;
 
     /**
-     * b)t b)S)commandText i) S)extraData
+     * b)t b)S)commandText i)S)extraData
      */
     public static final int CLIENT_RCON_COMMAND = 255;
 
     /**
-     * b)t b)L S)name  b) S)clientProtocolVersion i) S)extraData
+     * b)t b)L S)name  b)S)clientProtocolVersion i)S)extraData
      */
     public static final int CLIENT_PLAYER_ENTER_REQUEST = 1;
 
@@ -93,7 +93,7 @@ public class MessageType {
     public static final int CLIENT_PLAYER_CONTROLLER_AND_XY_REPORT = 3;
 
     /**
-     * b)t b) S)chat msg text
+     * b)t b)S)chat msg text
      */
     public static final int CLIENT_PLAYER_TEXT_TO_CHAT = 4;
 
@@ -111,7 +111,7 @@ public class MessageType {
     //                                           CLIENT <=== SERVER
 
     /**
-     * b)t i) S)responseData
+     * b)t i)S)responseData
      */
     public static final int SERVER_RCON_RESPONSE = 253;
 
@@ -128,22 +128,22 @@ public class MessageType {
     public static final int SERVER_REMOTE_PLAYER_ENTER = 101;
 
     /**
-     * b)t s)playerId i)color b) S)serverProtocolVersion
+     * b)t s)playerId i)color b)S)serverProtocolVersion
      */
     public static final int SERVER_PLAYER_ENTER_RESPONSE = 102;
 
     /**
-     * b)t s)playerId b) S)name i)color i) S)extraData
+     * b)t s)playerId b)S)name i)color i)S)extraData
      */
     public static final int SERVER_REMOTE_PLAYER_INTRODUCE = 103;
 
     /**
-     * b)t i)chatMessageId b) S)text s) playerId b) S)playerName i)playerColor
+     * b)t i)chatMessageId b)S)text i)textColor [ s) playerIdFrom b)S)playerName i)playerColor ]
      */
     public static final int SERVER_CHAT = 104;
 
     /**
-     * b)t b)S)text
+     * b)t i)textColor b)S)text
      */
     public static final int SERVER_TEXT_TO_PLAYER = 109;
 
@@ -153,7 +153,7 @@ public class MessageType {
     public static final int SERVER_REMOTE_PLAYER_CONTROLLER_AND_XY = 105;
 
     /**
-     * b)t s)playerId b) exitReason
+     * b)t s)playerId b)exitCause
      */
     public static final int SERVER_REMOTE_PLAYER_EXIT = 106;
 
@@ -171,12 +171,12 @@ public class MessageType {
     //                                           CLIENT <==> SERVER
 
     /**
-     * b)t s)error code b) S)errorMessage i) S)errorDetailText
+     * b)t s)error code b)S)errorMessage i)S)errorDetailText
      */
     public static final int ERROR = 199;
 
     /**
-     * b)t i) S)extraData
+     * b)t i)S)extraData
      */
     public static final int EXTRA = 200;
 

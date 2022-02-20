@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.server.chat;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ChatMessage {
+public class ServerChatMessage {
 
     public static final int DEFAULT_COLOR = 0xFFFFFF;
 
@@ -28,27 +28,31 @@ public class ChatMessage {
     private final String text;
     private final int playerId;
     private final int playerColor;
+    private final int textColor;
 
 
-    public ChatMessage(int id, String text) {
+    public ServerChatMessage(int id, @NotNull String text, int textColor) {
         this.id = id;
         this.text = text;
         this.playerId = 0;
         this.playerName = null;
         this.playerColor = 0;
+        this.textColor = textColor;
     }
 
-    public ChatMessage(int id,
-                       @NotNull String text,
-                       int playerId,
-                       @NotNull String playerName,
-                       int playerColor) {
+    public ServerChatMessage(int id,
+                             @NotNull String text,
+                             int playerId,
+                             @NotNull String playerName,
+                             int playerColor,
+                             int textColor) {
 
         this.id = id;
         this.text = text;
         this.playerId = playerId;
         this.playerName = playerName;
         this.playerColor = playerColor;
+        this.textColor = textColor;
     }
 
     public int getId() {
@@ -57,6 +61,10 @@ public class ChatMessage {
 
     public String getText() {
         return text;
+    }
+
+    public int getTextColor() {
+        return textColor;
     }
 
     public int getPlayerColor() {
@@ -77,12 +85,13 @@ public class ChatMessage {
 
     @Override
     public String toString() {
-        return "ChatMessage{" +
+        return "ServerChatMessage{" +
                 "playerName='" + playerName + '\'' +
                 ", id=" + id +
                 ", text='" + text + '\'' +
                 ", playerId=" + playerId +
-                ", playerColor=" + playerColor +
+                ", playerColor=" + Integer.toString(playerColor, 16) +
+                ", textColor=" + Integer.toString(textColor, 16) +
                 '}';
     }
 }

@@ -23,15 +23,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
-
 public class ServerChat {
     private static final int MAX_MESSAGES = 1024;
     private static final int DELETE_MESSAGES = MAX_MESSAGES / 4;
+    private static final int DEFAULT_PLAYER_TEXT_COLOR = 0xFFFFFF;
+    private static final int DEFAULT_TEXT_COLOR = 0xBBBBAA;
 
     private static int idCounter;
 
-    private final List<ChatMessage> messages;
+    private final List<ServerChatMessage> messages;
 
     private final List<ServerChatListener> serverChatListeners;
 
@@ -56,16 +56,27 @@ public class ServerChat {
     }
 
     public void text(@NotNull String text) {
-        ChatMessage chatMessage = new ChatMessage(getNewChatMessageId(), text);
-        messages.add(chatMessage);
-        serverChatListeners.forEach(l -> l.chatMessage(chatMessage));
+        text(text, DEFAULT_TEXT_COLOR);
+    }
+
+    public void text(@NotNull String text, int textColor) {
+        ServerChatMessage serverChatMessage = new ServerChatMessage(getNewChatMessageId(), text, textColor);
+        messages.add(serverChatMessage);
+        serverChatListeners.forEach(l -> l.chatMessage(serverChatMessage));
         checkAndFixMessageListSize();
     }
 
     public void playerText(@NotNull String text, int playerId, String playerName, int playerColor) {
-        ChatMessage chatMessage = new ChatMessage(getNewChatMessageId(), text, playerId, playerName, playerColor);
-        messages.add(chatMessage);
-        serverChatListeners.forEach(l -> l.chatMessage(chatMessage));
+        playerText(text, playerId, playerName, playerColor, DEFAULT_PLAYER_TEXT_COLOR);
+    }
+
+    public void playerText(@NotNull String text, int playerId, String playerName, int playerColor, int textColor) {
+
+        ServerChatMessage serverChatMessage = new ServerChatMessage(
+                getNewChatMessageId(), text, playerId, playerName, playerColor, textColor);
+
+        messages.add(serverChatMessage);
+        serverChatListeners.forEach(l -> l.chatMessage(serverChatMessage));
         checkAndFixMessageListSize();
     }
 
@@ -78,21 +89,11 @@ public class ServerChat {
         }
     }
 
-    public List<ChatMessage> getMessagesFromIdExcluding(int chatMessageId) {
-        int fromIndex = -1;
-        int indexCounter = 0;
-        for (ChatMessage message : messages) {
-            if (message.getId() > chatMessageId) {
-                fromIndex = indexCounter;
-                break;
-            }
-            indexCounter++;
+    public List<ServerChatMessage> getMessages(int count) {
+        if(messages.size() > count) {
+            return messages.subList(messages.size() - 1 - count, messages.size());
         }
-        if (fromIndex != -1) {
-            return messages.subList(fromIndex, messages.size() - 1);
-        }
-
-        return List.of();
+        return List.copyOf(messages);
     }
 
 

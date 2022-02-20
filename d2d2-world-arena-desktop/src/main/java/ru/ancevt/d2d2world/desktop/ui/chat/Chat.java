@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.desktop.ui.chat;
 
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.Color;
@@ -153,23 +154,28 @@ public class Chat extends DisplayObjectContainer {
         return scroll;
     }
 
-    public void addMessage(String text) {
-        addMessage(0, text);
+    public void addServerMessage(int chatMessageId, @NotNull String messageText, Color textColor) {
+        addMessage(new ChatMessage(chatMessageId, messageText, textColor));
+        redraw();
     }
 
-    public void addMessage(int id, int playerId, String playerName, int playerColor, String messageText) {
-        addMessage(new ChatMessage(id, playerId, playerName, playerColor, messageText));
+    public void addPlayerMessage(int id,
+                                 int playerId,
+                                 @NotNull String playerName,
+                                 int playerColor,
+                                 @NotNull String messageText,
+                                 @NotNull Color textColor) {
+        addMessage(new ChatMessage(id, playerId, playerName, playerColor, messageText, textColor));
         if (id != 0) lastChatMessageId = id;
         redraw();
     }
 
-    public void addMessage(int id, String messageText) {
-        addMessage(new ChatMessage(id, messageText));
-        if (id != 0) lastChatMessageId = id;
+    public void addMessage(@NotNull String messageText, @NotNull Color textColor) {
+        addMessage(new ChatMessage(0, messageText, textColor));
         redraw();
     }
 
-    private void addMessage(ChatMessage chatMessage) {
+    private void addMessage(@NotNull ChatMessage chatMessage) {
         chatMessage.setShadowEnabled(getShadowEnabled());
         messages.add(chatMessage);
 
@@ -281,14 +287,14 @@ public class Chat extends DisplayObjectContainer {
             if (event instanceof ChatEvent chatEvent) {
                 String text = chatEvent.getText();
                 idCounter.setValue(idCounter.getValue() + 1);
-                chat.addMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, text);
+                chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, text, Color.WHITE);
             }
         });
         root.add(chat, 10, 10);
 
         for (int i = 0; i < 10; i++) {
             idCounter.setValue(idCounter.getValue() + 1);
-            chat.addMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, "Hello, i'm Ancevt" + i);
+            chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, "Hello, i'm Ancevt" + i, Color.WHITE);
         }
 
         ReplInterpreter repl = new ReplInterpreter();
@@ -298,13 +304,13 @@ public class Chat extends DisplayObjectContainer {
             String playerName = a.get(String.class, new String[]{"-n"}, "Name");
             int playerColor = a.get(int.class, new String[]{"-c"}, 0xFFFF00);
             String messageText = a.get(String.class, new String[]{"-m"});
-            chat.addMessage(idCounter.getValue(), playerId, playerName, playerColor, messageText);
+            chat.addPlayerMessage(idCounter.getValue(), playerId, playerName, playerColor, messageText, Color.WHITE);
         });
 
         repl.addCommand("s", a -> {
             idCounter.setValue(idCounter.getValue() + 1);
             String messageText = a.get(String.class, new String[]{"-m"});
-            chat.addMessage(idCounter.getValue(), messageText);
+            chat.addServerMessage(idCounter.getValue(), messageText, Color.GRAY);
         });
         new Thread(repl::start).start();
 

@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.desktop.ui.chat;
 
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2world.desktop.ui.Font;
@@ -35,29 +36,32 @@ public class ChatMessage extends DisplayObjectContainer {
     private final String text;
     private final UiText nameUiText;
     private final UiText textUiText;
+    private final Color textColor;
 
     public ChatMessage(int id,
                        int playerId,
-                       String playerName,
+                       @NotNull String playerName,
                        int playerColor,
-                       String messageText) {
+                       @NotNull String messageText,
+                       Color textColor) {
 
         this.id = id;
         this.playerId = playerId;
         this.playerName = playerName;
         this.text = messageText;
+        this.textColor = textColor;
         nameUiText = new UiText();
         textUiText = new UiText();
 
         String playerNameToShow = format("%s(%d):", playerName, playerId);
 
         nameUiText.setColor(Color.of(playerColor));
+        textUiText.setColor(textColor);
         nameUiText.setText(playerNameToShow);
         nameUiText.setSize(playerNameToShow.length() * Font.getBitmapFont().getCharInfo('0').width() + 10, 30);
 
         textUiText.setText(messageText);
         textUiText.setX(nameUiText.getWidth());
-
         textUiText.setWidth(DEFAULT_WIDTH);
         textUiText.setHeight(DEFAULT_HEIGHT);
 
@@ -67,17 +71,18 @@ public class ChatMessage extends DisplayObjectContainer {
         add(textUiText);
     }
 
-    public ChatMessage(int id, String messageText) {
+    public ChatMessage(int id, String messageText, Color textColor) {
         this.id = id;
         this.playerId = 0;
         this.playerName = null;
         this.text = messageText;
+        this.textColor = textColor;
         nameUiText = null;
         textUiText = new UiText();
 
         textUiText.setWidth(DEFAULT_WIDTH);
         textUiText.setHeight(DEFAULT_HEIGHT);
-
+        textUiText.setColor(textColor);
         textUiText.setText(messageText);
         add(textUiText);
     }
@@ -105,6 +110,10 @@ public class ChatMessage extends DisplayObjectContainer {
         return playerName;
     }
 
+    public Color getTextColor() {
+        return textColor;
+    }
+
     public String getText() {
         return text;
     }
@@ -122,6 +131,8 @@ public class ChatMessage extends DisplayObjectContainer {
                 ", text='" + text + '\'' +
                 ", nameUiText=" + nameUiText +
                 ", textUiText=" + textUiText +
+                ", textColor=" + textColor +
                 '}';
     }
 }
+

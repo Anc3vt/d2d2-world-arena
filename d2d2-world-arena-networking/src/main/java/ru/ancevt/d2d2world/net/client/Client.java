@@ -207,8 +207,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      * {@link ClientProtocolImplListener} method
      */
     @Override
-    public void serverChat(int chatMessageId, @NotNull String chatMessageText) {
-        clientListeners.forEach(l -> l.serverChat(chatMessageId, chatMessageText));
+    public void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor) {
+        clientListeners.forEach(l -> l.serverChat(chatMessageId, chatMessageText, chatMessageTextColor));
     }
 
     /**
@@ -219,9 +219,11 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                            int playerId,
                            @NotNull String playerName,
                            int playerColor,
-                           @NotNull String chatMessageText) {
+                           @NotNull String chatMessageText,
+                           int chatMessageTextColor) {
 
-        clientListeners.forEach(l -> l.playerChat(chatMessageId, playerId, playerName, playerColor, chatMessageText));
+        clientListeners.forEach(l -> l.playerChat(
+                chatMessageId, playerId, playerName, playerColor, chatMessageText, chatMessageTextColor));
     }
 
     /**
@@ -236,8 +238,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      * {@link ClientProtocolImplListener} method
      */
     @Override
-    public void serverTextToPlayer(@NotNull String text) {
-        clientListeners.forEach(l -> l.serverTextToPlayer(text));
+    public void serverTextToPlayer(@NotNull String text, int textColor) {
+        clientListeners.forEach(l -> l.serverTextToPlayer(text, textColor));
     }
 
     public void sendPlayerEnterRequest() {

@@ -95,8 +95,6 @@ public class Selection extends DisplayObjectContainer implements EventListener {
 
             if (repeatControl != null && repeatControl.hasParent()) {
                 repeatControl.setXY(getWidth() - 8, getHeight() - 8);
-//			final float parentScale = getParent().getAbsoluteScaleX();
-//			repeatControl.setScale(1f / parentScale, 1f / parentScale);
             }
         }
     }

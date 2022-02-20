@@ -30,9 +30,9 @@ import ru.ancevt.d2d2world.server.Config;
 import ru.ancevt.d2d2world.server.ServerStateInfo;
 import ru.ancevt.d2d2world.server.ServerTimer;
 import ru.ancevt.d2d2world.server.ServerTimerListener;
-import ru.ancevt.d2d2world.server.chat.ChatMessage;
 import ru.ancevt.d2d2world.server.chat.ServerChat;
 import ru.ancevt.d2d2world.server.chat.ServerChatListener;
+import ru.ancevt.d2d2world.server.chat.ServerChatMessage;
 import ru.ancevt.d2d2world.server.player.Player;
 import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 import ru.ancevt.d2d2world.server.repl.ServerCommandProcessor;
@@ -103,9 +103,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     public void rconLogin(int playerId, @NotNull String passwordHash) {
         if (MD5.hash(config.getString(Config.RCON_PASSWORD)).equals(passwordHash)) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setRconLoggedIn(true));
-            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin"));
+            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin", 0xFFFFFF));
         } else {
-            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("Wrong password"));
+            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("Wrong password", 0xFF0000));
         }
     }
 
@@ -195,31 +195,34 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         );
 
         // send chat history to new player
-        serverChat.getMessagesFromIdExcluding(newPlayer.getLastSeenChatMessageId()).forEach(chatMessage -> {
-            if (chatMessage.isFromPlayer()) {
+        serverChat.getMessages(10).forEach(serverChatMessage -> {
+            if (serverChatMessage.isFromPlayer()) {
                 serverSender.sendToPlayer(
                         playerId,
                         createMessageChat(
-                                chatMessage.getId(),
-                                chatMessage.getText(),
-                                chatMessage.getPlayerId(),
-                                chatMessage.getPlayerName(),
-                                chatMessage.getPlayerColor()
-                        )
+                                serverChatMessage.getId(),
+                                serverChatMessage.getText(),
+                                serverChatMessage.getTextColor(),
+                                serverChatMessage.getPlayerId(),
+                                serverChatMessage.getPlayerName(),
+                                serverChatMessage.getPlayerColor())
                 );
             } else {
                 serverSender.sendToPlayer(
                         playerId,
-                        createMessageChat(chatMessage.getId(), chatMessage.getText())
+                        createMessageChat(
+                                serverChatMessage.getId(),
+                                serverChatMessage.getText(),
+                                serverChatMessage.getTextColor())
                 );
             }
 
-            newPlayer.setLastSeenChatMessageId(chatMessage.getId());
+            newPlayer.setLastSeenChatMessageId(serverChatMessage.getId());
         });
 
         // send enter message to all players including new player
 
-        serverChat.text("Player " + playerName + "(" + playerId + ") connected");
+        serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
     }
 
     /**
@@ -255,8 +258,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     @Override
     public void playerExitRequest(int playerId) {
         serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+            serverChat.text("Player " + p.getName() + "(" + playerId + ") exit", 0x999999);
             serverPlayerManager.removePlayer(p);
-            serverChat.text("Player " + p.getName() + "(" + playerId + ") exit");
             serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
         });
 
@@ -309,26 +312,26 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerChatListener} method
      */
     @Override
-    public void chatMessage(ChatMessage chatMessage) {
-        if (chatMessage.isFromPlayer())
+    public void chatMessage(ServerChatMessage serverChatMessage) {
+        if (serverChatMessage.isFromPlayer())
             serverSender.sendToAll(
                     createMessageChat(
-                            chatMessage.getId(),
-                            chatMessage.getText(),
-                            chatMessage.getPlayerId(),
-                            chatMessage.getPlayerName(),
-                            chatMessage.getPlayerColor()
-                    )
+                            serverChatMessage.getId(),
+                            serverChatMessage.getText(),
+                            serverChatMessage.getTextColor(),
+                            serverChatMessage.getPlayerId(),
+                            serverChatMessage.getPlayerName(),
+                            serverChatMessage.getPlayerColor())
             );
         else
             serverSender.sendToAll(
                     createMessageChat(
-                            chatMessage.getId(),
-                            chatMessage.getText()
-                    )
+                            serverChatMessage.getId(),
+                            serverChatMessage.getText(),
+                            serverChatMessage.getTextColor())
             );
 
-        serverPlayerManager.getPlayerList().forEach(p -> p.setLastSeenChatMessageId(chatMessage.getId()));
+        serverPlayerManager.getPlayerList().forEach(p -> p.setLastSeenChatMessageId(serverChatMessage.getId()));
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {

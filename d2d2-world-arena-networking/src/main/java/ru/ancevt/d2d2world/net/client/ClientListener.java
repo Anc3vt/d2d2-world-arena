@@ -18,10 +18,7 @@
 package ru.ancevt.d2d2world.net.client;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.Pair;
 import ru.ancevt.net.messaging.CloseStatus;
-
-import java.util.List;
 
 public interface ClientListener {
 
@@ -31,13 +28,14 @@ public interface ClientListener {
 
     void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion);
 
-    void serverChat(int chatMessageId, @NotNull String chatMessageText);
+    void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor);
 
     void playerChat(int chatMessageId,
                     int playerId,
                     @NotNull String playerName,
                     int playerColor,
-                    @NotNull String chatMessageText);
+                    @NotNull String chatMessageText,
+                    int textColor);
 
     void clientConnectionClosed(@NotNull CloseStatus status);
 
@@ -47,5 +45,5 @@ public interface ClientListener {
 
     void serverInfo(@NotNull ServerInfoRetrieveResult result);
 
-    void serverTextToPlayer(@NotNull String text);
+    void serverTextToPlayer(@NotNull String text, int textColor);
 }

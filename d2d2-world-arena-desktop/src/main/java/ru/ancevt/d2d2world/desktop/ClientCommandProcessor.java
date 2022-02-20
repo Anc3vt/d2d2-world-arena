@@ -18,6 +18,7 @@
 package ru.ancevt.d2d2world.desktop;
 
 import ru.ancevt.commons.hash.MD5;
+import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
@@ -74,7 +75,7 @@ public class ClientCommandProcessor {
 
                 String[] lines = tt.render().split("\n");
                 for (String line : lines) {
-                    chat.addMessage(line);
+                    chat.addMessage(line, Color.WHITE);
                 }
                 return true;
             }

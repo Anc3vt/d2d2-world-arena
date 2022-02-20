@@ -48,15 +48,15 @@ public non-sealed interface ClientProtocolImplListener extends ProtocolImplListe
 
     void remotePlayerPing(int remotePlayerId, int remotePlayerPing);
     
-    void serverChat(int chatMessageId, @NotNull String chatMessageText);
+    void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor);
 
     void playerChat(int chatMessageId,
                     int playerId,
                     @NotNull String playerName,
                     int playerColor,
-                    @NotNull String chatMessageText);
+                    @NotNull String chatMessageText, int chatMessageTextColor);
 
     void serverInfoResponse(@NotNull ServerInfoRetrieveResult result);
 
-    void serverTextToPlayer(@NotNull String text);
+    void serverTextToPlayer(@NotNull String text, int textColor);
 }

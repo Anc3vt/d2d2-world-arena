@@ -126,8 +126,8 @@ public class GameRoot extends Root implements ClientListener {
      * {@link ClientListener} method
      */
     @Override
-    public void serverTextToPlayer(@NotNull String text) {
-        chat.addMessage(text);
+    public void serverTextToPlayer(@NotNull String text, int textColor) {
+        chat.addMessage(text, Color.of(textColor));
     }
 
     /**
@@ -135,7 +135,7 @@ public class GameRoot extends Root implements ClientListener {
      */
     @Override
     public void remotePlayerExit(@NotNull RemotePlayer remotePlayer) {
-        chat.addMessage(0, remotePlayer.getName() + "(" + remotePlayer.getId() + ") exit");
+        chat.addMessage(remotePlayer.getName() + "(" + remotePlayer.getId() + ") exit", Color.GRAY);
         worldScene.removeRemotePlayer(remotePlayer);
     }
 
@@ -144,7 +144,8 @@ public class GameRoot extends Root implements ClientListener {
      */
     @Override
     public void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion) {
-        chat.addMessage(0, "Your id is " + localPlayerId + ", server protocol version is " + serverProtocolVersion);
+        chat.addMessage("Your id is " + localPlayerId + ", server protocol version is " + serverProtocolVersion
+                , Color.WHITE);
         worldScene.start();
 
         String rconPassword = config.getString(Config.RCON_PASSWORD);
@@ -157,25 +158,33 @@ public class GameRoot extends Root implements ClientListener {
      * {@link ClientListener} method
      */
     @Override
-    public void serverChat(int chatMessageId, @NotNull String chatMessageText) {
-        chat.addMessage(chatMessageId, "Server: " + chatMessageText);
+    public void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor) {
+        chat.addServerMessage(chatMessageId, "Server: " + chatMessageText, Color.of(chatMessageTextColor));
     }
 
     /**
      * {@link ClientListener} method
      */
     @Override
-    public void playerChat(int chatMessageId, int playerId, @NotNull String playerName, int playerColor, @NotNull String chatMessageText) {
-        chat.addMessage(chatMessageId, playerId, playerName, playerColor, chatMessageText);
+    public void playerChat(int chatMessageId,
+                           int playerId,
+                           @NotNull String playerName,
+                           int playerColor,
+                           @NotNull String chatMessageText,
+                           int textColor) {
+
+        System.out.println("playerChat: " + playerName);
+
+        chat.addPlayerMessage(chatMessageId, playerId, playerName, playerColor, chatMessageText, Color.of(textColor));
     }
 
     /**
      * {@link ClientListener} method
      */
     @Override
-    public void clientConnectionClosed(CloseStatus status) {
+    public void clientConnectionClosed(@NotNull CloseStatus status) {
         worldScene.stop();
-        chat.addMessage(0, status.getErrorMessage());
+        chat.addMessage(status.getErrorMessage(), Color.RED);
         new Lock().lock(5, TimeUnit.SECONDS);
         start(server, client.getLocalPlayerName());
     }
@@ -185,7 +194,7 @@ public class GameRoot extends Root implements ClientListener {
      */
     @Override
     public void clientConnectionEstablished() {
-        chat.addMessage(0, "Connection established");
+        chat.addMessage("Connection established", Color.GREEN);
         client.sendPlayerEnterRequest();
     }
 
@@ -193,7 +202,7 @@ public class GameRoot extends Root implements ClientListener {
         add(new FpsMeter(), 0, getStage().getStageWidth() - 100);
     }
 
-    public void start(String server, String localPlayerName) {
+    public void start(@NotNull String server, String localPlayerName) {
         worldScene.init();
 
         this.server = server;
@@ -203,7 +212,7 @@ public class GameRoot extends Root implements ClientListener {
 
         client.setLocalPlayerName(localPlayerName);
 
-        chat.addMessage(0, "Connecting to " + server + "...");
+        chat.addMessage("Connecting to " + server + "...", Color.GRAY);
         new Lock().lock(100, TimeUnit.MILLISECONDS);
         client.connect(host, port);
     }
