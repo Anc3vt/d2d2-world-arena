@@ -85,19 +85,13 @@ public class Selection extends DisplayObjectContainer implements EventListener {
     @Override
     public void onEvent(Event event) {
         if (event.getType().equals(Event.EACH_FRAME)) {
-            setXY(
-                    gameObject.getX(),
-                    gameObject.getY()
-            );
+            setXY(gameObject.getX(), gameObject.getY());
 
             if (gameObject instanceof ICollision c) {
                 move(c.getCollisionX(), c.getCollisionY());
             }
 
-            setSize(
-                    gameObject.getWidth(),
-                    gameObject.getHeight()
-            );
+            setSize(gameObject.getWidth(), gameObject.getHeight());
 
             if (repeatControl != null && repeatControl.hasParent()) {
                 repeatControl.setXY(getWidth() - 8, getHeight() - 8);
