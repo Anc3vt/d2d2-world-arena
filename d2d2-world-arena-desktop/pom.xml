@@ -50,20 +50,14 @@
             <id>ancevt-snapshots</id>
             <url>https://packages.ancevt.ru/snapshots</url>
         </repository>
-        <repository>
-            <id>oss.sonatype.org</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+        
     </repositories>
 
    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
 
-        <platform>linux</platform>
+        <!--<platform>windows</platform>-->
 
         <!-- Ancevt -->
         <ancevt-commons.version>1.0.0.1</ancevt-commons.version>
@@ -139,11 +133,11 @@
 
         <profile>
             <id>windows</id>
-            <activation>
+            <!--<activation>
                 <os>
                     <family>Windows</family>
                 </os>
-            </activation>
+            </activation>-->
             <properties>
                 <platform>windows</platform>
             </properties>

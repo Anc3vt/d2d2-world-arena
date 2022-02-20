@@ -40,7 +40,7 @@ import java.io.IOException;
 public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
-        MapSaver.mapDirectory = a.get("--map-directory", "/home/ancevt/workspace/pet/d2d2/d2d2-world/src/main/resources/assets/map/");
+        MapSaver.mapDirectory = a.get("--map-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world/src/main/resources/assets/map/");
         MapSaver.mapFileName = a.get("--map", "map0.wam");
 
 

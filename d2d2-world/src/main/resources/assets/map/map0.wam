@@ -1,4 +1,4 @@
-map | name = Test map | usingMapkit = mapkit0 | startRoomId = start-room | gravity = 1.0 
+map | name = Test map | gravity = 1.0 | usingMapkit = mapkit0 | startRoomId = start-room 
 
 room | id = 2 | width = 992 | height = 512 | backgroundColor = 22 
 id = 2 | item = brick1 | layer = 1 | name = _displayObject120 | x = 64.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
@@ -16,7 +16,7 @@ room | id = 25 | width = 992 | height = 512 | backgroundColor = 22
 
 room | id = 26 | width = 992 | height = 512 | backgroundColor = 22 
 
-room | id = 3 привет я сообщение в чате | width = 992 | height = 512 | backgroundColor = 22 
+room | id = 3 dddd | width = 992 | height = 512 | backgroundColor = 22 
 
 room | id = 3123 | width = 992 | height = 512 | backgroundColor = e2e2 
 
@@ -36,7 +36,7 @@ room | id = 9123 | width = 992 | height = 512 | backgroundColor = 22
 
 room | id = ____ | width = 992 | height = 512 | backgroundColor = 22 
 
-room | id = start-room | width = 1024 | height = 512 | backgroundColor = 11 
+room | id = old-start-room | width = 1024 | height = 512 | backgroundColor = 11 
 id = 46 | item = brick2 | layer = 0 | name = _46 | x = 0.0 | y = -64.0 | repeatX = 54 | repeatY = 32 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 0.1 
 id = 10 | item = brick1 | layer = 1 | name = _10 | x = -288.0 | y = -64.0 | repeatX = 18 | repeatY = 16 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
 id = 11 | item = brick1 | layer = 1 | name = _11 | x = 0.0 | y = 160.0 | repeatX = 23 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
@@ -166,7 +166,25 @@ id = 51 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pu
 id = 52 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.517426 | collisionHeight = 16.996216 | name = _30 | x = 832.0 | y = 352.0 | width = 32.517426 | height = 16.996216 
 id = 54 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 32.517426 | collisionHeight = 16.996216 | name = _30 | x = 832.0 | y = 256.0 | width = 32.517426 | height = 16.996216 
 
-room | id = to-delete | width = 992 | height = 512 | backgroundColor = 22 
+room | id = start-room | width = 992 | height = 512 | backgroundColor = 22 
+id = 134 | item = brick1 | layer = 1 | name = _134 | x = 16.0 | y = 96.0 | repeatX = 15 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 135 | item = brick1 | layer = 1 | name = _135 | x = 256.0 | y = 48.0 | repeatX = 6 | repeatY = 5 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 137 | item = brick1 | layer = 1 | name = _137 | x = 320.0 | y = 176.0 | repeatX = 11 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 138 | item = brick1 | layer = 1 | name = _138 | x = 544.0 | y = 176.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 139 | item = brick1 | layer = 1 | name = _139 | x = 576.0 | y = 176.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 140 | item = brick1 | layer = 1 | name = _140 | x = 608.0 | y = 176.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 141 | item = brick1 | layer = 1 | name = _141 | x = 656.0 | y = 176.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 142 | item = brick1 | layer = 1 | name = _142 | x = 704.0 | y = 176.0 | repeatX = 1 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 143 | item = brick1 | layer = 1 | name = _143 | x = 768.0 | y = 176.0 | repeatX = 3 | repeatY = 1 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
+id = 133 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 240.0 | collisionHeight = 32.75 | name = _133 | x = 16.0 | y = 96.0 | width = 240.0 | height = 32.75 
+id = 136 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 96.0 | collisionHeight = 80.25 | name = _136 | x = 256.0 | y = 48.0 | width = 96.0 | height = 80.25 
+id = 144 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 176.0 | collisionHeight = 32.75 | name = _144 | x = 320.0 | y = 176.0 | width = 176.0 | height = 32.75 
+id = 145 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _145 | x = 544.0 | y = 176.0 | width = 16.0 | height = 16.0 
+id = 146 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _146 | x = 576.0 | y = 176.0 | width = 16.0 | height = 16.0 
+id = 147 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _147 | x = 608.0 | y = 176.0 | width = 16.0 | height = 16.0 
+id = 148 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _148 | x = 656.0 | y = 176.0 | width = 16.0 | height = 16.0 
+id = 149 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _149 | x = 704.0 | y = 176.0 | width = 16.0 | height = 16.0 
+id = 150 | mapkit = areas | item = collision | layer = 9 | floorOnly = false | pushable = false | collisionEnabled = true | collisionX = 0.0 | collisionY = 0.0 | collisionWidth = 48.0 | collisionHeight = 16.75 | name = _150 | x = 768.0 | y = 176.0 | width = 48.0 | height = 16.75 
 
 room | id = to-delete 2 | width = 992 | height = 512 | backgroundColor = 22 
 
