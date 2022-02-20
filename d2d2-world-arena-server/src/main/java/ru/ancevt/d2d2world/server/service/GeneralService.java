@@ -70,7 +70,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     public GeneralService() {
         modules.get(ServerProtocolImpl.class).addServerProtocolImplListener(this);
-        modules.get(ServerChat.class).addChatListener(this);
+        modules.get(ServerChat.class).addServerChatListener(this);
         modules.get(ServerTimer.class).setTimerListener(this);
     }
 
