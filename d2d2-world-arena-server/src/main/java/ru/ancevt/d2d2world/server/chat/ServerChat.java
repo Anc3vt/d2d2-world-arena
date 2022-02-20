@@ -40,11 +40,11 @@ public class ServerChat {
         serverChatListeners = new ArrayList<>();
     }
 
-    public void addChatListener(ServerChatListener l) {
+    public void addServerChatListener(ServerChatListener l) {
         serverChatListeners.add(l);
     }
 
-    public void removeChatListener(ServerChatListener l) {
+    public void removeServerCharListener(ServerChatListener l) {
         serverChatListeners.remove(l);
     }
 
