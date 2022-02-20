@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ServerChat {
-    private static final int MAX_MESSAGES = 1024;
+    private static final int MAX_MESSAGES = 256;
     private static final int DELETE_MESSAGES = MAX_MESSAGES / 4;
     private static final int DEFAULT_PLAYER_TEXT_COLOR = 0xFFFFFF;
     private static final int DEFAULT_TEXT_COLOR = 0xBBBBAA;
@@ -84,7 +84,7 @@ public class ServerChat {
         if (messages.size() > MAX_MESSAGES) {
             int counter = DELETE_MESSAGES;
             while (counter-- > 0) {
-                messages.remove(0);
+                messages.retainAll(messages.subList(0, DELETE_MESSAGES));
             }
         }
     }
