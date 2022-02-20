@@ -33,10 +33,12 @@ public class D2D2 {
         return starter;
     }
 
-    public static void init(D2D2Starter starter) {
+    public static Root init(D2D2Starter starter) {
+        Root root;
         D2D2.starter = starter;
         starter.create();
-        getStage().setRoot(new Root());
+        getStage().setRoot(root = new Root());
+        return root;
     }
 
     public static Stage getStage() {

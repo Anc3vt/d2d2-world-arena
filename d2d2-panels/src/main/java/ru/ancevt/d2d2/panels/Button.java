@@ -29,7 +29,6 @@ public class Button extends Panel {
     private static final String DEFAULT_BUTTON_LABEL_TEXT = "Button";
     private static final float DEFAULT_WIDTH = 120;
     private static final float DEFAULT_HEIGHT = 30;
-    private static final Color COLOR = Color.BLACK;
     private static final Color DISABLED_COLOR = Color.GRAY;
 
     private final BitmapText label;
@@ -43,7 +42,7 @@ public class Button extends Panel {
 
     public Button(String labelText) {
         label = new BitmapText();
-        label.setColor(COLOR);
+        label.setColor(Color.BLACK);
         label.setText(labelText);
 
         touchButton = new TouchButton();
@@ -78,6 +77,14 @@ public class Button extends Panel {
         touchButton.setEnabled(true);
         add(label);
         setEnabled(true);
+    }
+
+    public void setColor(Color color) {
+        label.setColor(color);
+    }
+
+    public Color getColor() {
+        return label.getColor();
     }
 
     public void onButtonPressed() {
@@ -144,7 +151,7 @@ public class Button extends Panel {
     public void setEnabled(boolean value) {
         touchButton.setEnabled(value);
 
-        label.setColor(value ? COLOR : DISABLED_COLOR);
+        label.setColor(value ? getColor() : DISABLED_COLOR);
 
         if (icon != null) {
             //icon.setColor(value ? Color.WHITE : Color.GRAY);

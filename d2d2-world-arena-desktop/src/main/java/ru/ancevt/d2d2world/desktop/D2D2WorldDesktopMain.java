@@ -21,7 +21,7 @@ import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
-import ru.ancevt.d2d2world.desktop.scene.IntroRoot;
+import ru.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
 
@@ -54,10 +54,13 @@ public class D2D2WorldDesktopMain {
         String projectName = properties.getProperty("project.name");
         String version = properties.getProperty("project.version");
 
+        System.out.println(projectName);
+        System.out.println(version);
+
 
         String autoEnterPlayerName = config.getString(Config.PLAYER, "");
 
-        D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
+        D2D2.init(new LWJGLStarter(900, 530, "(floating) D2D2 World Arena " + autoEnterPlayerName));
 
         // Module initialization section: THE ORDER IS IMPORTANT!
         modules.add(config);

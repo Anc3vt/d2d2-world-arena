@@ -261,7 +261,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
     public void unloadTextureAtlas(TextureAtlas textureAtlas) {
         mapping.images().remove(textureAtlas.getId());
         // TODO: repair creating new textures after unloading
-        if(textureAtlas.isDisposed()) {
+        if (textureAtlas.isDisposed()) {
             throw new IllegalStateException("Texture atlas is already disposed " + textureAtlas);
         }
 
@@ -269,7 +269,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
     }
 
     public void unloadTextureAtlases() {
-        while(!unloadQueue.isEmpty()) {
+        while (!unloadQueue.isEmpty()) {
             TextureAtlas textureAtlas = unloadQueue.poll();
             glDeleteTextures(mapping.ids().get(textureAtlas.getId()));
             mapping.ids().remove(textureAtlas.getId());

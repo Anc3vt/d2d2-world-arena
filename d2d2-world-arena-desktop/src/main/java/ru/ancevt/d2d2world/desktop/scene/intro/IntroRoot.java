@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.desktop.scene;
+package ru.ancevt.d2d2world.desktop.scene.intro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +32,7 @@ import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.panels.Button;
 import ru.ancevt.d2d2world.desktop.Config;
+import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.ui.Font;
 import ru.ancevt.d2d2world.desktop.ui.TextInputEvent;
 import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
@@ -56,11 +57,12 @@ public class IntroRoot extends Root {
     private final PlainRect panelRect;
     private final UiTextInput uiTextInputServer;
     private final UiTextInput uiTextInputPlayerName;
-    private final UiText labelVersion;
+    private final String version;
+    private UiText labelVersion;
 
     public IntroRoot(@NotNull String version) {
-
-        D2D2.getTextureManager().loadTextureDataInfo("thanksto-texturedata.inf");
+        this.version = version;
+        D2D2.getTextureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
 
         setBackgroundColor(Color.BLACK);
 
@@ -97,7 +99,8 @@ public class IntroRoot extends Root {
 
         panel = new DisplayObjectContainer();
 
-        panelRect = new PlainRect(330, 200, Color.DARK_BLUE);
+        panelRect = new PlainRect(330, 200, Color.WHITE);
+        panelRect.setVisible(false);
 
         panel.add(panelRect);
         panel.add(labelServer, 20, 20);
@@ -116,32 +119,6 @@ public class IntroRoot extends Root {
         panel.add(button, 10, 100);
 
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
-
-        add(new ThanksTo(D2D2.getTextureManager().getTexture("thanksto-Qryptojesus"), "Qryptojesus"), 100, 380);
-        add(new ThanksTo(D2D2.getTextureManager().getTexture("thanksto-WhiteWorldBridger"), "WhiteWorldBridger"), 280, 380);
-        add(new ThanksTo(D2D2.getTextureManager().getTexture("thanksto-meeekup"), "meeekup"), 460, 380);
-        add(new ThanksTo(D2D2.getTextureManager().getTexture("thanksto-Me"), "Me"), 640, 380);
-
-        UiText labelThanksTo = new UiText();
-        labelThanksTo.setText("Special thanks to");
-
-        add(labelThanksTo, 380, 330);
-
-        labelVersion = new UiText();
-        labelVersion.setText(version);
-        labelVersion.setWidth(1000);
-
-        this.addEventListener(InputEvent.KEY_DOWN, event -> {
-            var e = (InputEvent) event;
-            switch (e.getKeyCode()) {
-                case KeyCode.F1 -> {
-                    String host = uiTextInputServer.getText().split(":")[0];
-                    int port = parseInt(uiTextInputServer.getText().split(":")[1]);
-
-                    ServerInfoRetriever.retrieve(host, port, System.out::println, System.out::println);
-                }
-            }
-        });
     }
 
     private void keyEnter(Event event) {
@@ -186,6 +163,37 @@ public class IntroRoot extends Root {
     private void addToStage(Event event) {
         PlainRect plainRect = new PlainRect(getStage().getStageWidth(), getStage().getStageHeight() - 300, Color.DARK_BLUE);
         add(plainRect);
+
+        CityBGSprite cityBGSprite = new CityBGSprite();
+        add(cityBGSprite, 0, 150);
+
+        UiText labelThanksTo = new UiText();
+        labelThanksTo.setVisible(false);
+        labelThanksTo.setText("Special thanks to");
+        add(labelThanksTo, 380, 330-80);
+
+        ThanksToContainer thanksToContainer = new ThanksToContainer();
+        add(thanksToContainer, 0, 300);
+        thanksToContainer.addEventListener(Event.COMPLETE, e -> labelThanksTo.setVisible(true));
+        thanksToContainer.start();
+
+
+        labelVersion = new UiText();
+        labelVersion.setText(version);
+        labelVersion.setWidth(1000);
+
+        this.addEventListener(InputEvent.KEY_DOWN, evnt -> {
+            var e = (InputEvent) evnt;
+            switch (e.getKeyCode()) {
+                case KeyCode.F1 -> {
+                    String host = uiTextInputServer.getText().split(":")[0];
+                    int port = parseInt(uiTextInputServer.getText().split(":")[1]);
+
+                    ServerInfoRetriever.retrieve(host, port, System.out::println, System.out::println);
+                }
+            }
+        });
+
 
         add(panel, (getStage().getStageWidth() - panelRect.getWidth()) / 2, (getStage().getStageHeight() - panelRect.getHeight()) / 4);
         TextInputProcessor.enableRoot(this);
