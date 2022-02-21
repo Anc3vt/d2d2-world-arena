@@ -73,7 +73,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void init() {
-        world.reset();
+        world.clear();
 
         try {
             GameMap gameMap = MapIO.load("map0.wam");
@@ -146,7 +146,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void stop() {
-        world.reset();
+        world.clear();
         world.setVisible(false);
     }
 

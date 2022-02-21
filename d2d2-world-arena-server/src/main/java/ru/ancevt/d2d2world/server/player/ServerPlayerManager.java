@@ -90,4 +90,7 @@ public class ServerPlayerManager {
         return playerList.size();
     }
 
+    public boolean containsPlayer(int playerId) {
+        return getPlayerById(playerId).isPresent();
+    }
 }

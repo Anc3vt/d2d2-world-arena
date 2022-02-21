@@ -17,10 +17,9 @@
  */
 package ru.ancevt.d2d2world.map;
 
+import ru.ancevt.d2d2world.data.Property;
 import ru.ancevt.d2d2world.exception.GameException;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
-import ru.ancevt.d2d2world.data.Property;
-import ru.ancevt.d2d2world.mapkit.Mapkit;
 import ru.ancevt.d2d2world.world.Layer;
 
 import java.util.ArrayList;
@@ -34,25 +33,25 @@ public class GameMap {
     private static final int MAX_GAME_OBJECTS = Integer.MAX_VALUE;
 
     private final Map<String, Room> rooms;
-    private String startRoomId;
-    private String usingMapkit;
+    private String startRoomName;
     private String name;
     private float gravity;
-    private Mapkit mapkit;
+    private String mapkits;
     private Music music;
 
     public GameMap() {
         rooms = new TreeMap<>();
+        mapkits = "";
     }
 
     @Property
-    public String getUsingMapkit() {
-        return usingMapkit;
+    public String getMapkitUids() {
+        return mapkits;
     }
 
     @Property
-    public void setUsingMapkit(String usingMapkit) {
-        this.usingMapkit = usingMapkit;
+    public void setMapkitUids(String mapkits) {
+        this.mapkits = mapkits;
     }
 
     @Property
@@ -71,13 +70,13 @@ public class GameMap {
     }
 
     @Property
-    public String getStartRoomId() {
-        return startRoomId;
+    public String getStartRoomName() {
+        return startRoomName;
     }
 
     @Property
-    public void setStartRoomId(String startRoomId) {
-        this.startRoomId = startRoomId;
+    public void setStartRoomName(String startRoomName) {
+        this.startRoomName = startRoomName;
     }
 
     @Property
@@ -99,21 +98,12 @@ public class GameMap {
         return music;
     }
 
-    public void setMapkit(Mapkit mapkit) {
-        this.mapkit = mapkit;
-    }
-
-    public Mapkit getMapkit() {
-        return mapkit;
-    }
-
-
     public void putRoom(Room room) {
-        rooms.put(room.getId(), room);
+        rooms.put(room.getName(), room);
     }
 
     public void removeRoom(Room room) {
-        rooms.remove(room.getId());
+        rooms.remove(room.getName());
     }
 
     public int getRoomCount() {
@@ -158,16 +148,16 @@ public class GameMap {
     public String toString() {
         return "GameMap{" +
                 "rooms=" + rooms +
-                ", startRoom=" + startRoomId +
-                ", usingMapkit='" + usingMapkit + '\'' +
+                ", startRoom=" + startRoomName +
+                ", mapkits='" + mapkits + '\'' +
                 ", name='" + name + '\'' +
                 ", gravity=" + gravity +
-                ", mapkit=" + mapkit +
+                ", mapkits=" + mapkits +
                 ", music=" + music +
                 '}';
     }
 
     public Room getStartRoom() {
-        return getRoom(getStartRoomId());
+        return getRoom(getStartRoomName());
     }
 }

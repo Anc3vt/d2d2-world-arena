@@ -21,15 +21,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2world.constant.DataKey;
+import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.DataEntryLoader;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
+import ru.ancevt.d2d2world.mapkit.AreaMapkit;
 import ru.ancevt.d2d2world.mapkit.Mapkit;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
 import ru.ancevt.d2d2world.world.Layer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static ru.ancevt.d2d2world.data.Properties.getProperties;
@@ -39,18 +43,19 @@ public class MapIO {
 
     private static final Logger log = LoggerFactory.getLogger(MapIO.class);
 
-    private static final String MAP_DIR = "map/";
-
     public static GameMap load(String mapFileName) throws IOException {
         log.debug("load map: {}", mapFileName);
 
-        DataEntry[] dataEntries = DataEntryLoader.load(MAP_DIR + mapFileName);
+        DataEntry[] dataEntries = DataEntryLoader.load(ResourcePath.MAPS + mapFileName);
 
         log.debug("loaded {} data entries", dataEntries.length);
 
         GameMap map = new GameMap();
 
         Room room = null;
+
+        Map<String, String> mapkitNamesVsUids = new HashMap<>();
+        mapkitNamesVsUids.put(AreaMapkit.NAME, AreaMapkit.UID);
 
         for (DataEntry dataEntry : dataEntries) {
 
@@ -59,12 +64,26 @@ public class MapIO {
             if (dataEntry.containsKey(DataKey.MAP)) {
                 setProperties(map, dataEntry);
 
-                map.setMapkit(MapkitManager.getInstance().load(map.getUsingMapkit()));
+                String mapkitUids = dataEntry.getString(DataKey.MAPKIT_UIDS);
+                String mapkitNames = dataEntry.getString(DataKey.MAPKIT_NAMES);
+                String[] splitUids = mapkitUids.split(",");
+                String[] splitNames = mapkitNames.split(",");
+                if (splitUids.length != splitNames.length) {
+                    throw new IllegalStateException("mapkit uids count and names count are differs");
+                }
+                for (int i = 0; i < splitNames.length; i++) {
+                    mapkitNamesVsUids.put(splitNames[i], splitUids[i]);
+
+                    MapkitManager.getInstance().load(splitUids[i]);
+                }
+
+
+
                 continue;
             }
 
             if (dataEntry.containsKey(DataKey.ROOM)) {
-                room = new Room(dataEntry.getString(DataKey.ID), map);
+                room = new Room(dataEntry.getString(DataKey.NAME), map);
 
                 setProperties(room, dataEntry);
 
@@ -81,8 +100,8 @@ public class MapIO {
             String mapkitItemId = dataEntry.getString(DataKey.ITEM);
             int layer = dataEntry.getInt(DataKey.LAYER);
 
-            Mapkit mapkit = dataEntry.containsKey(DataKey.MAPKIT) ?
-                    MapkitManager.getInstance().get(dataEntry.getString(DataKey.MAPKIT)) : map.getMapkit();
+            String mapkitUid = mapkitNamesVsUids.get(dataEntry.getString(DataKey.MAPKIT));
+            Mapkit mapkit = MapkitManager.getInstance().get(mapkitUid);
 
             if (room == null) throw new IllegalStateException("room undefined");
 
@@ -123,9 +142,7 @@ public class MapIO {
                     DataEntry gameObjectDataEntry = DataEntry.newInstance();
                     gameObjectDataEntry.add(DataKey.ID, gameObject.getGameObjectId());
 
-                    if (gameObject.getMapkitItem().getMapkit() != map.getMapkit()) {
-                        gameObjectDataEntry.add(DataKey.MAPKIT, gameObject.getMapkitItem().getMapkit().getId());
-                    }
+                    gameObjectDataEntry.add(DataKey.MAPKIT, gameObject.getMapkitItem().getMapkit().getName());
 
                     gameObjectDataEntry.add(DataKey.ITEM, gameObject.getMapkitItem().getId());
                     gameObjectDataEntry.add(DataKey.LAYER, String.valueOf(layer));

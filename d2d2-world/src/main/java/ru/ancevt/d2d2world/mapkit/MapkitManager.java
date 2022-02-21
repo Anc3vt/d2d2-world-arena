@@ -19,8 +19,8 @@ package ru.ancevt.d2d2world.mapkit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2world.constant.DataKey;
+import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.DataEntryLoader;
 
@@ -39,9 +39,7 @@ public class MapkitManager {
 
     private static final Logger log = LoggerFactory.getLogger(MapkitManager.class);
 
-    private static final String MAPKIT_DIR = "mapkit/";
     private static final String INDEX = "/index.mk";
-    private static final String TILESET = "/tileset.png";
 
     private final Map<String, Mapkit> mapkits;
 
@@ -51,27 +49,32 @@ public class MapkitManager {
     }
 
     private void putBuiltInMapkits() {
-        put(new PlayerMapkit());
+        put(new CharacterMapkit());
         put(new AreaMapkit());
     }
 
-    public Mapkit get(String id) {
-        if (!mapkits.containsKey(id)) {
-            throw new IllegalStateException("mapkit not found, id: " + id + ". Must be one of: " + mapkits.keySet());
+    public Mapkit get(String uid) {
+        if (!mapkits.containsKey(uid)) {
+            throw new IllegalStateException("mapkit not found, uid: " + uid + ". Must be one of: " + mapkits.keySet());
         }
-        return mapkits.get(id);
+        return mapkits.get(uid);
     }
 
     public Mapkit load(String mapkitDirName) throws IOException {
-        log.debug("load " + mapkitDirName);
+        log.debug("load mapkit " + mapkitDirName);
 
         DataEntry[] dataLines = DataEntryLoader.load(
-                MAPKIT_DIR + mapkitDirName + INDEX
+                ResourcePath.MAPKITS + mapkitDirName + INDEX
         );
 
-        Mapkit mapkit = createMapkit(dataLines[0].getString(DataKey.ID));
+        String uid = dataLines[0].getString(DataKey.UID);
+        if (!uid.equals(mapkitDirName)) {
+            throw new IllegalStateException("mapkit uid is different from directory name: " + uid + "," + mapkitDirName);
+        }
 
-        mapkit.setTextureAtlas(D2D2.getTextureManager().loadTextureAtlas(MAPKIT_DIR + mapkitDirName + TILESET));
+        String name = dataLines[0].getString(DataKey.NAME);
+
+        Mapkit mapkit = createMapkit(uid, name);
 
         for (DataEntry dataEntry : dataLines) {
             log.debug("loaded data line: " + dataEntry.toString());
@@ -89,16 +92,16 @@ public class MapkitManager {
     }
 
     private void put(Mapkit mapkit) {
-        mapkits.put(mapkit.getId(), mapkit);
+        mapkits.put(mapkit.getUid(), mapkit);
     }
 
     public void dispose(Mapkit mapkit) {
-        if (mapkit instanceof PlayerMapkit || mapkit instanceof AreaMapkit) {
-            throw new IllegalStateException("Unable to dispose built-in mapkit. Id: " + mapkit.getId());
+        if (mapkit instanceof CharacterMapkit || mapkit instanceof AreaMapkit) {
+            throw new IllegalStateException("Unable to dispose built-in mapkit. name: " + mapkit.getName());
         }
 
-        mapkits.remove(mapkit.getId());
-        D2D2.getTextureManager().unloadTextureAtlas(mapkit.getTextureAtlas());
+        mapkits.remove(mapkit.getUid());
+        mapkit.dispose();
     }
 
     @Override
@@ -108,8 +111,8 @@ public class MapkitManager {
                 '}';
     }
 
-    private Mapkit createMapkit(String name) {
-        return new Mapkit(name);
+    private Mapkit createMapkit(String uid, String name) {
+        return new Mapkit(uid, name);
     }
 
     public Set<String> keySet() {

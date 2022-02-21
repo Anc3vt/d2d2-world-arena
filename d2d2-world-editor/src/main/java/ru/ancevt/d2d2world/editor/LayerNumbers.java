@@ -30,11 +30,15 @@ import ru.ancevt.d2d2world.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LayerNumbers extends DisplayObjectContainer {
+public class LayerNumbers {
 
     private static final List<Label> labels = new ArrayList<>();
 
+    private static boolean onScreen;
+
     public static void show(World world) {
+        onScreen = true;
+
         for (int i = 0; i < world.getGameObjectCount(); i++) {
             IGameObject gameObject = world.getGameObject(i);
 
@@ -50,6 +54,10 @@ public class LayerNumbers extends DisplayObjectContainer {
                 labels.add(label);
             }
         }
+    }
+
+    public static boolean isShow() {
+        return onScreen;
     }
 
     private static void checkLabelHitTests(Label label) {
@@ -76,6 +84,7 @@ public class LayerNumbers extends DisplayObjectContainer {
     }
 
     public static void hide() {
+        onScreen = false;
         while (!labels.isEmpty()) {
             Label label = labels.remove(0);
             label.clear();

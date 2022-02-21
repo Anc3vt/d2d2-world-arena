@@ -99,7 +99,7 @@ public class World extends DisplayObjectContainer {
     }
 
     public void setMap(GameMap map) {
-        clear();
+        removeAllGameObjects();
         this.currentMap = map;
 
         playProcessor.setGravity(map.getGravity());
@@ -108,7 +108,7 @@ public class World extends DisplayObjectContainer {
 
     public void setRoom(Room room) {
         setSceneryPacked(false);
-        clear();
+        removeAllGameObjects();
 
         for (int layer = 0; layer < Layer.LAYER_COUNT; layer++) {
             int objectCount = room.getGameObjectsCount(layer);
@@ -311,6 +311,14 @@ public class World extends DisplayObjectContainer {
     }
 
     public void reset() {
+        gameObjects.forEach(o->{
+            if(o instanceof IResettable r) {
+                r.reset();
+            }
+        });
+    }
+
+    public void clear() {
         setPlaying(false);
         gameObjects.forEach(o -> {
             if (o instanceof IResettable r) r.reset();
@@ -322,10 +330,10 @@ public class World extends DisplayObjectContainer {
         currentRoom = null;
         switchingRoomsNow = false;
 
-        clear();
+        removeAllGameObjects();
     }
 
-    private void clear() {
+    private void removeAllGameObjects() {
         while (!gameObjects.isEmpty()) {
             IGameObject gameObject = gameObjects.remove(0);
             if (gameObject.hasParent())

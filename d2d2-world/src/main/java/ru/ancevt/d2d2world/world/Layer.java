@@ -31,4 +31,11 @@ public class Layer extends DisplayObjectContainer {
     public int getIndex() {
         return index;
     }
+
+    @Override
+    public String toString() {
+        return "Layer{" +
+                "index=" + index +
+                '}';
+    }
 }

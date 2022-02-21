@@ -17,13 +17,12 @@
  */
 package ru.ancevt.d2d2world.editor;
 
-import ru.ancevt.d2d2world.editor.objects.GameObjectEditor;
-import ru.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.IDisplayObject;
 import ru.ancevt.d2d2.display.text.BitmapFont;
 import ru.ancevt.d2d2.input.KeyCode;
+import ru.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.map.Room;
@@ -40,7 +39,7 @@ public class Editor {
     }
 
     private final World world;
-    private final EditorDisplayObject editorDisplayObject;
+    private final EditorContainer editorContainer;
     private boolean spaceDown;
     private boolean shiftDown;
     private boolean controlDown;
@@ -51,36 +50,13 @@ public class Editor {
     private final GameObjectEditor gameObjectEditor;
     private boolean enabled;
 
-    public Editor(EditorDisplayObject editorDisplayObject, World world) {
-        this.editorDisplayObject = editorDisplayObject;
+    public Editor(EditorContainer editorContainer, World world) {
+        this.editorContainer = editorContainer;
         this.world = world;
 
         gameObjectEditor = new GameObjectEditor(this);
 
         setEnabled(true);
-    }
-
-    public void mouseButton(float x, float y, float worldX, float worldY, boolean down) {
-        if (!isEnabled()) return;
-
-        if (!spaceDown) {
-            gameObjectEditor.mouseButton(x, y, worldX, worldY, down);
-        }
-    }
-
-    public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
-        if (!isEnabled()) return;
-
-        if (drag && spaceDown) {
-            float scale = world.getAbsoluteScaleX();
-            world.move((x - oldMouseX) / scale, (y - oldMouseY) / scale);
-        }
-        if (!spaceDown) {
-            gameObjectEditor.mouseMove(x, y, worldX, worldY, drag);
-        }
-
-        oldMouseX = x;
-        oldMouseY = y;
     }
 
     public void key(int keyCode, char keyChar, boolean down) {
@@ -89,6 +65,7 @@ public class Editor {
             world.setPlaying(false);
             world.getCamera().setBoundsLock(false);
             world.setSceneryPacked(false);
+            world.setAreasVisible(true);
             return;
         }
 
@@ -107,6 +84,7 @@ public class Editor {
                     world.setPlaying(true);
                     world.getCamera().setBoundsLock(true);
                     world.setSceneryPacked(true);
+                    world.setAreasVisible(false);
                 }
             }
 
@@ -123,16 +101,13 @@ public class Editor {
                             world.setRoom(world.getRoom());
                             showRoomInfo();
                         });
+                    } else if (isAltDown()) {
+                        world.reset();
                     } else {
                         showRoomInfo();
                     }
                 }
 
-            }
-
-            case 'L' -> {
-                setLayerNumbersVisible(down);
-                editorDisplayObject.setInfoText("Layer: " + getCurrentLayerIndex());
             }
 
             case ' ' -> {
@@ -167,7 +142,7 @@ public class Editor {
         if (down && keyCode - 48 >= 0 && keyCode - 48 <= 9) {
             int layer = keyCode - 48;
             setCurrentLayerIndex(layer);
-            editorDisplayObject.setInfoText("Layer: " + getCurrentLayerIndex());
+            editorContainer.setInfoText("Layer: " + getCurrentLayerIndex());
 
             if (isControlDown()) {
                 gameObjectEditor.moveSelectedToLayer(getCurrentLayerIndex());
@@ -177,12 +152,27 @@ public class Editor {
         }
     }
 
-    public void setLayerNumbersVisible(boolean visible) {
-        if (visible) {
-            LayerNumbers.show(getWorld());
-        } else {
-            LayerNumbers.hide();
+    public void mouseButton(float x, float y, float worldX, float worldY, boolean down) {
+        if (!isEnabled()) return;
+
+        if (!spaceDown) {
+            gameObjectEditor.mouseButton(x, y, worldX, worldY, down);
         }
+    }
+
+    public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
+        if (!isEnabled()) return;
+
+        if (drag && spaceDown) {
+            float scale = world.getAbsoluteScaleX();
+            world.move((x - oldMouseX) / scale, (y - oldMouseY) / scale);
+        }
+        if (!spaceDown) {
+            gameObjectEditor.mouseMove(x, y, worldX, worldY, drag);
+        }
+
+        oldMouseX = x;
+        oldMouseY = y;
     }
 
     private final List<IDisplayObject> collisionRects = new ArrayList<>();
@@ -222,7 +212,7 @@ public class Editor {
         for (Room room : rooms) {
             String arrow = room == getWorld().getRoom() ? "> " : "  ";
             String startRoom = room == getWorld().getMap().getStartRoom() ? " <== start room" : "";
-            s.append(arrow).append(room.getId()).append(startRoom).append('\n');
+            s.append(arrow).append(room.getName()).append(startRoom).append('\n');
         }
 
         getEditorDisplayObject().setInfoText(s.toString());
@@ -267,8 +257,8 @@ public class Editor {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
 
-        editorDisplayObject.setVisible(enabled);
-        editorDisplayObject.getGrid().setVisible(enabled);
+        editorContainer.setVisible(enabled);
+        editorContainer.getGrid().setVisible(enabled);
     }
 
     public boolean isSpaceDown() {
@@ -295,8 +285,8 @@ public class Editor {
         this.currentLayerIndex = currentLayerIndex;
     }
 
-    public EditorDisplayObject getEditorDisplayObject() {
-        return editorDisplayObject;
+    public EditorContainer getEditorDisplayObject() {
+        return editorContainer;
     }
 
     public World getWorld() {

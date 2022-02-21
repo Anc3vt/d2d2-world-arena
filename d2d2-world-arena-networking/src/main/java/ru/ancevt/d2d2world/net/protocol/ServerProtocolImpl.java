@@ -33,6 +33,7 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
     private final List<ServerProtocolImplListener> serverProtocolImplListeners;
 
+
     public ServerProtocolImpl() {
         this.serverProtocolImplListeners = new ArrayList<>();
     }

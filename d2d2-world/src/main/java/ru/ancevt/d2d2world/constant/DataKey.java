@@ -19,41 +19,44 @@ package ru.ancevt.d2d2world.constant;
 
 public class DataKey {
 
-	public static final String //map & mapkit global properties
-        MAP 			= "map",
-	 	MAPKIT 			= "mapkit",
-		NAME 			= "name",
-		ROOM			= "room",
-	    ID              = "id",
-	    ITEM            = "item",
-	    LAYER           = "layer",
-	    CLASS           = "class",
-	    START_ROOM_ID   = "startRoomId",
-		BACKGROUND_COLOR = "backgroundColor",
-		MUSIC			= "music";
+    public static final String //map & mapkit global properties
+            MAP = "map",
+            MAPKIT = "mapkit",
+            MAPKIT_UIDS = "mapkitUids",
+            MAPKIT_NAMES = "mapkitNames",
+            ATLAS = "atlas",
+            NAME = "name",
+            ROOM = "room",
+            UID = "uid",
+            ID = "id",
+            ITEM = "item",
+            LAYER = "layer",
+            CLASS = "class",
+            BACKGROUND_COLOR = "backgroundColor";
 
-	public static final String //animation keys
-		IDLE            = "idle",
-		WALK            = "walk",
-		ATTACK          = "attack",
-		JUMP            = "jump",
-		JUMP_ATTACK     = "jump-attack",
-		WALK_ATTACK     = "walk-attack",
-		DAMAGE          = "damage",
-		DEFENSE         = "defense",
-		HOOK            = "hook",
-		HOOK_ATTACK     = "hook-attack",
-		FALL            = "fall",
-		FALL_ATTACK     = "fall-attack",
-		EXTRA_ANIMATION = "extra-animation",
-		DEATH			= "death";
+    public static final String //animation keys
+            IDLE = "idle",
+            WALK = "walk",
+            ATTACK = "attack",
+            JUMP = "jump",
+            JUMP_ATTACK = "jump-attack",
+            WALK_ATTACK = "walk-attack",
+            DAMAGE = "damage",
+            DEFENSE = "defense",
+            HOOK = "hook",
+            HOOK_ATTACK = "hook-attack",
+            FALL = "fall",
+            FALL_ATTACK = "fall-attack",
+            EXTRA_ANIMATION = "extra-animation",
+            DEATH = "death";
 
-	public static final String
-		SOUND_JUMP		= "snd-jump",
-		SOUND_DAMAGE	= "snd-damage",
-		SOUND_EXTRA		= "snd-extra",
-		SOUND_DEATH		= "snd-death";
+    public static final String
+            SOUND_JUMP = "snd-jump",
+            SOUND_DAMAGE = "snd-damage",
+            SOUND_EXTRA = "snd-extra",
+            SOUND_DEATH = "snd-death";
 
+    ;
 }
 
 /* ...: idle, walk, attack, jump, jumpAttack, walkAttack, damage, defense, hook,

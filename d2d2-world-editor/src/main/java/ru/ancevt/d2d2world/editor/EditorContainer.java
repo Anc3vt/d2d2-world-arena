@@ -32,7 +32,7 @@ import ru.ancevt.d2d2world.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorDisplayObject extends DisplayObjectContainer implements EventListener {
+public class EditorContainer extends DisplayObjectContainer implements EventListener {
 
     private final World world;
 
@@ -44,7 +44,7 @@ public class EditorDisplayObject extends DisplayObjectContainer implements Event
 
     private final List<IDisplayObject> panels;
 
-    public EditorDisplayObject(Root root, World world) {
+    public EditorContainer(Root root, World world) {
         this.world = world;
         this.grid = new Grid();
 

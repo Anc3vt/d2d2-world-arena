@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.mapkit;
 
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.Sprite;
@@ -30,10 +31,11 @@ import ru.ancevt.d2d2world.gameobject.area.AreaHook;
 
 public class AreaMapkit extends Mapkit {
 
-    private static final String ID = "areas";
+    public static final String UID = "area-mapkit";
+    public static final String NAME = "areas";
 
     AreaMapkit() {
-        super(ID);
+        super(UID, NAME);
         addItems();
     }
 
@@ -55,7 +57,7 @@ public class AreaMapkit extends Mapkit {
             icon = new PlainRect(1.0f, 1.0f, color);
         }
 
-        private static DataEntry createDataEntry(String id, Class<?> gameObjectClass) {
+        private static @NotNull DataEntry createDataEntry(String id, @NotNull Class<?> gameObjectClass) {
             DataEntry dataEntry = DataEntry.newInstance();
             dataEntry.add(DataKey.ID, id);
             dataEntry.add(DataKey.CLASS, gameObjectClass.getName());

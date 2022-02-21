@@ -17,23 +17,13 @@
  */
 package ru.ancevt.d2d2world.mapkit;
 
-import ru.ancevt.d2d2.D2D2;
+public class CharacterMapkit extends Mapkit {
 
-public class PlayerMapkit extends Mapkit{
+    public static final String UID = "character-mapkit";
+    public static final String NAME = "characters";
 
-    private static final String TILESET_ASSET_FILE = "player-tileset.png";
-
-    public static final String ID = "player";
-
-    PlayerMapkit() {
-        super(ID);
-        setTextureAtlas(D2D2.getTextureManager().loadTextureAtlas(TILESET_ASSET_FILE));
-        addItems();
+    CharacterMapkit() {
+        super(UID, NAME);
     }
-
-    private void addItems() {
-
-    }
-
 
 }

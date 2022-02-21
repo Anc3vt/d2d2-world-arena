@@ -47,7 +47,7 @@ public class MapkitToolsPanel extends TitledPanel {
     private final static Object ALL = new Object();
 
     private static final String TITLE = "Mapkit tools";
-    private static final int ICON_SIZE = 16;
+    private static final int ICON_SIZE = 32;
 
     private final Label label;
     private final DropList dropListClass;
@@ -167,7 +167,7 @@ public class MapkitToolsPanel extends TitledPanel {
         List<String> mapkitIds = new ArrayList<>(MapkitManager.getInstance().keySet()).stream().sorted().toList();
         for (String mapkitId : mapkitIds) {
             Mapkit mapkit = MapkitManager.getInstance().get(mapkitId);
-            dropListMapkit.addItem(new DropListItem(mapkit.getId(), mapkit));
+            dropListMapkit.addItem(new DropListItem(mapkit.getName(), mapkit));
 
             for (String mapkitItemId : mapkit.keySet()) {
                 MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);

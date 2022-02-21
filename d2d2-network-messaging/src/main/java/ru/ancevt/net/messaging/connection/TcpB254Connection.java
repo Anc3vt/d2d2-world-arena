@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
@@ -79,7 +80,6 @@ public class TcpB254Connection implements IConnection {
             DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 
             ByteOutput byteOutput = ByteOutput.newInstance();
-
             while (isOpen()) {
                 int len = in.readUnsignedByte();
                 bytesLoaded++;
@@ -123,7 +123,6 @@ public class TcpB254Connection implements IConnection {
         } catch (IOException e) {
             closeIfOpen();
         }
-
         closeIfOpen();
     }
 
@@ -312,9 +311,33 @@ public class TcpB254Connection implements IConnection {
         }
     }
 
-    private void validateSize(byte[] bytes) {
-        if (bytes.length > MAX_CHUNK_SIZE)
-            throw new IllegalStateException("Data size is " + bytes.length + " that more than " + MAX_CHUNK_SIZE);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcpB254Connection that = (TcpB254Connection) o;
+        return id == that.id && port == that.port && remotePort == that.remotePort && bytesLoaded == that.bytesLoaded &&
+                bytesSent == that.bytesSent && Objects.equals(listeners, that.listeners) &&
+                Objects.equals(host, that.host) && Objects.equals(remoteAddress, that.remoteAddress) &&
+                Objects.equals(socket, that.socket) && Objects.equals(dataOutputStream, that.dataOutputStream)
+                && Objects.equals(countDownLatchForAsync, that.countDownLatchForAsync);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                id,
+                listeners,
+                host,
+                remoteAddress,
+                port,
+                remotePort,
+                socket,
+                dataOutputStream,
+                countDownLatchForAsync,
+                bytesLoaded,
+                bytesSent
+        );
     }
 
     @Override

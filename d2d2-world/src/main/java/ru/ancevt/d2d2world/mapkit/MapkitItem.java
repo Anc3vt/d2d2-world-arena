@@ -34,13 +34,13 @@ public class MapkitItem {
 
     private static final int MAX_TEXTURE_TYPES = 16;
 
-    private static final int DATA_LINE_INDEX_ID = 0;
-
     private final Mapkit mapkit;
     private final DataEntry dataEntry;
 
-    private Texture[][] textures;
-    private Sound[][] sounds;
+    private final Texture[][] textures;
+    private final Sound[][] sounds;
+
+
 
     private Class<?> gameObjectClass;
 
@@ -137,9 +137,9 @@ public class MapkitItem {
         for (int i = 0; i < tilesetZones.length; i++) {
             final IntRectangle tz = tilesetZones[i];
 
-            final TextureAtlas atlas = mapkit.getTextureAtlas();
+            final TextureAtlas atlas = mapkit.getTextureAtlas(dataEntry.getString(DataKey.ATLAS));
             if (atlas != null) {
-                result[i] = mapkit.getTextureAtlas().createTexture(
+                result[i] = atlas.createTexture(
                         tz.getX(), tz.getY(), tz.getWidth(), tz.getHeight()
                 );
             }
@@ -186,7 +186,7 @@ public class MapkitItem {
 
     public final void playSound(final int soundKey, final int index) {
         if (sounds[soundKey] == null || sounds[soundKey].length <= index || sounds[soundKey][index] == null) {
-            System.out.println("warning: no such sound " + this + " [" + soundKey + "][" + index + "]");
+            //System.out.println("warning: no such sound " + this + " [" + soundKey + "][" + index + "]");
             return;
         }
 

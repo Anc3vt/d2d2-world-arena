@@ -17,7 +17,9 @@
  */
 package ru.ancevt.d2d2world.mapkit;
 
+import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.texture.TextureAtlas;
+import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
 
 import java.util.HashMap;
@@ -26,29 +28,41 @@ import java.util.Set;
 
 public class Mapkit {
 
-    private final String id;
+    private final String name;
     private final Map<String, MapkitItem> items;
-    private TextureAtlas textureAtlas;
+    private final String uid;
+    private final Map<String, TextureAtlas> textureAtlases;
 
-    Mapkit(String id) {
+    Mapkit(String uid, String name) {
+        this.uid = uid;
         this.items = new HashMap<>();
-        this.id = id;
+        this.name = name;
+        textureAtlases = new HashMap<>();
     }
 
-    public String getId() {
-        return id;
+    public String getUid() {
+        return uid;
     }
 
-    public void setTextureAtlas(TextureAtlas textureAtlas) {
-        this.textureAtlas = textureAtlas;
-    }
-
-    public final TextureAtlas getTextureAtlas() {
-        return textureAtlas;
+    public String getName() {
+        return name;
     }
 
     public final int getItemCount() {
         return items.size();
+    }
+
+    public TextureAtlas getTextureAtlas(String imageFileName) {
+        if (textureAtlases.containsKey(imageFileName)) {
+            return textureAtlases.get(imageFileName);
+        }
+
+        TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas(
+                ResourcePath.MAPKITS + uid +'/' + imageFileName
+        );
+
+        textureAtlases.put(imageFileName, textureAtlas);
+        return textureAtlas;
     }
 
     public MapkitItem createItem(DataEntry dataEntry) {
@@ -70,7 +84,7 @@ public class Mapkit {
     public MapkitItem getItem(String mapkitItemId) {
         MapkitItem mapkitItem = items.get(mapkitItemId);
         if (mapkitItem == null) throw new IllegalStateException("Mapkit item not defined, id: " + mapkitItemId
-                + ". Mapkit: " + getId());
+                + ". Mapkit: " + getName());
         return mapkitItem;
     }
 
@@ -78,12 +92,16 @@ public class Mapkit {
         return items.keySet();
     }
 
+    public void dispose() {
+        textureAtlases.values().forEach(a -> D2D2.getTextureManager().unloadTextureAtlas(a));
+    }
+
     @Override
     public String toString() {
         return "Mapkit{" +
-                "name='" + id + '\'' +
-                ", items=" + items +
-                ", textureAtlas=" + textureAtlas +
+                "name='" + name + '\'' +
+                ", items=" + items.size() +
+                ", uid='" + uid + '\'' +
                 '}';
     }
 }

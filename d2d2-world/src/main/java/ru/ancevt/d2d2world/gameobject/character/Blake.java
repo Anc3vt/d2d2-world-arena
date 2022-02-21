@@ -21,7 +21,7 @@ import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
-import ru.ancevt.d2d2world.mapkit.PlayerMapkit;
+import ru.ancevt.d2d2world.mapkit.CharacterMapkit;
 
 import static ru.ancevt.d2d2world.data.Properties.setProperties;
 
@@ -50,6 +50,7 @@ public class Blake extends PlayerActor {
                 collisionY = -12 |
                 collisionWidth = 12 |
                 collisionHeight = 28 |
+                atlas=blake-and-ava-tileset.png |
                                 
                 idle = 0,0,48,48; 48,0,48,48 |
                 attack = 96,0,48,48; 144,0,48,48 |
@@ -65,7 +66,7 @@ public class Blake extends PlayerActor {
                 """;
 
         mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));
-        mapkitItem = MapkitManager.getInstance().get(PlayerMapkit.ID).createItem(mapkitDataEntry);
+        mapkitItem = MapkitManager.getInstance().get(CharacterMapkit.UID).createItem(mapkitDataEntry);
 
         return mapkitItem;
     }

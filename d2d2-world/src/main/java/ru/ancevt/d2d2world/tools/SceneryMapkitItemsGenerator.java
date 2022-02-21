@@ -29,16 +29,23 @@ public class SceneryMapkitItemsGenerator {
             System.exit(0);
         }
 
+        String textureAtlas = a.get(String.class, "-a", null);
+        if (textureAtlas == null) {
+            System.out.println("Please specify texture -a(tlas) file name");
+            System.exit(0);
+        }
+
         String clazz = a.get(String.class, "-c", Scenery.class.getName());
 
         int idSuffix = 0;
         for (int y = areaY; y < areaY + areaHeight; y += sceneryHeight) {
             for (int x = areaX; x < areaX + areaWidth; x += sceneryWidth) {
                 String line = format(
-                        "id = %s%s | class = %s | idle=%d,%d,%d,%d",
+                        "id = %s%s | class = %s | atlas = %s | idle=%d,%d,%d,%d",
                         namePrefix,
                         idSuffix,
                         clazz,
+                        textureAtlas,
                         x,
                         y,
                         sceneryWidth,

@@ -40,7 +40,7 @@ import java.io.IOException;
 public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
-        MapSaver.mapDirectory = a.get("--map-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world/src/main/resources/assets/map/");
+        MapSaver.mapDirectory = a.get("--map-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world/src/main/resources/assets/maps/");
         MapSaver.mapFileName = a.get("--map", "map0.wam");
 
 
@@ -65,11 +65,11 @@ public class D2D2WorldEditorMain {
 
         cameraLayer.setXY(D2D2.getStage().getWidth() / 2, D2D2.getStage().getHeight() / 2);
 
-        EditorDisplayObject editorDisplayObject = new EditorDisplayObject(root, world);
-        root.add(editorDisplayObject);
+        EditorContainer editorContainer = new EditorContainer(root, world);
+        root.add(editorContainer);
 
         D2D2.getStage().addEventListener(Event.RESIZE, e -> {
-            editorDisplayObject.getGrid().redrawLines();
+            editorContainer.getGrid().redrawLines();
             cameraLayer.setXY(D2D2.getStage().getWidth() / 2, D2D2.getStage().getHeight() / 2);
             MapkitToolsPanel.getInstance().setX(D2D2.getStage().getWidth()
                     - MapkitToolsPanel.getInstance().getWidth() - 10);
@@ -94,8 +94,8 @@ public class D2D2WorldEditorMain {
 
             cameraLayer.setScale(scale, scale);
             cameraLayer.setXY(D2D2.getStage().getWidth() / 2, D2D2.getStage().getHeight() / 2);
-            editorDisplayObject.setInfoText("Zoom: " + cameraLayer.getScaleX());
-            editorDisplayObject.getGrid().redrawLines();
+            editorContainer.setInfoText("Zoom: " + cameraLayer.getScaleX());
+            editorContainer.getGrid().redrawLines();
         });
 
         for (String mapkitId : MapkitManager.getInstance().keySet()) {

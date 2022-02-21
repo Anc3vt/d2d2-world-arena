@@ -18,6 +18,7 @@ public class Config {
     public static final String SERVER_NAME = "server.name";
     public static final String SERVER_HOST = "server.host";
     public static final String SERVER_PORT = "server.port";
+    public static final String SERVER_CONNECTION_TIMEOUT = "server.connection-timeout";
     public static final String SERVER_LOOP_DELAY = "server.loop-delay";
     public static final String RCON_PASSWORD = "rcon.password";
     public static final String WORLD_MAX_PLAYERS = "world.max-players";
@@ -35,6 +36,7 @@ public class Config {
         File file = new File(FILE_NAME);
         if (file.exists()) {
             properties.load(new FileInputStream(file));
+            log.info("Config loaded {}", passwordSafeToString());
         }
     }
 
@@ -60,6 +62,10 @@ public class Config {
         } catch (NumberFormatException ex) {
             return 0;
         }
+    }
+
+    public String passwordSafeToString() {
+        return toString().replaceAll(properties.getProperty(RCON_PASSWORD), "*****");
     }
 
     @Override

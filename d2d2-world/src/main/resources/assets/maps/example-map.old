@@ -1,4 +1,4 @@
-map | name = Test map | usingMapkit = mapkit0 | startRoomId = start-room | gravity = 1.0 
+map | name = Test map | mapkits = mapkit0 | startRoomId = start-room | gravity = 1.0
 
 room | id = 2 | width = 992 | height = 512 | backgroundColor = 22 
 id = 2 | item = brick1 | layer = 1 | name = _displayObject120 | x = 64.0 | y = 32.0 | repeatX = 1 | repeatY = 9 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 

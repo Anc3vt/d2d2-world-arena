@@ -17,12 +17,7 @@
  */
 package ru.ancevt.d2d2world.constant;
 
-public class Path {
-	public static final String MAPKIT_DIRECTORY = "mapkit/";
-	public static final String MAP_DIRECTORY = "map/";
-	
-	public static String getFileName(final String path) {
-		final String[] s = path.split("/");
-		return s[s.length-1];
-	}
+public class ResourcePath {
+    public static final String MAPKITS = "mapkits/";
+    public static final String MAPS = "maps/";
 }
