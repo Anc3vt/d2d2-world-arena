@@ -26,10 +26,10 @@ import ru.ancevt.d2d2.panels.DropListItem;
 import ru.ancevt.d2d2.panels.Label;
 import ru.ancevt.d2d2.panels.TitledPanel;
 import ru.ancevt.d2d2world.gameobject.area.Area;
-import ru.ancevt.d2d2world.map.mapkit.AreaMapkit;
-import ru.ancevt.d2d2world.map.mapkit.Mapkit;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
-import ru.ancevt.d2d2world.map.mapkit.MapkitManager;
+import ru.ancevt.d2d2world.mapkit.AreaMapkit;
+import ru.ancevt.d2d2world.mapkit.Mapkit;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -20,7 +20,7 @@ package ru.ancevt.d2d2world.map;
 import ru.ancevt.d2d2world.exception.GameException;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.data.Property;
-import ru.ancevt.d2d2world.map.mapkit.Mapkit;
+import ru.ancevt.d2d2world.mapkit.Mapkit;
 import ru.ancevt.d2d2world.world.Layer;
 
 import java.util.ArrayList;

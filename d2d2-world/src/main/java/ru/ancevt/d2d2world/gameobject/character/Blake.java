@@ -19,9 +19,9 @@ package ru.ancevt.d2d2world.gameobject.character;
 
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
-import ru.ancevt.d2d2world.map.mapkit.MapkitManager;
-import ru.ancevt.d2d2world.map.mapkit.PlayerMapkit;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitManager;
+import ru.ancevt.d2d2world.mapkit.PlayerMapkit;
 
 import static ru.ancevt.d2d2world.data.Properties.setProperties;
 

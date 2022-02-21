@@ -19,8 +19,8 @@ package ru.ancevt.d2d2world.editor;
 
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.Sprite;
-import ru.ancevt.d2d2world.map.mapkit.AreaMapkit;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.AreaMapkit;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 public class Cursor extends Sprite {
 

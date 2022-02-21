@@ -23,7 +23,7 @@ import ru.ancevt.d2d2.display.IFramedDisplayObject;
 import ru.ancevt.d2d2.display.texture.Texture;
 import ru.ancevt.d2d2world.constant.AnimationKey;
 import ru.ancevt.d2d2world.constant.Direction;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 abstract public class Animated extends DisplayObjectContainer implements IAnimated {
 

@@ -18,7 +18,7 @@
 package ru.ancevt.d2d2world.gameobject;
 
 import ru.ancevt.d2d2.display.text.BitmapText;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 public class PlayerActor extends Actor {
 

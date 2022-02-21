@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.editor.panels;
 
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.IEventDispatcher;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 public class MapkitToolsPanelEvent extends Event {
 

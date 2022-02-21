@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.gameobject.area;
 
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2world.gameobject.ITight;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 public class AreaCollision extends Area implements ITight {
 

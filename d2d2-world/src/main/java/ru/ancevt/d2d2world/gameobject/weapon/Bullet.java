@@ -22,7 +22,7 @@ import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2world.gameobject.Actor;
 import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IDirectioned;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 abstract public class Bullet extends DisplayObjectContainer implements ICollision, IDirectioned {
 

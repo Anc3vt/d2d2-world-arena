@@ -18,8 +18,7 @@
 package ru.ancevt.d2d2world.gameobject;
 
 import ru.ancevt.d2d2world.data.DataEntry;
-import ru.ancevt.d2d2world.gameobject.IGameObject;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.world.Layer;
 
 import java.lang.reflect.Constructor;

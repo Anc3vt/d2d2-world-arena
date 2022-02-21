@@ -21,7 +21,7 @@ import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2world.constant.CheckpointType;
 import ru.ancevt.d2d2world.constant.Direction;
 import ru.ancevt.d2d2world.gameobject.IDirectioned;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 public class AreaCheckpoint extends Area implements IDirectioned {
 

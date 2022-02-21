@@ -22,7 +22,7 @@ import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2world.constant.AnimationKey;
 import ru.ancevt.d2d2world.constant.Slowing;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.world.World;
 
 public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotatable, IScalable, IAlphable, EventListener {

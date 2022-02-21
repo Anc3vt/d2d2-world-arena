@@ -28,7 +28,7 @@ import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.gameobject.IMovable;
 import ru.ancevt.d2d2world.gameobject.IRepeatable;
 import ru.ancevt.d2d2world.gameobject.area.Area;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.world.Layer;
 import ru.ancevt.d2d2world.world.World;
 

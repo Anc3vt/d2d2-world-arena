@@ -31,7 +31,7 @@ import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.gameobject.character.Blake;
 import ru.ancevt.d2d2world.map.GameMap;
 import ru.ancevt.d2d2world.map.MapIO;
-import ru.ancevt.d2d2world.map.mapkit.MapkitManager;
+import ru.ancevt.d2d2world.mapkit.MapkitManager;
 import ru.ancevt.d2d2world.world.World;
 import ru.ancevt.util.args.Args;
 

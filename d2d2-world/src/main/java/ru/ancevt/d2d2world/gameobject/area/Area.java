@@ -22,7 +22,7 @@ import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.gameobject.ISizable;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.world.World;
 
 public abstract class Area extends BorderedRect implements IGameObject, ICollision, ISizable {

@@ -25,7 +25,7 @@ import ru.ancevt.d2d2world.constant.SoundKey;
 import ru.ancevt.d2d2world.control.Controller;
 import ru.ancevt.d2d2world.data.Property;
 import ru.ancevt.d2d2world.gameobject.weapon.Weapon;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.world.World;
 
 abstract public class Actor extends Animated implements

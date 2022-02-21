@@ -20,7 +20,7 @@ package ru.ancevt.d2d2world.gameobject.area;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2world.gameobject.Actor;
 import ru.ancevt.d2d2world.gameobject.IDamaging;
-import ru.ancevt.d2d2world.map.mapkit.MapkitItem;
+import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
         public class AreaDamaging extends Area implements IDamaging {
     public static final Color FILL_COLOR = Color.DARK_RED;
