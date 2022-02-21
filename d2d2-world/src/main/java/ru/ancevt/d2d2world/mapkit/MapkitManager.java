@@ -40,7 +40,7 @@ public class MapkitManager {
     private static final Logger log = LoggerFactory.getLogger(MapkitManager.class);
 
     private static final String MAPKIT_DIR = "mapkit/";
-    private static final String INDEX = "/mapkit.dat";
+    private static final String INDEX = "/index.mk";
     private static final String TILESET = "/tileset.png";
 
     private final Map<String, Mapkit> mapkits;

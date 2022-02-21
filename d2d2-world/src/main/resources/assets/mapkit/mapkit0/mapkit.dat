@@ -1,9 +1,0 @@
-mapkit | id = test
-id = brick1 | class = ru.ancevt.d2d2world.gameobject.Scenery | idle = 144,96,16,16
-id = brick2 | class = ru.ancevt.d2d2world.gameobject.Scenery | idle = 144,112,16,16 
-id = brick3 | class = ru.ancevt.d2d2world.gameobject.Scenery | idle = 0,16,16,16; 16,16,16,16; 0,32,16,16; 16,32,16,16
-id = blackcorner | class = ru.ancevt.d2d2world.gameobject.Scenery | idle = 144,32,16,16
-id = blacksquare | class = ru.ancevt.d2d2world.gameobject.Scenery | idle = 144,48,16,16
-id = blackcorner2 |class = ru.ancevt.d2d2world.gameobject.Scenery | idle = 160,32,16,16
-
-
