@@ -1,10 +1,19 @@
 package ru.ancevt.d2d2world.net.transfer;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class Headers {
+
+    private static final String DELIMITER = ":";
+
+    public static final String FILE_BEGIN = "File-Begin"; // true, false
+    public static final String PART_NUMBER = "PartNumber"; // from 0
+    public static final String PATH = "Path"; // f.e.: <mapkit-uid>/index.mk
+    public static final String FINAL_PART = "Final-Part"; // true
 
     private final Map<String, String> map;
 
@@ -13,24 +22,29 @@ public class Headers {
         parse(headers);
     }
 
-    private void parse(String headers) {
-        String[] lines = headers.split("\n");
-        for (String line : lines) {
-            String[] kv = line.split(":");
-            if (kv.length < 2) {
-                throw new IllegalArgumentException("wrong headers line: " + line);
-            }
-            put(kv[0], kv[1]);
-        }
-    }
-
     private Headers() {
         map = new HashMap<>();
     }
 
+    private void parse(String headers) {
+        String[] lines = headers.split("\n");
+        for (String line : lines) {
+            if(line.contains(DELIMITER)) {
+                String[] kv = line.split(DELIMITER);
+                put(kv[0], kv[1]);
+            } else {
+                put(line);
+            }
+        }
+    }
 
-    public Headers put(String key, String value) {
+    public Headers put(@NotNull String key, @NotNull String value) {
         map.put(key, value);
+        return this;
+    }
+
+    public Headers put(@NotNull String key) {
+        map.put(key, null);
         return this;
     }
 

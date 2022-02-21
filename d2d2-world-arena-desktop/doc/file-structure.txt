@@ -1,0 +1,20 @@
+           File structure:
+
+game-client-folder
+|-- executive.jar/exe/sh/bat
+|-- d2d2-world-arena-desktop.conf
+|-- data/
+   |-- mapkits/
+   |   |-- specific-mapkit/
+   |       |-- index.mk
+   |       |-- some-asset.png..
+   |       |-- spme=asset.mp3..
+   |       |-- ...
+   |-- maps/
+       |-- specific-map..wam
+
+
+
+
+
+
