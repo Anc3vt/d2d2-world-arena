@@ -48,4 +48,5 @@ old-code-samples/
 deploy-server.sh
 makewin.sh
 tmp/
+*.tmp
 
