@@ -65,7 +65,7 @@
         <dependency>
             <groupId>ru.ancevt.commons</groupId>
             <artifactId>ancevt-commons</artifactId>
-            <version>1.0.0.1</version>
+            <version>1.0.0.2</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

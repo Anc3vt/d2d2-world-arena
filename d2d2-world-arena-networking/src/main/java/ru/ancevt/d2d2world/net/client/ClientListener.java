@@ -46,4 +46,6 @@ public interface ClientListener {
     void serverInfo(@NotNull ServerInfoRetrieveResult result);
 
     void serverTextToPlayer(@NotNull String text, int textColor);
+
+    void fileData(@NotNull String headers, byte[] fileData);
 }

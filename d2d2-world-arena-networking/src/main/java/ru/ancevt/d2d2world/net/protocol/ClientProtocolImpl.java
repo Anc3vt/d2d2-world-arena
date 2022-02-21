@@ -159,6 +159,14 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                     clientProtocolImplListeners.forEach(l -> l.remotePlayerPing(remotePlayerId, remotePlayerPing));
                 }
 
+                case MessageType.FILE_DATA -> {
+                    log("received FILE_DATA");
+                    String headers = in.readUtf(short.class);
+                    int contentLength = in.readInt();
+                    byte[] fileData = in.readBytes(contentLength);
+                    clientProtocolImplListeners.forEach(l -> l.fileData(headers, fileData));
+                }
+
                 case MessageType.EXTRA -> {
                     log("received EXTRA");
                     String extraDataFromServer = in.readUtf(int.class);
@@ -175,7 +183,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
             }
 
         } catch (Exception e) {
-            log.error(in.debug() + ", message" + message.getBytes().length, e);
+            log.error("message" + message.getBytes().length, e);
         }
     }
 
@@ -256,6 +264,13 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.CLIENT_PLAYER_TEXT_TO_CHAT)
                 .writeUtf(byte.class, chatMessageText)
+                .toArray();
+    }
+
+    public static byte[] createMessageFileRequest(@NotNull String headers) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.CLIENT_REQUEST_FILE)
+                .writeUtf(short.class, headers)
                 .toArray();
     }
 

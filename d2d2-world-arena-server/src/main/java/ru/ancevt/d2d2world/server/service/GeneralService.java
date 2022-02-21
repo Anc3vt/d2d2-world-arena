@@ -74,6 +74,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         modules.get(ServerTimer.class).setTimerListener(this);
     }
 
+    /**
+     * {@link ServerProtocolImplListener} method
+     */
     @Override
     public void serverInfoRequest(int connectionId) {
         List<Pair<Integer, String>> players =
@@ -94,6 +97,22 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         );
 
         getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
+    }
+
+    /**
+     * {@link ServerProtocolImplListener} method
+     */
+    @Override
+    public void requestFile(int connectionId, @NotNull String headers) {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * {@link ServerProtocolImplListener} method
+     */
+    @Override
+    public void fileData(int connectionId, @NotNull String headers, byte[] fileData) {
+       throw new NotImplementedException();
     }
 
     /**

@@ -59,4 +59,6 @@ public non-sealed interface ClientProtocolImplListener extends ProtocolImplListe
     void serverInfoResponse(@NotNull ServerInfoRetrieveResult result);
 
     void serverTextToPlayer(@NotNull String text, int textColor);
+
+    void fileData(@NotNull String headers, byte[] fileData);
 }

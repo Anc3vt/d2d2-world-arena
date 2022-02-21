@@ -64,7 +64,6 @@ public class TcpTest {
             @Override
             public void connectionBytesReceived(IConnection connection, byte[] bytes) {
                 ByteInputReader r = ByteInputReader.newInstance(bytes);
-                System.out.println("Received " + r.debug());
 
                 firstByte.setValue(r.readByte());
 
@@ -89,8 +88,6 @@ public class TcpTest {
         w.writeByte(0);
         writeBytesTo(w, 10, 1);
         writeBytesTo(w, 1, 2);
-
-        System.out.println("Send " + w.debug());
 
         connection.send(w.toArray());
         lock.lock(1, TimeUnit.SECONDS);

@@ -84,6 +84,12 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 serverProtocolImplListeners.forEach(l -> l.playerTextToChat(connectionId, text));
             }
 
+            case MessageType.CLIENT_REQUEST_FILE -> {
+                log.debug("received CLIENT_REQUEST_FILE");
+                String headers = in.readUtf(short.class);
+                serverProtocolImplListeners.forEach(l -> l.requestFile(connectionId, headers));
+            }
+
             case MessageType.CLIENT_RCON_LOGIN -> {
                 log.debug("received CLIENT_RCON_LOGIN");
                 String passwordHash = in.readUtf(byte.class);
@@ -106,6 +112,14 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 log.debug("received CLIENT_PLAYER_PING_REPORT");
                 int ping = in.readShort();
                 serverProtocolImplListeners.forEach(l -> l.playerPingReport(connectionId, ping));
+            }
+
+            case MessageType.FILE_DATA -> {
+                log.debug("received FILE_DATA");
+                String headers = in.readUtf(short.class);
+                int contentLength = in.readInt();
+                byte[] fileData = in.readBytes(contentLength);
+                serverProtocolImplListeners.forEach(l -> l.fileData(connectionId, headers, fileData));
             }
 
             case MessageType.EXTRA -> {

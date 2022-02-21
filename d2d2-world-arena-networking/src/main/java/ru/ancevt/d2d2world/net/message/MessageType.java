@@ -107,6 +107,10 @@ public class MessageType {
      */
     public static final int CLIENT_PLAYER_PING_REPORT = 6;
 
+    /**
+     * b)t s)S)headers
+     */
+    public static final int CLIENT_REQUEST_FILE = 7;
 
     //                                           CLIENT <=== SERVER
 
@@ -167,8 +171,13 @@ public class MessageType {
      */
     public static final int SERVER_REMOTE_PLAYER_PING_VALUE = 108;
 
-
     //                                           CLIENT <==> SERVER
+
+    /**
+     * File or part of file
+     * b)t s)S)headers i)contentLength L)data
+     */
+    public static final int FILE_DATA = 198;
 
     /**
      * b)t s)error code b)S)errorMessage i)S)errorDetailText

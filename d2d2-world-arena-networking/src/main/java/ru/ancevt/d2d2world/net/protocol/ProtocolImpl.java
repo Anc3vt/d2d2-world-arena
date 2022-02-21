@@ -25,7 +25,15 @@ public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProt
 
     public static final String PROTOCOL_VERSION = "1.0";
 
-    public static byte[] createMessageExtra(String extraData) {
+    public static byte[] createMessageFileData(@NotNull String headers, byte[] fileData) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.FILE_DATA)
+                .writeUtf(short.class, headers)
+                .writeBytes(fileData)
+                .toArray();
+    }
+
+    public static byte[] createMessageExtra(@NotNull String extraData) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.EXTRA)
                 .writeUtf(int.class, extraData)

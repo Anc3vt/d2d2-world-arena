@@ -73,4 +73,9 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
     public void serverTextToPlayer(@NotNull String text, int textColor) {
 
     }
+
+    @Override
+    public void fileData(@NotNull String headers, byte[] fileData) {
+
+    }
 }

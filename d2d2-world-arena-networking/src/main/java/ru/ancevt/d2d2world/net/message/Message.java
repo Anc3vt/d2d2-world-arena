@@ -23,6 +23,12 @@ import ru.ancevt.d2d2world.net.client.ErrorInfo;
 import java.util.Arrays;
 
 public class Message {
+
+
+    public static void main(String[] args) {
+        System.out.println(Integer.MAX_VALUE);
+    }
+
     private final byte[] bytes;
     private ByteInputReader byteInputReader;
     private int type;

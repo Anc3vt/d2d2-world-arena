@@ -70,6 +70,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         clientListeners.forEach(ClientListener::clientConnectionEstablished);
     }
 
+    // CONNECTION LISTENERS:
+
     /**
      * {@link ConnectionListener} method
      */
@@ -85,6 +87,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void connectionClosed(@NotNull CloseStatus status) {
         clientListeners.forEach(l -> l.clientConnectionClosed(status));
     }
+
+    // CLIENT PROTOCOL LISTENERS:
 
     /**
      * {@link ClientProtocolImplListener} method
@@ -241,6 +245,16 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void serverTextToPlayer(@NotNull String text, int textColor) {
         clientListeners.forEach(l -> l.serverTextToPlayer(text, textColor));
     }
+
+    /**
+     * {@link ClientProtocolImplListener} method
+     */
+    @Override
+    public void fileData(@NotNull String headers, byte[] fileData) {
+        clientListeners.forEach(l -> l.fileData(headers, fileData));
+    }
+
+    // SENDERS:
 
     public void sendPlayerEnterRequest() {
         sender.send(createMessagePlayerEnterRequest(localPlayerName, PROTOCOL_VERSION, "")
