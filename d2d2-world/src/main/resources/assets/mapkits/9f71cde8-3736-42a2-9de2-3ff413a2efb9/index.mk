@@ -1,4 +1,4 @@
-mapkit | name = test | uid = 9f71cde8-3736-42a2-9de2-3ff413a2efb9
+mapkit | uid = 9f71cde8-3736-42a2-9de2-3ff413a2efb9 | name = mapkit0
 id = brick1 | class = ru.ancevt.d2d2world.gameobject.Scenery | atlas=tileset.png | idle = 144,96,16,16
 id = brick2 | class = ru.ancevt.d2d2world.gameobject.Scenery | atlas=tileset.png | idle = 144,112,16,16 
 id = brick3 | class = ru.ancevt.d2d2world.gameobject.Scenery | atlas=tileset.png | idle = 0,16,16,16; 16,16,16,16; 0,32,16,16; 16,32,16,16

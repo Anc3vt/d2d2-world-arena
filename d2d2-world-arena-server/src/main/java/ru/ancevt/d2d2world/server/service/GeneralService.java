@@ -96,7 +96,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 )
         );
 
-        getConnection(connectionId).ifPresent(IConnection::close);
+        getConnection(connectionId).ifPresent(IConnection::hardCloseIfOpen);
     }
 
     /**
@@ -149,7 +149,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         // validate player name
         if (!PatternMatcher.check(playerName, NAME_PATTERN)) {
             // if invalid close connection and return
-            getConnection(playerId).ifPresent(IConnection::close);
+            getConnection(playerId).ifPresent(IConnection::hardCloseIfOpen);
             return;
         }
 
@@ -163,7 +163,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 .findAny();
         if (player.isPresent()) {
             // if the same name is present close the connection and return
-            getConnection(playerId).ifPresent(IConnection::close);
+            getConnection(playerId).ifPresent(IConnection::hardCloseIfOpen);
             return;
         }
 

@@ -27,6 +27,7 @@ import ru.ancevt.d2d2.panels.Label;
 import ru.ancevt.d2d2.panels.TitledPanel;
 import ru.ancevt.d2d2world.gameobject.area.Area;
 import ru.ancevt.d2d2world.mapkit.AreaMapkit;
+import ru.ancevt.d2d2world.mapkit.CharacterMapkit;
 import ru.ancevt.d2d2world.mapkit.Mapkit;
 import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
@@ -213,6 +214,8 @@ public class MapkitToolsPanel extends TitledPanel {
         int x = 5, y = 5;
 
         for (Mapkit mapkit : mapkits) {
+            if(mapkit instanceof CharacterMapkit) continue;
+
             for (String mapkitItemId : mapkit.keySet()) {
                 MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
 

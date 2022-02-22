@@ -91,6 +91,15 @@ public class MapkitManager {
         return mapkit;
     }
 
+    public Mapkit getByName(String name) {
+        for (Mapkit mapkit : mapkits.values()) {
+            if(mapkit.getName().equals(name)) {
+                return mapkit;
+            }
+        }
+        throw new IllegalStateException("no suck mapkit name: " + name);
+    }
+
     private void put(Mapkit mapkit) {
         mapkits.put(mapkit.getUid(), mapkit);
     }

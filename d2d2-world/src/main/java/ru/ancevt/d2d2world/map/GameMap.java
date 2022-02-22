@@ -36,22 +36,33 @@ public class GameMap {
     private String startRoomName;
     private String name;
     private float gravity;
-    private String mapkits;
+    private String mapkitUids;
+    private String mapkitNames;
     private Music music;
 
     public GameMap() {
         rooms = new TreeMap<>();
-        mapkits = "";
+        mapkitUids = "";
     }
 
     @Property
     public String getMapkitUids() {
-        return mapkits;
+        return mapkitUids;
     }
 
     @Property
     public void setMapkitUids(String mapkits) {
-        this.mapkits = mapkits;
+        this.mapkitUids = mapkits;
+    }
+
+    @Property
+    public String getMapkitNames() {
+        return mapkitNames;
+    }
+
+    @Property
+    public void setMapkitNames(String mapkitNames) {
+        this.mapkitNames = mapkitNames;
     }
 
     @Property
@@ -149,10 +160,10 @@ public class GameMap {
         return "GameMap{" +
                 "rooms=" + rooms +
                 ", startRoom=" + startRoomName +
-                ", mapkits='" + mapkits + '\'' +
+                ", mapkits='" + mapkitUids + '\'' +
                 ", name='" + name + '\'' +
                 ", gravity=" + gravity +
-                ", mapkits=" + mapkits +
+                ", mapkits=" + mapkitUids +
                 ", music=" + music +
                 '}';
     }

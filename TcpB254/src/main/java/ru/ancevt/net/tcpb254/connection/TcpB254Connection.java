@@ -230,7 +230,7 @@ public class TcpB254Connection implements IConnection {
 
     @Override
     public boolean isOpen() {
-        return !closing && dataOutputStream != null;
+        return dataOutputStream != null;
     }
 
     private synchronized void dispatchConnectionEstablished() {
