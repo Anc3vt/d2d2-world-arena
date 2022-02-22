@@ -24,10 +24,10 @@ import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
-import ru.ancevt.net.messaging.CloseStatus;
-import ru.ancevt.net.messaging.connection.ConnectionFactory;
-import ru.ancevt.net.messaging.connection.ConnectionListener;
-import ru.ancevt.net.messaging.connection.IConnection;
+import ru.ancevt.net.tcpb254.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
+import ru.ancevt.net.tcpb254.connection.ConnectionListener;
+import ru.ancevt.net.tcpb254.connection.IConnection;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

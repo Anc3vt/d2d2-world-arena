@@ -25,8 +25,8 @@ import ru.ancevt.commons.io.ByteOutputWriter;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.message.MessageType;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 public final class ServerProtocolImpl extends ProtocolImpl {
@@ -35,7 +35,7 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
 
     public ServerProtocolImpl() {
-        this.serverProtocolImplListeners = new ArrayList<>();
+        this.serverProtocolImplListeners = new CopyOnWriteArrayList<>();
     }
 
     public void addServerProtocolImplListener(@NotNull ServerProtocolImplListener l) {

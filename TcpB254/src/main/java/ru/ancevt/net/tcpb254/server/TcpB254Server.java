@@ -15,13 +15,13 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.net.messaging.server;
+package ru.ancevt.net.tcpb254.server;
 
-import ru.ancevt.net.messaging.CloseStatus;
-import ru.ancevt.net.messaging.connection.ConnectionFactory;
-import ru.ancevt.net.messaging.connection.ConnectionListener;
-import ru.ancevt.net.messaging.connection.IConnection;
-import ru.ancevt.net.messaging.connection.TcpB254Connection;
+import ru.ancevt.net.tcpb254.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
+import ru.ancevt.net.tcpb254.connection.ConnectionListener;
+import ru.ancevt.net.tcpb254.connection.IConnection;
+import ru.ancevt.net.tcpb254.connection.TcpB254Connection;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -185,7 +185,7 @@ public class TcpB254Server implements IServer {
                 throw new IllegalStateException("Server not started");
             }
 
-            connections.forEach(IConnection::closeIfOpen);
+            connections.forEach(IConnection::close);
             serverSocket.close();
             alive = false;
         } catch (IOException e) {

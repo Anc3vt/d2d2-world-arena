@@ -15,15 +15,23 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.net.messaging.connection;
+package ru.ancevt.net.tcpb254.connection;
 
-import ru.ancevt.net.messaging.CloseStatus;
+import java.net.Socket;
 
-public interface ConnectionListener {
+public class ConnectionFactory {
 
-    void connectionEstablished();
+    private static final int DEFAULT_CONNECTION_ID = 0;
 
-    void connectionBytesReceived(byte[] bytes);
+    public static IConnection createTcpB254Connection(int id) {
+        return new TcpB254Connection(id);
+    }
 
-    void connectionClosed(CloseStatus status);
+    public static IConnection createTcpB254Connection() {
+        return createTcpB254Connection(DEFAULT_CONNECTION_ID);
+    }
+
+    public static IConnection createServerSideTcpB254Connection(int id, Socket socket) {
+        return new TcpB254Connection(id, socket);
+    }
 }

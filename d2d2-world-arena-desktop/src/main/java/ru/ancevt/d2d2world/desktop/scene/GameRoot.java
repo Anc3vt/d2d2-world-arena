@@ -35,7 +35,7 @@ import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.ClientListener;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
-import ru.ancevt.net.messaging.CloseStatus;
+import ru.ancevt.net.tcpb254.CloseStatus;
 
 import java.util.concurrent.TimeUnit;
 

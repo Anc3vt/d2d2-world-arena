@@ -19,7 +19,6 @@ package ru.ancevt.d2d2world.net.protocol;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.io.ByteInputReader;
 import ru.ancevt.commons.io.ByteOutputWriter;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
@@ -29,6 +28,7 @@ import ru.ancevt.d2d2world.net.message.MessageType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 public final class ClientProtocolImpl extends ProtocolImpl {
@@ -36,7 +36,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
     private final List<ClientProtocolImplListener> clientProtocolImplListeners;
 
     public ClientProtocolImpl() {
-        this.clientProtocolImplListeners = new ArrayList<>();
+        this.clientProtocolImplListeners = new CopyOnWriteArrayList<>();
     }
 
     public void addClientProtocolImplListener(@NotNull ClientProtocolImplListener l) {

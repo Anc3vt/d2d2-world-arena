@@ -15,23 +15,32 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.net.messaging.connection;
+package ru.ancevt.net.tcpb254.server;
 
-import ru.ancevt.net.messaging.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.IConnection;
 
-public class ConnectionListenerAdapter implements ConnectionListener{
-    @Override
-    public void connectionEstablished() {
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-    }
+public interface IServer {
 
-    @Override
-    public void connectionBytesReceived(byte[] bytes) {
+    void listen(String host, int port);
 
-    }
+    Thread asyncListen(String host, int port);
 
-    @Override
-    public void connectionClosed(CloseStatus status) {
+    boolean asyncListenAndAwait(String host, int port);
 
-    }
+    boolean asyncListenAndAwait(String host, int port, long time, TimeUnit timeUnit);
+
+    boolean isListening();
+
+    void close();
+
+    void addServerListener(ServerListener listener);
+
+    void removeServerListener(ServerListener listener);
+
+    Set<IConnection> getConnections();
+
+    void sendToAll(byte[] bytes);
 }

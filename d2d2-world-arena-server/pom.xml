@@ -71,8 +71,8 @@
             <version>0.0.1</version>
         </dependency>
         <dependency>
-            <groupId>ru.ancevt.d2d2world</groupId>
-            <artifactId>d2d2-network-messaging</artifactId>
+            <groupId>ru.ancevt.net</groupId>
+            <artifactId>tcpb254</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

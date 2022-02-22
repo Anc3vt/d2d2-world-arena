@@ -54,11 +54,11 @@
         <module>d2d2-panels</module>
         <module>d2d2-world</module>
         <module>d2d2-world-editor</module>
-        <module>d2d2-network-messaging</module>
         <module>d2d2-world-arena-desktop</module>
         <module>d2d2-world-arena-networking</module>
         <module>d2d2-world-arena-server</module>
         <module>d2d2-ttf2bmf</module>
+        <module>TcpB254</module>
     </modules>
 
     <properties>
@@ -102,11 +102,6 @@
                 <version>1.0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>ru.ancevt.d2d2world</groupId>
-                <artifactId>d2d2-network-messaging</artifactId>
-                <version>1.0.0.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
                 <artifactId>d2d2-panels</artifactId>
                 <version>1.0.0.1-SNAPSHOT</version>
@@ -121,6 +116,11 @@
                 <groupId>ru.ancevt.d2d2world</groupId>
                 <artifactId>d2d2-world-arena-networking</artifactId>
                 <version>1.0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.net</groupId>
+                <artifactId>tcpb254</artifactId>
+                <version>1.0.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

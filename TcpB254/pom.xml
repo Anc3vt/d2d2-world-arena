@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.ancevt.d2d2world</groupId>
-    <artifactId>d2d2-network-messaging</artifactId>
+    <groupId>ru.ancevt.net</groupId>
+    <artifactId>tcpb254</artifactId>
     <version>1.0.0.2-SNAPSHOT</version>
 
-    <name>D2D2 Network Messaging</name>
+    <name>TCP B254 Protocol</name>
     <url>https://github.com/Anc3vt/d2d2</url>
 
     <licenses>

@@ -31,10 +31,10 @@ import ru.ancevt.d2d2world.server.service.GeneralService;
 import ru.ancevt.d2d2world.server.service.ServerSender;
 import ru.ancevt.d2d2world.server.service.ServerUnit;
 import ru.ancevt.d2d2world.server.service.SyncService;
-import ru.ancevt.net.messaging.CloseStatus;
-import ru.ancevt.net.messaging.connection.ConnectionListenerAdapter;
-import ru.ancevt.net.messaging.connection.IConnection;
-import ru.ancevt.net.messaging.server.ServerListener;
+import ru.ancevt.net.tcpb254.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
+import ru.ancevt.net.tcpb254.connection.IConnection;
+import ru.ancevt.net.tcpb254.server.ServerListener;
 import ru.ancevt.util.args.Args;
 
 import java.io.IOException;
@@ -165,7 +165,7 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
 
         Async.runLater(config.getInt(SERVER_CONNECTION_TIMEOUT), TimeUnit.MILLISECONDS, () -> {
             if (!playerEntered.getValue()) {
-                connection.closeIfOpen();
+                connection.close();
                 serverProtocolImpl.removeServerProtocolImplListener(serverProtocolImplListener);
             }
         });

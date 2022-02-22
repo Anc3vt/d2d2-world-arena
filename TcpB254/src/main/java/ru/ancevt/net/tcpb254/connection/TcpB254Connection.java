@@ -15,11 +15,11 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.net.messaging.connection;
+package ru.ancevt.net.tcpb254.connection;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.io.ByteOutput;
-import ru.ancevt.net.messaging.CloseStatus;
+import ru.ancevt.net.tcpb254.CloseStatus;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -54,6 +54,8 @@ public class TcpB254Connection implements IConnection {
     private long bytesLoaded;
     private long bytesSent;
 
+    private boolean closing;
+
     TcpB254Connection(int id) {
         this.id = id;
         listeners = new CopyOnWriteArraySet<>();
@@ -73,6 +75,7 @@ public class TcpB254Connection implements IConnection {
         }
     }
 
+    @Override
     public void readLoop() {
         try {
             if (isOpen()) dispatchConnectionEstablished();
@@ -121,9 +124,9 @@ public class TcpB254Connection implements IConnection {
             }
 
         } catch (IOException e) {
-            closeIfOpen();
+            hardCloseIfOpen();
         }
-        closeIfOpen();
+        hardCloseIfOpen();
     }
 
     @Override
@@ -206,6 +209,11 @@ public class TcpB254Connection implements IConnection {
 
     @Override
     public void close() {
+        closing = true;
+    }
+
+    @Override
+    public void hardClose() {
         try {
             socket.close();
             dataOutputStream = null;
@@ -216,13 +224,13 @@ public class TcpB254Connection implements IConnection {
     }
 
     @Override
-    public void closeIfOpen() {
-        if (isOpen()) close();
+    public void hardCloseIfOpen() {
+        if (isOpen()) hardClose();
     }
 
     @Override
     public boolean isOpen() {
-        return dataOutputStream != null;
+        return !closing && dataOutputStream != null;
     }
 
     private synchronized void dispatchConnectionEstablished() {

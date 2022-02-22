@@ -18,7 +18,7 @@
 package ru.ancevt.d2d2world.net.client;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.net.messaging.CloseStatus;
+import ru.ancevt.net.tcpb254.CloseStatus;
 
 public interface ClientListener {
 

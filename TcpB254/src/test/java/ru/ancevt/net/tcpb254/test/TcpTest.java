@@ -1,4 +1,4 @@
-package ru.ancevt.net.messaging.test;
+package ru.ancevt.net.tcpb254.test;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -8,13 +8,13 @@ import ru.ancevt.commons.Holder;
 import ru.ancevt.commons.concurrent.Lock;
 import ru.ancevt.commons.io.ByteInputReader;
 import ru.ancevt.commons.io.ByteOutputWriter;
-import ru.ancevt.net.messaging.CloseStatus;
-import ru.ancevt.net.messaging.connection.ConnectionFactory;
-import ru.ancevt.net.messaging.connection.ConnectionListenerAdapter;
-import ru.ancevt.net.messaging.connection.IConnection;
-import ru.ancevt.net.messaging.server.IServer;
-import ru.ancevt.net.messaging.server.ServerFactory;
-import ru.ancevt.net.messaging.server.ServerListenerAdapter;
+import ru.ancevt.net.tcpb254.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
+import ru.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
+import ru.ancevt.net.tcpb254.connection.IConnection;
+import ru.ancevt.net.tcpb254.server.IServer;
+import ru.ancevt.net.tcpb254.server.ServerFactory;
+import ru.ancevt.net.tcpb254.server.ServerListenerAdapter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;

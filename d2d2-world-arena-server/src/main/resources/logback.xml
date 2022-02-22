@@ -27,7 +27,7 @@
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 
-    <logger name="ru.ancevt.net.messaging" level="trace" additivity="true">
+    <logger name="ru.ancevt.net.tcpb254" level="trace" additivity="true">
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 

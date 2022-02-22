@@ -15,32 +15,47 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.net.messaging.server;
+package ru.ancevt.net.tcpb254.connection;
 
-import ru.ancevt.net.messaging.connection.IConnection;
-
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public interface IServer {
+public interface IConnection {
 
-    void listen(String host, int port);
+    void connect(String host, int port);
 
-    Thread asyncListen(String host, int port);
+    Thread asyncConnect(String host, int port);
 
-    boolean asyncListenAndAwait(String host, int port);
+    boolean asyncConnectAndAwait(String host, int port);
 
-    boolean asyncListenAndAwait(String host, int port, long time, TimeUnit timeUnit);
+    boolean asyncConnectAndAwait(String host, int port, long time, TimeUnit timeUnit);
 
-    boolean isListening();
+    int getId();
+
+    String getHost();
+
+    int getPort();
+
+    String getRemoteAddress();
+
+    int getRemotePort();
+
+    void readLoop();
+
+    boolean isOpen();
 
     void close();
 
-    void addServerListener(ServerListener listener);
+    void hardClose();
 
-    void removeServerListener(ServerListener listener);
+    void hardCloseIfOpen();
 
-    Set<IConnection> getConnections();
+    void addConnectionListener(ConnectionListener listener);
 
-    void sendToAll(byte[] bytes);
+    void removeConnectionListener(ConnectionListener listener);
+
+    void send(byte[] bytes);
+
+    long bytesSent();
+
+    long bytesLoaded();
 }

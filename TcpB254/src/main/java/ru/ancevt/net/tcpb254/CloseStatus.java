@@ -15,43 +15,37 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.net.messaging.connection;
+package ru.ancevt.net.tcpb254;
 
-import java.util.concurrent.TimeUnit;
+public class CloseStatus {
 
-public interface IConnection {
+    private Throwable throwable;
 
-    void connect(String host, int port);
+    public CloseStatus(Throwable throwable) {
+        this.throwable = throwable;
+    }
 
-    Thread asyncConnect(String host, int port);
+    public CloseStatus() {
 
-    boolean asyncConnectAndAwait(String host, int port);
+    }
 
-    boolean asyncConnectAndAwait(String host, int port, long time, TimeUnit timeUnit);
+    public boolean isError() {
+        return throwable != null;
+    }
 
-    int getId();
+    public String getErrorMessage() {
+        return isError() ? throwable.getMessage() : "";
+    }
 
-    String getHost();
+    public Throwable getThrowable() {
+        return throwable;
+    }
 
-    int getPort();
-
-    String getRemoteAddress();
-
-    int getRemotePort();
-
-    boolean isOpen();
-
-    void close();
-
-    void closeIfOpen();
-
-    void addConnectionListener(ConnectionListener listener);
-
-    void removeConnectionListener(ConnectionListener listener);
-
-    void send(byte[] bytes);
-
-    long bytesSent();
-
-    long bytesLoaded();
+    @Override
+    public String toString() {
+        return "CloseStatus{" +
+                "isError=" + isError() +
+                ", throwable=" + throwable +
+                '}';
+    }
 }

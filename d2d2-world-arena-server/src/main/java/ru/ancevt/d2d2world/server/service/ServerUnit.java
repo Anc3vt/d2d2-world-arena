@@ -1,7 +1,7 @@
 package ru.ancevt.d2d2world.server.service;
 
-import ru.ancevt.net.messaging.server.IServer;
-import ru.ancevt.net.messaging.server.ServerFactory;
+import ru.ancevt.net.tcpb254.server.IServer;
+import ru.ancevt.net.tcpb254.server.ServerFactory;
 
 public class ServerUnit {
 

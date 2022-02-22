@@ -36,9 +36,9 @@ import ru.ancevt.d2d2world.server.chat.ServerChatMessage;
 import ru.ancevt.d2d2world.server.player.Player;
 import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 import ru.ancevt.d2d2world.server.repl.ServerCommandProcessor;
-import ru.ancevt.net.messaging.CloseStatus;
-import ru.ancevt.net.messaging.connection.IConnection;
-import ru.ancevt.net.messaging.server.IServer;
+import ru.ancevt.net.tcpb254.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.IConnection;
+import ru.ancevt.net.tcpb254.server.IServer;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +96,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 )
         );
 
-        getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
+        getConnection(connectionId).ifPresent(IConnection::close);
     }
 
     /**
@@ -282,7 +282,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
         });
 
-        getConnection(playerId).ifPresent(IConnection::closeIfOpen);
+        getConnection(playerId).ifPresent(IConnection::close);
     }
 
     /**

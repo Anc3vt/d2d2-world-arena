@@ -3,10 +3,10 @@ package ru.ancevt.d2d2world.net.client;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2world.net.message.MessageType;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
-import ru.ancevt.net.messaging.CloseStatus;
-import ru.ancevt.net.messaging.connection.ConnectionFactory;
-import ru.ancevt.net.messaging.connection.ConnectionListenerAdapter;
-import ru.ancevt.net.messaging.connection.IConnection;
+import ru.ancevt.net.tcpb254.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
+import ru.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
+import ru.ancevt.net.tcpb254.connection.IConnection;
 
 public class ServerInfoRetriever {
 
@@ -25,7 +25,7 @@ public class ServerInfoRetriever {
             @Override
             public void connectionClosed(CloseStatus status) {
                 errorFunction.onError(status);
-                connection.closeIfOpen();
+                connection.close();
             }
 
             @Override
@@ -33,7 +33,7 @@ public class ServerInfoRetriever {
                 if(bytes[0] == MessageType.SERVER_INFO_RESPONSE) {
                     resultFunction.onResult(ClientProtocolImpl.readServerInfoResponseBytes(bytes));
                     connection.removeConnectionListener(this);
-                    connection.closeIfOpen();
+                    connection.close();
                 }
             }
         });

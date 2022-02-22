@@ -18,7 +18,7 @@
 package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.ancevt.net.messaging.server.IServer;
+import ru.ancevt.net.tcpb254.server.IServer;
 
 import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 

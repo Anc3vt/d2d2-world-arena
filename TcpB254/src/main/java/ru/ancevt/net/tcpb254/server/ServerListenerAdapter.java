@@ -1,7 +1,7 @@
-package ru.ancevt.net.messaging.server;
+package ru.ancevt.net.tcpb254.server;
 
-import ru.ancevt.net.messaging.CloseStatus;
-import ru.ancevt.net.messaging.connection.IConnection;
+import ru.ancevt.net.tcpb254.CloseStatus;
+import ru.ancevt.net.tcpb254.connection.IConnection;
 
 public class ServerListenerAdapter implements ServerListener{
 
