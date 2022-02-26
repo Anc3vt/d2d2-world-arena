@@ -58,7 +58,9 @@ public class Button extends Panel {
             pressed = true;
         });
 
-        touchButton.addEventListener(TouchEvent.TOUCH_UP, e -> {
+        touchButton.addEventListener(TouchEvent.TOUCH_UP, event -> {
+            var e = (TouchEvent) event;
+
             borderLeft.setColor(BORDER_COLOR_1);
             borderRight.setColor(BORDER_COLOR_2);
             borderTop.setColor(BORDER_COLOR_1);
@@ -66,10 +68,9 @@ public class Button extends Panel {
             label.move(-1, -1);
 
             if (!pressed) return;
-
-            onButtonPressed();
-
             pressed = false;
+
+            if(e.isOnArea()) onButtonPressed();
         });
 
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);

@@ -81,7 +81,6 @@ public class World extends DisplayObjectContainer {
         this.playing = playing;
     }
 
-
     public boolean isPlaying() {
         return playing;
     }
@@ -311,8 +310,8 @@ public class World extends DisplayObjectContainer {
     }
 
     public void reset() {
-        gameObjects.forEach(o->{
-            if(o instanceof IResettable r) {
+        gameObjects.forEach(o -> {
+            if (o instanceof IResettable r) {
                 r.reset();
             }
         });

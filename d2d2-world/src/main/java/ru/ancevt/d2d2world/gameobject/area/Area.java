@@ -18,6 +18,8 @@
 package ru.ancevt.d2d2world.gameobject.area;
 
 import ru.ancevt.d2d2.common.BorderedRect;
+import ru.ancevt.d2d2.display.Color;
+import ru.ancevt.d2d2.display.Sprite;
 import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
@@ -37,6 +39,7 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
 
     private boolean collisionEnabled;
     private final MapkitItem mapkitItem;
+    private Sprite pointSprite;
     private World world;
 
     protected Area(MapkitItem mapkitItem, int gameObjectId) {
@@ -50,6 +53,8 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
         setTextVisible(true);
 
         this.mapkitItem = mapkitItem;
+
+        //setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     @Override
@@ -108,6 +113,37 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
     }
 
     @Override
+    public void setSize(float width, float height) {
+        super.setSize(width, height);
+        checkAndSetPoint();
+    }
+
+    @Override
+    public void setWidth(float width) {
+        super.setWidth(width);
+        checkAndSetPoint();
+    }
+
+    @Override
+    public void setHeight(float height) {
+        super.setHeight(height);
+        checkAndSetPoint();
+    }
+
+    private void checkAndSetPoint() {
+        if(pointSprite == null) {
+            pointSprite = new Sprite("d2d2-world-common-tileset-area-point");
+            pointSprite.setXY(-pointSprite.getWidth() / 2, -pointSprite.getHeight() / 2);
+        }
+
+        if (getWidth() <= 17 && getHeight() <= 17) {
+            add(pointSprite);
+        } else {
+            pointSprite.removeFromParent();
+        }
+    }
+
+    @Override
     public void setCollisionWidth(float collisionWidth) {
         setWidth(collisionWidth);
     }
@@ -142,7 +178,13 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
 
     @Override
     public void process() {
+        // To override
+    }
 
+    @Override
+    public void setFillColor(Color color) {
+        if(pointSprite != null) pointSprite.setColor(color);
+        super.setFillColor(color);
     }
 
     public final void setText(final Object o) {

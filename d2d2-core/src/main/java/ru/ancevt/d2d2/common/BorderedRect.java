@@ -98,8 +98,6 @@ public class BorderedRect extends DisplayObjectContainer {
 	public void setSize(float width, float height) {
 		setWidth(width);
 		setHeight(height);
-		
-		
 	}
 	
 	@Override

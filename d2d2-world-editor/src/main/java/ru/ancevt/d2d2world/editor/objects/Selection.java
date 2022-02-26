@@ -22,14 +22,12 @@ import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObject;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
-import ru.ancevt.d2d2.event.Event;
-import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.gameobject.IRepeatable;
 import ru.ancevt.d2d2world.gameobject.area.Area;
 
-public class Selection extends DisplayObjectContainer implements EventListener {
+public class Selection extends DisplayObjectContainer {
     private final BorderedRect rect;
 
     private final IGameObject gameObject;
@@ -51,8 +49,6 @@ public class Selection extends DisplayObjectContainer implements EventListener {
             repeatControl = new RepeatControl();
             add(repeatControl, getWidth() - 8, getHeight() - 8);
         }
-
-        addEventListener(Event.EACH_FRAME, this);
     }
 
     public final void setWidth(final float width) {
@@ -83,33 +79,30 @@ public class Selection extends DisplayObjectContainer implements EventListener {
     }
 
     @Override
-    public void onEvent(Event event) {
-        if (event.getType().equals(Event.EACH_FRAME)) {
-            setXY(gameObject.getX(), gameObject.getY());
+    public void onEachFrame() {
+        super.onEachFrame();
+        setXY(gameObject.getX(), gameObject.getY());
 
-            if (gameObject instanceof ICollision c) {
-                move(c.getCollisionX(), c.getCollisionY());
-            }
+        if (gameObject instanceof ICollision c) {
+            move(c.getCollisionX(), c.getCollisionY());
+        }
 
-            setSize(gameObject.getWidth(), gameObject.getHeight());
+        setSize(gameObject.getWidth(), gameObject.getHeight());
 
-            if (repeatControl != null && repeatControl.hasParent()) {
-                repeatControl.setXY(getWidth() - 8, getHeight() - 8);
-            }
+        if (repeatControl != null && repeatControl.hasParent()) {
+            repeatControl.setXY(getWidth() - 8, getHeight() - 8);
         }
     }
 
     public static class RepeatControl extends DisplayObjectContainer {
 
-        private final PlainRect rect, shadow;
-
         public RepeatControl() {
-            shadow = new PlainRect(10, 10);
+            PlainRect shadow = new PlainRect(10, 10);
             shadow.setColor(Color.BLACK);
 
             add(shadow, -1, -1);
 
-            rect = new PlainRect(8, 8);
+            PlainRect rect = new PlainRect(8, 8);
             rect.setColor(Color.WHITE);
             add(rect);
 

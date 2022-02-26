@@ -25,6 +25,7 @@ import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
 import ru.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
@@ -45,6 +46,7 @@ public class D2D2WorldEditorMain {
 
 
         D2D2.init(new LWJGLStarter(1000, 700, "D2D2 World (floating)"));
+        D2D2World.init();
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");
         Root root = D2D2.getStage().getRoot();

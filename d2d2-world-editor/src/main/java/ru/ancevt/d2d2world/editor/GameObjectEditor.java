@@ -219,8 +219,10 @@ public class GameObjectEditor {
             float w = worldX - resizingArea.getX();
             float h = worldY - resizingArea.getY();
 
-            if (w > 0 && h > 0) {
+            if (w >= 0 && h > 0) {
                 resizingArea.setSize(worldX - resizingArea.getX(), worldY - resizingArea.getY());
+            } else {
+                resizingArea.setSize(16f, 16f);
             }
         } else if (!selectedGameObjects.isEmpty() && moving) {
             float scale = getWorld().getAbsoluteScaleX();

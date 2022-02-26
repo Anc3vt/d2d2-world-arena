@@ -21,6 +21,10 @@ public class Config {
 
     private final Properties properties;
 
+    private static final String[] defaults = new String[] {
+        SERVER, "ancevt.ru:2245"
+    };
+
     public Config() {
         properties = new Properties();
     }

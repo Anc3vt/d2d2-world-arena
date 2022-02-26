@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.editor.panels;
 
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.common.BorderedRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.Sprite;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SimpleTimeZone;
 
 public class MapkitToolsPanel extends TitledPanel {
 
@@ -210,11 +212,10 @@ public class MapkitToolsPanel extends TitledPanel {
 
         setTitleText(TITLE + " (" + currentPage + ")");
 
-        int count = 0;
-        int x = 5, y = 5;
+        List<MapkitItem> items = new ArrayList<>();
 
         for (Mapkit mapkit : mapkits) {
-            if(mapkit instanceof CharacterMapkit) continue;
+            if (mapkit instanceof CharacterMapkit) continue;
 
             for (String mapkitItemId : mapkit.keySet()) {
                 MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
@@ -222,80 +223,50 @@ public class MapkitToolsPanel extends TitledPanel {
                 if ((dropListClass.getSelectedKey() == ALL ||
                         dropListClass.getSelectedKey() == mapkitItem.getGameObjectClass())
                         &&
-                        (dropListMapkit.getSelectedKey() == ALL ||
-                                dropListMapkit.getSelectedKey() == mapkit)) {
+                        (dropListMapkit.getSelectedKey() == ALL || dropListMapkit.getSelectedKey() == mapkit)) {
 
-                    final Sprite icon = mapkitItem.getIcon().cloneSprite();
-
-                    fixIconSize(icon);
-                    final Button button = new Button() {
-                        @Override
-                        public void onButtonPressed() {
-                            onMapkitItemSelected(mapkitItem);
-                            super.onButtonPressed();
-                        }
-                    };
-                    button.setBackgroundColor(Color.WHITE);
-                    button.setIcon(icon);
-                    button.setSize(ICON_SIZE, ICON_SIZE);
-                    button.setXY(x, y);
-                    palette.add(button);
-                    button.setEnabled(buttonsEnabled);
-
-                    buttons.add(button);
-
-                    x += button.getWidth() + 2;
-                    if (x >= palette.getWidth() - ICON_SIZE) {
-                        x = 5;
-                        y += button.getHeight() + 2;
-                        if (y >= 300) break;
-                    }
+                    items.add(mapkitItem);
                 }
             }
         }
 
-		/*
-		for(int i = 0; i < mapkit.getItemCount(); i ++) {
-			final MapkitItem mapkitItem = mapkit.getItem(i);
-			
-			if(Objects.equals(mapkitItem.getCategory(), currentCategory)) {
-				count++;
-				if(count > 48 * currentPage) {
-					
-					final Texture iconTexture = mapkitItem.getTexture();
-					
-					final Sprite icon = new Sprite(iconTexture);
-					fixIconSize(icon);
-					final Button button = new Button() {
-						@Override
-						public void onButtonPressed() {
-							onMapkitItemSelected(mapkitItem);
-							super.onButtonPressed();
-						}
-					};
-					button.setBackgroundColor(Color.WHITE);
-					button.setIcon(icon);
-					button.setSize(40, 40);
-					button.setXY(x, y);
-					palette.add(button);
-					button.setEnabled(buttonsEnabled);
-		
-					buttons.add(button);
-					
-					x += button.getWidth() + 2;
-					if(x >= palette.getWidth() - ICON_SIZE) {
-						x = 5;
-						y += button.getHeight() + 2;
-						if (y >= 300) break;
-					}
-				}
-			}
-		}
+        float w = palette.getWidth() / ICON_SIZE;
+        float h = palette.getHeight() / ICON_SIZE;
 
-		 */
+        int PAGE_SIZE = (int) (w * h) - 20;
+        int x = 5, y = 5;
+
+        for (int i = PAGE_SIZE * currentPage; i < items.size() && i < currentPage * PAGE_SIZE + PAGE_SIZE; i++) {
+            MapkitItem mapkitItem = items.get(i);
+
+            Sprite icon = mapkitItem.getIcon().cloneSprite();
+
+            fixIconSize(icon);
+            Button button = new Button() {
+                @Override
+                public void onButtonPressed() {
+                    onMapkitItemSelected(mapkitItem);
+                    super.onButtonPressed();
+                }
+            };
+            button.setBackgroundColor(Color.WHITE);
+            button.setIcon(icon);
+            button.setSize(ICON_SIZE, ICON_SIZE);
+            button.setXY(x, y);
+            palette.add(button);
+            button.setEnabled(buttonsEnabled);
+            buttons.add(button);
+
+            x += button.getWidth() + 2;
+            if (x >= palette.getWidth() - ICON_SIZE) {
+                x = 5;
+                y += button.getHeight() + 2;
+                if (y >= 300) break;
+            }
+        }
     }
 
-    private static void fixIconSize(Sprite icon) {
+    private static void fixIconSize(@NotNull Sprite icon) {
         while (icon.getWidth() * icon.getScaleX() < ICON_SIZE || icon.getHeight() * icon.getScaleY() < ICON_SIZE) {
             icon.setScale(
                     icon.getScaleX() * 1.1f,
@@ -311,7 +282,7 @@ public class MapkitToolsPanel extends TitledPanel {
         }
     }
 
-    public void setMapkitItem(MapkitItem mapkitItem) {
+    public void setMapkitItem(@NotNull MapkitItem mapkitItem) {
         label.setText(mapkitItem.getId());
     }
 
