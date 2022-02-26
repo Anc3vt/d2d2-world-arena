@@ -17,6 +17,8 @@
  */
 package ru.ancevt.d2d2world.desktop.scene;
 
+import lombok.extern.slf4j.Slf4j;
+import ru.ancevt.commons.concurrent.Async;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.InputEvent;
@@ -27,7 +29,6 @@ import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.gameobject.character.Blake;
-import ru.ancevt.d2d2world.map.GameMap;
 import ru.ancevt.d2d2world.map.MapIO;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
@@ -39,6 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
+@Slf4j
 public class WorldScene extends DisplayObjectContainer {
 
     private final World world = new World();
@@ -75,12 +77,21 @@ public class WorldScene extends DisplayObjectContainer {
     public void init() {
         world.clear();
 
-        try {
-            GameMap gameMap = MapIO.load("map0.wam");
-            world.setMap(gameMap);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        Async.run(() -> {
+            try {
+                long timeBefore = System.currentTimeMillis();
+                world.setMap(MapIO.load("map0.wam"));
+                mapLoaded();
+                log.info("Map loaded {}ms", (System.currentTimeMillis() - timeBefore));
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        });
+
+        System.out.println("WC: reinit");
+    }
+
+    private void mapLoaded() {
         world.setSceneryPacked(true);
 
         localPlayerActor.reset();
@@ -91,8 +102,6 @@ public class WorldScene extends DisplayObjectContainer {
         setXY(getStage().getStageWidth() / 2, getStage().getStageHeight() / 2);
 
         addRootAndChatEventsIfNotYet();
-
-        System.out.println("WC: reinit");
     }
 
     private void addRootAndChatEventsIfNotYet() {
@@ -128,7 +137,7 @@ public class WorldScene extends DisplayObjectContainer {
             remotePlayerActor.getController().applyState(remotePlayer.getControllerState());
         });
 
-        if(frameCounter % 500 == 0) {
+        if (frameCounter % 500 == 0) {
             client.pingRequest();///
         }
 
