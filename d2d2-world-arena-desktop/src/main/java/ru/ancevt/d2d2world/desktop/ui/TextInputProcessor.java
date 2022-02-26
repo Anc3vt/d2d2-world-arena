@@ -120,6 +120,11 @@ public class TextInputProcessor {
         focus(uiTextInputs.get(index));
     }
 
+    public void unfocus() {
+        uiTextInputs.forEach(UiTextInput::focusLost);
+        resetFocus();
+    }
+
     public void focus(UiTextInput uiTextInput) {
         uiTextInputs.stream().filter(t -> t != uiTextInput).forEach(UiTextInput::focusLost);
         uiTextInput.setCaretPosition(Integer.MAX_VALUE);

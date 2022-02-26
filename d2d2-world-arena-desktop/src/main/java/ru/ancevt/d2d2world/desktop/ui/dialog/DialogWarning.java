@@ -49,7 +49,7 @@ public class DialogWarning extends TitledPanel implements EventListener {
             }
         };
 
-        getRoot().addEventListener(InputEvent.KEY_UP, this);
+        getRoot().addEventListener(InputEvent.KEY_DOWN, this);
 
         button.setFocused(true);
 
@@ -63,15 +63,15 @@ public class DialogWarning extends TitledPanel implements EventListener {
     }
 
     private void ok() {
-        dispatchEvent(new WarningDialogEvent(WarningDialogEvent.DIALOG_OK, this));
-        getRoot().removeEventListener(InputEvent.KEY_UP, this);
+        dispatchEvent(new DialogWarningEvent(DialogWarningEvent.DIALOG_OK, this));
+        getRoot().removeEventListener(InputEvent.KEY_DOWN, this);
         removeFromParent();
     }
 
-    public static class WarningDialogEvent extends Event {
+    public static class DialogWarningEvent extends Event {
         public static final String DIALOG_OK = "dialogOk";
 
-        public WarningDialogEvent(String type, IEventDispatcher source) {
+        public DialogWarningEvent(String type, IEventDispatcher source) {
             super(type, source);
         }
     }

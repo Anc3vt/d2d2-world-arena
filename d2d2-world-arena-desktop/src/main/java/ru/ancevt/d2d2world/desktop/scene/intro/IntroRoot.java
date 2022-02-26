@@ -28,6 +28,7 @@ import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.event.Event;
+import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.panels.Button;
@@ -38,6 +39,7 @@ import ru.ancevt.d2d2world.desktop.ui.TextInputEvent;
 import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
+import ru.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
 
@@ -57,12 +59,12 @@ public class IntroRoot extends Root {
     private final PlainRect panelRect;
     private final UiTextInput uiTextInputServer;
     private final UiTextInput uiTextInputPlayerName;
-    private final String version;
     private UiText labelVersion;
+    private EventListener addToStageEventListener;
+    private Root root;
 
     public IntroRoot(@NotNull String version) {
-        this.version = version;
-        D2D2.getTextureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
+        textureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
 
         setBackgroundColor(Color.BLACK);
 
@@ -118,7 +120,51 @@ public class IntroRoot extends Root {
         button.setWidth(panelRect.getWidth());
         panel.add(button, 10, 100);
 
-        addEventListener(Event.ADD_TO_STAGE, this::addToStage);
+        addEventListener(Event.ADD_TO_STAGE, addToStageEventListener = event -> {
+            removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
+
+            root = getRoot();
+
+            PlainRect plainRect = new PlainRect(getStage().getStageWidth(), getStage().getStageHeight() - 300, Color.DARK_BLUE);
+            add(plainRect);
+
+            CityBGSprite cityBGSprite = new CityBGSprite();
+            add(cityBGSprite, 0, 150);
+
+            UiText labelThanksTo = new UiText();
+            labelThanksTo.setVisible(false);
+            labelThanksTo.setText("Special thanks to");
+            add(labelThanksTo, 380, 330 - 80);
+
+            ThanksToContainer thanksToContainer = new ThanksToContainer();
+            add(thanksToContainer, 0, 300);
+            thanksToContainer.addEventListener(Event.COMPLETE, e -> labelThanksTo.setVisible(true));
+            thanksToContainer.start();
+
+
+            labelVersion = new UiText();
+            labelVersion.setText(version);
+            labelVersion.setWidth(1000);
+
+            this.addEventListener(InputEvent.KEY_DOWN, evnt -> {
+                var e = (InputEvent) evnt;
+                switch (e.getKeyCode()) {
+                    case KeyCode.F1 -> {
+                        String host = uiTextInputServer.getText().split(":")[0];
+                        int port = parseInt(uiTextInputServer.getText().split(":")[1]);
+
+                        ServerInfoRetriever.retrieve(host, port, System.out::println, System.out::println);
+                    }
+                }
+            });
+
+            add(panel, (getStage().getStageWidth() - panelRect.getWidth()) / 2, (getStage().getStageHeight() - panelRect.getHeight()) / 4);
+            TextInputProcessor.enableRoot(this);
+
+            int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
+
+            add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
+        });
     }
 
     private void keyEnter(Event event) {
@@ -147,60 +193,24 @@ public class IntroRoot extends Root {
                     .filter(p -> p.getName().equals(localPlayerName))
                     .findAny()
                     .ifPresentOrElse(p -> {
-                        labelVersion.setText("The name \"" + localPlayerName + "\" is already taken");
-                        labelVersion.setColor(Color.RED);
+                        warningDialog("The name \"" + localPlayerName + "\" is already taken");
                     }, () -> {
                         GameRoot gameRoot = new GameRoot();
                         D2D2.getStage().setRoot(gameRoot);
                         gameRoot.start(uiTextInputServer.getText(), localPlayerName);
                     });
         } else {
-            labelVersion.setText("Server \"" + server + "\" is unavailable");
-            labelVersion.setColor(Color.RED);
+            warningDialog("Server \"" + server + "\" is unavailable");
         }
     }
 
-    private void addToStage(Event event) {
-        PlainRect plainRect = new PlainRect(getStage().getStageWidth(), getStage().getStageHeight() - 300, Color.DARK_BLUE);
-        add(plainRect);
-
-        CityBGSprite cityBGSprite = new CityBGSprite();
-        add(cityBGSprite, 0, 150);
-
-        UiText labelThanksTo = new UiText();
-        labelThanksTo.setVisible(false);
-        labelThanksTo.setText("Special thanks to");
-        add(labelThanksTo, 380, 330-80);
-
-        ThanksToContainer thanksToContainer = new ThanksToContainer();
-        add(thanksToContainer, 0, 300);
-        thanksToContainer.addEventListener(Event.COMPLETE, e -> labelThanksTo.setVisible(true));
-        thanksToContainer.start();
-
-
-        labelVersion = new UiText();
-        labelVersion.setText(version);
-        labelVersion.setWidth(1000);
-
-        this.addEventListener(InputEvent.KEY_DOWN, evnt -> {
-            var e = (InputEvent) evnt;
-            switch (e.getKeyCode()) {
-                case KeyCode.F1 -> {
-                    String host = uiTextInputServer.getText().split(":")[0];
-                    int port = parseInt(uiTextInputServer.getText().split(":")[1]);
-
-                    ServerInfoRetriever.retrieve(host, port, System.out::println, System.out::println);
-                }
-            }
+    private void warningDialog(String text) {
+        TextInputProcessor.INSTANCE.unfocus();
+        DialogWarning dialogWarning = new DialogWarning("Error", text);
+        dialogWarning.addEventListener(DialogWarning.DialogWarningEvent.DIALOG_OK, event -> {
+            uiTextInputPlayerName.requestFocus();
         });
-
-
-        add(panel, (getStage().getStageWidth() - panelRect.getWidth()) / 2, (getStage().getStageHeight() - panelRect.getHeight()) / 4);
-        TextInputProcessor.enableRoot(this);
-
-        int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
-
-        add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
+        add(dialogWarning);
     }
 
     private @Nullable ServerInfoRetrieveResult retrieveServerInfo(String server) {

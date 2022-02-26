@@ -362,6 +362,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     }
 
     void focusLost() {
+        down = false;
         focused = false;
         caret.removeFromParent();
     }
