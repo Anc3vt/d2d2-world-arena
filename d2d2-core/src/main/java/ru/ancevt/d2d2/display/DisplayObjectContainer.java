@@ -17,6 +17,8 @@
  */
 package ru.ancevt.d2d2.display;
 
+import ru.ancevt.d2d2.D2D2;
+import ru.ancevt.d2d2.display.texture.TextureManager;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.EventPool;
 
@@ -92,8 +94,6 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
         if (removedFromStage) Stage.dispatchRemoveFromStage(child);
     }
 
-
-
     @Override
     public int indexOf(IDisplayObject child) {
         return children.indexOf(child);
@@ -119,23 +119,10 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
         return children.contains(child);
     }
 
-    /*
-    final void actualRemove(IDisplayObject child) {
-        children.remove(child);
+    @Override
+    public TextureManager textureManager() {
+        return D2D2.getTextureManager();
     }
-
-    final void actualRemove(int index) {
-        children.remove(index);
-    }
-
-    final void actualAdd(IDisplayObject child) {
-        children.add(child);
-    }
-
-    final void actualAdd(IDisplayObject child, int index) {
-        children.add(index, child);
-    }
-     */
 
     @Override
     public void onEachFrame() {

@@ -19,6 +19,7 @@ package ru.ancevt.d2d2.display;
 
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.texture.Texture;
+import ru.ancevt.d2d2.display.texture.TextureManager;
 
 public class Sprite extends DisplayObject implements ISprite {
 
@@ -131,6 +132,11 @@ public class Sprite extends DisplayObject implements ISprite {
         result.setVisible(isVisible());
         result.setRotation(getRotation());
         return result;
+    }
+
+    @Override
+    public TextureManager textureManager() {
+        return D2D2.getTextureManager();
     }
 }
 

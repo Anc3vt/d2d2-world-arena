@@ -11,8 +11,8 @@ public class Preloader extends DisplayObjectContainer {
 
     public static final String ASSET = "d2d2-world-common-tileset.png";
 
-    private static final int FRAMES = 10;
-    private int timer = FRAMES;
+    private static final int FRAMES_PER_ROTATE = 10;
+    private int timer = FRAMES_PER_ROTATE;
 
     private static Texture texture;
 
@@ -23,7 +23,7 @@ public class Preloader extends DisplayObjectContainer {
     @Override
     public void onEachFrame() {
         if (timer-- <= 0) {
-            timer = FRAMES;
+            timer = FRAMES_PER_ROTATE;
             rotate(45);
         }
     }

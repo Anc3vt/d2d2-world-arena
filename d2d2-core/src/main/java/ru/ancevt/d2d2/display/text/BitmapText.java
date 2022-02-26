@@ -22,6 +22,7 @@ import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObject;
 import ru.ancevt.d2d2.display.IColored;
 import ru.ancevt.d2d2.display.Sprite;
+import ru.ancevt.d2d2.display.texture.TextureManager;
 
 public class BitmapText extends DisplayObject implements IColored {
 	
@@ -134,6 +135,11 @@ public class BitmapText extends DisplayObject implements IColored {
 	@Override
 	public Color getColor() {
 		return color;
+	}
+
+	@Override
+	public TextureManager textureManager() {
+		return D2D2.getTextureManager();
 	}
 
 	public void setText(String text) {
