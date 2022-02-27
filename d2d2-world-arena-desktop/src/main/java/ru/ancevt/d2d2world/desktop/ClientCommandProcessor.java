@@ -66,7 +66,7 @@ public class ClientCommandProcessor {
                 tt.addRow(
                         client.getLocalPlayerId(),
                         client.getLocalPlayerName(),
-                        client.getPing(),
+                        client.getLocalPlayerPing(),
                         Integer.toString(client.getLocalPlayerColor(), 16)
                 );
 

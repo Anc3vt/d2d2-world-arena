@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ServerInfoRetrieveResult {
+public class ServerInfo {
     private final String name;
     private final String version;
     private final String protocolVersion;
@@ -13,13 +13,14 @@ public class ServerInfoRetrieveResult {
     private final String mod;
     private final List<RemotePlayer> players;
 
-    public ServerInfoRetrieveResult(@NotNull String name,
-                                    @NotNull String version,
-                                    @NotNull String protocolVersion,
-                                    @NotNull String map,
-                                    @NotNull String mapKit,
-                                    @NotNull String mod,
-                                    @NotNull List<RemotePlayer> players) {
+    public ServerInfo(@NotNull String name,
+                      @NotNull String version,
+                      @NotNull String protocolVersion,
+                      @NotNull String map,
+                      @NotNull String mapKit,
+                      @NotNull String mod,
+                      int maxPlayers,
+                      @NotNull List<RemotePlayer> players) {
         this.name = name;
         this.version = version;
         this.protocolVersion = protocolVersion;
@@ -57,9 +58,13 @@ public class ServerInfoRetrieveResult {
         return players;
     }
 
+    public int getMaxPlayers() {
+        return 0;
+    }
+
     @Override
     public String toString() {
-        return "ServerInfoRetrieveResult{" +
+        return "ServerInfo{" +
                 "name='" + name + '\'' +
                 ", version='" + version + '\'' +
                 ", protocolVersion='" + protocolVersion + '\'' +

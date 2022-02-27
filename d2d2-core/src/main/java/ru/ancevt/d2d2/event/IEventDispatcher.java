@@ -6,7 +6,13 @@ public interface IEventDispatcher {
 
     void addEventListener(String type, EventListener listener, boolean reset);
 
-    void removeEventListener(String type, EventListener listener);
+    void addEventListener(Object key, String type, EventListener listener);
+
+    void addEventListener(Object key, String type, EventListener listener, boolean reset);
+
+    void removeEventListeners(String type, EventListener listener);
+
+    void removeEventListeners(Object key);
 
     void dispatchEvent(Event event);
 

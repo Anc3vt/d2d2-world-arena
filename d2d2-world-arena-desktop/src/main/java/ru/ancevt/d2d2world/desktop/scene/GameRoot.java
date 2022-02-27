@@ -28,13 +28,15 @@ import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import ru.ancevt.d2d2world.desktop.Config;
-import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
+import ru.ancevt.d2d2world.desktop.ui.TabWindow;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.ClientListener;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
-import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
+import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
+import ru.ancevt.d2d2world.net.client.ServerInfo;
 import ru.ancevt.net.tcpb254.CloseStatus;
 
 import java.util.concurrent.TimeUnit;
@@ -51,9 +53,11 @@ public class GameRoot extends Root implements ClientListener {
     private String server;
     private final WorldScene worldScene;
     private final ClientCommandProcessor clientCommandProcessor = modules.get(ClientCommandProcessor.class);
+    private TabWindow tabWindow;
+    private String serverName;
 
     public GameRoot() {
-        TextInputProcessor.enableRoot(this);
+        UiTextInputProcessor.enableRoot(this);
 
         setBackgroundColor(Color.DARK_BLUE);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
@@ -73,15 +77,32 @@ public class GameRoot extends Root implements ClientListener {
             }
         });
 
-        addEventListener(InputEvent.KEY_DOWN, e -> {
-            var event = (InputEvent) e;
-            switch (event.getKeyCode()) {
+        addEventListener(InputEvent.KEY_DOWN, event -> {
+            var e = (InputEvent) event;
+            switch (e.getKeyCode()) {
                 case KeyCode.PAGE_UP -> chat.setScroll(chat.getScroll() - 10);
                 case KeyCode.PAGE_DOWN -> chat.setScroll(chat.getScroll() + 10);
                 case KeyCode.F8 -> chat.setShadowEnabled(!chat.getShadowEnabled());
                 case KeyCode.F6 -> {
-                    if (!chat.isInputOpened()) chat.openInput();
-                    else chat.closeInput();
+                    if (!chat.isInputOpened()) {
+                        chat.openInput();
+                    } else {
+                        chat.closeInput();
+                    }
+                }
+                case KeyCode.TAB -> {
+                    chat.setVisible(false);
+                    setTabWindowVisible(true);
+                }
+            }
+        });
+
+        addEventListener(InputEvent.KEY_UP, event -> {
+            var e = (InputEvent) event;
+            switch (e.getKeyCode()) {
+                case KeyCode.TAB -> {
+                    chat.setVisible(true);
+                    setTabWindowVisible(false);
                 }
             }
         });
@@ -90,10 +111,27 @@ public class GameRoot extends Root implements ClientListener {
         add(worldScene);
 
         add(chat, 10, 10);
+
+        tabWindow = new TabWindow();
     }
 
-    private boolean clientCommand(String text) {
-        return clientCommandProcessor.process(text);
+    private void setTabWindowVisible(boolean value) {
+        if (tabWindow != null) {
+            tabWindow.removeFromParent();
+        }
+        if (value) {
+            tabWindow.setServerName(serverName, 0, 0);
+            tabWindow.setPlayers(
+                    client.getLocalPlayerId(),
+                    client.getLocalPlayerName(),
+                    client.getLocalPlayerFrags(),
+                    client.getLocalPlayerPing(),
+                    Color.of(client.getLocalPlayerColor()),
+                    RemotePlayerManager.INSTANCE.getRemotePlayerList()
+            );
+
+            add(tabWindow);
+        }
     }
 
     /**
@@ -118,8 +156,8 @@ public class GameRoot extends Root implements ClientListener {
      * {@link ClientListener} method
      */
     @Override
-    public void serverInfo(@NotNull ServerInfoRetrieveResult result) {
-
+    public void serverInfo(@NotNull ServerInfo result) {
+        tabWindow.setServerName(result.getName(), result.getPlayers().size(), result.getMaxPlayers());
     }
 
     /**
@@ -206,6 +244,10 @@ public class GameRoot extends Root implements ClientListener {
         client.sendPlayerEnterRequest();
     }
 
+    private boolean clientCommand(String text) {
+        return clientCommandProcessor.process(text);
+    }
+
     private void addToStage(Event event) {
         add(new FpsMeter(), 0, getStage().getStageWidth() - 100);
     }
@@ -225,7 +267,9 @@ public class GameRoot extends Root implements ClientListener {
         client.connect(host, port);
     }
 
-
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
 }
 
 

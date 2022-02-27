@@ -30,8 +30,8 @@ import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.desktop.ui.Font;
-import ru.ancevt.d2d2world.desktop.ui.TextInputEvent;
-import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
 import ru.ancevt.util.repl.ReplInterpreter;
 
@@ -69,9 +69,9 @@ public class Chat extends DisplayObjectContainer {
         height = DEFAULT_HEIGHT;
 
         input.setWidth(20);
-        input.addEventListener(TextInputEvent.TEXT_ENTER, this::textInputEvent);
-        input.addEventListener(TextInputEvent.TEXT_CHANGE, this::textInputEvent);
-        input.addEventListener(TextInputEvent.TEXT_INPUT_KEY_DOWN, this::textInputEvent);
+        input.addEventListener(UiTextInputEvent.TEXT_ENTER, this::textInputEvent);
+        input.addEventListener(UiTextInputEvent.TEXT_CHANGE, this::textInputEvent);
+        input.addEventListener(UiTextInputEvent.TEXT_INPUT_KEY_DOWN, this::textInputEvent);
 
         redraw();
     }
@@ -212,11 +212,11 @@ public class Chat extends DisplayObjectContainer {
 
     // TODO: split to 3 methods
     public void textInputEvent(Event event) {
-        if (event instanceof TextInputEvent textInputEvent) {
+        if (event instanceof UiTextInputEvent uiTextInputEvent) {
             switch (event.getType()) {
 
-                case TextInputEvent.TEXT_CHANGE -> {
-                    String text = textInputEvent.getText();
+                case UiTextInputEvent.TEXT_CHANGE -> {
+                    String text = uiTextInputEvent.getText();
                     int length = text.length();
                     if(length > INPUT_MAX_LENGTH) {
                         input.setText(text.substring(0, INPUT_MAX_LENGTH));
@@ -226,8 +226,8 @@ public class Chat extends DisplayObjectContainer {
                     input.setWidth(w + 20);
                 }
 
-                case TextInputEvent.TEXT_ENTER -> {
-                    String text = textInputEvent.getText();
+                case UiTextInputEvent.TEXT_ENTER -> {
+                    String text = uiTextInputEvent.getText();
                     if (!text.isBlank()) {
                         dispatchEvent(new ChatEvent(ChatEvent.CHAT_TEXT_ENTER, this, text));
                         history.add(text);
@@ -237,8 +237,8 @@ public class Chat extends DisplayObjectContainer {
                     closeInput();
                 }
 
-                case TextInputEvent.TEXT_INPUT_KEY_DOWN -> {
-                    switch (textInputEvent.getKeyCode()) {
+                case UiTextInputEvent.TEXT_INPUT_KEY_DOWN -> {
+                    switch (uiTextInputEvent.getKeyCode()) {
                         case KeyCode.UP -> {
                             if(historyIndex == history.size()) {
                                 history.add(input.getText());
@@ -314,7 +314,7 @@ public class Chat extends DisplayObjectContainer {
         });
         new Thread(repl::start).start();
 
-        TextInputProcessor.enableRoot(root);
+        UiTextInputProcessor.enableRoot(root);
         root.addEventListener(InputEvent.KEY_DOWN, event -> {
             InputEvent inputEvent = (InputEvent) event;
             switch (inputEvent.getKeyCode()) {

@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import static ru.ancevt.d2d2world.server.Config.SERVER_CONNECTION_TIMEOUT;
 import static ru.ancevt.d2d2world.server.Config.SERVER_HOST;
+import static ru.ancevt.d2d2world.server.Config.SERVER_MAX_PLAYERS;
 import static ru.ancevt.d2d2world.server.Config.SERVER_NAME;
 import static ru.ancevt.d2d2world.server.Config.SERVER_PORT;
 import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
@@ -86,29 +87,16 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
             return;
         }
 
-        String host = a.get(new String[]{"--host", "-h"}, config.getString(SERVER_HOST, "0.0.0.0"));
-        int port = a.get(Integer.class, new String[]{"--port", "-p"}, config.getInt(SERVER_PORT, 2245));
-        String serverName = a.get(String.class, new String[]{"-n", "--name"},
-                config.getString(SERVER_NAME, "D2D2 World Arena Server"));
-
-        D2D2WorldServer server = new D2D2WorldServer(host, port, serverName, version);
+        D2D2WorldServer server = new D2D2WorldServer();
         server.start();
     }
 
     private static Config config;
 
-    private final String host;
-    private final int port;
-
-    private final String serverVersion;
-
-    public D2D2WorldServer(String host, int port, String serverName, String serverVersion) {
-        this.host = host;
-        this.port = port;
-        this.serverVersion = serverVersion;
-
-        modules.get(ServerStateInfo.class).setName(serverName);
+    public D2D2WorldServer() {
+        modules.get(ServerStateInfo.class).setName(config.getString(SERVER_NAME));
         modules.get(ServerStateInfo.class).setVersion(getServerVersion());
+        modules.get(ServerStateInfo.class).setMaxPlayers(config.getInt(SERVER_MAX_PLAYERS, 100));
 
         modules.get(ServerUnit.class).server.addServerListener(this);
 
@@ -118,7 +106,12 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     }
 
     public void start() {
-        modules.get(ServerUnit.class).server.asyncListenAndAwait(host, port, 2, TimeUnit.SECONDS);
+        modules.get(ServerUnit.class).server.asyncListenAndAwait(
+                config.getString(SERVER_HOST),
+                config.getInt(SERVER_PORT),
+                2,
+                TimeUnit.SECONDS
+        );
         modules.get(ServerTimer.class).start();
     }
 
@@ -135,8 +128,8 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
 
     @Override
     public void serverStarted() {
-        log.info("Version: " + serverVersion);
-        log.info("Server started at {}:{}", host, port);
+        log.info("Version: " + getServerVersion());
+        log.info("Server started at {}:{}", config.getString(SERVER_HOST), config.getInt(SERVER_PORT));
     }
 
     @Override

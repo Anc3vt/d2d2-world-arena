@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.io.ByteInputReader;
 import ru.ancevt.commons.io.ByteOutputWriter;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
-import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
+import ru.ancevt.d2d2world.net.client.ServerInfo;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.message.MessageType;
 
@@ -57,7 +57,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
 
                 case MessageType.SERVER_INFO_RESPONSE -> {
                     log("received SERVER_INFO_RESPONSE");
-                    ServerInfoRetrieveResult result = readServerInfoResponseBytes(bytes);
+                    ServerInfo result = readServerInfoResponseBytes(bytes);
                     clientProtocolImplListeners.forEach(l -> l.serverInfoResponse(result));
                 }
 
@@ -191,7 +191,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         System.out.println(o);
     }
 
-    public static ServerInfoRetrieveResult readServerInfoResponseBytes(byte[] bytes) {
+    public static ServerInfo readServerInfoResponseBytes(byte[] bytes) {
         Message message = Message.of(bytes);
         ByteInputReader in = message.inputReader();
 
@@ -201,18 +201,20 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         String mapName = in.readUtf(byte.class);
         String mapkitName = in.readUtf(byte.class);
         String modName = in.readUtf(byte.class);
+        int maxPlayers = in.readShort();
 
         List<RemotePlayer> players = new ArrayList<>();
         while (in.hasNextData())
             players.add(new RemotePlayer(in.readShort(), in.readUtf(byte.class), 0));
 
-        return new ServerInfoRetrieveResult(
+        return new ServerInfo(
                 serverName,
                 serverVersion,
                 serverProtocolVersion,
                 mapName,
                 mapkitName,
                 modName,
+                maxPlayers,
                 players
         );
     }

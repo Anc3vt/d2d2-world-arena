@@ -36,10 +36,10 @@ import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageP
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerEnterRequest;
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerExitRequest;
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerPingReport;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerPingRequest;
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerTextToChat;
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageRconCommand;
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageRconLogin;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageServerInfoRequest;
 import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;
 
 @Slf4j
@@ -50,12 +50,14 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     private final RemotePlayerManager remotePlayerManager;
     private final List<ClientListener> clientListeners;
     private ClientSender sender;
-    private long pingRequestTime;
-    private String localPlayerName;
     private String serverProtocolVersion;
-    private int ping;
+    private long pingRequestTime;
     private int localPlayerId;
+    private String localPlayerName;
+    private int localPlayerFrags;
+    private int localPlayerPing;
     private int localPlayerColor;
+    private ServerInfo serverInfo;
 
     public Client() {
         remotePlayerManager = RemotePlayerManager.INSTANCE;
@@ -183,7 +185,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      * {@link ClientProtocolImplListener} method
      */
     @Override
-    public void errorFromServer(int errorCode, @NotNull String errorMessage, String errorDetails) {
+    public void errorFromServer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails) {
         throw new NotImplementedException();
     }
 
@@ -193,8 +195,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     @Override
     public void playerPingResponse() {
         long pingResponseTime = System.currentTimeMillis();
-        ping = (int) (pingResponseTime - pingRequestTime);
-        sender.send(createMessagePlayerPingReport(ping));
+        localPlayerPing = (int) (pingResponseTime - pingRequestTime);
+        sender.send(createMessagePlayerPingReport(localPlayerPing));
     }
 
     /**
@@ -234,7 +236,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      * {@link ClientProtocolImplListener} method
      */
     @Override
-    public void serverInfoResponse(@NotNull ServerInfoRetrieveResult result) {
+    public void serverInfoResponse(@NotNull ServerInfo result) {
+        localPlayerPing = (int)(System.currentTimeMillis() - pingRequestTime);
         clientListeners.forEach(l -> l.serverInfo(result));
     }
 
@@ -257,21 +260,26 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     // SENDERS:
 
     public void sendPlayerEnterRequest() {
-        sender.send(createMessagePlayerEnterRequest(localPlayerName, PROTOCOL_VERSION, "")
-        );
+        sender.send(createMessagePlayerEnterRequest(localPlayerName, PROTOCOL_VERSION, ""));
     }
 
     public void sendLocalPlayerControllerAndXYReport(int controllerState, float x, float y) {
         sender.send(createMessagePlayerControllerAndXYReport(controllerState, x, y));
     }
 
-    public boolean isEnteredServer() {
-        return localPlayerName != null;
+    public void sendServerInfoRequest() {
+        pingRequestTime = System.currentTimeMillis();
+        sender.send(createMessageServerInfoRequest());
     }
 
-    public void pingRequest() {
-        pingRequestTime = System.currentTimeMillis();
-        sender.send(createMessagePlayerPingRequest());
+    ///
+
+    public ServerInfo getServerInfo() {
+        return serverInfo;
+    }
+
+    public boolean isEnteredServer() {
+        return localPlayerName != null;
     }
 
     public void connect(String host, int port) {
@@ -300,10 +308,6 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         return remotePlayerManager;
     }
 
-    public long getPing() {
-        return ping;
-    }
-
     public String getLocalPlayerName() {
         return localPlayerName;
     }
@@ -326,6 +330,18 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     public void setLocalPlayerColor(int color) {
         this.localPlayerColor = color;
+    }
+
+    public int getLocalPlayerPing() {
+        return localPlayerPing;
+    }
+
+    public void setLocalPlayerFrags(int localPlayerFrags) {
+        this.localPlayerFrags = localPlayerFrags;
+    }
+
+    public int getLocalPlayerFrags() {
+        return localPlayerFrags;
     }
 
     private static byte[] debugReceived(@NotNull String playerNameOrId, byte[] bytes) {
@@ -374,33 +390,5 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         sender.send(createMessageRconCommand(rconCommandText, ""));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

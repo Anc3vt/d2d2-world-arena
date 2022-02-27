@@ -20,8 +20,8 @@ public class Config {
     public static final String SERVER_PORT = "server.port";
     public static final String SERVER_CONNECTION_TIMEOUT = "server.connection-timeout";
     public static final String SERVER_LOOP_DELAY = "server.loop-delay";
+    public static final String SERVER_MAX_PLAYERS = "world.max-players";
     public static final String RCON_PASSWORD = "rcon.password";
-    public static final String WORLD_MAX_PLAYERS = "world.max-players";
     public static final String WORLD_DEFAULT_MAP = "world.default-map";
     public static final String WORLD_DEFAULT_MOD = "world.default-mod";
 

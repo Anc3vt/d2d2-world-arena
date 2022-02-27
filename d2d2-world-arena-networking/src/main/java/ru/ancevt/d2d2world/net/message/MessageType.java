@@ -121,7 +121,7 @@ public class MessageType {
 
 
     /**
-     * b)t b)S)serverName b)S)serverVersion b)S)serverProtocolVersion b)S) mapName b)S)mapkitName b)S)modeName
+     * b)t b)S)serverName b)S)serverVersion b)S)serverProtocolVersion b)S) mapName b)S)mapkitName b)S)modeName s)maxPlayers
      * ( s)playerId b)S)playerName )...
      */
     public static final int SERVER_INFO_RESPONSE = 100;

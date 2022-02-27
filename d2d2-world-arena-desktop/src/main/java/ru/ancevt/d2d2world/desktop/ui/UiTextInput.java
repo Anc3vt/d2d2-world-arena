@@ -46,7 +46,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         UiTextInput uiTextInput1 = new UiTextInput();
         root.add(uiTextInput1, 100, 140);
 
-        TextInputProcessor.enableRoot(root);
+        UiTextInputProcessor.enableRoot(root);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
     }
@@ -147,7 +147,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             setCaretPosition(Integer.MAX_VALUE);
         }
 
-        dispatchEvent(new TextInputEvent(TextInputEvent.TEXT_CHANGE, this, getText(), 0));
+        dispatchEvent(new UiTextInputEvent(UiTextInputEvent.TEXT_CHANGE, this, getText(), 0));
     }
 
     public String getText() {
@@ -176,12 +176,12 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     }
 
     public void dispose() {
-        removeEventListener(Event.ADD_TO_STAGE, this);
-        removeEventListener(Event.REMOVE_FROM_STAGE, this);
-        touchButton.removeEventListener(TouchEvent.TOUCH_DOWN, this);
+        removeEventListeners(Event.ADD_TO_STAGE, this);
+        removeEventListeners(Event.REMOVE_FROM_STAGE, this);
+        touchButton.removeEventListeners(TouchEvent.TOUCH_DOWN, this);
         touchButton.setEnabled(false);
         removeFromParent();
-        TextInputProcessor.INSTANCE.removeTextInput(this);
+        UiTextInputProcessor.INSTANCE.removeTextInput(this);
     }
 
     public void setWidth(float width) {
@@ -226,19 +226,19 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
 
             case Event.ADD_TO_STAGE -> {
                 touchButton.setEnabled(true);
-                TextInputProcessor.INSTANCE.addTextInput(this);
-                TextInputProcessor.INSTANCE.focus(this);
+                UiTextInputProcessor.INSTANCE.addTextInput(this);
+                UiTextInputProcessor.INSTANCE.focus(this);
             }
 
             case Event.REMOVE_FROM_STAGE -> {
                 touchButton.setEnabled(false);
-                TextInputProcessor.INSTANCE.removeTextInput(this);
-                if (isFocused()) TextInputProcessor.INSTANCE.resetFocus();
+                UiTextInputProcessor.INSTANCE.removeTextInput(this);
+                if (isFocused()) UiTextInputProcessor.INSTANCE.resetFocus();
             }
 
             case TouchEvent.TOUCH_DOWN -> {
                 TouchEvent touchEvent = (TouchEvent) event;
-                TextInputProcessor.INSTANCE.focus(this);
+                UiTextInputProcessor.INSTANCE.focus(this);
                 // TODO: repair caret position when scale mode is extended
                 setCaretPosition((int) (touchEvent.getX() / uiText.getCharWidth()));
             }
@@ -313,7 +313,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             case KeyCode.END -> setCaretPosition(text.length());
 
             case KeyCode.ENTER -> dispatchEvent(
-                    new TextInputEvent(TextInputEvent.TEXT_ENTER, this, getText(), keyCode));
+                    new UiTextInputEvent(UiTextInputEvent.TEXT_ENTER, this, getText(), keyCode));
         }
 
         if (control) {
@@ -336,7 +336,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             }
         }
 
-        dispatchEvent(new TextInputEvent(TextInputEvent.TEXT_INPUT_KEY_DOWN, this, getText(), keyCode));
+        dispatchEvent(new UiTextInputEvent(UiTextInputEvent.TEXT_INPUT_KEY_DOWN, this, getText(), keyCode));
     }
 
     public void keyType(int codepoint, String keyType) {
@@ -417,7 +417,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     }
 
     public void requestFocus() {
-        TextInputProcessor.INSTANCE.focus(this);
+        UiTextInputProcessor.INSTANCE.focus(this);
     }
 
     private static class Caret extends PlainRect {

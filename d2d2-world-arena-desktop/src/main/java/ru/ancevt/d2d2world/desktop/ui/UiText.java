@@ -39,17 +39,33 @@ public class UiText extends DisplayObjectContainer {
     private float height;
     private boolean shadowEnabled;
     private Color color;
+    private boolean autoSize;
 
     public UiText() {
         color = DEFAULT_COLOR;
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
         shadowEnabled = true;
+        text = "";
+        //redraw();
+    }
+
+    public UiText(Object text) {
+        this();
+        setText(text);
+    }
+
+    public void setAutoSize(boolean autoSize) {
+        this.autoSize = autoSize;
         redraw();
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public boolean isAutoSize() {
+        return autoSize;
+    }
+
+    public void setText(Object text) {
+        this.text = String.valueOf(text);
         redraw();
     }
 
@@ -88,11 +104,15 @@ public class UiText extends DisplayObjectContainer {
     }
 
     public float getTextWidth() {
-        return (getCharWidth() + bitmapText.getSpacing()) * getText().length();
+        return getCharWidth() + (getCharWidth() * text.length());
     }
 
     public float getCharWidth() {
         return getBitmapFont().getCharInfo('0').width();
+    }
+
+    private float getCharHeight() {
+        return getBitmapFont().getCharInfo('0').height();
     }
 
     @Override
@@ -123,6 +143,11 @@ public class UiText extends DisplayObjectContainer {
             bitmapTextShadow.setBounds(getWidth(), getHeight());
             bitmapTextShadow.setColor(Color.BLACK);
             bitmapTextShadow.setText(text);
+
+            if (autoSize) {
+                bitmapTextShadow.setBounds(getTextWidth(), getCharHeight());
+            }
+
             shadow = bitmapTextShadow;//.toSprite();
             add(shadow, 0, 0);
         }
@@ -133,6 +158,10 @@ public class UiText extends DisplayObjectContainer {
         bitmapText.setBounds(getWidth(), getHeight());
         bitmapText.setColor(getColor());
         bitmapText.setText(text);
+
+        if (autoSize) {
+            bitmapText.setBounds(getTextWidth(), getCharHeight());
+        }
 
         fore = bitmapText;//.toSprite();
         shadow = bitmapTextShadow;//.toSprite();

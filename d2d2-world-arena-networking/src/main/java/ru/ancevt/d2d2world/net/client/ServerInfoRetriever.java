@@ -16,6 +16,7 @@ public class ServerInfoRetriever {
                                 @NotNull ErrorFunction errorFunction) {
 
         IConnection connection = ConnectionFactory.createTcpB254Connection();
+
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
             public void connectionEstablished() {
@@ -25,12 +26,13 @@ public class ServerInfoRetriever {
             @Override
             public void connectionClosed(CloseStatus status) {
                 errorFunction.onError(status);
+                connection.removeConnectionListener(this);
                 connection.close();
             }
 
             @Override
             public void connectionBytesReceived(byte[] bytes) {
-                if(bytes[0] == MessageType.SERVER_INFO_RESPONSE) {
+                if (bytes[0] == MessageType.SERVER_INFO_RESPONSE) {
                     resultFunction.onResult(ClientProtocolImpl.readServerInfoResponseBytes(bytes));
                     connection.removeConnectionListener(this);
                     connection.close();
@@ -42,7 +44,7 @@ public class ServerInfoRetriever {
 
     @FunctionalInterface
     public interface ResultFunction {
-        void onResult(ServerInfoRetrieveResult result);
+        void onResult(ServerInfo result);
     }
 
     @FunctionalInterface

@@ -92,6 +92,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                         serverStateInfo.getMap(),
                         serverStateInfo.getMapKit(),
                         serverStateInfo.getMod(),
+                        serverStateInfo.getMaxPlayers(),
                         players
                 )
         );

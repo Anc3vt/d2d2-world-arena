@@ -1,7 +1,7 @@
 package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
+import ru.ancevt.d2d2world.net.client.ServerInfo;
 
 public class ClientProtocolListenerAdapter implements ClientProtocolImplListener {
     @Override
@@ -65,7 +65,7 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
     }
 
     @Override
-    public void serverInfoResponse(ServerInfoRetrieveResult result) {
+    public void serverInfoResponse(ServerInfo result) {
 
     }
 

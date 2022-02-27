@@ -144,7 +144,9 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                                                          @NotNull String mapName,
                                                          @NotNull String mapkitName,
                                                          @NotNull String modName,
+                                                         int maxPlayers,
                                                          List<Pair<Integer, String>> players) {
+
         ByteOutputWriter bow = ByteOutputWriter.newInstance()
                 .writeByte(MessageType.SERVER_INFO_RESPONSE)
                 .writeUtf(byte.class, serverName)
@@ -152,7 +154,8 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 .writeUtf(byte.class, PROTOCOL_VERSION)
                 .writeUtf(byte.class, mapName)
                 .writeUtf(byte.class, mapkitName)
-                .writeUtf(byte.class, modName);
+                .writeUtf(byte.class, modName)
+                .writeShort(maxPlayers);
 
         players.forEach(p -> bow.writeShort(p.getFirst()).writeUtf(byte.class, p.getSecond()));
 

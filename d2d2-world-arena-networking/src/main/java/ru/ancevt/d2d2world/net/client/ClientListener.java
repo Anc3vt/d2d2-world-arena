@@ -43,7 +43,7 @@ public interface ClientListener {
 
     void remotePlayerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
 
-    void serverInfo(@NotNull ServerInfoRetrieveResult result);
+    void serverInfo(@NotNull ServerInfo result);
 
     void serverTextToPlayer(@NotNull String text, int textColor);
 

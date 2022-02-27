@@ -19,7 +19,7 @@
         </encoder>
     </appender>
 
-    <logger name="ru.ancevt.d2d2world.desktop" level="trace" additivity="true">
+    <logger name="ru.ancevt.d2d2world.desktop" level="trace" additivity="false">
         <appender-ref ref="DESKTOP_FILE"/>
     </logger>
     

@@ -138,7 +138,7 @@ public class WorldScene extends DisplayObjectContainer {
         });
 
         if (frameCounter % 500 == 0) {
-            client.pingRequest();///
+            client.sendServerInfoRequest();///
         }
 
 

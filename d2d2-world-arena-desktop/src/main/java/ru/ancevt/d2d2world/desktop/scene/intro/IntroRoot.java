@@ -35,12 +35,12 @@ import ru.ancevt.d2d2.panels.Button;
 import ru.ancevt.d2d2world.desktop.Config;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.ui.Font;
-import ru.ancevt.d2d2world.desktop.ui.TextInputEvent;
-import ru.ancevt.d2d2world.desktop.ui.TextInputProcessor;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
 import ru.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
-import ru.ancevt.d2d2world.net.client.ServerInfoRetrieveResult;
+import ru.ancevt.d2d2world.net.client.ServerInfo;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
 
 import java.io.IOException;
@@ -81,14 +81,14 @@ public class IntroRoot extends Root {
 
         uiTextInputPlayerName = new UiTextInput();
         uiTextInputPlayerName.requestFocus();
-        uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_ENTER, this::keyEnter);
-        uiTextInputPlayerName.addEventListener(TextInputEvent.TEXT_CHANGE, event -> {
-            var e = (TextInputEvent) event;
+        uiTextInputPlayerName.addEventListener(UiTextInputEvent.TEXT_ENTER, this::keyEnter);
+        uiTextInputPlayerName.addEventListener(UiTextInputEvent.TEXT_CHANGE, event -> {
+            var e = (UiTextInputEvent) event;
             boolean valid = PatternMatcher.check(e.getText(), NAME_PATTERN);
             uiTextInputPlayerName.setColor(valid ? Color.WHITE : Color.RED);
         });
 
-        uiTextInputServer.addEventListener(TextInputEvent.TEXT_ENTER, event -> uiTextInputPlayerName.requestFocus());
+        uiTextInputServer.addEventListener(UiTextInputEvent.TEXT_ENTER, event -> uiTextInputPlayerName.requestFocus());
 
         try {
             if (Files.exists(Paths.get("playername.txt"))) {
@@ -121,7 +121,7 @@ public class IntroRoot extends Root {
         panel.add(button, 10, 100);
 
         addEventListener(Event.ADD_TO_STAGE, addToStageEventListener = event -> {
-            removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
+            removeEventListeners(Event.ADD_TO_STAGE, addToStageEventListener);
 
             root = getRoot();
 
@@ -159,7 +159,7 @@ public class IntroRoot extends Root {
             });
 
             add(panel, (getStage().getStageWidth() - panelRect.getWidth()) / 2, (getStage().getStageHeight() - panelRect.getHeight()) / 4);
-            TextInputProcessor.enableRoot(this);
+            UiTextInputProcessor.enableRoot(this);
 
             int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
 
@@ -168,7 +168,7 @@ public class IntroRoot extends Root {
     }
 
     private void keyEnter(Event event) {
-        var e = (TextInputEvent) event;
+        var e = (UiTextInputEvent) event;
         if (PatternMatcher.check(e.getText(), NAME_PATTERN))
             enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
     }
@@ -185,7 +185,7 @@ public class IntroRoot extends Root {
             uiTextInputServer.setText(server);
         }
 
-        ServerInfoRetrieveResult result = retrieveServerInfo(server);
+        ServerInfo result = retrieveServerInfo(server);
 
         if (result != null) {
             result.getPlayers()
@@ -196,6 +196,7 @@ public class IntroRoot extends Root {
                         warningDialog("The name \"" + localPlayerName + "\" is already taken");
                     }, () -> {
                         GameRoot gameRoot = new GameRoot();
+                        gameRoot.setServerName(result.getName());
                         D2D2.getStage().setRoot(gameRoot);
                         gameRoot.start(uiTextInputServer.getText(), localPlayerName);
                     });
@@ -205,7 +206,7 @@ public class IntroRoot extends Root {
     }
 
     private void warningDialog(String text) {
-        TextInputProcessor.INSTANCE.unfocus();
+        UiTextInputProcessor.INSTANCE.unfocus();
         DialogWarning dialogWarning = new DialogWarning("Error", text);
         dialogWarning.addEventListener(DialogWarning.DialogWarningEvent.DIALOG_OK, event -> {
             uiTextInputPlayerName.requestFocus();
@@ -213,16 +214,18 @@ public class IntroRoot extends Root {
         add(dialogWarning);
     }
 
-    private @Nullable ServerInfoRetrieveResult retrieveServerInfo(String server) {
+    private @Nullable ServerInfo retrieveServerInfo(String server) {
         String host = server.split(":")[0];
         int port = parseInt(server.split(":")[1]);
 
         Lock lock = new Lock();
-        Holder<ServerInfoRetrieveResult> resultHolder = new Holder<>();
+        Holder<ServerInfo> resultHolder = new Holder<>();
         ServerInfoRetriever.retrieve(host, port, result -> {
+            System.out.println("ASDASDDASD");
             resultHolder.setValue(result);
             lock.unlockIfLocked();
         }, closeStatus -> {
+            System.out.println("2083472");
             // TODO: log
         });
         lock.lock(5, TimeUnit.SECONDS);

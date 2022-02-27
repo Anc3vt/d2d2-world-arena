@@ -26,11 +26,20 @@ public class RemotePlayer {
     private float x;
     private float y;
     private int ping;
+    private int frags;
 
     public RemotePlayer(int id, String name, int color) {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public int getFrags() {
+        return frags;
+    }
+
+    public void setFrags(int frags) {
+        this.frags = frags;
     }
 
     public int getPing() {
@@ -95,9 +104,12 @@ public class RemotePlayer {
         return "RemotePlayer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", color=" + color +
                 ", controllerState=" + controllerState +
                 ", x=" + x +
                 ", y=" + y +
+                ", ping=" + ping +
+                ", frags=" + frags +
                 '}';
     }
 

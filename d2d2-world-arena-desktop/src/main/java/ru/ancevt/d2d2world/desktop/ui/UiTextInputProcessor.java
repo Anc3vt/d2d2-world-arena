@@ -25,9 +25,9 @@ import ru.ancevt.d2d2.input.KeyCode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextInputProcessor {
+public class UiTextInputProcessor {
 
-    public static TextInputProcessor INSTANCE = new TextInputProcessor();
+    public static UiTextInputProcessor INSTANCE = new UiTextInputProcessor();
     private static Root root;
     private static EventListener inputEventListener = event -> {
         if (event instanceof InputEvent inputEvent) {
@@ -52,22 +52,22 @@ public class TextInputProcessor {
     private final List<UiTextInput> uiTextInputs;
     private int index;
 
-    private TextInputProcessor() {
+    private UiTextInputProcessor() {
         uiTextInputs = new ArrayList<>();
     }
 
     public static void enableRoot(Root root) {
-        Root oldRoot = TextInputProcessor.root;
-        TextInputProcessor.root = root;
+        Root oldRoot = UiTextInputProcessor.root;
+        UiTextInputProcessor.root = root;
 
         root.addEventListener(InputEvent.KEY_DOWN, inputEventListener);
         root.addEventListener(InputEvent.KEY_UP, inputEventListener);
         root.addEventListener(InputEvent.KEY_TYPE, inputEventListener);
 
         if (oldRoot != null) {
-            oldRoot.removeEventListener(InputEvent.KEY_DOWN, inputEventListener);
-            oldRoot.removeEventListener(InputEvent.KEY_UP, inputEventListener);
-            oldRoot.removeEventListener(InputEvent.KEY_TYPE, inputEventListener);
+            oldRoot.removeEventListeners(InputEvent.KEY_DOWN, inputEventListener);
+            oldRoot.removeEventListeners(InputEvent.KEY_UP, inputEventListener);
+            oldRoot.removeEventListeners(InputEvent.KEY_TYPE, inputEventListener);
         }
     }
 

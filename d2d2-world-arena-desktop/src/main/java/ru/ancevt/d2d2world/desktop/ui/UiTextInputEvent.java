@@ -20,7 +20,7 @@ package ru.ancevt.d2d2world.desktop.ui;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.IEventDispatcher;
 
-public class TextInputEvent extends Event {
+public class UiTextInputEvent extends Event {
 
     public static final String TEXT_CHANGE = "textChange";
     public static final String TEXT_ENTER = "textEnter";
@@ -29,7 +29,7 @@ public class TextInputEvent extends Event {
     private final String text;
     private final int keyCode;
 
-    public TextInputEvent(String type, IEventDispatcher source, String text, int keyCode) {
+    public UiTextInputEvent(String type, IEventDispatcher source, String text, int keyCode) {
         super(type, source);
         this.text = text;
         this.keyCode = keyCode;

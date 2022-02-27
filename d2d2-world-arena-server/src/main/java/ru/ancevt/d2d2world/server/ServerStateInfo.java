@@ -1,13 +1,12 @@
 package ru.ancevt.d2d2world.server;
 
-import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
-
 public class ServerStateInfo {
     private String name;
     private String version;
     private String mapKit;
     private String map;
     private String mod;
+    private int maxPlayers;
 
     ServerStateInfo() {
         name = "";
@@ -57,9 +56,17 @@ public class ServerStateInfo {
         this.mod = mod;
     }
 
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
     @Override
     public String toString() {
-        return "ServerInfo{" +
+        return "ServerStateInfo{" +
                 "name='" + name + '\'' +
                 ", version='" + version + '\'' +
                 ", mapKit='" + mapKit + '\'' +
