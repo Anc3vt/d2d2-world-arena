@@ -276,10 +276,6 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 .toArray();
     }
 
-    public static byte[] createMessagePlayerPingRequest() {
-        return new byte[]{MessageType.CLIENT_PLAYER_PING_REQUEST};
-    }
-
     public static byte[] createMessagePlayerPingReport(int ping) {
         return ByteOutputWriter.newInstance(3)
                 .writeByte(MessageType.CLIENT_PLAYER_PING_REPORT)

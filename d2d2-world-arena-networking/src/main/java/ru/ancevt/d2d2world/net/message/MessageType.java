@@ -98,11 +98,6 @@ public class MessageType {
     public static final int CLIENT_PLAYER_TEXT_TO_CHAT = 4;
 
     /**
-     * b)t
-     */
-    public static final int CLIENT_PLAYER_PING_REQUEST = 5;
-
-    /**
      * b)t s)ping
      */
     public static final int CLIENT_PLAYER_PING_REPORT = 6;

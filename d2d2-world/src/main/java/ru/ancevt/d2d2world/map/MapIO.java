@@ -99,8 +99,6 @@ public class MapIO {
             int layer = dataEntry.getInt(DataKey.LAYER);
 
             String mapkitUid = mapkitNamesVsUids.get(dataEntry.getString(DataKey.MAPKIT));
-            System.out.println(dataEntry);
-            System.out.println("name: " + dataEntry.getString(DataKey.MAPKIT));
             Mapkit mapkit = MapkitManager.getInstance().get(mapkitUid);
 
             if (room == null) throw new IllegalStateException("room undefined");

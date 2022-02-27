@@ -104,11 +104,6 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 serverProtocolImplListeners.forEach(l -> l.rconCommand(connectionId, commandText, extraData));
             }
 
-            case MessageType.CLIENT_PLAYER_PING_REQUEST -> {
-                log.debug("received CLIENT_PLAYER_PING_REQUEST");
-                serverProtocolImplListeners.forEach(l -> l.playerPingRequest(connectionId));
-            }
-
             case MessageType.CLIENT_PLAYER_PING_REPORT -> {
                 log.debug("received CLIENT_PLAYER_PING_REPORT");
                 int ping = in.readShort();
@@ -270,41 +265,3 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 .toArray();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

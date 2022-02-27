@@ -1,5 +1,7 @@
 package ru.ancevt.d2d2.event;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +50,7 @@ public class EventDispatcher implements IEventDispatcher {
         keysTypes.put(key, type);
     }
 
-    private List<EventListener> createList() {
+    private @NotNull List<EventListener> createList() {
         return new CopyOnWriteArrayList<>();
     }
 

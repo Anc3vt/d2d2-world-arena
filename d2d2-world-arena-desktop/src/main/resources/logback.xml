@@ -20,18 +20,21 @@
     </appender>
 
     <logger name="ru.ancevt.d2d2world.desktop" level="trace" additivity="false">
+        <appender-ref ref="STDOUT"/>
         <appender-ref ref="DESKTOP_FILE"/>
     </logger>
     
-    <logger name="ru.ancevt.d2d2world.net" level="trace" additivity="true">
-        <appender-ref ref="DESKTOP_FILE"/>
-    </logger>
-
-    <logger name="ru.ancevt.net.tcpb254" level="trace" additivity="true">
-        <appender-ref ref="DESKTOP_FILE"/>
-    </logger>
-
-    <root level="trace" additivity="true">
+    <logger name="ru.ancevt.d2d2world.net" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
-    </root>
+        <appender-ref ref="DESKTOP_FILE"/>
+    </logger>
+
+    <logger name="ru.ancevt.net.tcpb254" level="trace" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="DESKTOP_FILE"/>
+    </logger>
+
+    <!--<root level="trace" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </root>-->
 </configuration>

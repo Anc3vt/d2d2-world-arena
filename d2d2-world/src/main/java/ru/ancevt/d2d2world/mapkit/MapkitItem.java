@@ -186,7 +186,6 @@ public class MapkitItem {
 
     public final void playSound(final int soundKey, final int index) {
         if (sounds[soundKey] == null || sounds[soundKey].length <= index || sounds[soundKey][index] == null) {
-            //System.out.println("warning: no such sound " + this + " [" + soundKey + "][" + index + "]");
             return;
         }
 
