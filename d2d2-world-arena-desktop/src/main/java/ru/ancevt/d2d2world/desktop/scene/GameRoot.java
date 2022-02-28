@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.desktop.scene;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.concurrent.Lock;
 import ru.ancevt.commons.hash.MD5;
@@ -43,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
+@Slf4j
 public class GameRoot extends Root implements ClientListener {
 
     public static final int DEFAULT_PORT = 2245;
@@ -253,6 +255,10 @@ public class GameRoot extends Root implements ClientListener {
     }
 
     public void start(@NotNull String server, String localPlayerName) {
+        log.debug("Staring... server: {}, player name: {}", server, localPlayerName);
+        if(client.isConnected()) {
+            client.close();
+        }
         worldScene.init();
 
         this.server = server;
@@ -263,7 +269,6 @@ public class GameRoot extends Root implements ClientListener {
         client.setLocalPlayerName(localPlayerName);
 
         chat.addMessage("Connecting to " + server + "...", Color.GRAY);
-        new Lock().lock(100, TimeUnit.MILLISECONDS);
         client.connect(host, port);
     }
 

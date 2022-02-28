@@ -5,7 +5,7 @@ import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.Sprite;
 import ru.ancevt.d2d2.display.texture.Texture;
 
-public class CityBGSprite extends Sprite {
+public class CityBgSprite extends Sprite {
 
     private static final float SPEED = 1;
     private static Texture texture;
@@ -17,7 +17,7 @@ public class CityBGSprite extends Sprite {
         return texture;
     }
 
-    public CityBGSprite() {
+    public CityBgSprite() {
         super(createOrGetTexture());
         setColor(Color.BLACK);
         setRepeatX(3);

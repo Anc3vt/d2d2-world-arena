@@ -29,6 +29,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
@@ -54,11 +55,10 @@ public class TcpB254Connection implements IConnection {
     private long bytesLoaded;
     private long bytesSent;
 
-    private boolean closing;
-
     TcpB254Connection(int id) {
         this.id = id;
         listeners = new CopyOnWriteArraySet<>();
+        log.debug("New connection {}", this);
     }
 
     TcpB254Connection(int id, Socket socket) {
@@ -124,9 +124,11 @@ public class TcpB254Connection implements IConnection {
             }
 
         } catch (IOException e) {
-            hardCloseIfOpen();
+            closeIfOpen();
         }
-        hardCloseIfOpen();
+        closeIfOpen();
+
+        log.debug("End of read loop, {}", this);
     }
 
     @Override
@@ -142,6 +144,9 @@ public class TcpB254Connection implements IConnection {
     @Override
     public void connect(String host, int port) {
         this.socket = new Socket();
+
+        log.debug("Connecting to {}:{}, {}", host, port, this);
+
         try {
             socket.connect(new InetSocketAddress(host, port));
 
@@ -209,23 +214,19 @@ public class TcpB254Connection implements IConnection {
 
     @Override
     public void close() {
-        closing = true;
-    }
-
-    @Override
-    public void hardClose() {
         try {
             socket.close();
             dataOutputStream = null;
             dispatchConnectionClosed(new CloseStatus());
+            log.debug("Close connection {}", this);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
     @Override
-    public void hardCloseIfOpen() {
-        if (isOpen()) hardClose();
+    public void closeIfOpen() {
+        if (isOpen()) close();
     }
 
     @Override
@@ -306,7 +307,7 @@ public class TcpB254Connection implements IConnection {
 
     private void sendComposite(byte[] bytes) {
         int pos = 0;
-        int length = 0;
+        int length;
         boolean fin = false;
 
         while (!fin) {
@@ -334,17 +335,7 @@ public class TcpB254Connection implements IConnection {
     @Override
     public int hashCode() {
         return Objects.hash(
-                id,
-                listeners,
-                host,
-                remoteAddress,
-                port,
-                remotePort,
-                socket,
-                dataOutputStream,
-                countDownLatchForAsync,
-                bytesLoaded,
-                bytesSent
+                host, port, remoteAddress, remotePort
         );
     }
 
@@ -359,6 +350,7 @@ public class TcpB254Connection implements IConnection {
                 ", isOpen=" + isOpen() +
                 ", bytesLoaded=" + bytesLoaded +
                 ", bytesSent=" + bytesSent +
+                ", hashcode=" + hashCode() +
                 '}';
     }
 }

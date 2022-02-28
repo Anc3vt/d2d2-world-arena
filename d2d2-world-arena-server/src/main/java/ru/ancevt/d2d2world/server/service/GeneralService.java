@@ -69,6 +69,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerCommandProcessor commandProcessor = modules.get(ServerCommandProcessor.class);
 
     public GeneralService() {
+        if(modules.get(GeneralService.class) != null) throw new IllegalStateException();
+
         modules.get(ServerProtocolImpl.class).addServerProtocolImplListener(this);
         modules.get(ServerChat.class).addServerChatListener(this);
         modules.get(ServerTimer.class).setTimerListener(this);
@@ -79,6 +81,14 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void serverInfoRequest(int connectionId) {
+        if(log.isInfoEnabled()) {
+            Optional<IConnection> oConnection = getConnection(connectionId);
+            String address = oConnection.isPresent() ? oConnection.get().getRemoteAddress() : "unknown";
+            log.info("Server info request from connection id {}, address {}", connectionId, address);
+
+            System.out.println();
+        }
+
         List<Pair<Integer, String>> players =
                 serverPlayerManager.getPlayerList()
                         .stream()
@@ -97,7 +107,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 )
         );
 
-        getConnection(connectionId).ifPresent(IConnection::hardCloseIfOpen);
+        getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
     }
 
     /**
@@ -143,14 +153,15 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void playerEnterRequest(int playerId,
+    public void playerEnterRequest(int connectionId,
                                    @NotNull String playerName,
                                    @NotNull String clientProtocolVersion,
                                    @NotNull String extraData) {
         // validate player name
         if (!PatternMatcher.check(playerName, NAME_PATTERN)) {
             // if invalid close connection and return
-            getConnection(playerId).ifPresent(IConnection::hardCloseIfOpen);
+            log.info("Invalid player name '{}', connection id:{}", playerName, connectionId);
+            getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
             return;
         }
 
@@ -164,18 +175,22 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 .findAny();
         if (player.isPresent()) {
             // if the same name is present close the connection and return
-            getConnection(playerId).ifPresent(IConnection::hardCloseIfOpen);
+            log.info("Invalid player name '{}' is already taken, connection id:{}", playerName, connectionId);
+            getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
             return;
         }
 
         // create new player in player manager
         Player newPlayer = serverPlayerManager.createPlayer(
-                playerId,
+                connectionId,
                 playerName,
                 clientProtocolVersion,
-                getConnection(playerId).orElseThrow().getRemoteAddress(),
+                getConnection(connectionId).orElseThrow().getRemoteAddress(),
                 extraData
         );
+
+        // now the connection id is new player id
+        int playerId = connectionId;
 
         // send to new player info about all others
         oldPlayerList.forEach(p -> serverSender.sendToPlayer(
@@ -201,7 +216,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         );
 
         // send to new player info about new player (id, color)
-        serverSender.sendToPlayer(playerId,
+        serverSender.sendToPlayer(connectionId,
                 createMessagePlayerEnterResponse(
                         playerId,
                         newPlayer.getColor()

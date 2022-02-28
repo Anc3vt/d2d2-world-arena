@@ -284,13 +284,12 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     public void connect(String host, int port) {
         if (connection != null) {
-            if (connection.isOpen()) {
-                connection.close();
-            }
+            connection.closeIfOpen();
             connection.removeConnectionListener(this);
         }
 
         connection = ConnectionFactory.createTcpB254Connection();
+        log.info("connecting... Connection object: {}", connection);
         sender = new ClientSender(connection);
         connection.addConnectionListener(this);
         connection.asyncConnect(host, port);

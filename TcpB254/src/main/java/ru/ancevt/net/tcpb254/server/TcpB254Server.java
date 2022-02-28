@@ -185,7 +185,7 @@ public class TcpB254Server implements IServer {
                 throw new IllegalStateException("Server not started");
             }
 
-            connections.forEach(IConnection::hardCloseIfOpen);
+            connections.forEach(IConnection::closeIfOpen);
             serverSocket.close();
             alive = false;
         } catch (IOException e) {

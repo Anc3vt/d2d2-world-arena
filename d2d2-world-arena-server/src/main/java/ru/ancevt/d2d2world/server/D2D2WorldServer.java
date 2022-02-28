@@ -153,16 +153,18 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
                     serverProtocolImpl.removeServerProtocolImplListener(this);
                 }
             }
+
+            @Override
+            public String toString() {
+                return "listener";
+            }
         };
 
         serverProtocolImpl.addServerProtocolImplListener(serverProtocolImplListener);
 
         Async.runLater(config.getInt(SERVER_CONNECTION_TIMEOUT), TimeUnit.MILLISECONDS, () -> {
-
-            System.out.println(playerEntered.getValue() + " " + connection);
-
             if (!playerEntered.getValue()) {
-                connection.hardCloseIfOpen();
+                connection.closeIfOpen();
                 serverProtocolImpl.removeServerProtocolImplListener(serverProtocolImplListener);
             }
         });

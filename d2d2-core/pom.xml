@@ -247,6 +247,13 @@
             <version>${texttable.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>22.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Testing -->
 
         <dependency>

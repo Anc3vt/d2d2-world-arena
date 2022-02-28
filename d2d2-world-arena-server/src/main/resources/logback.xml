@@ -3,7 +3,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
-            <pattern>[%logger{0}] %msg%n</pattern>
+            <pattern>%-5level [%logger{0}] %msg%n</pattern>
         </encoder>
     </appender>
     <appender name="SERVER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -23,8 +23,14 @@
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </logger>
-    
-    <logger name="ru.ancevt.d2d2world.net" level="trace" additivity="false">
+
+    <logger name="ru.ancevt.d2d2world.server.service" level="trace" additivity="true">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SERVER_FILE"/>
+    </logger>
+
+
+    <logger name="ru.ancevt.d2d2world.net.protocol" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </logger>
@@ -34,7 +40,8 @@
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 
-    <!--<root level="trace" additivity="false">
+    <root level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
-    </root>-->
+        <appender-ref ref="SERVER_FILE"/>
+    </root>
 </configuration>

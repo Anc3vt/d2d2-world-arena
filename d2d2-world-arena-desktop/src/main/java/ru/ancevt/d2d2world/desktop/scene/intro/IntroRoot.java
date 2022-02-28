@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.desktop.scene.intro;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.ancevt.commons.Holder;
@@ -35,10 +36,10 @@ import ru.ancevt.d2d2.panels.Button;
 import ru.ancevt.d2d2world.desktop.Config;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.ui.Font;
-import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
-import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
 import ru.ancevt.d2d2world.net.client.ServerInfo;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
@@ -51,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.Integer.parseInt;
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
+@Slf4j
 public class IntroRoot extends Root {
 
     private static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
@@ -128,8 +130,7 @@ public class IntroRoot extends Root {
             PlainRect plainRect = new PlainRect(getStage().getStageWidth(), getStage().getStageHeight() - 300, Color.DARK_BLUE);
             add(plainRect);
 
-            CityBGSprite cityBGSprite = new CityBGSprite();
-            add(cityBGSprite, 0, 150);
+            add(new CityBgSprite(), 0, 150);
 
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
@@ -174,6 +175,7 @@ public class IntroRoot extends Root {
     }
 
     public void enter(String server, String localPlayerName) {
+        log.info("Enter try, server: {}, player name: {}", server, localPlayerName);
         try {
             Files.writeString(Paths.get("playername.txt"), localPlayerName);
         } catch (IOException ex) {
@@ -186,6 +188,8 @@ public class IntroRoot extends Root {
         }
 
         ServerInfo result = retrieveServerInfo(server);
+
+        new Lock().lock(2, TimeUnit.SECONDS);
 
         if (result != null) {
             result.getPlayers()
@@ -201,7 +205,7 @@ public class IntroRoot extends Root {
                         gameRoot.start(uiTextInputServer.getText(), localPlayerName);
                     });
         } else {
-            warningDialog("Server \"" + server + "\" is unavailable");
+            warningDialog("Server \"" + server + "\"\n is unavailable");
         }
     }
 
@@ -214,19 +218,17 @@ public class IntroRoot extends Root {
         add(dialogWarning);
     }
 
-    private @Nullable ServerInfo retrieveServerInfo(String server) {
+    private @Nullable ServerInfo retrieveServerInfo(@NotNull String server) {
         String host = server.split(":")[0];
         int port = parseInt(server.split(":")[1]);
 
         Lock lock = new Lock();
         Holder<ServerInfo> resultHolder = new Holder<>();
         ServerInfoRetriever.retrieve(host, port, result -> {
-            System.out.println("ASDASDDASD");
             resultHolder.setValue(result);
             lock.unlockIfLocked();
         }, closeStatus -> {
-            System.out.println("2083472");
-            // TODO: log
+            log.error(closeStatus.getErrorMessage());
         });
         lock.lock(5, TimeUnit.SECONDS);
 

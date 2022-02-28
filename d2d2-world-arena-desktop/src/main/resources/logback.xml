@@ -3,7 +3,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
-            <pattern>[%logger{0}] %msg%n</pattern>
+            <pattern>%-5level [%logger{0}] %msg%n</pattern>
         </encoder>
     </appender>
     <appender name="DESKTOP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -34,7 +34,7 @@
         <appender-ref ref="DESKTOP_FILE"/>
     </logger>
 
-    <!--<root level="trace" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </root>-->
+    <root level="info" additivity="false">
+        <appender-ref ref="DESKTOP_FILE"/>
+    </root>
 </configuration>

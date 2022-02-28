@@ -45,9 +45,7 @@ public interface IConnection {
 
     void close();
 
-    void hardClose();
-
-    void hardCloseIfOpen();
+    void closeIfOpen();
 
     void addConnectionListener(ConnectionListener listener);
 

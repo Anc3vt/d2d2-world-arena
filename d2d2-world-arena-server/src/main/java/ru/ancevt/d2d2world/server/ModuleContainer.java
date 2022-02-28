@@ -21,10 +21,8 @@ public class ModuleContainer {
         map.put(module.getClass().getName(), module);
     }
 
-    public @NotNull <T> T get(@NotNull Class<T> clazz) {
-        T result = (T) map.get(clazz.getName());
-        if (result == null) throw new NullPointerException();
-        return result;
+    public <T> T get(@NotNull Class<T> clazz) {
+        return (T) map.get(clazz.getName());
     }
 
 }

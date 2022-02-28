@@ -21,8 +21,8 @@ public class Config {
 
     private final Properties properties;
 
-    private static final String[] defaults = new String[] {
-        SERVER, "ancevt.ru:2245"
+    private static final String[] defaults = new String[]{
+            SERVER, "ancevt.ru:2245"
     };
 
     public Config() {
@@ -35,8 +35,9 @@ public class Config {
         if (file.exists()) {
             properties.load(new FileInputStream(file));
             log.info("Config loaded");
+        } else {
+            log.warn("No config file detected");
         }
-        log.warn("No config file detected");
     }
 
     public void setProperty(@NotNull String key, @NotNull Object value) {
