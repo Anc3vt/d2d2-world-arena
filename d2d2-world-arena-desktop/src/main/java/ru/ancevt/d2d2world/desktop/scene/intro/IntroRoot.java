@@ -63,7 +63,6 @@ public class IntroRoot extends Root {
     private final UiTextInput uiTextInputPlayerName;
     private UiText labelVersion;
     private EventListener addToStageEventListener;
-    private Root root;
 
     public IntroRoot(@NotNull String version) {
         textureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
@@ -125,8 +124,6 @@ public class IntroRoot extends Root {
         addEventListener(Event.ADD_TO_STAGE, addToStageEventListener = event -> {
             removeEventListeners(Event.ADD_TO_STAGE, addToStageEventListener);
 
-            root = getRoot();
-
             PlainRect plainRect = new PlainRect(getStage().getStageWidth(), getStage().getStageHeight() - 300, Color.DARK_BLUE);
             add(plainRect);
 
@@ -141,7 +138,6 @@ public class IntroRoot extends Root {
             add(thanksToContainer, 0, 300);
             thanksToContainer.addEventListener(Event.COMPLETE, e -> labelThanksTo.setVisible(true));
             thanksToContainer.start();
-
 
             labelVersion = new UiText();
             labelVersion.setText(version);
