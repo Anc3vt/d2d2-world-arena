@@ -67,6 +67,9 @@
         <ancevt-commons.version>1.0.0.2</ancevt-commons.version>
         <texttable.version>0.0.1</texttable.version>
 
+        <!-- JetBrains -->
+        <annotations.version>23.0.0</annotations.version>
+
         <!-- LWJGL -->
         <joml.version>1.10.4</joml.version>
         <lwjgl.version>3.3.0</lwjgl.version>
@@ -250,7 +253,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>22.0.0</version>
+            <version>${annotations.version}</version>
             <scope>provided</scope>
         </dependency>
 

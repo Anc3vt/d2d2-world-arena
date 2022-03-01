@@ -24,11 +24,11 @@ public class ComponentManager {
 	
 	private static ComponentManager instance;
 	
-	public static final ComponentManager getInstance() {
+	public static ComponentManager getInstance() {
 		return instance == null ? instance = new ComponentManager() : instance;
 	}
 	
-	private List<Component> components;
+	private final List<Component> components;
 	
 	private ComponentManager() {
 		components = new ArrayList<Component>();
