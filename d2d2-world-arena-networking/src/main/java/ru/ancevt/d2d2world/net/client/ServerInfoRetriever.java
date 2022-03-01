@@ -21,6 +21,9 @@ public class ServerInfoRetriever {
         IConnection connection = ConnectionFactory.createTcpB254Connection();
 
         connection.addConnectionListener(new ConnectionListenerAdapter() {
+
+            private byte[] bytes;
+
             @Override
             public void connectionEstablished() {
                 connection.send(ClientProtocolImpl.createMessageServerInfoRequest());
@@ -32,15 +35,15 @@ public class ServerInfoRetriever {
                 errorFunction.onError(status);
                 connection.removeConnectionListener(this);
                 log.info("Connection closed");
+                resultFunction.onResult(ClientProtocolImpl.readServerInfoResponseBytes(bytes));
             }
 
             @Override
             public void connectionBytesReceived(byte[] bytes) {
                 if (bytes[0] == MessageType.SERVER_INFO_RESPONSE) {
                     log.info("SERVER_INFO_RESPONSE bytes received, closing connection");
-                    connection.removeConnectionListener(this);
+                    this.bytes = bytes;
                     connection.close();
-                    resultFunction.onResult(ClientProtocolImpl.readServerInfoResponseBytes(bytes));
                 } else {
                     log.error("Server must not send other bytes than SERVER_INFO_RESPONSE");
                 }

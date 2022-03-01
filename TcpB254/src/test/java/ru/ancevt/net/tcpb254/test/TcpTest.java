@@ -90,7 +90,7 @@ public class TcpTest {
         writeBytesTo(w, 1, 2);
 
         connection.send(w.toArray());
-        lock.lock(1, TimeUnit.SECONDS);
+        lock.lock(250, TimeUnit.MILLISECONDS);
 
         assertThat(firstByte.getValue(), equalTo(0));
         assertThat(middleByte.getValue(), equalTo(1));

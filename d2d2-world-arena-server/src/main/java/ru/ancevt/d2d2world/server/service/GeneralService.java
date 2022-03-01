@@ -69,7 +69,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerCommandProcessor commandProcessor = modules.get(ServerCommandProcessor.class);
 
     public GeneralService() {
-        if(modules.get(GeneralService.class) != null) throw new IllegalStateException();
+        if (modules.get(GeneralService.class) != null) throw new IllegalStateException();
 
         modules.get(ServerProtocolImpl.class).addServerProtocolImplListener(this);
         modules.get(ServerChat.class).addServerChatListener(this);
@@ -80,13 +80,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void serverInfoRequest(int connectionId) {
-        if(log.isInfoEnabled()) {
-            Optional<IConnection> oConnection = getConnection(connectionId);
+    public void serverInfoRequest(int playerId) {
+        if (log.isInfoEnabled()) {
+            Optional<IConnection> oConnection = getConnection(playerId);
             String address = oConnection.isPresent() ? oConnection.get().getRemoteAddress() : "unknown";
-            log.info("Server info request from connection id {}, address {}", connectionId, address);
-
-            System.out.println();
+            log.trace("Server info request from connection id {}, address {}", playerId, address);
         }
 
         List<Pair<Integer, String>> players =
@@ -95,7 +93,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                         .map(player -> Pair.of(player.getId(), player.getName()))
                         .toList();
 
-        serverSender.sendToPlayer(connectionId,
+        serverSender.sendToPlayer(playerId,
                 createMessageServerInfoResponse(
                         serverStateInfo.getName(),
                         serverStateInfo.getVersion(),
@@ -107,7 +105,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 )
         );
 
-        getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
+        if (!serverPlayerManager.containsPlayer(playerId)) {
+            getConnection(playerId).ifPresent(IConnection::closeIfOpen);
+        }
     }
 
     /**
@@ -123,7 +123,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void fileData(int connectionId, @NotNull String headers, byte[] fileData) {
-       throw new NotImplementedException();
+        throw new NotImplementedException();
     }
 
     /**
@@ -168,7 +168,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         // save player list before new player actually added to server player list
         List<Player> oldPlayerList = serverPlayerManager.getPlayerList();
 
-
         // check if the same name is already exists
         Optional<Player> player = oldPlayerList.stream()
                 .filter(p -> p.getName().equals(playerName))
@@ -190,11 +189,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         );
 
         // now the connection id is new player id
-        int playerId = connectionId;
-
         // send to new player info about all others
         oldPlayerList.forEach(p -> serverSender.sendToPlayer(
-                        playerId,
+                        connectionId,
                         createMessageRemotePlayerIntroduce(
                                 p.getId(),
                                 p.getName(),
@@ -207,33 +204,33 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         // send to all other player info of new player
         serverSender.sendToAllExcluding(
                 createMessageRemotePlayerIntroduce(
-                        playerId,
+                        connectionId,
                         playerName,
                         newPlayer.getColor(),
                         newPlayer.getAddress()
                 ),
-                playerId
+                connectionId
         );
 
         // send to new player info about new player (id, color)
         serverSender.sendToPlayer(connectionId,
                 createMessagePlayerEnterResponse(
-                        playerId,
+                        connectionId,
                         newPlayer.getColor()
                 )
         );
 
         // send everyone else information about the entrance of a new player
         serverSender.sendToAllExcluding(
-                createMessageRemotePlayerEnter(playerId, playerName, newPlayer.getColor()),
-                playerId
+                createMessageRemotePlayerEnter(connectionId, playerName, newPlayer.getColor()),
+                connectionId
         );
 
         // send chat history to new player
         serverChat.getMessages(10).forEach(serverChatMessage -> {
             if (serverChatMessage.isFromPlayer()) {
                 serverSender.sendToPlayer(
-                        playerId,
+                        connectionId,
                         createMessageChat(
                                 serverChatMessage.getId(),
                                 serverChatMessage.getText(),
@@ -244,7 +241,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 );
             } else {
                 serverSender.sendToPlayer(
-                        playerId,
+                        connectionId,
                         createMessageChat(
                                 serverChatMessage.getId(),
                                 serverChatMessage.getText(),
@@ -256,8 +253,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         });
 
         // send enter message to all players including new player
-
-        serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
+        serverChat.text("Player " + playerName + "(" + connectionId + ") connected", 0xFFFF00);
     }
 
     /**

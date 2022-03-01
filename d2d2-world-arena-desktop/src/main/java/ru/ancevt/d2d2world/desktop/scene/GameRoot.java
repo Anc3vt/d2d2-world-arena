@@ -220,9 +220,6 @@ public class GameRoot extends Root implements ClientListener {
                            int playerColor,
                            @NotNull String chatMessageText,
                            int textColor) {
-
-        System.out.println("playerChat: " + playerName);
-
         chat.addPlayerMessage(chatMessageId, playerId, playerName, playerColor, chatMessageText, Color.of(textColor));
     }
 
@@ -233,7 +230,7 @@ public class GameRoot extends Root implements ClientListener {
     public void clientConnectionClosed(@NotNull CloseStatus status) {
         worldScene.stop();
         chat.addMessage(status.getErrorMessage(), Color.RED);
-        new Lock().lock(5, TimeUnit.SECONDS);
+        new Lock().lock(1, TimeUnit.SECONDS);
         start(server, client.getLocalPlayerName());
     }
 

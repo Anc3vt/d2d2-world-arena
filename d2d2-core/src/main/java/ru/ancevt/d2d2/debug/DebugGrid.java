@@ -1,5 +1,5 @@
 /*
- *   D2D2 World
+ *   D2D2 core
  *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify

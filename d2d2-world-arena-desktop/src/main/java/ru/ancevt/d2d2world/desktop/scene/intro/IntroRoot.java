@@ -189,8 +189,6 @@ public class IntroRoot extends Root {
 
         ServerInfo result = retrieveServerInfo(server);
 
-        new Lock().lock(2, TimeUnit.SECONDS);
-
         if (result != null) {
             result.getPlayers()
                     .stream()
@@ -230,6 +228,7 @@ public class IntroRoot extends Root {
         }, closeStatus -> {
             log.error(closeStatus.getErrorMessage());
         });
+
         lock.lock(5, TimeUnit.SECONDS);
 
         return resultHolder.getValue();

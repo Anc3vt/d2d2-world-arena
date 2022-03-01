@@ -32,7 +32,6 @@ import ru.ancevt.d2d2.display.Stage;
 import ru.ancevt.d2d2.display.text.BitmapCharInfo;
 import ru.ancevt.d2d2.display.text.BitmapFont;
 import ru.ancevt.d2d2.display.text.BitmapText;
-import ru.ancevt.d2d2.display.texture.ITextureEngine;
 import ru.ancevt.d2d2.display.texture.Texture;
 import ru.ancevt.d2d2.display.texture.TextureAtlas;
 import ru.ancevt.d2d2.event.Event;

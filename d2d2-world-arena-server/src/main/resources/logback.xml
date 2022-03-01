@@ -24,12 +24,6 @@
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 
-    <logger name="ru.ancevt.d2d2world.server.service" level="trace" additivity="true">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER_FILE"/>
-    </logger>
-
-
     <logger name="ru.ancevt.d2d2world.net.protocol" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
