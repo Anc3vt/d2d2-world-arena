@@ -33,6 +33,7 @@ import ru.ancevt.d2d2world.desktop.ui.Font;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
+import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.util.repl.ReplInterpreter;
 
 import java.util.ArrayList;
@@ -159,6 +160,18 @@ public class Chat extends DisplayObjectContainer {
         redraw();
     }
 
+    public void addPlayerMessage(int id, @NotNull RemotePlayer remotePlayer, @NotNull String messageText,
+                                 Color textColor) {
+        addPlayerMessage(
+                id,
+                remotePlayer.getId(),
+                remotePlayer.getName(),
+                remotePlayer.getColor(),
+                messageText,
+                textColor
+        );
+    }
+
     public void addPlayerMessage(int id,
                                  int playerId,
                                  @NotNull String playerName,
@@ -173,6 +186,10 @@ public class Chat extends DisplayObjectContainer {
     public void addMessage(@NotNull String messageText, @NotNull Color textColor) {
         addMessage(new ChatMessage(0, messageText, textColor));
         redraw();
+    }
+
+    public void addMessage(@NotNull String messageText) {
+        addMessage(messageText, Color.WHITE);
     }
 
     private void addMessage(@NotNull ChatMessage chatMessage) {
@@ -218,7 +235,7 @@ public class Chat extends DisplayObjectContainer {
                 case UiTextInputEvent.TEXT_CHANGE -> {
                     String text = uiTextInputEvent.getText();
                     int length = text.length();
-                    if(length > INPUT_MAX_LENGTH) {
+                    if (length > INPUT_MAX_LENGTH) {
                         input.setText(text.substring(0, INPUT_MAX_LENGTH));
                         return;
                     }
@@ -240,7 +257,7 @@ public class Chat extends DisplayObjectContainer {
                 case UiTextInputEvent.TEXT_INPUT_KEY_DOWN -> {
                     switch (uiTextInputEvent.getKeyCode()) {
                         case KeyCode.UP -> {
-                            if(historyIndex == history.size()) {
+                            if (historyIndex == history.size()) {
                                 history.add(input.getText());
                             }
                             historyIndex--;

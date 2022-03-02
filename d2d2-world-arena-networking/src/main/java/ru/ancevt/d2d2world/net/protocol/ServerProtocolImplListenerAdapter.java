@@ -66,11 +66,6 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     }
 
     @Override
-    public void playerPingRequest(int playerId) {
-
-    }
-
-    @Override
     public void serverInfoRequest(int connectionId) {
 
     }

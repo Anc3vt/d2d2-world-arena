@@ -52,7 +52,9 @@ public class ServerInfoRetriever {
                 errorFunction.onError(status);
                 connection.removeConnectionListener(this);
                 log.info("Connection closed");
-                resultFunction.onResult(ClientProtocolImpl.readServerInfoResponseBytes(bytes));
+                if(bytes != null) {
+                    resultFunction.onResult(ClientProtocolImpl.readServerInfoResponseBytes(bytes));
+                }
             }
 
             @Override
@@ -61,9 +63,7 @@ public class ServerInfoRetriever {
                     log.info("SERVER_INFO_RESPONSE bytes received, closing connection");
                     this.bytes = bytes;
                     connection.close();
-                } else {
-                    log.error("Server must not send other bytes than SERVER_INFO_RESPONSE");
-                }
+                } // else ignoring
             }
         });
         connection.asyncConnect(host, port);

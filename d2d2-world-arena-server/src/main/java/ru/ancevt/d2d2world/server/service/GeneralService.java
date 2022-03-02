@@ -45,7 +45,6 @@ import java.util.Optional;
 
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageChat;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessagePlayerEnterResponse;
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessagePlayerPingResponse;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageRemotePlayerEnter;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageRemotePlayerExit;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageRemotePlayerIntroduce;
@@ -309,14 +308,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void playerPingRequest(int playerId) {
-        serverSender.sendToPlayer(playerId, createMessagePlayerPingResponse());
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
     public void playerPingReport(int playerId, int ping) {
         serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setPingValue(ping));
     }
@@ -363,6 +354,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             );
 
         serverPlayerManager.getPlayerList().forEach(p -> p.setLastSeenChatMessageId(serverChatMessage.getId()));
+
+        log.info("chat {}", serverChatMessage);
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {

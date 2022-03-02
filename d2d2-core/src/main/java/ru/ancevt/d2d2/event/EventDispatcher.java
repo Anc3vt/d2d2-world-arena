@@ -91,7 +91,7 @@ public class EventDispatcher implements IEventDispatcher {
     }
 
     @Override
-    public void dispatchEvent(Event event) {
+    public void dispatchEvent(@NotNull Event event) {
         List<EventListener> listeners = map.get(event.getType());
 
         if (listeners != null) {

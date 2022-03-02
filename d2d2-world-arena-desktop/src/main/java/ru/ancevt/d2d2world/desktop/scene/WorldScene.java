@@ -48,6 +48,7 @@ public class WorldScene extends DisplayObjectContainer {
     private final Client client = modules.get(Client.class);
     private final Chat chat = modules.get(Chat.class);
     private final PlayerActor localPlayerActor;
+    private final BitmapText debug;
     private boolean eventsAdded;
 
     private final Map<RemotePlayer, PlayerActor> remotePlayerMap;
@@ -69,9 +70,8 @@ public class WorldScene extends DisplayObjectContainer {
 
         add(world);
 
-        BitmapText debug = new BitmapText();
+        debug = new BitmapText();
         debug.setText("debug");
-        //add(debug);
     }
 
     public void init() {
@@ -101,7 +101,17 @@ public class WorldScene extends DisplayObjectContainer {
 
         setXY(getStage().getStageWidth() / 2, getStage().getStageHeight() / 2);
 
+        getRoot().add(debug, 10, 250);
+
         addRootAndChatEventsIfNotYet();
+
+        remotePlayerMap.values().forEach(playerActor -> {
+            if (!playerActor.hasParent()) {
+                world.addGameObject(playerActor, 5, false);
+            }
+        });
+
+        dispatchEvent(new SceneEvent(SceneEvent.MAP_LOADED, this));
     }
 
     private void addRootAndChatEventsIfNotYet() {
@@ -137,10 +147,11 @@ public class WorldScene extends DisplayObjectContainer {
             remotePlayerActor.getController().applyState(remotePlayer.getControllerState());
         });
 
-        if (frameCounter % 500 == 0) {
-            client.sendServerInfoRequest();///
-        }
+        debug.setText(remotePlayerMap + "");
 
+        if (frameCounter % 1000 == 0) {
+            client.sendServerInfoRequest();
+        }
 
         frameCounter++;
     }
@@ -160,7 +171,9 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void addRemotePlayer(RemotePlayer remotePlayer) {
-        System.out.println("Add remote player " + remotePlayer);
+
+
+        log.trace("Add remote player {}", remotePlayer);
 
         UiText uiText = new UiText();
         uiText.setShadowEnabled(false);
@@ -168,6 +181,8 @@ public class WorldScene extends DisplayObjectContainer {
         uiText.setText(remotePlayer.getName() + "(" + remotePlayer.getId() + ")");
 
         PlayerActor playerActor = new Blake();
+
+        chat.addMessage("");
 
 
         playerActor.add(uiText, -uiText.getTextWidth() / 4, -30f);
@@ -181,7 +196,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void removeRemotePlayer(RemotePlayer remotePlayer) {
-        System.out.println("Remove remote player " + remotePlayer);
+        log.trace("Remove remote player {}", remotePlayer);
 
         PlayerActor playerActor = remotePlayerMap.get(remotePlayer);
         if (playerActor != null) {

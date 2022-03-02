@@ -157,11 +157,6 @@ public class MessageType {
     public static final int SERVER_REMOTE_PLAYER_EXIT = 106;
 
     /**
-     * b)t
-     */
-    public static final int SERVER_PLAYER_PING_RESPONSE = 107;
-
-    /**
      * b)t s)playerId s)pingValue
      */
     public static final int SERVER_REMOTE_PLAYER_PING_VALUE = 108;

@@ -55,7 +55,7 @@ public class GameRoot extends Root implements ClientListener {
     private String server;
     private final WorldScene worldScene;
     private final ClientCommandProcessor clientCommandProcessor = modules.get(ClientCommandProcessor.class);
-    private TabWindow tabWindow;
+    private final TabWindow tabWindow;
     private String serverName;
 
     public GameRoot() {
@@ -118,9 +118,8 @@ public class GameRoot extends Root implements ClientListener {
     }
 
     private void setTabWindowVisible(boolean value) {
-        if (tabWindow != null) {
-            tabWindow.removeFromParent();
-        }
+        tabWindow.removeFromParent();
+
         if (value) {
             tabWindow.setServerName(serverName, 0, 0);
             tabWindow.setPlayers(
@@ -141,8 +140,6 @@ public class GameRoot extends Root implements ClientListener {
      */
     @Override
     public void remotePlayerIntroduce(@NotNull RemotePlayer remotePlayer) {
-        //chat.addMessage(0, "There are Player " + remotePlayer.getName() + "(" + remotePlayer.getId() + ")");
-
         worldScene.addRemotePlayer(remotePlayer);
     }
 

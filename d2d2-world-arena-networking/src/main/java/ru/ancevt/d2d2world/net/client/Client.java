@@ -239,6 +239,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void serverInfoResponse(@NotNull ServerInfo result) {
         localPlayerPing = (int)(System.currentTimeMillis() - pingRequestTime);
         clientListeners.forEach(l -> l.serverInfo(result));
+        sender.send(ClientProtocolImpl.createMessagePlayerPingReport(localPlayerPing));
     }
 
     /**

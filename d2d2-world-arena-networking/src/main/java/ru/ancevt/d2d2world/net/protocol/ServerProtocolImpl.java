@@ -53,12 +53,12 @@ public final class ServerProtocolImpl extends ProtocolImpl {
         switch (message.getType()) {
 
             case MessageType.CLIENT_SERVER_INFO_REQUEST -> {
-                log.debug("received CLIENT_SERVER_INFO_REQUEST");
+                log("received CLIENT_SERVER_INFO_REQUEST");
                 serverProtocolImplListeners.forEach(l -> l.serverInfoRequest(connectionId));
             }
 
             case MessageType.CLIENT_PLAYER_ENTER_REQUEST -> {
-                log.debug("received CLIENT_PLAYER_ENTER_REQUEST");
+                log("received CLIENT_PLAYER_ENTER_REQUEST");
                 String name = in.readUtf(byte.class);
                 String clientProtocolVersion = in.readUtf(byte.class);
                 String extraData = in.hasNextData() ? in.readUtf(int.class) : null;
@@ -68,7 +68,7 @@ public final class ServerProtocolImpl extends ProtocolImpl {
             }
 
             case MessageType.CLIENT_PLAYER_EXIT_REQUEST -> {
-                log.debug("received CLIENT_PLAYER_EXIT_REQUEST");
+                log("received CLIENT_PLAYER_EXIT_REQUEST");
                 serverProtocolImplListeners.forEach(l -> l.playerExitRequest(connectionId));
             }
 
@@ -80,38 +80,38 @@ public final class ServerProtocolImpl extends ProtocolImpl {
             }
 
             case MessageType.CLIENT_PLAYER_TEXT_TO_CHAT -> {
-                log.debug("received CLIENT_PLAYER_TEXT_TO_CHAT");
+                log("received CLIENT_PLAYER_TEXT_TO_CHAT");
                 String text = in.readUtf(byte.class);
                 serverProtocolImplListeners.forEach(l -> l.playerTextToChat(connectionId, text));
             }
 
             case MessageType.CLIENT_REQUEST_FILE -> {
-                log.debug("received CLIENT_REQUEST_FILE");
+                log("received CLIENT_REQUEST_FILE");
                 String headers = in.readUtf(short.class);
                 serverProtocolImplListeners.forEach(l -> l.requestFile(connectionId, headers));
             }
 
             case MessageType.CLIENT_RCON_LOGIN -> {
-                log.debug("received CLIENT_RCON_LOGIN");
+                log("received CLIENT_RCON_LOGIN");
                 String passwordHash = in.readUtf(byte.class);
                 serverProtocolImplListeners.forEach(l -> l.rconLogin(connectionId, passwordHash));
             }
 
             case MessageType.CLIENT_RCON_COMMAND -> {
-                log.debug("received CLIENT_RCON_COMMAND");
+                log("received CLIENT_RCON_COMMAND");
                 String commandText = in.readUtf(byte.class);
                 String extraData = in.hasNextData() ? in.readUtf(int.class) : "";
                 serverProtocolImplListeners.forEach(l -> l.rconCommand(connectionId, commandText, extraData));
             }
 
             case MessageType.CLIENT_PLAYER_PING_REPORT -> {
-                log.debug("received CLIENT_PLAYER_PING_REPORT");
+                log("received CLIENT_PLAYER_PING_REPORT");
                 int ping = in.readShort();
                 serverProtocolImplListeners.forEach(l -> l.playerPingReport(connectionId, ping));
             }
 
             case MessageType.FILE_DATA -> {
-                log.debug("received FILE_DATA");
+                log("received FILE_DATA");
                 String headers = in.readUtf(short.class);
                 int contentLength = in.readInt();
                 byte[] fileData = in.readBytes(contentLength);
@@ -119,19 +119,23 @@ public final class ServerProtocolImpl extends ProtocolImpl {
             }
 
             case MessageType.EXTRA -> {
-                log.debug("received EXTRA");
+                log("received EXTRA");
                 String extraDataFromPlayer = in.readUtf(int.class);
                 serverProtocolImplListeners.forEach(l -> l.extraFromPlayer(connectionId, extraDataFromPlayer));
             }
 
             case MessageType.ERROR -> {
-                log.debug("received ERROR");
+                log("received ERROR");
                 int errorCode = in.readShort();
                 String errorMessage = in.readUtf(byte.class);
                 String errorDetails = in.readUtf(int.class);
                 serverProtocolImplListeners.forEach(l -> l.errorFromPlayer(errorCode, errorMessage, errorDetails));
             }
         }
+    }
+
+    private static void log(Object o) {
+        log.trace(String.valueOf(o));
     }
 
     public static byte[] createMessageServerInfoResponse(@NotNull String serverName,
@@ -251,10 +255,6 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 .writeShort(playerId)
                 .writeByte(exitReason.getValue())
                 .toArray();
-    }
-
-    public static byte[] createMessagePlayerPingResponse() {
-        return new byte[]{MessageType.SERVER_PLAYER_PING_RESPONSE};
     }
 
     public static byte[] createMessageRemotePlayerPingValue(int playerId, int pingValue) {

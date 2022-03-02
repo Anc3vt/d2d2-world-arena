@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2.display;
 
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.EventPool;
 
@@ -192,7 +193,7 @@ public class Stage extends DisplayObjectContainer {
         onResize(width, height);
     }
 
-    static void dispatchAddToStage(IDisplayObject displayObject) {
+    static void dispatchAddToStage(@NotNull IDisplayObject displayObject) {
         displayObject.dispatchEvent(EventPool.createEvent(Event.ADD_TO_STAGE, displayObject));
 
         if (displayObject instanceof IDisplayObjectContainer container) {
@@ -202,7 +203,7 @@ public class Stage extends DisplayObjectContainer {
         }
     }
 
-    static void dispatchRemoveFromStage(IDisplayObject displayObject) {
+    static void dispatchRemoveFromStage(@NotNull IDisplayObject displayObject) {
         displayObject.dispatchEvent(EventPool.createEvent(Event.REMOVE_FROM_STAGE, displayObject));
 
         if (displayObject instanceof IDisplayObjectContainer container) {

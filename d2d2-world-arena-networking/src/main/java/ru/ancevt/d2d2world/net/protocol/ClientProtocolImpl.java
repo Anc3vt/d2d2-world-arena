@@ -147,11 +147,6 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                             remotePlayerId, remotePlayerExitCause));
                 }
 
-                case MessageType.SERVER_PLAYER_PING_RESPONSE -> {
-                    log("received SERVER_PLAYER_PING_RESPONSE");
-                    clientProtocolImplListeners.forEach(l -> l.playerPingResponse());
-                }
-
                 case MessageType.SERVER_REMOTE_PLAYER_PING_VALUE -> {
                     log("received SERVER_REMOTE_PLAYER_PING_VALUE");
                     int remotePlayerId = in.readShort();
@@ -188,7 +183,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
     }
 
     private void log(Object o) {
-        System.out.println(o);
+        log.trace(String.valueOf(o));
     }
 
     public static ServerInfo readServerInfoResponseBytes(byte[] bytes) {
