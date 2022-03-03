@@ -109,7 +109,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>ru.ancevt.d2d2world.server.D2D2WorldServer</mainClass>
+                                    <mainClass>ru.ancevt.d2d2world.server.D2D2WorldArenaServerMain</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

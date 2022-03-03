@@ -33,7 +33,7 @@ import java.util.Properties;
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
 @Slf4j
-public class D2D2WorldDesktopMain {
+public class D2D2WorldArenaDesktopMain {
 
     public static void main(String[] args) throws IOException {
         // Load desktopConfig properties
@@ -51,7 +51,7 @@ public class D2D2WorldDesktopMain {
 
         // Load project properties
         Properties properties = new Properties();
-        properties.load(D2D2WorldDesktopMain.class.getClassLoader().getResourceAsStream("project.properties"));
+        properties.load(D2D2WorldArenaDesktopMain.class.getClassLoader().getResourceAsStream("project.properties"));
         String projectName = properties.getProperty("project.name");
         String version = properties.getProperty("project.version");
 

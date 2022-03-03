@@ -57,8 +57,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
 
-        <!--<platform>windows</platform>-->
-
         <!-- Ancevt -->
         <ancevt-commons.version>1.0.0.2</ancevt-commons.version>
         <texttable.version>0.0.1</texttable.version>
@@ -133,23 +131,12 @@
 
         <profile>
             <id>windows</id>
-            <!--<activation>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>-->
             <properties>
                 <platform>windows</platform>
             </properties>
         </profile>
         <profile>
             <id>windows-x86</id>
-            <!--<activation>
-                <os>
-                    <family>Windows</family>
-                    <arch>x86</arch>
-                </os>
-            </activation>-->
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -166,12 +153,6 @@
         </profile>
         <profile>
             <id>windows-amd64</id>
-            <!--<activation>
-                <os>
-                    <family>Windows</family>
-                    <arch>amd64</arch>
-                </os>
-            </activation>-->
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -188,23 +169,12 @@
         </profile>
         <profile>
             <id>linux</id>
-            <!--<activation>
-                <os>
-                    <family>Linux</family>
-                </os>
-            </activation>-->
             <properties>
                 <platform>linux</platform>
             </properties>
         </profile>
         <profile>
             <id>linux-x86</id>
-            <!--<activation>
-                <os>
-                    <family>Linux</family>
-                    <arch>x86</arch>
-                </os>
-            </activation>-->
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -221,12 +191,6 @@
         </profile>
         <profile>
             <id>linux-amd64</id>
-            <!--<activation>
-                <os>
-                    <family>Linux</family>
-                    <arch>amd64</arch>
-                </os>
-            </activation>-->
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -243,11 +207,6 @@
         </profile>
         <profile>
             <id>mac</id>
-            <!--<activation>
-                <os>
-                    <family>Mac</family>
-                </os>
-            </activation>-->
             <properties>
                 <platform>macos</platform>
             </properties>
@@ -285,7 +244,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>ru.ancevt.d2d2world.desktop.D2D2WorldDesktopMain</mainClass>
+                                    <mainClass>ru.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopMain</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

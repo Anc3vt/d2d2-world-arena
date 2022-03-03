@@ -49,7 +49,7 @@ import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_PORT;
 import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 @Slf4j
-public class D2D2WorldServer implements ServerListener, Thread.UncaughtExceptionHandler {
+public class D2D2WorldArenaServerMain implements ServerListener, Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) throws IOException {
         // Load serverConfig properties
@@ -87,13 +87,13 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
             return;
         }
 
-        D2D2WorldServer server = new D2D2WorldServer();
+        D2D2WorldArenaServerMain server = new D2D2WorldArenaServerMain();
         server.start();
     }
 
     private static ServerConfig serverConfig;
 
-    public D2D2WorldServer() {
+    public D2D2WorldArenaServerMain() {
         modules.get(ServerStateInfo.class).setName(serverConfig.getString(SERVER_NAME));
         modules.get(ServerStateInfo.class).setVersion(getServerVersion());
         modules.get(ServerStateInfo.class).setMaxPlayers(serverConfig.getInt(SERVER_MAX_PLAYERS));
@@ -118,7 +118,7 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     public static String getServerVersion() {
         Properties properties = new Properties();
         try {
-            properties.load(D2D2WorldServer.class.getClassLoader().getResourceAsStream("project.properties"));
+            properties.load(D2D2WorldArenaServerMain.class.getClassLoader().getResourceAsStream("project.properties"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new IllegalStateException(e);
