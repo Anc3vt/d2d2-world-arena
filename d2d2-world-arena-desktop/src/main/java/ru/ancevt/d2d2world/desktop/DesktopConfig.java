@@ -23,12 +23,18 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import static java.lang.Integer.parseInt;
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Slf4j
-public class Config {
+public class DesktopConfig {
 
     public static final String FILE_NAME = "d2d2-world-arena-desktop.conf";
 
@@ -36,26 +42,25 @@ public class Config {
     public static final String PLAYER = "player";
     public static final String RCON_PASSWORD = "rcon-password";
 
+    private static final Map<String, Object> defaults = new TreeMap<>() {{
+        put(SERVER, "ancevt.ru:2245");
+    }};
+
     private final Properties properties;
 
-    private static final String[] defaults = new String[]{
-            SERVER, "ancevt.ru:2245"
-    };
-
-    public Config() {
+    public DesktopConfig() {
         properties = new Properties();
     }
 
     public void load() throws IOException {
-
-
         properties.clear();
         File file = new File(FILE_NAME);
         if (file.exists()) {
             properties.load(new FileInputStream(file));
-            log.info("Config loaded");
+            log.info("DesktopConfig loaded");
         } else {
-            log.warn("No config file detected");
+            log.warn("No config file detected, creating defaults");
+            createDefault();
         }
     }
 
@@ -63,29 +68,41 @@ public class Config {
         properties.setProperty(key, value.toString());
     }
 
-    public String getString(@NotNull String key, @NotNull String defaultValue) {
-        return properties.getProperty(key, defaultValue);
-    }
-
-    public String getString(@NotNull String key) {
-        return properties.getProperty(key);
-    }
-
-    public int getInt(@NotNull String key, int defaultValue) {
-        return parseInt(properties.getProperty(key, String.valueOf(defaultValue)));
+    /**
+     * Get by key from config or from defaults or ""
+     */
+    public @NotNull String getString(@NotNull String key) {
+        return properties.getProperty(key, String.valueOf(defaults.getOrDefault(key, "")));
     }
 
     public int getInt(@NotNull String key) {
         try {
-            return parseInt(properties.getProperty(key));
+            return parseInt(properties.getProperty(key, String.valueOf(defaults.get(key))));
         } catch (NumberFormatException ex) {
             return 0;
         }
     }
 
+    private void createDefault() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<String, Object> entry : defaults.entrySet()) {
+            stringBuilder.append(entry.getKey()).append('=').append(entry.getValue()).append("\r\n");
+        }
+
+        try {
+            Files.writeString(Path.of(FILE_NAME), stringBuilder.toString(), StandardCharsets.UTF_8, CREATE_NEW);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public String passwordSafeToString() {
+        return toString().replaceAll(properties.getProperty(RCON_PASSWORD), "*****");
+    }
+
     @Override
     public String toString() {
-        return "Config{" +
+        return "DesktopConfig{" +
                 "properties=" + properties +
                 '}';
     }

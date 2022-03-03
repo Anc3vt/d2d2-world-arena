@@ -26,7 +26,7 @@ import ru.ancevt.commons.regex.PatternMatcher;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
-import ru.ancevt.d2d2world.server.Config;
+import ru.ancevt.d2d2world.server.ServerConfig;
 import ru.ancevt.d2d2world.server.ServerStateInfo;
 import ru.ancevt.d2d2world.server.ServerTimer;
 import ru.ancevt.d2d2world.server.ServerTimerListener;
@@ -57,7 +57,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     public static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
-    private final Config config = modules.get(Config.class);
+    private final ServerConfig serverConfig = modules.get(ServerConfig.class);
     private final IServer serverUnit = modules.get(ServerUnit.class).server;
     private final ServerTimer serverTimer = modules.get(ServerTimer.class);
     private final SyncService syncService = modules.get(SyncService.class);
@@ -130,7 +130,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void rconLogin(int playerId, @NotNull String passwordHash) {
-        if (MD5.hash(config.getString(Config.RCON_PASSWORD)).equals(passwordHash)) {
+        if (MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD)).equals(passwordHash)) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setRconLoggedIn(true));
             serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin", 0xFFFFFF));
         } else {

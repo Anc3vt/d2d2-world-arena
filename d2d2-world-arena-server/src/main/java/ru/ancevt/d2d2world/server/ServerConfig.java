@@ -23,12 +23,18 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import static java.lang.Integer.parseInt;
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Slf4j
-public class Config {
+public class ServerConfig {
 
     private static final String FILE_NAME = "d2d2-world-arena-server.conf";
 
@@ -42,9 +48,21 @@ public class Config {
     public static final String WORLD_DEFAULT_MAP = "world.default-map";
     public static final String WORLD_DEFAULT_MOD = "world.default-mod";
 
+    private static final Map<String, Object> defaults = new TreeMap<>() {{
+        put(SERVER_NAME, "D2D2 World Arena Server");
+        put(SERVER_HOST, "0.0.0.0");
+        put(SERVER_PORT, 2245);
+        put(SERVER_CONNECTION_TIMEOUT, 5 * 1000);
+        put(SERVER_LOOP_DELAY, 1);
+        put(SERVER_MAX_PLAYERS, 100);
+        put(RCON_PASSWORD, "changeme");
+        put(WORLD_DEFAULT_MAP, "map0.wam");
+        put(WORLD_DEFAULT_MOD, "mod0.js");
+    }};
+
     private final Properties properties;
 
-    public Config() {
+    public ServerConfig() {
         properties = new Properties();
     }
 
@@ -53,7 +71,10 @@ public class Config {
         File file = new File(FILE_NAME);
         if (file.exists()) {
             properties.load(new FileInputStream(file));
-            log.info("Config loaded {}", passwordSafeToString());
+            log.info("ServerConfig loaded {}", passwordSafeToString());
+        } else {
+            log.warn("No config file detected, creating defaults");
+            createDefault();
         }
     }
 
@@ -61,23 +82,31 @@ public class Config {
         properties.setProperty(key, value.toString());
     }
 
-    public String getString(@NotNull String key, @NotNull String defaultValue) {
-        return properties.getProperty(key, defaultValue);
-    }
-
-    public String getString(@NotNull String key) {
-        return properties.getProperty(key);
-    }
-
-    public int getInt(@NotNull String key, int defaultValue) {
-        return parseInt(properties.getProperty(key, String.valueOf(defaultValue)));
+    /**
+     * Get by key from config or from defaults or ""
+     */
+    public @NotNull String getString(@NotNull String key) {
+        return properties.getProperty(key, String.valueOf(defaults.getOrDefault(key, "")));
     }
 
     public int getInt(@NotNull String key) {
         try {
-            return parseInt(properties.getProperty(key));
+            return parseInt(properties.getProperty(key, String.valueOf(defaults.get(key))));
         } catch (NumberFormatException ex) {
             return 0;
+        }
+    }
+
+    private void createDefault() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<String, Object> entry : defaults.entrySet()) {
+            stringBuilder.append(entry.getKey()).append('=').append(entry.getValue()).append("\r\n");
+        }
+
+        try {
+            Files.writeString(Path.of(FILE_NAME), stringBuilder.toString(), StandardCharsets.UTF_8, CREATE_NEW);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -87,11 +116,8 @@ public class Config {
 
     @Override
     public String toString() {
-        return "Config{" +
+        return "ServerConfig{" +
                 "properties=" + properties +
                 '}';
     }
-
-
 }
-

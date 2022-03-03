@@ -33,7 +33,7 @@ import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.panels.Button;
-import ru.ancevt.d2d2world.desktop.Config;
+import ru.ancevt.d2d2world.desktop.DesktopConfig;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.ui.Font;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
@@ -76,8 +76,8 @@ public class IntroRoot extends Root {
         labelPlayerName.setText("Player name:");
 
         uiTextInputServer = new UiTextInput();
-        Config config = modules.get(Config.class);
-        uiTextInputServer.setText(config.getString(Config.SERVER, "localhost:2245"));
+        DesktopConfig desktopConfig = modules.get(DesktopConfig.class);
+        uiTextInputServer.setText(desktopConfig.getString(DesktopConfig.SERVER));
 
 
         uiTextInputPlayerName = new UiTextInput();

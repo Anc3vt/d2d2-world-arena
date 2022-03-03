@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.desktop;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
@@ -31,19 +32,20 @@ import java.util.Properties;
 
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
+@Slf4j
 public class D2D2WorldDesktopMain {
 
     public static void main(String[] args) throws IOException {
-        // Load config properties
-        Config config = new Config();
-        config.load();
+        // Load desktopConfig properties
+        DesktopConfig desktopConfig = new DesktopConfig();
+        desktopConfig.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
-                config.setProperty(key, value);
+                desktopConfig.setProperty(key, value);
             }
         }
 
@@ -53,17 +55,16 @@ public class D2D2WorldDesktopMain {
         String projectName = properties.getProperty("project.name");
         String version = properties.getProperty("project.version");
 
-        System.out.println(projectName);
-        System.out.println(version);
+        log.info(projectName);
+        log.info(version);
 
+        String autoEnterPlayerName = desktopConfig.getString(DesktopConfig.PLAYER);
 
-        String autoEnterPlayerName = config.getString(Config.PLAYER, "");
-
-        D2D2.init(new LWJGLStarter(900, 530, "(floating) D2D2 World Arena " + autoEnterPlayerName));
+        D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
         D2D2World.init();
 
         // Module initialization section: THE ORDER IS IMPORTANT!
-        modules.add(config);
+        modules.add(desktopConfig);
         modules.add(new Client());
         modules.add(new Chat());
         modules.add(new ClientCommandProcessor());
@@ -72,8 +73,8 @@ public class D2D2WorldDesktopMain {
         IntroRoot introRoot = new IntroRoot(projectName + " " + version);
 
         if (!autoEnterPlayerName.isEmpty()) {
-            introRoot.addEventListener(Event.ADD_TO_STAGE, e -> introRoot.enter(
-                    config.getString(Config.SERVER, "localhost:2245"), autoEnterPlayerName));
+            introRoot.addEventListener(Event.ADD_TO_STAGE,
+                    e -> introRoot.enter(desktopConfig.getString(DesktopConfig.SERVER), autoEnterPlayerName));
         }
 
         D2D2.getStage().setRoot(introRoot);

@@ -28,7 +28,7 @@ import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.desktop.ClientCommandProcessor;
-import ru.ancevt.d2d2world.desktop.Config;
+import ru.ancevt.d2d2world.desktop.DesktopConfig;
 import ru.ancevt.d2d2world.desktop.ui.TabWindow;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -50,7 +50,7 @@ public class GameRoot extends Root implements ClientListener {
     public static final int DEFAULT_PORT = 2245;
 
     private final Client client = modules.get(Client.class);
-    private final Config config = modules.get(Config.class);
+    private final DesktopConfig desktopConfig = modules.get(DesktopConfig.class);
     private final Chat chat = modules.get(Chat.class);
     private String server;
     private final WorldScene worldScene;
@@ -193,7 +193,7 @@ public class GameRoot extends Root implements ClientListener {
                 , Color.WHITE);
         worldScene.start();
 
-        String rconPassword = config.getString(Config.RCON_PASSWORD);
+        String rconPassword = desktopConfig.getString(DesktopConfig.RCON_PASSWORD);
         if (rconPassword != null) {
             client.sendRconLoginRequest(MD5.hash(rconPassword));
         }

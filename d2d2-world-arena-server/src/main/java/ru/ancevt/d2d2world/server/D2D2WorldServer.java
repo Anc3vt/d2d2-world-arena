@@ -41,34 +41,34 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static ru.ancevt.d2d2world.server.Config.SERVER_CONNECTION_TIMEOUT;
-import static ru.ancevt.d2d2world.server.Config.SERVER_HOST;
-import static ru.ancevt.d2d2world.server.Config.SERVER_MAX_PLAYERS;
-import static ru.ancevt.d2d2world.server.Config.SERVER_NAME;
-import static ru.ancevt.d2d2world.server.Config.SERVER_PORT;
+import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_CONNECTION_TIMEOUT;
+import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_HOST;
+import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_MAX_PLAYERS;
+import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_NAME;
+import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_PORT;
 import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 @Slf4j
 public class D2D2WorldServer implements ServerListener, Thread.UncaughtExceptionHandler {
 
     public static void main(String[] args) throws IOException {
-        // Load config properties
-        config = new Config();
-        config.load();
+        // Load serverConfig properties
+        serverConfig = new ServerConfig();
+        serverConfig.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
-                config.setProperty(key, value);
+                serverConfig.setProperty(key, value);
             }
         }
 
         Args a = new Args(args);
 
         // Modules initialization section: THE ORDER IS IMPORTANT!
-        modules.add(config);
+        modules.add(serverConfig);
         modules.add(new ServerUnit());
         modules.add(new ServerSender());
         modules.add(new ServerChat());
@@ -91,12 +91,12 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
         server.start();
     }
 
-    private static Config config;
+    private static ServerConfig serverConfig;
 
     public D2D2WorldServer() {
-        modules.get(ServerStateInfo.class).setName(config.getString(SERVER_NAME));
+        modules.get(ServerStateInfo.class).setName(serverConfig.getString(SERVER_NAME));
         modules.get(ServerStateInfo.class).setVersion(getServerVersion());
-        modules.get(ServerStateInfo.class).setMaxPlayers(config.getInt(SERVER_MAX_PLAYERS, 100));
+        modules.get(ServerStateInfo.class).setMaxPlayers(serverConfig.getInt(SERVER_MAX_PLAYERS));
 
         modules.get(ServerUnit.class).server.addServerListener(this);
 
@@ -107,8 +107,8 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
 
     public void start() {
         modules.get(ServerUnit.class).server.asyncListenAndAwait(
-                config.getString(SERVER_HOST),
-                config.getInt(SERVER_PORT),
+                serverConfig.getString(SERVER_HOST),
+                serverConfig.getInt(SERVER_PORT),
                 2,
                 TimeUnit.SECONDS
         );
@@ -129,7 +129,7 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
     @Override
     public void serverStarted() {
         log.info("Version: " + getServerVersion());
-        log.info("Server started at {}:{}", config.getString(SERVER_HOST), config.getInt(SERVER_PORT));
+        log.info("Server started at {}:{}", serverConfig.getString(SERVER_HOST), serverConfig.getInt(SERVER_PORT));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class D2D2WorldServer implements ServerListener, Thread.UncaughtException
 
         serverProtocolImpl.addServerProtocolImplListener(serverProtocolImplListener);
 
-        Async.runLater(config.getInt(SERVER_CONNECTION_TIMEOUT), TimeUnit.MILLISECONDS, () -> {
+        Async.runLater(serverConfig.getInt(SERVER_CONNECTION_TIMEOUT), TimeUnit.MILLISECONDS, () -> {
             if (!playerEntered.getValue()) {
                 connection.closeIfOpen();
                 serverProtocolImpl.removeServerProtocolImplListener(serverProtocolImplListener);
