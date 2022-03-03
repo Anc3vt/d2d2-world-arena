@@ -6,7 +6,7 @@
 
     <groupId>ru.ancevt.net</groupId>
     <artifactId>tcpb254</artifactId>
-    <version>1.0.0.2</version>
+    <version>1.0.0.3-SNAPSHOT</version>
 
     <name>TCP B254 Protocol</name>
     <url>https://github.com/Anc3vt/d2d2</url>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
