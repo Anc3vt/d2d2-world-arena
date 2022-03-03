@@ -6,7 +6,7 @@
 
     <groupId>ru.ancevt.d2d2</groupId>
     <artifactId>d2d2</artifactId>
-    <version>1.0.0.1-SNAPSHOT</version>
+    <version>1.0.0.1</version>
     <packaging>pom</packaging>
 
     <name>D2D2 Main maven project</name>
@@ -94,33 +94,33 @@
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
                 <artifactId>d2d2-core</artifactId>
-                <version>1.0.0.13-SNAPSHOT</version>
+                <version>1.0.0.13</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
                 <artifactId>d2d2-world</artifactId>
-                <version>1.0.0.1-SNAPSHOT</version>
+                <version>1.0.0.1</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
                 <artifactId>d2d2-panels</artifactId>
-                <version>1.0.0.1-SNAPSHOT</version>
+                <version>1.0.0.1</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
                 <artifactId>d2d2-world-arena-server</artifactId>
-                <version>1.0.0.1-SNAPSHOT</version>
+                <version>1.0.0.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2world</groupId>
                 <artifactId>d2d2-world-arena-networking</artifactId>
-                <version>1.0.0.1-SNAPSHOT</version>
+                <version>1.0.0.1</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.net</groupId>
                 <artifactId>tcpb254</artifactId>
-                <version>1.0.0.2-SNAPSHOT</version>
+                <version>1.0.0.2</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

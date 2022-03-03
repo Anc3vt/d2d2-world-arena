@@ -6,7 +6,7 @@
 
     <groupId>ru.ancevt.net</groupId>
     <artifactId>tcpb254</artifactId>
-    <version>1.0.0.2-SNAPSHOT</version>
+    <version>1.0.0.2</version>
 
     <name>TCP B254 Protocol</name>
     <url>https://github.com/Anc3vt/d2d2</url>
