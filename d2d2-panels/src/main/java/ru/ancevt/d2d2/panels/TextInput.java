@@ -99,7 +99,7 @@ public class TextInput extends Component implements EventListener {
     public void onFocusLost() {
         rect.setBorderColor(BORDER_COLOR);
         remove(cursor);
-        root.removeEventListeners(InputEvent.KEY_DOWN, this);
+        root.removeEventListener(InputEvent.KEY_DOWN, this);
         super.onFocusLost();
     }
 
@@ -165,7 +165,7 @@ public class TextInput extends Component implements EventListener {
     @Override
     public void dispose() {
         super.dispose();
-        root.removeEventListeners(InputEvent.KEY_DOWN, this);
+        root.removeEventListener(InputEvent.KEY_DOWN, this);
     }
 
     private static boolean isNonChar(int keyCode) {
@@ -202,7 +202,7 @@ public class TextInput extends Component implements EventListener {
             }
             case Event.ADD_TO_STAGE -> {
                 root = getRoot();
-                removeEventListeners(Event.ADD_TO_STAGE, this);
+                removeEventListener(Event.ADD_TO_STAGE, this);
             }
         }
     }

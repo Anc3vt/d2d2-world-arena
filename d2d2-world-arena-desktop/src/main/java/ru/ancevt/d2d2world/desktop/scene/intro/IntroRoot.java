@@ -122,7 +122,7 @@ public class IntroRoot extends Root {
         panel.add(button, 10, 100);
 
         addEventListener(Event.ADD_TO_STAGE, addToStageEventListener = event -> {
-            removeEventListeners(Event.ADD_TO_STAGE, addToStageEventListener);
+            removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
 
             PlainRect plainRect = new PlainRect(getStage().getStageWidth(), getStage().getStageHeight() - 300, Color.DARK_BLUE);
             add(plainRect);

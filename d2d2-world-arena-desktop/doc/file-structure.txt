@@ -11,10 +11,7 @@ game-client-folder
    |       |-- spme=asset.mp3..
    |       |-- ...
    |-- maps/
-   |    |-- specific-map..wam
+   |    |-- specific-map.wam..
    |-- downloaded-classes/
-
-
-
-
-
+   |-- cache/
+        |-- <file-name-md5>

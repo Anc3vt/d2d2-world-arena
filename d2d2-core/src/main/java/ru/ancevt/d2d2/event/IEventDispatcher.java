@@ -27,7 +27,7 @@ public interface IEventDispatcher {
 
     void addEventListener(Object key, String type, EventListener listener, boolean reset);
 
-    void removeEventListeners(String type, EventListener listener);
+    void removeEventListener(String type, EventListener listener);
 
     void removeEventListeners(Object key);
 

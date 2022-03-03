@@ -176,9 +176,9 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     }
 
     public void dispose() {
-        removeEventListeners(Event.ADD_TO_STAGE, this);
-        removeEventListeners(Event.REMOVE_FROM_STAGE, this);
-        touchButton.removeEventListeners(TouchEvent.TOUCH_DOWN, this);
+        removeEventListener(Event.ADD_TO_STAGE, this);
+        removeEventListener(Event.REMOVE_FROM_STAGE, this);
+        touchButton.removeEventListener(TouchEvent.TOUCH_DOWN, this);
         touchButton.setEnabled(false);
         removeFromParent();
         UiTextInputProcessor.INSTANCE.removeTextInput(this);

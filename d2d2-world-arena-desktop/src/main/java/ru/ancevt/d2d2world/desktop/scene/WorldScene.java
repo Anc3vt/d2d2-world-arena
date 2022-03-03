@@ -101,7 +101,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         setXY(getStage().getStageWidth() / 2, getStage().getStageHeight() / 2);
 
-        getRoot().add(debug, 10, 250);
+        //getRoot().add(debug, 10, 250);
 
         addRootAndChatEventsIfNotYet();
 

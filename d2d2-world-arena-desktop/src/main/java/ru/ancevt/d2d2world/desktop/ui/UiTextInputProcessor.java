@@ -65,9 +65,9 @@ public class UiTextInputProcessor {
         root.addEventListener(InputEvent.KEY_TYPE, inputEventListener);
 
         if (oldRoot != null) {
-            oldRoot.removeEventListeners(InputEvent.KEY_DOWN, inputEventListener);
-            oldRoot.removeEventListeners(InputEvent.KEY_UP, inputEventListener);
-            oldRoot.removeEventListeners(InputEvent.KEY_TYPE, inputEventListener);
+            oldRoot.removeEventListener(InputEvent.KEY_DOWN, inputEventListener);
+            oldRoot.removeEventListener(InputEvent.KEY_UP, inputEventListener);
+            oldRoot.removeEventListener(InputEvent.KEY_TYPE, inputEventListener);
         }
     }
 

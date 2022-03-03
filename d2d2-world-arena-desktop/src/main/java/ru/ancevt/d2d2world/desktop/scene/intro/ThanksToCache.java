@@ -17,14 +17,32 @@
  */
 package ru.ancevt.d2d2world.desktop.scene.intro;
 
+import org.jetbrains.annotations.NotNull;
+import ru.ancevt.commons.hash.MD5;
+import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.texture.Texture;
+import ru.ancevt.d2d2world.desktop.file.FileDataUtils;
 
 public class ThanksToCache {
-    public static boolean contains(String name) {
+
+    private static final String CACHE_DIRECTORY = "cache/";
+
+    public static boolean contains(String fileName, long fileSize) {
+        if (FileDataUtils.exists(CACHE_DIRECTORY + MD5.hash(fileName))) {
+            long cachedFileSize = FileDataUtils.getSize(CACHE_DIRECTORY + MD5.hash(fileName));
+            return cachedFileSize == fileSize;
+        }
         return false;
     }
 
-    public static Texture getImage(String name) {
-        return null;
+    public static @NotNull Texture getTextureFromCache(String fileName) {
+        return D2D2.getTextureManager()
+                .loadTextureAtlas(FileDataUtils.getInputStream(CACHE_DIRECTORY + MD5.hash(fileName)))
+                .createTexture();
+    }
+
+    public static void saveToCache(String fileName, byte[] bytes) {
+        FileDataUtils.directory(CACHE_DIRECTORY);
+        FileDataUtils.save(CACHE_DIRECTORY + MD5.hash(fileName), bytes);
     }
 }

@@ -48,7 +48,7 @@ public class EventDispatcher implements IEventDispatcher {
 
     @Override
     public void addEventListener(String type, EventListener listener, boolean reset) {
-        if (reset) removeEventListeners(type, listener);
+        if (reset) removeEventListener(type, listener);
         addEventListener(type, listener);
     }
 
@@ -72,7 +72,7 @@ public class EventDispatcher implements IEventDispatcher {
     }
 
     @Override
-    public void removeEventListeners(String type, EventListener listener) {
+    public void removeEventListener(String type, EventListener listener) {
         List<EventListener> listeners = map.get(type);
         if (listeners != null) {
             listeners.remove(listener);

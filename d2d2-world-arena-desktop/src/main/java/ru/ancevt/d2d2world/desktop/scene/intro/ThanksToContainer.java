@@ -17,6 +17,7 @@
  */
 package ru.ancevt.d2d2world.desktop.scene.intro;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
@@ -27,21 +28,32 @@ import ru.ancevt.d2d2world.desktop.net.HttpUtfLoader;
 import ru.ancevt.d2d2world.ui.Preloader;
 
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class ThanksToContainer extends DisplayObjectContainer {
 
     private final Preloader preloader;
     private Stage stage;
+    private final List<ThanksTo> thanksToList;
 
     public ThanksToContainer() {
         preloader = new Preloader();
-        addEventListener(Event.ADD_TO_STAGE, this::this_addToStage);
+        thanksToList = new ArrayList<>();
+        addEventListener(1, Event.ADD_TO_STAGE, this::this_addToStage);
+        addEventListener(2, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
     }
 
     private void this_addToStage(Event event) {
         stage = getStage();
         add(preloader, stage.getStageWidth() / 2, 50);
+    }
+
+    private void this_removeFromStage(Event event) {
+        removeEventListeners(2);
+        dispose();
     }
 
     public void start() {
@@ -61,7 +73,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
             return;
         }
 
-        Map<String, String> map;
+        Map<String, ThanksToHtmlParser.Line> map;
 
         try {
             map = ThanksToHtmlParser.parse(response.body());
@@ -76,15 +88,25 @@ public class ThanksToContainer extends DisplayObjectContainer {
         setX((stage.getStageWidth() - totalWidth) / 2);
 
         Holder<Integer> xHolder = new Holder<>(30);
-        map.forEach((name, pngFileName) -> {
-            ThanksTo thanksTo = new ThanksTo("https://d2d2.ancevt.ru/thanksto/" + pngFileName, name);
+        map.forEach((name, line) -> {
+            ThanksTo thanksTo = new ThanksTo(
+                    "https://d2d2.ancevt.ru/thanksto/" + line.pngFileName(),
+                    name,
+                    line.fileSize()
+            );
+
             thanksTo.setX(xHolder.getValue());
             thanksTo.load();
             add(thanksTo);
-            xHolder.setValue((int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (stage.getStageWidth() / ThanksTo.IMAGE_WIDTH)));
+            thanksToList.add(thanksTo);
+            xHolder.setValue(
+                    (int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (stage.getStageWidth() / ThanksTo.IMAGE_WIDTH))
+            );
         });
+    }
 
-
+    public void dispose() {
+        thanksToList.forEach(ThanksTo::dispose);
     }
 
     private void loadHtmlError(HttpResponse<String> response, Throwable throwable) {
@@ -100,29 +122,3 @@ public class ThanksToContainer extends DisplayObjectContainer {
         add(new ThanksTo(D2D2.getTextureManager().getTexture("thanksto-Me"), "Me"), 640, 0);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

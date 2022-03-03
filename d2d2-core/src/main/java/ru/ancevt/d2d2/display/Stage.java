@@ -182,7 +182,7 @@ public class Stage extends DisplayObjectContainer {
 
         if (oldRoot != null) {
             super.remove(oldRoot);
-            dispatchRemoveFromStage(this.root);
+            dispatchRemoveFromStage(oldRoot);
         }
 
         this.root = root;

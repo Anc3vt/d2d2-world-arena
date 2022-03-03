@@ -25,14 +25,20 @@ public class TextureUrlLoaderEvent extends Event {
     public static final String TEXTURE_LOAD_START = "textureLoadStart";
     public static final String TEXTURE_LOAD_ERROR = "textureLoadError";
 
+    private final byte[] bytes;
     private final TextureAtlas textureAtlas;
 
-    public TextureUrlLoaderEvent(String type, IEventDispatcher source, TextureAtlas textureAtlas) {
+    public TextureUrlLoaderEvent(String type, IEventDispatcher source, byte[] bytes, TextureAtlas textureAtlas) {
         super(type, source);
+        this.bytes = bytes;
         this.textureAtlas = textureAtlas;
     }
 
     public TextureAtlas getTextureAtlas() {
         return textureAtlas;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 }

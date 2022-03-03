@@ -22,14 +22,12 @@ import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.FramedSprite;
-import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.display.Sprite;
 import ru.ancevt.d2d2.display.texture.Texture;
 import ru.ancevt.d2d2.display.texture.TextureAtlas;
 import ru.ancevt.d2d2.display.texture.TextureUrlLoader;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.TextureUrlLoaderEvent;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.ui.Preloader;
 
@@ -40,7 +38,9 @@ public class ThanksTo extends DisplayObjectContainer {
     private static TextureAtlas glassEffectAtlas;
     private String textureUrl;
     private String name;
-    private Preloader preloader = new Preloader();
+    private Texture texture;
+    private final long fileSize;
+    private final Preloader preloader = new Preloader();
 
     /**
      * Legacy constructor
@@ -54,6 +54,8 @@ public class ThanksTo extends DisplayObjectContainer {
         Sprite sprite = new Sprite(texture);
         add(sprite);
 
+        fileSize = 0L;
+
         UiText uiText = new UiText();
         uiText.setText(name);
 
@@ -63,9 +65,10 @@ public class ThanksTo extends DisplayObjectContainer {
         startGlassEffect();
     }
 
-    public ThanksTo(String textureUrl, String name) {
+    public ThanksTo(String textureUrl, String name, long fileSize) {
         this.textureUrl = textureUrl;
         this.name = name;
+        this.fileSize = fileSize;
         UiText uiText = new UiText();
         uiText.setText(name);
         uiText.getTextWidth();
@@ -77,8 +80,8 @@ public class ThanksTo extends DisplayObjectContainer {
         PlainRect background = new PlainRect(IMAGE_WIDTH, IMAGE_HEIGHT, Color.of(0x111111));
         add(background);
 
-        if (ThanksToCache.contains(name)) {
-            showImage(ThanksToCache.getImage(name));
+        if (ThanksToCache.contains(name, fileSize)) {
+            showImage(ThanksToCache.getTextureFromCache(name));
         } else {
             TextureUrlLoader textureUrlLoader = new TextureUrlLoader(textureUrl);
             textureUrlLoader.addEventListener(TextureUrlLoaderEvent.TEXTURE_LOAD_START, this::textureUrlLoader_textureLoadStart);
@@ -95,6 +98,7 @@ public class ThanksTo extends DisplayObjectContainer {
     private void textureUrlLoader_textureLoadComplete(Event event) {
         preloader.removeFromParent();
         var e = (TextureUrlLoaderEvent) event;
+        ThanksToCache.saveToCache(name, e.getBytes());
         showImage(e.getTextureAtlas().createTexture());
     }
 
@@ -104,7 +108,8 @@ public class ThanksTo extends DisplayObjectContainer {
     }
 
     private void showImage(Texture texture) {
-        final Sprite sprite = new Sprite(texture);
+        this.texture = texture;
+        Sprite sprite = new Sprite(texture);
         add(sprite);
         startGlassEffect();
     }
@@ -136,13 +141,20 @@ public class ThanksTo extends DisplayObjectContainer {
         add(framedSprite);
     }
 
-    public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+    public void dispose() {
+        if (texture != null) {
+            textureManager().unloadTextureAtlas(texture.getTextureAtlas());
+        }
+    }
 
-        ThanksTo tt = new ThanksTo("https://d2d2.ancevt.ru/thanksto/thanksto-Qryptojesus.png", "Qryptojesus");
-        root.add(tt);
-        tt.load();
-
-        D2D2.loop();
+    @Override
+    public String toString() {
+        return "ThanksTo{" +
+                "textureUrl='" + textureUrl + '\'' +
+                ", name='" + name + '\'' +
+                ", texture=" + texture +
+                ", fileSize=" + fileSize +
+                ", preloader=" + preloader +
+                '}';
     }
 }

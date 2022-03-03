@@ -81,7 +81,7 @@ public class DialogWarning extends TitledPanel implements EventListener {
 
     private void ok() {
         dispatchEvent(new DialogWarningEvent(DialogWarningEvent.DIALOG_OK, this));
-        getRoot().removeEventListeners(InputEvent.KEY_DOWN, this);
+        getRoot().removeEventListener(InputEvent.KEY_DOWN, this);
         removeFromParent();
     }
 

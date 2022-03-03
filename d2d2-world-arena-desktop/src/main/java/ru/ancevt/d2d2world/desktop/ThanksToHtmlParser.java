@@ -19,9 +19,10 @@ package ru.ancevt.d2d2world.desktop;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.lang.Long.parseLong;
 
 public class ThanksToHtmlParser {
     /*
@@ -45,18 +46,28 @@ public class ThanksToHtmlParser {
      * @param html
      * @return Map of _name_:_png_file_name_
      */
-    public static @NotNull Map<String, String> parse(String html) {
-        return Arrays.stream(html.split("\n"))
-                .filter(s -> s.startsWith("<a href"))
-                .map(s -> s.substring(s.indexOf('-') + 1, s.indexOf('.'))
-                        + ' ' +
-                        s.substring(s.indexOf('"') + 1, s.lastIndexOf('"'))
-                )
-                .collect(Collectors.toUnmodifiableMap(
-                        s -> s.substring(0, s.indexOf(' '))
-                        ,
-                        s -> s.substring(s.indexOf(' ') + 1))
-                );
+    public static @NotNull Map<String, Line> parse(String html) {
+        Map<String, Line> result = new HashMap<>();
+
+        String[] lines = html.split("\n");
+        for (String line : lines) {
+            if (!line.startsWith("<a href")) continue;
+
+            String name = line.substring(line.indexOf('-') + 1, line.indexOf('.'));
+            String png = line.substring(line.indexOf('"') + 1, line.lastIndexOf('"'));
+            String size = line.substring(line.lastIndexOf(' ') + 1).trim();
+
+            try {
+                result.put(name, new Line(png, parseLong(size)));
+            } catch (NumberFormatException nfe) {
+                nfe.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    public record Line(String pngFileName, long fileSize) {
     }
 
     public static void main(String[] args) {
