@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -41,9 +42,11 @@ public class DesktopConfig {
     public static final String SERVER = "server";
     public static final String PLAYER = "player";
     public static final String RCON_PASSWORD = "rcon-password";
+    public static final String DEBUG_WORLD_ALPHA = "debug.world-alpha";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "ancevt.ru:2245");
+        put(DEBUG_WORLD_ALPHA, "1.0");
     }};
 
     private final Properties properties;
@@ -80,6 +83,14 @@ public class DesktopConfig {
             return parseInt(properties.getProperty(key, String.valueOf(defaults.get(key))));
         } catch (NumberFormatException ex) {
             return 0;
+        }
+    }
+
+    public float getFloat(@NotNull String key) {
+        try {
+            return parseFloat(properties.getProperty(key, String.valueOf(defaults.get(key))));
+        } catch (NumberFormatException ex) {
+            return 0f;
         }
     }
 

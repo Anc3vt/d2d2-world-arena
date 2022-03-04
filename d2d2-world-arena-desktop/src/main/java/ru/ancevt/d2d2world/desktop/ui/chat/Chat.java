@@ -322,12 +322,14 @@ public class Chat extends DisplayObjectContainer {
             int playerColor = a.get(int.class, new String[]{"-c"}, 0xFFFF00);
             String messageText = a.get(String.class, new String[]{"-m"});
             chat.addPlayerMessage(idCounter.getValue(), playerId, playerName, playerColor, messageText, Color.WHITE);
+            return null;
         });
 
         repl.addCommand("s", a -> {
             idCounter.setValue(idCounter.getValue() + 1);
             String messageText = a.get(String.class, new String[]{"-m"});
             chat.addServerMessage(idCounter.getValue(), messageText, Color.GRAY);
+            return null;
         });
         new Thread(repl::start).start();
 

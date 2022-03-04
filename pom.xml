@@ -89,7 +89,7 @@
             <dependency>
                 <groupId>ru.ancevt.util</groupId>
                 <artifactId>repl</artifactId>
-                <version>0.0.10</version>
+                <version>0.0.11</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
@@ -144,6 +144,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>name.neuhalfen.projects.crypto.bouncycastle.openpgp</groupId>
+                <artifactId>bouncy-gpg</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>5.7.0</version>
@@ -162,6 +167,10 @@
         <dependency>
             <groupId>ru.ancevt.commons</groupId>
             <artifactId>ancevt-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>name.neuhalfen.projects.crypto.bouncycastle.openpgp</groupId>
+            <artifactId>bouncy-gpg</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

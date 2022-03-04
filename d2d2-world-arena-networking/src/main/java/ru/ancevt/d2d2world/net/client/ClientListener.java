@@ -48,4 +48,6 @@ public interface ClientListener {
     void serverTextToPlayer(@NotNull String text, int textColor);
 
     void fileData(@NotNull String headers, byte[] fileData);
+
+    void rconResponse(String rconResponseData);
 }

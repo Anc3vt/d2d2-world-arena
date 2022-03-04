@@ -19,11 +19,11 @@ package ru.ancevt.d2d2world.mapkit;
 
 public class CharacterMapkit extends Mapkit {
 
-    public static final String UID = "character-mapkit";
+    public static final String ID = "character-mapkit";
     public static final String NAME = "characters";
 
     CharacterMapkit() {
-        super(UID, NAME);
+        super(ID, NAME);
     }
 
 }

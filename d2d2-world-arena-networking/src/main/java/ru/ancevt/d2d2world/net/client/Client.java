@@ -105,7 +105,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void rconResponse(@NotNull String rconResponseData) {
-        throw new NotImplementedException();
+        clientListeners.forEach(l -> l.rconResponse(rconResponseData));
     }
 
     /**

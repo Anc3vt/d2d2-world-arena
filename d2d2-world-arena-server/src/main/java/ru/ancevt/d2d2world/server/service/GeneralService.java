@@ -43,13 +43,7 @@ import ru.ancevt.net.tcpb254.server.IServer;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageChat;
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessagePlayerEnterResponse;
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageRemotePlayerEnter;
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageRemotePlayerExit;
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageRemotePlayerIntroduce;
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageServerInfoResponse;
-import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageTextToPlayer;
+import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
 import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 @Slf4j
@@ -131,9 +125,20 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     @Override
     public void rconLogin(int playerId, @NotNull String passwordHash) {
         if (MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD)).equals(passwordHash)) {
-            serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setRconLoggedIn(true));
-            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin", 0xFFFFFF));
+            serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+                p.setRconLoggedIn(true);
+                if (log.isInfoEnabled()) {
+                    log.info("rcon logged in {}({}), address: {}", p.getName(), playerId, p.getAddress());
+                }
+                serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin", 0xFFFFFF));
+            });
         } else {
+            if (log.isInfoEnabled()) {
+                serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+                    log.info("rcon wrong password {}({}), address: {}", p.getName(), playerId, p.getAddress());
+                });
+            }
+
             serverSender.sendToPlayer(playerId, createMessageTextToPlayer("Wrong password", 0xFF0000));
         }
     }
@@ -144,7 +149,14 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     @Override
     public void rconCommand(int playerId, @NotNull String commandText, @NotNull String extraData) {
         serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
-            if (p.isRconLoggedIn()) commandProcessor.execute(commandText);
+            if (p.isRconLoggedIn()) {
+                String rconResponse = commandProcessor.execute(commandText);
+                if (log.isInfoEnabled()) {
+                    log.info("rcon: {}({}): {}", p.getName(), playerId, commandText);
+                    log.info("rcon response: {}({}): {}", p.getName(), playerId, rconResponse);
+                }
+                serverSender.sendToPlayer(playerId, createMessageRconResponse(rconResponse));
+            }
         });
     }
 
@@ -156,6 +168,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                    @NotNull String playerName,
                                    @NotNull String clientProtocolVersion,
                                    @NotNull String extraData) {
+
+        log.trace("Player enter request {}({}), client protocol version: {}, extra data: {}",
+                playerName, connectionId, clientProtocolVersion, extraData
+        );
+
         // validate player name
         if (!PatternMatcher.check(playerName, NAME_PATTERN)) {
             // if invalid close connection and return
@@ -186,6 +203,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 getConnection(connectionId).orElseThrow().getRemoteAddress(),
                 extraData
         );
+
+        log.info("Player enter {}({})", playerName, connectionId);
 
         // now the connection id is new player id
         // send to new player info about all others
@@ -291,6 +310,10 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverChat.text("Player " + p.getName() + "(" + playerId + ") exit", 0x999999);
             serverPlayerManager.removePlayer(p);
             serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
+
+            if (log.isInfoEnabled()) {
+                log.info("Exit: {}({}), address: {}", p.getName(), playerId, p.getAddress());
+            }
         });
 
         getConnection(playerId).ifPresent(IConnection::close);
@@ -334,7 +357,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerChatListener} method
      */
     @Override
-    public void chatMessage(ServerChatMessage serverChatMessage) {
+    public void chatMessage(@NotNull ServerChatMessage serverChatMessage) {
         if (serverChatMessage.isFromPlayer())
             serverSender.sendToAll(
                     createMessageChat(
@@ -355,11 +378,23 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
         serverPlayerManager.getPlayerList().forEach(p -> p.setLastSeenChatMessageId(serverChatMessage.getId()));
 
-        log.info("chat {}", serverChatMessage);
+        if (log.isInfoEnabled()) {
+            log.info("chat {}({}): {}",
+                    serverChatMessage.getPlayerName(),
+                    serverChatMessage.getPlayerId(),
+                    serverChatMessage.getText()
+            );
+        }
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {
+        if (log.isInfoEnabled()) {
+            serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
+                log.info("cmd {}({}): {}", player.getName(), playerId, commandText);
+            });
+        }
 
+        serverSender.sendToPlayer(playerId, createMessageTextToPlayer("unknown command: " + commandText, 0xFFFFFF));
     }
 
     public void connectionClosed(int playerId, CloseStatus status) {

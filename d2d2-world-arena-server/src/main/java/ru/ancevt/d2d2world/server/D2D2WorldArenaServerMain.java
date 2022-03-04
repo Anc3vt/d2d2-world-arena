@@ -137,9 +137,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         log.info("Connection accepted {}", connection.toString());
         ServerProtocolImpl serverProtocolImpl = modules.get(ServerProtocolImpl.class);
 
-
         // Provide timeout closing connection:
-
         Holder<Boolean> playerEntered = new Holder<>(false);
 
         ServerProtocolImplListener serverProtocolImplListener = new ServerProtocolImplListenerAdapter() {

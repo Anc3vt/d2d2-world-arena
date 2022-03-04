@@ -179,6 +179,14 @@ public class GameRoot extends Root implements ClientListener {
      * {@link ClientListener} method
      */
     @Override
+    public void rconResponse(String rconResponseData) {
+        rconResponseData.lines().forEach(chat::addMessage);
+    }
+
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
     public void remotePlayerExit(@NotNull RemotePlayer remotePlayer) {
         chat.addMessage(remotePlayer.getName() + "(" + remotePlayer.getId() + ") exit", Color.GRAY);
         worldScene.removeRemotePlayer(remotePlayer);
@@ -194,9 +202,7 @@ public class GameRoot extends Root implements ClientListener {
         worldScene.start();
 
         String rconPassword = desktopConfig.getString(DesktopConfig.RCON_PASSWORD);
-        if (rconPassword != null) {
-            client.sendRconLoginRequest(MD5.hash(rconPassword));
-        }
+        client.sendRconLoginRequest(MD5.hash(rconPassword));
     }
 
     /**

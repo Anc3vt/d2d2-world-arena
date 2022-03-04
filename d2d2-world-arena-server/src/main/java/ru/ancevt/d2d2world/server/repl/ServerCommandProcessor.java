@@ -18,6 +18,9 @@
 package ru.ancevt.d2d2world.server.repl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import ru.ancevt.d2d2world.server.ServerTimer;
 import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 import ru.ancevt.d2d2world.server.service.GeneralService;
@@ -37,8 +40,8 @@ public class ServerCommandProcessor {
         registerCommands();
     }
 
-    public void execute(String commandText) {
-        repl.execute(commandText);
+    public @NotNull String execute(String commandText) {
+        return String.valueOf(repl.execute(commandText));
     }
 
     private void registerCommands() {
@@ -47,16 +50,20 @@ public class ServerCommandProcessor {
         repl.addCommand("loopdelay", this::cmd_loopdelay);
     }
 
-    private void cmd_loopdelay(Args args) {
-        modules.get(ServerTimer.class).setInterval(args.get(int.class, 0, 1));
+    private @NotNull Object cmd_loopdelay(Args args) {
+        ServerTimer serverTimer = modules.get(ServerTimer.class);
+        serverTimer.setInterval(args.get(int.class, 0, 1));
+        return String.valueOf(serverTimer.getInterval());
     }
 
-    private void cmd_exit(Args args) {
+    private @Nullable Object cmd_exit(Args args) {
         modules.get(GeneralService.class).exit();
+        return null;
     }
 
-    private void cmd_players(Args args) {
+    private @Unmodifiable Object cmd_players(Args args) {
         TextTable table = new TextTable();
+        table.setDecorEnabled(false);
         table.setColumnNames(new String[]{
                 "id", "hash", "name", "color", "clntProtVer", "address", "ping", "lastChatMsgId", "ctrlr", "x", "y"
         });
@@ -77,12 +84,12 @@ public class ServerCommandProcessor {
             );
         });
 
-        System.out.println(table.render());
+        String result = table.render();
+        System.out.println(result);
+        return result;
     }
 
     public void start() {
         new Thread(repl::start, "repl").start();
     }
-
-
 }

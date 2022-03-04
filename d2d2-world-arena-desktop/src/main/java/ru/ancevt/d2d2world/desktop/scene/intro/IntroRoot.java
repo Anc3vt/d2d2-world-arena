@@ -79,7 +79,6 @@ public class IntroRoot extends Root {
         DesktopConfig desktopConfig = modules.get(DesktopConfig.class);
         uiTextInputServer.setText(desktopConfig.getString(DesktopConfig.SERVER));
 
-
         uiTextInputPlayerName = new UiTextInput();
         uiTextInputPlayerName.requestFocus();
         uiTextInputPlayerName.addEventListener(UiTextInputEvent.TEXT_ENTER, this::keyEnter);
@@ -124,7 +123,11 @@ public class IntroRoot extends Root {
         addEventListener(Event.ADD_TO_STAGE, addToStageEventListener = event -> {
             removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
 
-            PlainRect plainRect = new PlainRect(getStage().getStageWidth(), getStage().getStageHeight() - 300, Color.DARK_BLUE);
+            PlainRect plainRect = new PlainRect(
+                    getStage().getStageWidth(),
+                    getStage().getStageHeight() - 300,
+                    Color.DARK_BLUE
+            );
             add(plainRect);
 
             add(new CityBgSprite(), 0, 150);

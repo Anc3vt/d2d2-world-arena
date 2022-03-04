@@ -88,7 +88,7 @@ public class ClientCommandProcessor {
                     // send rcon command String beginning from 6 index
                     client.sendRconCommand(text.substring(6));
                 }
-
+                return true;
             }
         }
 

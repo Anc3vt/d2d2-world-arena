@@ -50,10 +50,10 @@
             <id>ancevt-snapshots</id>
             <url>https://packages.ancevt.ru/snapshots</url>
         </repository>
-        
+
     </repositories>
 
-   <properties>
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
 
@@ -230,8 +230,8 @@
                 </dependency>
             </dependencies>
         </profile>
-		
-		
+
+
         <profile>
             <id>desktop</id>
             <build>
@@ -258,6 +258,45 @@
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                        <artifactId>launch4j-maven-plugin</artifactId>
+                        <version>2.1.2</version>
+                        <executions>
+                            <execution>
+                                <id>l4j-gui</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>launch4j</goal>
+                                </goals>
+                                <configuration>
+                                    <headerType>gui</headerType>
+                                    <outfile>target/${project.name} ${project.version}.exe</outfile>
+                                    <jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+                                    <errTitle/>
+                                    <classPath>
+                                        <mainClass>ru.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopMain</mainClass>
+                                    </classPath>
+                                    <jre>
+                                        <minVersion>17</minVersion>
+                                    </jre>
+                                    <icon>src/main/resources/exe-icon.ico</icon>
+                                    <versionInfo>
+                                        <fileVersion>1.0.0.0</fileVersion>
+                                        <txtFileVersion>${project.version}</txtFileVersion>
+                                        <fileDescription>D2D2 World Arena Desktop Client</fileDescription>
+                                        <copyright>Ancevt (c) 2022</copyright>
+                                        <productVersion>1.0.0.0</productVersion>
+                                        <txtProductVersion>${project.version}</txtProductVersion>
+                                        <productName>D2D2 World Arena</productName>
+                                        <internalName>d2d2worldarena</internalName>
+                                        <originalFilename>${project.name} ${project.version}.exe</originalFilename>
+                                    </versionInfo>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
