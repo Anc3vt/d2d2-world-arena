@@ -47,19 +47,19 @@ import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
 
-    public static final GeneralService INSTANCE = new GeneralService();
+    public static final GeneralService MODULE_GENERAL = new GeneralService();
 
     public static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
-    private final ServerConfig serverConfig = ServerConfig.INSTANCE;
-    private final IServer serverUnit = ServerUnit.INSTANCE.server;
-    private final ServerTimer serverTimer = ServerTimer.INSTANCE;
-    private final SyncService syncService = SyncService.INSTANCE;
-    private final ServerChat serverChat = ServerChat.INSTANCE;
-    private final ServerSender serverSender = ServerSender.INSTANCE;
-    private final ServerPlayerManager serverPlayerManager = ServerPlayerManager.INSTANCE;
-    private final ServerStateInfo serverStateInfo = ServerStateInfo.INSTANCE;
-    private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.INSTANCE;
+    private final ServerConfig serverConfig = ServerConfig.MODULE_SERVER_CONFIG;
+    private final IServer serverUnit = ServerUnit.MODULE_SERVER_UNIT.server;
+    private final ServerTimer serverTimer = ServerTimer.MODULE_TIMER;
+    private final SyncService syncService = SyncService.MODULE_SYNC;
+    private final ServerChat serverChat = ServerChat.MODULE_CHAT;
+    private final ServerSender serverSender = ServerSender.MODULE_SENDER;
+    private final ServerPlayerManager serverPlayerManager = ServerPlayerManager.MODULE_PLAYER_MANAGER;
+    private final ServerStateInfo serverStateInfo = ServerStateInfo.MODULE_SERVER_STATE_INFO;
+    private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 
     private GeneralService() {
         serverChat.addServerChatListener(this);

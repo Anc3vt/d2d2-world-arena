@@ -28,7 +28,7 @@ import java.util.Optional;
 @Slf4j
 public class ServerPlayerManager {
 
-    public static final ServerPlayerManager INSTANCE = new ServerPlayerManager();
+    public static final ServerPlayerManager MODULE_PLAYER_MANAGER = new ServerPlayerManager();
 
     private final Map<Integer, Player> playerMap;
     private final List<Player> playerList;

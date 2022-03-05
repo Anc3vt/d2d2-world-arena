@@ -22,18 +22,19 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import ru.ancevt.d2d2world.server.ServerTimer;
-import ru.ancevt.d2d2world.server.content.ContentManager;
-import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
-import ru.ancevt.d2d2world.server.service.GeneralService;
 import ru.ancevt.util.args.Args;
 import ru.ancevt.util.repl.ReplInterpreter;
 import ru.ancevt.util.texttable.TextTable;
 
+import static ru.ancevt.d2d2world.server.ServerTimer.MODULE_TIMER;
+import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
+import static ru.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
+import static ru.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
+
 @Slf4j
 public class ServerCommandProcessor {
 
-    public static final ServerCommandProcessor INSTANCE = new ServerCommandProcessor();
+    public static final ServerCommandProcessor MODULE_COMMAND_PROCESSOR = new ServerCommandProcessor();
 
     private final ReplInterpreter repl;
 
@@ -65,17 +66,17 @@ public class ServerCommandProcessor {
     private @NotNull Object cmd_syncdir(@NotNull Args args) {
         int playerId = args.get(int.class, 0);
         String path = args.get(String.class, 1);
-        ContentManager.INSTANCE.syncSendDirectoryToPlayer(path, playerId);
+        MODULE_CONTENT_MANAGER.syncSendDirectoryToPlayer(path, playerId);
         return "sync path " + path;
     }
 
     private @NotNull @Unmodifiable Object cmd_loopdelay(@NotNull Args args) {
-        ServerTimer.INSTANCE.setInterval(args.get(int.class, 0, 1));
-        return String.valueOf(ServerTimer.INSTANCE.getInterval());
+        MODULE_TIMER.setInterval(args.get(int.class, 0, 1));
+        return String.valueOf(MODULE_TIMER.getInterval());
     }
 
     private @Nullable Object cmd_exit(Args args) {
-        GeneralService.INSTANCE.exit();
+        MODULE_GENERAL.exit();
         return null;
     }
 
@@ -86,7 +87,7 @@ public class ServerCommandProcessor {
                 "id", "hash", "name", "color", "clntProtVer", "address", "ping", "lastChatMsgId", "ctrlr", "x", "y"
         });
 
-        ServerPlayerManager.INSTANCE.getPlayerList().forEach(p -> {
+        MODULE_PLAYER_MANAGER.getPlayerList().forEach(p -> {
             table.addRow(
                     p.getId(),
                     p.hashCode(),

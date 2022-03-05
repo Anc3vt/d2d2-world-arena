@@ -24,8 +24,8 @@ import ru.ancevt.net.tcpb254.server.IServer;
 @Slf4j
 public class ServerSender {
 
-    public static final ServerSender INSTANCE = new ServerSender();
-    private final IServer serverUnit = ServerUnit.INSTANCE.server;
+    public static final ServerSender MODULE_SENDER = new ServerSender();
+    private final IServer serverUnit = ServerUnit.MODULE_SERVER_UNIT.server;
 
     private ServerSender() {
     }

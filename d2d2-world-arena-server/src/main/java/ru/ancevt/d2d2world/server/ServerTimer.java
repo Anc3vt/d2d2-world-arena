@@ -21,7 +21,7 @@ import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_LOOP_DELAY;
 
 public class ServerTimer {
 
-    public static final ServerTimer INSTANCE = new ServerTimer();
+    public static final ServerTimer MODULE_TIMER = new ServerTimer();
 
     private long tickCounter;
     private int interval;
@@ -29,7 +29,7 @@ public class ServerTimer {
     private ServerTimerListener timerListener;
 
     private ServerTimer() {
-        setInterval(ServerConfig.INSTANCE.getInt(SERVER_LOOP_DELAY));
+        setInterval(ServerConfig.MODULE_SERVER_CONFIG.getInt(SERVER_LOOP_DELAY));
     }
 
     public void start() {

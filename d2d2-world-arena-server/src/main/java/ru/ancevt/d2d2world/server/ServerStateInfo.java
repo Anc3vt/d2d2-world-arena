@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.server;
 
 public class ServerStateInfo {
 
-    public static final ServerStateInfo INSTANCE = new ServerStateInfo();
+    public static final ServerStateInfo MODULE_SERVER_STATE_INFO = new ServerStateInfo();
 
     private String name;
     private String version;

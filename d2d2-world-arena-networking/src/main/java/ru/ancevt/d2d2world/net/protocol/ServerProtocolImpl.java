@@ -33,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public final class ServerProtocolImpl extends ProtocolImpl {
 
-    public static final ServerProtocolImpl INSTANCE = new ServerProtocolImpl();
+    public static final ServerProtocolImpl MODULE_SERVER_PROTOCOL = new ServerProtocolImpl();
 
     private final List<ServerProtocolImplListener> serverProtocolImplListeners;
 

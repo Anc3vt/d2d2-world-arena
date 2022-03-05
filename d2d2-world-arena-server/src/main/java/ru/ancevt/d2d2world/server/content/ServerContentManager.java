@@ -31,16 +31,16 @@ import java.util.stream.Collectors;
 import static java.nio.file.Files.newBufferedReader;
 
 @Slf4j
-public class ContentManager {
-    public static final ContentManager INSTANCE = new ContentManager();
+public class ServerContentManager {
+    public static final ServerContentManager MODULE_CONTENT_MANAGER = new ServerContentManager();
 
-    private ContentManager() {
+    private ServerContentManager() {
     }
 
     public void syncSendFileToPlayer(String path, int playerId) {
         FileSender fileSender = new FileSender(path);
         if (fileSender.isFileExists()) {
-            GeneralService.INSTANCE.getConnection(playerId).ifPresent(fileSender::send);
+            GeneralService.MODULE_GENERAL.getConnection(playerId).ifPresent(fileSender::send);
         }
     }
 

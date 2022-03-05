@@ -23,15 +23,15 @@ import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 
 @Slf4j
 public class SyncService {
-    public static final SyncService INSTANCE = new SyncService();
+    public static final SyncService MODULE_SYNC = new SyncService();
 
 
     private SyncService() {
     }
 
     public void syncFirstLevel() {
-        ServerPlayerManager.INSTANCE.getPlayerList().forEach(p ->
-                ServerSender.INSTANCE.sendToAllExcluding(
+        ServerPlayerManager.MODULE_PLAYER_MANAGER.getPlayerList().forEach(p ->
+                ServerSender.MODULE_SENDER.sendToAllExcluding(
                         ServerProtocolImpl.createMessageRemotePlayerControllerAndXY(
                                 p.getId(),
                                 p.getControllerState(),
@@ -51,8 +51,8 @@ public class SyncService {
     }
 
     private void sendPings() {
-        ServerPlayerManager.INSTANCE.getPlayerList().forEach(p -> {
-            ServerSender.INSTANCE.sendToAllExcluding(
+        ServerPlayerManager.MODULE_PLAYER_MANAGER.getPlayerList().forEach(p -> {
+            ServerSender.MODULE_SENDER.sendToAllExcluding(
                     ServerProtocolImpl.createMessageRemotePlayerPingValue(p.getId(), p.getPingValue()),
                     p.getId()
             );

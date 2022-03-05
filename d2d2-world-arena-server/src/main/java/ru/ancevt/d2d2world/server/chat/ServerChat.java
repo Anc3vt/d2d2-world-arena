@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ServerChat {
-    public static final ServerChat INSTANCE = new ServerChat();
+    public static final ServerChat MODULE_CHAT = new ServerChat();
 
     private static final int MAX_MESSAGES = 256;
     private static final int DELETE_MESSAGES = MAX_MESSAGES / 4;

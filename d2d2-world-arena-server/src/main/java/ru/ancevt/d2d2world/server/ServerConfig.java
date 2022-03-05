@@ -36,7 +36,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Slf4j
 public class ServerConfig {
 
-    public static final ServerConfig INSTANCE = new ServerConfig();
+    public static final ServerConfig MODULE_SERVER_CONFIG = new ServerConfig();
 
     private static final String FILE_NAME = "d2d2-world-arena-server.conf";
 
