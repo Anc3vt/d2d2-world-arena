@@ -24,7 +24,6 @@ import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.commons.regex.PatternMatcher;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
-import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.server.ServerConfig;
 import ru.ancevt.d2d2world.server.ServerStateInfo;
@@ -63,7 +62,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.INSTANCE;
 
     private GeneralService() {
-        ServerProtocolImpl.INSTANCE.addServerProtocolImplListener(this);
         serverChat.addServerChatListener(this);
         serverTimer.setTimerListener(this);
     }

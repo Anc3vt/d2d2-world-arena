@@ -57,6 +57,9 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
             case MessageType.CLIENT_SERVER_INFO_REQUEST -> {
                 log("received CLIENT_SERVER_INFO_REQUEST");
+
+                System.out.println(serverProtocolImplListeners);
+
                 serverProtocolImplListeners.forEach(l -> l.serverInfoRequest(connectionId));
             }
 

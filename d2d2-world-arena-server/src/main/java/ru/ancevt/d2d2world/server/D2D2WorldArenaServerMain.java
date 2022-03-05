@@ -70,6 +70,8 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     }
 
     public D2D2WorldArenaServerMain() {
+        ServerProtocolImpl.INSTANCE.addServerProtocolImplListener(GeneralService.INSTANCE);
+
         ServerStateInfo.INSTANCE.setName(ServerConfig.INSTANCE.getString(SERVER_NAME));
         ServerStateInfo.INSTANCE.setVersion(getServerVersion());
         ServerStateInfo.INSTANCE.setMaxPlayers(ServerConfig.INSTANCE.getInt(SERVER_MAX_PLAYERS));
