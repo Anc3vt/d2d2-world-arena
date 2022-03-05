@@ -58,7 +58,7 @@ public class FileSender {
         this.connection = connection;
         file = new File(path);
 
-        System.out.println(path);
+        log.trace("send {} to connection {}", path, connection.getId());
 
         if (!file.exists()) {
             throw new IllegalStateException("no such file " + file);
@@ -79,6 +79,7 @@ public class FileSender {
                 byte[] bytes = new byte[min(left, CHUNK_SIZE)];
                 fileInputStream.read(bytes);
                 sendChunk(bytes, first);
+                first = false;
                 left -= bytes.length;
 
                 Async.wait(DELAY, MILLISECONDS);
@@ -111,6 +112,10 @@ public class FileSender {
                     bytes)
             );
         }
+    }
+
+    public boolean isFileExists() {
+        return new File(path).exists();
     }
 
     @FunctionalInterface

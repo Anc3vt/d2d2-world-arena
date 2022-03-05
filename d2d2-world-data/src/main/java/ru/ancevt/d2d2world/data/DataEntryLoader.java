@@ -19,7 +19,6 @@ package ru.ancevt.d2d2world.data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ancevt.d2d2.asset.Assets;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public final class DataEntryLoader {
     public static DataEntry[] load(String assetPath) throws IOException {
         log.debug("load DataEntry asset" + assetPath);
 
-        final InputStream inputStream = Assets.getAssetAsStream(assetPath);
+        final InputStream inputStream = DataEntryLoader.class.getClassLoader().getResourceAsStream("assets/" + assetPath);
         final List<DataEntry> result = new ArrayList<>();
 
         try (final BufferedReader bufferedReader = new BufferedReader(
@@ -50,7 +49,7 @@ public final class DataEntryLoader {
 
                 if (!startsWithWhite(line)) {
 
-                    if(stringBuilder.length() > 0) {
+                    if (stringBuilder.length() > 0) {
                         log.debug("creating data entry {}", stringBuilder.toString());
                         result.add(DataEntry.newInstance(stringBuilder.toString()));
                     }

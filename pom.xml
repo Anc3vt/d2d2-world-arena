@@ -53,6 +53,7 @@
         <module>d2d2-core</module>
         <module>d2d2-panels</module>
         <module>d2d2-world</module>
+        <module>d2d2-world-data</module>
         <module>d2d2-world-editor</module>
         <module>d2d2-world-arena-desktop</module>
         <module>d2d2-world-arena-networking</module>
@@ -89,7 +90,7 @@
             <dependency>
                 <groupId>ru.ancevt.util</groupId>
                 <artifactId>repl</artifactId>
-                <version>0.0.11</version>
+                <version>0.0.12</version>
             </dependency>
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
@@ -104,6 +105,11 @@
             <dependency>
                 <groupId>ru.ancevt.d2d2</groupId>
                 <artifactId>d2d2-panels</artifactId>
+                <version>1.0.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>ru.ancevt.d2d2world</groupId>
+                <artifactId>d2d2-world-data</artifactId>
                 <version>1.0.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>

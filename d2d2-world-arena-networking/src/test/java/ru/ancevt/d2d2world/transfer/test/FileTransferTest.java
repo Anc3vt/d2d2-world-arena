@@ -1,10 +1,12 @@
 package ru.ancevt.d2d2world.transfer.test;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.ancevt.commons.concurrent.Lock;
-import ru.ancevt.d2d2world.net.file.FileDataUtils;
+import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.d2d2world.net.message.MessageType;
 import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
@@ -31,7 +33,8 @@ import static org.hamcrest.Matchers.is;
 public class FileTransferTest {
 
 
-    private File createFile(String path, int filesize, byte startByte, byte endByte) {
+    @Contract("_, _ -> new")
+    private @NotNull File createFile(String path, int filesize) {
         File dir = FileDataUtils.directory(path);
 
         String filePath = dir.getPath() + "/";
@@ -39,8 +42,8 @@ public class FileTransferTest {
 
 
         byte[] bytes = new byte[filesize];
-        bytes[0] = startByte;
-        bytes[bytes.length - 1] = endByte;
+        bytes[0] = (byte) 1;
+        bytes[bytes.length - 1] = (byte) 2;
 
         try {
             Files.write(Path.of(filePath.concat(fileName)), bytes, WRITE, CREATE, TRUNCATE_EXISTING);
@@ -50,19 +53,20 @@ public class FileTransferTest {
         return new File(filePath.concat(fileName));
     }
 
-    private IServer createServer() {
+    @Contract(" -> new")
+    private @NotNull IServer createServer() {
         return ServerFactory.createTcpB254Server();
     }
 
     @Test
     void testFileCreation() {
-        File file = createFile("one/two/three/test", 100, (byte) 1, (byte) 2);
+        File file = createFile("one/two/three/test", 100);
         assertThat(file.exists(), is(true));
         assertThat(file.length(), is(100L));
     }
 
     void testFileTransfer(int filesize) throws IOException {
-        File file = createFile("one/two/three/test", filesize, (byte) 1, (byte) 2);
+        File file = createFile("one/two/three/test", filesize);
 
         IServer server = createServer();
         server.addServerListener(new ServerListenerAdapter() {
@@ -138,7 +142,7 @@ public class FileTransferTest {
         final int filesize = 512 * 1024;
         List<File> files = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            files.add(createFile("one/two/three/test" + i, filesize, (byte) 1, (byte) 2));
+            files.add(createFile("one/two/three/test" + i, filesize));
         }
 
         IServer server = createServer();
@@ -217,14 +221,14 @@ public class FileTransferTest {
         deleteDirectory(new File("one/"));
     }
 
-    boolean deleteDirectory(File directoryToBeDeleted) {
+    void deleteDirectory(File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
             for (File file : allContents) {
                 deleteDirectory(file);
             }
         }
-        return directoryToBeDeleted.delete();
+        directoryToBeDeleted.delete();
     }
 }
 

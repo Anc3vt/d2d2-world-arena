@@ -44,29 +44,28 @@ import java.util.List;
 import java.util.Optional;
 
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
-import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
 
+    public static final GeneralService INSTANCE = new GeneralService();
+
     public static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
-    private final ServerConfig serverConfig = modules.get(ServerConfig.class);
-    private final IServer serverUnit = modules.get(ServerUnit.class).server;
-    private final ServerTimer serverTimer = modules.get(ServerTimer.class);
-    private final SyncService syncService = modules.get(SyncService.class);
-    private final ServerChat serverChat = modules.get(ServerChat.class);
-    private final ServerSender serverSender = modules.get(ServerSender.class);
-    private final ServerPlayerManager serverPlayerManager = modules.get(ServerPlayerManager.class);
-    private final ServerStateInfo serverStateInfo = modules.get(ServerStateInfo.class);
-    private final ServerCommandProcessor commandProcessor = modules.get(ServerCommandProcessor.class);
+    private final ServerConfig serverConfig = ServerConfig.INSTANCE;
+    private final IServer serverUnit = ServerUnit.INSTANCE.server;
+    private final ServerTimer serverTimer = ServerTimer.INSTANCE;
+    private final SyncService syncService = SyncService.INSTANCE;
+    private final ServerChat serverChat = ServerChat.INSTANCE;
+    private final ServerSender serverSender = ServerSender.INSTANCE;
+    private final ServerPlayerManager serverPlayerManager = ServerPlayerManager.INSTANCE;
+    private final ServerStateInfo serverStateInfo = ServerStateInfo.INSTANCE;
+    private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.INSTANCE;
 
-    public GeneralService() {
-        if (modules.get(GeneralService.class) != null) throw new IllegalStateException();
-
-        modules.get(ServerProtocolImpl.class).addServerProtocolImplListener(this);
-        modules.get(ServerChat.class).addServerChatListener(this);
-        modules.get(ServerTimer.class).setTimerListener(this);
+    private GeneralService() {
+        ServerProtocolImpl.INSTANCE.addServerProtocolImplListener(this);
+        serverChat.addServerChatListener(this);
+        serverTimer.setTimerListener(this);
     }
 
     /**

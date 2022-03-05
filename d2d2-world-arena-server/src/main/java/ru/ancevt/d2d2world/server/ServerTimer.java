@@ -18,17 +18,18 @@
 package ru.ancevt.d2d2world.server;
 
 import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_LOOP_DELAY;
-import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
 
 public class ServerTimer {
+
+    public static final ServerTimer INSTANCE = new ServerTimer();
 
     private long tickCounter;
     private int interval;
     private boolean active;
     private ServerTimerListener timerListener;
 
-    ServerTimer() {
-        setInterval(modules.get(ServerConfig.class).getInt(SERVER_LOOP_DELAY));
+    private ServerTimer() {
+        setInterval(ServerConfig.INSTANCE.getInt(SERVER_LOOP_DELAY));
     }
 
     public void start() {

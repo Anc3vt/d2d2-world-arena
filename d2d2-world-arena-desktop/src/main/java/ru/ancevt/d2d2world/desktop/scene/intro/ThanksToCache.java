@@ -21,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.texture.Texture;
-import ru.ancevt.d2d2world.net.file.FileDataUtils;
+import ru.ancevt.d2d2world.data.file.FileDataUtils;
 
 public class ThanksToCache {
 
-    private static final String CACHE_DIRECTORY = "cache/";
+    private static final String CACHE_DIRECTORY = "data/cache/";
 
     public static boolean contains(String fileName, long fileSize) {
         if (FileDataUtils.exists(CACHE_DIRECTORY + MD5.hash(fileName))) {

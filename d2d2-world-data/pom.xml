@@ -11,10 +11,10 @@
     </parent>
 
     <groupId>ru.ancevt.d2d2world</groupId>
-    <artifactId>d2d2-world-arena-networking</artifactId>
+    <artifactId>d2d2-world-data</artifactId>
     <version>1.0.0.3-SNAPSHOT</version>
 
-    <name>D2D2 World Arena Networking</name>
+    <name>D2D2 World Arena Data</name>
     <url>https://github.com/Anc3vt/d2d2</url>
 
     <licenses>
@@ -68,14 +68,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>ru.ancevt.net</groupId>
-            <artifactId>tcpb254</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ru.ancevt.d2d2world</groupId>
-            <artifactId>d2d2-world-data</artifactId>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ServerChat {
+    public static final ServerChat INSTANCE = new ServerChat();
+
     private static final int MAX_MESSAGES = 256;
     private static final int DELETE_MESSAGES = MAX_MESSAGES / 4;
     private static final int DEFAULT_PLAYER_TEXT_COLOR = 0xFFFFFF;
@@ -35,7 +37,7 @@ public class ServerChat {
 
     private final List<ServerChatListener> serverChatListeners;
 
-    public ServerChat() {
+    private ServerChat() {
         messages = new LinkedList<>();
         serverChatListeners = new ArrayList<>();
     }

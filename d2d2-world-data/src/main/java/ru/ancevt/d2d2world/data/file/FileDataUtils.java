@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2world.net.file;
+package ru.ancevt.d2d2world.data.file;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

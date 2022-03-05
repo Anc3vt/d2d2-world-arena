@@ -28,10 +28,12 @@ import java.util.Optional;
 @Slf4j
 public class ServerPlayerManager {
 
+    public static final ServerPlayerManager INSTANCE = new ServerPlayerManager();
+
     private final Map<Integer, Player> playerMap;
     private final List<Player> playerList;
 
-    public ServerPlayerManager() {
+    private ServerPlayerManager() {
         playerMap = new HashMap<>();
         playerList = new ArrayList<>();
     }

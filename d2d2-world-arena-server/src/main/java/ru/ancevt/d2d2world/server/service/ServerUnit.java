@@ -22,9 +22,11 @@ import ru.ancevt.net.tcpb254.server.ServerFactory;
 
 public class ServerUnit {
 
+    public static final ServerUnit INSTANCE = new ServerUnit();
+
     public final IServer server;
 
-    public ServerUnit() {
+    private ServerUnit() {
         server = ServerFactory.createTcpB254Server();
     }
 }

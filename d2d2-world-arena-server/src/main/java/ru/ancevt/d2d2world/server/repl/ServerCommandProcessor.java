@@ -18,24 +18,26 @@
 package ru.ancevt.d2d2world.server.repl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import ru.ancevt.d2d2world.server.ServerTimer;
+import ru.ancevt.d2d2world.server.content.ContentManager;
 import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 import ru.ancevt.d2d2world.server.service.GeneralService;
 import ru.ancevt.util.args.Args;
 import ru.ancevt.util.repl.ReplInterpreter;
 import ru.ancevt.util.texttable.TextTable;
 
-import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
-
 @Slf4j
 public class ServerCommandProcessor {
 
+    public static final ServerCommandProcessor INSTANCE = new ServerCommandProcessor();
+
     private final ReplInterpreter repl;
 
-    public ServerCommandProcessor() {
+    private ServerCommandProcessor() {
         repl = new ReplInterpreter();
         registerCommands();
     }
@@ -48,16 +50,32 @@ public class ServerCommandProcessor {
         repl.addCommand("players", this::cmd_players);
         repl.addCommand("exit", this::cmd_exit);
         repl.addCommand("loopdelay", this::cmd_loopdelay);
+        repl.addCommand("syncdir", this::cmd_syncdir);
+        repl.addCommand("help", this::cmd_help);
+
     }
 
-    private @NotNull Object cmd_loopdelay(Args args) {
-        ServerTimer serverTimer = modules.get(ServerTimer.class);
-        serverTimer.setInterval(args.get(int.class, 0, 1));
-        return String.valueOf(serverTimer.getInterval());
+    @Contract(pure = true)
+    private @NotNull Object cmd_help(Args args) {
+        StringBuilder s = new StringBuilder();
+        repl.getCommands().forEach(c -> s.append(c.getCommandWord()).append('\n'));
+        return s.toString();
+    }
+
+    private @NotNull Object cmd_syncdir(@NotNull Args args) {
+        int playerId = args.get(int.class, 0);
+        String path = args.get(String.class, 1);
+        ContentManager.INSTANCE.syncSendDirectoryToPlayer(path, playerId);
+        return "sync path " + path;
+    }
+
+    private @NotNull @Unmodifiable Object cmd_loopdelay(@NotNull Args args) {
+        ServerTimer.INSTANCE.setInterval(args.get(int.class, 0, 1));
+        return String.valueOf(ServerTimer.INSTANCE.getInterval());
     }
 
     private @Nullable Object cmd_exit(Args args) {
-        modules.get(GeneralService.class).exit();
+        GeneralService.INSTANCE.exit();
         return null;
     }
 
@@ -68,7 +86,7 @@ public class ServerCommandProcessor {
                 "id", "hash", "name", "color", "clntProtVer", "address", "ping", "lastChatMsgId", "ctrlr", "x", "y"
         });
 
-        modules.get(ServerPlayerManager.class).getPlayerList().forEach(p -> {
+        ServerPlayerManager.INSTANCE.getPlayerList().forEach(p -> {
             table.addRow(
                     p.getId(),
                     p.hashCode(),

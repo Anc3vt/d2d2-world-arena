@@ -17,12 +17,15 @@
  */
 package ru.ancevt.d2d2world.net.transfer;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.d2d2world.net.file.FileDataUtils;
+import ru.ancevt.d2d2world.data.file.FileDataUtils;
 
 import static java.lang.Integer.parseInt;
+import static ru.ancevt.d2d2world.net.transfer.Headers.BEGIN;
 import static ru.ancevt.d2d2world.net.transfer.Headers.SIZE;
 
+@Slf4j
 public class FileReceiver {
 
     private final String path;
@@ -46,15 +49,18 @@ public class FileReceiver {
     }
 
     public void bytesReceived(@NotNull Headers headers, byte @NotNull [] contentBytes) {
+        log.trace("bytesReceived\n{}<contentLength:{}>", headers, contentBytes.length);
+
         if (headers.contains(SIZE)) {
             totalContentLength = parseInt(headers.get(SIZE));
         }
 
-        //if(headers.contains(BEGIN)) {
-        //    FileDataUtils.truncate("data/" + path);
-        // }
+        String pathToAppend = path.startsWith("data/") ? path : "data/" + path;
 
-        FileDataUtils.append("data/" + path, contentBytes);
+        if (headers.contains(BEGIN)) {
+            FileDataUtils.truncate(pathToAppend);
+        }
+        FileDataUtils.append(pathToAppend, contentBytes);
 
         currentContentLength += contentBytes.length;
         FileReceiverManager.INSTANCE.progress(this);

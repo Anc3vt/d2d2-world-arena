@@ -74,6 +74,10 @@
             <artifactId>d2d2-panels</artifactId>
         </dependency>
         <dependency>
+            <groupId>ru.ancevt.d2d2world</groupId>
+            <artifactId>d2d2-world-data</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ru.ancevt.util</groupId>
             <artifactId>args</artifactId>
         </dependency>

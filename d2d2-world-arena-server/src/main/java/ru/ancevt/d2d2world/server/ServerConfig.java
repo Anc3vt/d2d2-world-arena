@@ -36,6 +36,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Slf4j
 public class ServerConfig {
 
+    public static final ServerConfig INSTANCE = new ServerConfig();
+
     private static final String FILE_NAME = "d2d2-world-arena-server.conf";
 
     public static final String SERVER_NAME = "server.name";
@@ -62,7 +64,7 @@ public class ServerConfig {
 
     private final Properties properties;
 
-    public ServerConfig() {
+    private ServerConfig() {
         properties = new Properties();
     }
 

@@ -18,6 +18,9 @@
 package ru.ancevt.d2d2world.server;
 
 public class ServerStateInfo {
+
+    public static final ServerStateInfo INSTANCE = new ServerStateInfo();
+
     private String name;
     private String version;
     private String mapKit;
@@ -25,7 +28,7 @@ public class ServerStateInfo {
     private String mod;
     private int maxPlayers;
 
-    ServerStateInfo() {
+    private ServerStateInfo() {
         name = "";
         version = "";
         mapKit = "";

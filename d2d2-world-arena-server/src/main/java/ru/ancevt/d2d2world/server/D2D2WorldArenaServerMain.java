@@ -18,19 +18,16 @@
 package ru.ancevt.d2d2world.server;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.commons.concurrent.Async;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListenerAdapter;
-import ru.ancevt.d2d2world.server.chat.ServerChat;
-import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 import ru.ancevt.d2d2world.server.repl.ServerCommandProcessor;
 import ru.ancevt.d2d2world.server.service.GeneralService;
-import ru.ancevt.d2d2world.server.service.ServerSender;
 import ru.ancevt.d2d2world.server.service.ServerUnit;
-import ru.ancevt.d2d2world.server.service.SyncService;
 import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import ru.ancevt.net.tcpb254.connection.IConnection;
@@ -41,44 +38,25 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_CONNECTION_TIMEOUT;
-import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_HOST;
-import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_MAX_PLAYERS;
-import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_NAME;
-import static ru.ancevt.d2d2world.server.ServerConfig.SERVER_PORT;
-import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
+import static ru.ancevt.d2d2world.server.ServerConfig.*;
 
 @Slf4j
 public class D2D2WorldArenaServerMain implements ServerListener, Thread.UncaughtExceptionHandler {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String @NotNull [] args) throws IOException {
         // Load serverConfig properties
-        serverConfig = new ServerConfig();
-        serverConfig.load();
+        ServerConfig.INSTANCE.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
-                serverConfig.setProperty(key, value);
+                ServerConfig.INSTANCE.setProperty(key, value);
             }
         }
 
         Args a = new Args(args);
-
-        // Modules initialization section: THE ORDER IS IMPORTANT!
-        modules.add(serverConfig);
-        modules.add(new ServerUnit());
-        modules.add(new ServerSender());
-        modules.add(new ServerChat());
-        modules.add(new ServerPlayerManager());
-        modules.add(new SyncService());
-        modules.add(new ServerProtocolImpl());
-        modules.add(new ServerCommandProcessor());
-        modules.add(new ServerTimer());
-        modules.add(new ServerStateInfo());
-        modules.add(new GeneralService());
 
         String version = getServerVersion();
 
@@ -91,28 +69,26 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         server.start();
     }
 
-    private static ServerConfig serverConfig;
-
     public D2D2WorldArenaServerMain() {
-        modules.get(ServerStateInfo.class).setName(serverConfig.getString(SERVER_NAME));
-        modules.get(ServerStateInfo.class).setVersion(getServerVersion());
-        modules.get(ServerStateInfo.class).setMaxPlayers(serverConfig.getInt(SERVER_MAX_PLAYERS));
+        ServerStateInfo.INSTANCE.setName(ServerConfig.INSTANCE.getString(SERVER_NAME));
+        ServerStateInfo.INSTANCE.setVersion(getServerVersion());
+        ServerStateInfo.INSTANCE.setMaxPlayers(ServerConfig.INSTANCE.getInt(SERVER_MAX_PLAYERS));
 
-        modules.get(ServerUnit.class).server.addServerListener(this);
+        ServerUnit.INSTANCE.server.addServerListener(this);
 
         Thread.setDefaultUncaughtExceptionHandler(this);
 
-        modules.get(ServerCommandProcessor.class).start();
+        ServerCommandProcessor.INSTANCE.start();
     }
 
     public void start() {
-        modules.get(ServerUnit.class).server.asyncListenAndAwait(
-                serverConfig.getString(SERVER_HOST),
-                serverConfig.getInt(SERVER_PORT),
+        ServerUnit.INSTANCE.server.asyncListenAndAwait(
+                ServerConfig.INSTANCE.getString(SERVER_HOST),
+                ServerConfig.INSTANCE.getInt(SERVER_PORT),
                 2,
                 TimeUnit.SECONDS
         );
-        modules.get(ServerTimer.class).start();
+        ServerTimer.INSTANCE.start();
     }
 
     public static String getServerVersion() {
@@ -129,13 +105,12 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     @Override
     public void serverStarted() {
         log.info("Version: " + getServerVersion());
-        log.info("Server started at {}:{}", serverConfig.getString(SERVER_HOST), serverConfig.getInt(SERVER_PORT));
+        log.info("Server started at {}:{}", ServerConfig.INSTANCE.getString(SERVER_HOST), ServerConfig.INSTANCE.getInt(SERVER_PORT));
     }
 
     @Override
-    public void connectionAccepted(IConnection connection) {
+    public void connectionAccepted(@NotNull IConnection connection) {
         log.info("Connection accepted {}", connection.toString());
-        ServerProtocolImpl serverProtocolImpl = modules.get(ServerProtocolImpl.class);
 
         // Provide timeout closing connection:
         Holder<Boolean> playerEntered = new Holder<>(false);
@@ -148,42 +123,43 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
                                            @NotNull String extraData) {
                 if (connection.getId() == playerId) {
                     playerEntered.setValue(true);
-                    serverProtocolImpl.removeServerProtocolImplListener(this);
+                    ServerProtocolImpl.INSTANCE.removeServerProtocolImplListener(this);
                 }
             }
 
+            @Contract(pure = true)
             @Override
-            public String toString() {
+            public @NotNull String toString() {
                 return "listener";
             }
         };
 
-        serverProtocolImpl.addServerProtocolImplListener(serverProtocolImplListener);
+        ServerProtocolImpl.INSTANCE.addServerProtocolImplListener(serverProtocolImplListener);
 
-        Async.runLater(serverConfig.getInt(SERVER_CONNECTION_TIMEOUT), TimeUnit.MILLISECONDS, () -> {
+        Async.runLater(ServerConfig.INSTANCE.getInt(SERVER_CONNECTION_TIMEOUT), TimeUnit.MILLISECONDS, () -> {
             if (!playerEntered.getValue()) {
                 connection.closeIfOpen();
-                serverProtocolImpl.removeServerProtocolImplListener(serverProtocolImplListener);
+                ServerProtocolImpl.INSTANCE.removeServerProtocolImplListener(serverProtocolImplListener);
             }
         });
 
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
             public void connectionClosed(CloseStatus status) {
-                serverProtocolImpl.removeServerProtocolImplListener(serverProtocolImplListener);
+                ServerProtocolImpl.INSTANCE.removeServerProtocolImplListener(serverProtocolImplListener);
             }
         });
     }
 
     @Override
-    public void connectionClosed(IConnection connection, CloseStatus status) {
+    public void connectionClosed(@NotNull IConnection connection, @NotNull CloseStatus status) {
         log.info("Connection closed {}, status: {}", connection.toString(), status.toString());
-        modules.get(GeneralService.class).connectionClosed(connection.getId(), status);
+        GeneralService.INSTANCE.connectionClosed(connection.getId(), status);
     }
 
     @Override
-    public void connectionBytesReceived(IConnection connection, byte[] bytes) {
-        modules.get(ServerProtocolImpl.class).bytesReceived(connection.getId(), bytes);
+    public void connectionBytesReceived(@NotNull IConnection connection, byte[] bytes) {
+        ServerProtocolImpl.INSTANCE.bytesReceived(connection.getId(), bytes);
     }
 
     @Override

@@ -20,15 +20,14 @@ package ru.ancevt.d2d2world.server.service;
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.net.tcpb254.server.IServer;
 
-import static ru.ancevt.d2d2world.server.ModuleContainer.modules;
-
 
 @Slf4j
 public class ServerSender {
 
-    private final IServer serverUnit = modules.get(ServerUnit.class).server;
+    public static final ServerSender INSTANCE = new ServerSender();
+    private final IServer serverUnit = ServerUnit.INSTANCE.server;
 
-    public ServerSender() {
+    private ServerSender() {
     }
 
     public void sendToPlayer(int playerId, byte[] bytes) {
