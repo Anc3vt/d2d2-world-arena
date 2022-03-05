@@ -199,7 +199,7 @@ public class FileTransferTest {
             }
         });
 
-        assertThat(receivedFiles.size(),is(10));
+        assertThat(receivedFiles.size(), is(10));
 
         server.close();
         connection.closeIfOpen();

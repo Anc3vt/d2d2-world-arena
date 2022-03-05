@@ -21,7 +21,6 @@ import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
 import ru.ancevt.net.tcpb254.connection.ConnectionListener;
 import ru.ancevt.net.tcpb254.connection.IConnection;
-import ru.ancevt.net.tcpb254.connection.TcpB254Connection;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -93,10 +92,7 @@ public class TcpB254Server implements IServer {
 
                 dispatchConnectionAccepted(connectionWithClient);
 
-                new Thread(
-                        () -> ((TcpB254Connection) connectionWithClient).readLoop(),
-                        "tcpConnectionThread" + connectionWithClient.getId()
-                ).start();
+                new Thread(connectionWithClient::readLoop, "tcpConnectionThread" + connectionWithClient.getId()).start();
             }
 
             dispatchServerClosed(new CloseStatus());
@@ -109,7 +105,7 @@ public class TcpB254Server implements IServer {
 
     @Override
     public Thread asyncListen(String host, int port) {
-        Thread thread = new Thread(()->listen(host,port), "tcpServListen_" + host + "_" + port);
+        Thread thread = new Thread(() -> listen(host, port), "tcpServListen_" + host + "_" + port);
         thread.start();
         return thread;
     }
@@ -132,7 +128,7 @@ public class TcpB254Server implements IServer {
 
     private void dispatchServerStarted() {
         serverListeners.forEach(ServerListener::serverStarted);
-        if(countDownLatchForAsync != null) {
+        if (countDownLatchForAsync != null) {
             countDownLatchForAsync.countDown();
             countDownLatchForAsync = null;
         }
@@ -140,7 +136,7 @@ public class TcpB254Server implements IServer {
 
     private void dispatchServerClosed(CloseStatus status) {
         serverListeners.forEach(l -> l.serverClosed(status));
-        if(countDownLatchForAsync != null) {
+        if (countDownLatchForAsync != null) {
             countDownLatchForAsync.countDown();
             countDownLatchForAsync = null;
         }
@@ -181,7 +177,7 @@ public class TcpB254Server implements IServer {
     @Override
     public void close() {
         try {
-            if(!isListening()) {
+            if (!isListening()) {
                 throw new IllegalStateException("Server not started");
             }
 
