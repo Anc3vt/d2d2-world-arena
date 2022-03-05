@@ -75,8 +75,4 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
 
     }
 
-    @Override
-    public void fileData(int connectionId, @NotNull String headers, byte[] fileData) {
-
-    }
 }

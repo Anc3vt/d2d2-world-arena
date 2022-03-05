@@ -43,5 +43,4 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
 
     void requestFile(int connectionId, @NotNull String headers);
 
-    void fileData(int connectionId, @NotNull String headers, byte[] fileData);
 }

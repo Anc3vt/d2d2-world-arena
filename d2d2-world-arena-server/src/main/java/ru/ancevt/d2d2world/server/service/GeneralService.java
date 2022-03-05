@@ -115,14 +115,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void fileData(int connectionId, @NotNull String headers, byte[] fileData) {
-        throw new NotImplementedException();
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
     public void rconLogin(int playerId, @NotNull String passwordHash) {
         if (MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD)).equals(passwordHash)) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {

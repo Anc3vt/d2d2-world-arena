@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.texture.Texture;
-import ru.ancevt.d2d2world.desktop.file.FileDataUtils;
+import ru.ancevt.d2d2world.net.file.FileDataUtils;
 
 public class ThanksToCache {
 

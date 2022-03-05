@@ -1,5 +1,5 @@
 /*
- *   D2D2 World Arena Desktop
+ *   D2D2 World Arena Networking
  *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -21,16 +21,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class Headers {
 
     private static final String DELIMITER = ":";
-
-    public static final String FILE_BEGIN = "File-Begin"; // true, false
-    public static final String PART_NUMBER = "PartNumber"; // from 0
-    public static final String PATH = "Path"; // f.e.: <mapkit-uid>/index.mk
-    public static final String FINAL_PART = "Final-Part"; // true
+    public static final String BEGIN = "Begin";
+    public static final String PATH = "Path"; // mapkits/<mapkit-uid>/index.mk, e.t.c.
+    public static final String SIZE = "Size"; // bytes
 
     private final Map<String, String> map;
 
@@ -46,7 +43,7 @@ public class Headers {
     private void parse(String headers) {
         String[] lines = headers.split("\n");
         for (String line : lines) {
-            if(line.contains(DELIMITER)) {
+            if (line.contains(DELIMITER)) {
                 String[] kv = line.split(DELIMITER);
                 put(kv[0], kv[1]);
             } else {
@@ -79,8 +76,15 @@ public class Headers {
         return s.toString();
     }
 
-    public Optional<String> get(String key) {
-        return Optional.ofNullable(map.get(key));
+    public boolean contains(String key) {
+        return map.containsKey(key);
+    }
+
+    public String get(String key) {
+        if (!contains(key)) {
+            throw new IllegalStateException("no suck key '" + key + "'");
+        }
+        return map.get(key);
     }
 
     public static Headers of(String string) {

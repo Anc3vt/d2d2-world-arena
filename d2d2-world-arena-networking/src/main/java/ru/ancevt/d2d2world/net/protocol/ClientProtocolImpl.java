@@ -25,6 +25,8 @@ import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.d2d2world.net.client.ServerInfo;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.message.MessageType;
+import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
+import ru.ancevt.d2d2world.net.transfer.Headers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,10 +158,10 @@ public final class ClientProtocolImpl extends ProtocolImpl {
 
                 case MessageType.FILE_DATA -> {
                     log("received FILE_DATA");
-                    String headers = in.readUtf(short.class);
+                    Headers headers = Headers.of(in.readUtf(short.class));
                     int contentLength = in.readInt();
                     byte[] fileData = in.readBytes(contentLength);
-                    clientProtocolImplListeners.forEach(l -> l.fileData(headers, fileData));
+                    FileReceiverManager.INSTANCE.fileData(headers, fileData);
                 }
 
                 case MessageType.EXTRA -> {
