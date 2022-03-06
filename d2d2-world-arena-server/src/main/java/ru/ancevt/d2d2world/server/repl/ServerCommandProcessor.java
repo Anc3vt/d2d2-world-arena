@@ -53,8 +53,32 @@ public class ServerCommandProcessor {
         repl.addCommand("exit", this::cmd_exit);
         repl.addCommand("loopdelay", this::cmd_loopdelay);
         repl.addCommand("syncdir", this::cmd_syncdir);
+        repl.addCommand("syncmap", this::cmd_syncmap);
+        repl.addCommand("syncmapkit", this::cmd_syncmapkit);
         repl.addCommand("mapkits", this::cmd_mapkits);
         repl.addCommand("maps", this::cmd_maps);
+    }
+
+    private @NotNull Object cmd_syncmapkit(@NotNull Args args) {
+        try {
+            int playerId = args.get(int.class, 0);
+            String mapkitName = args.get(String.class, 1);
+            MODULE_CONTENT_MANAGER.syncSendMapkit(mapkitName, playerId);
+            return "sync mapkit '" + mapkitName + "' with player " + playerId;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    private @NotNull Object cmd_syncmap(@NotNull Args args) {
+        try {
+            int playerId = args.get(int.class, 0);
+            String mapName = args.get(String.class, 1);
+            MODULE_CONTENT_MANAGER.syncSendMap(mapName, playerId);
+            return "sync map '" + mapName + "' with player " + playerId;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     private @NotNull @Unmodifiable Object cmd_maps(Args args) {
@@ -85,7 +109,7 @@ public class ServerCommandProcessor {
 
             String path = args.get(String.class, 1);
             MODULE_CONTENT_MANAGER.syncSendDirectoryToPlayer(path, playerId);
-            return "sync path " + path;
+            return "sync path '" + path + "' with player " + playerId;
         } catch (Exception e) {
             return e.getMessage();
         }

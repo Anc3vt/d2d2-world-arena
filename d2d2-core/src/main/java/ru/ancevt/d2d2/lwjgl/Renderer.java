@@ -319,7 +319,7 @@ public class Renderer implements IRenderer {
         D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
     }
 
-    float nextHalf(float v) {
+    private static float nextHalf(float v) {
         return (float) (Math.ceil(v * 2) / 2);
     }
 

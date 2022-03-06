@@ -257,23 +257,24 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     /**
-     * {@link ClientListener} method
+     * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override
-    public void progress(FileReceiver fileReceiver) {
+    public void progress(@NotNull FileReceiver fileReceiver) {
+        int proc = (fileReceiver.bytesLoaded() / fileReceiver.bytesTotal()) * 100;
         chat.addMessage(
-                format("%d/%d sync %s", fileReceiver.bytesLoaded(), fileReceiver.bytesTotal(), fileReceiver.getPath()),
+                format("%d%% sync %s", proc, fileReceiver.getPath()),
                 Color.DARK_GRAY
         );
     }
 
     /**
-     * {@link ClientListener} method
+     * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override
-    public void complete(FileReceiver fileReceiver) {
+    public void complete(@NotNull FileReceiver fileReceiver) {
         chat.addMessage(
-                format("%d/%d sync complete %s", fileReceiver.bytesLoaded(), fileReceiver.bytesTotal(), fileReceiver.getPath()),
+                format("sync complete %s", fileReceiver.getPath()),
                 Color.DARK_GRAY
         );
     }

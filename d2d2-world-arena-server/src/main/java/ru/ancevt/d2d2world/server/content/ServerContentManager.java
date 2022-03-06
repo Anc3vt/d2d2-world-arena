@@ -18,8 +18,10 @@
 package ru.ancevt.d2d2world.server.content;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.d2d2world.data.DataEntry;
+import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.d2d2world.net.transfer.FileSender;
 import ru.ancevt.d2d2world.server.service.GeneralService;
 
@@ -50,6 +52,29 @@ public class ServerContentManager {
         }
     }
 
+    public void syncSendMapkit(String mapkitName, int playerId) {
+        getMapkits().stream()
+                .filter(mapkit -> mapkit.name().equals(mapkitName))
+                .findAny()
+                .ifPresent(
+                        mapkit -> syncSendDirectoryToPlayer("data/mapkits/" + mapkit.uid(), playerId)
+                );
+    }
+
+    public void syncSendMap(String mapName, int playerId) {
+        getMaps().stream()
+                .filter(map -> map.name().equals(mapName))
+                .findAny()
+                .ifPresent(
+                        map -> {
+                            syncSendFileToPlayer("data/maps/" + map.fileName(), playerId);
+                            map.mapkits().forEach(mapkit -> {
+                                syncSendMapkit(mapkit.name(), playerId);
+                            });
+                        }
+                );
+    }
+
     public void syncSendDirectoryToPlayer(String path, int playerId) {
         try {
 
@@ -63,6 +88,7 @@ public class ServerContentManager {
             throw new IllegalStateException(e);
         }
     }
+
 
     public Set<Map> getMaps() {
         try {
@@ -95,7 +121,7 @@ public class ServerContentManager {
                     String mapkitUids = dataEntry.getString(MAPKIT_UIDS);
 
                     for (String mapkitUid : mapkitUids.split(",")) {
-                        mapkits.add(getMapkit(Path.of("data/mapkits/" + mapkitUid + "/index.mk")));
+                        mapkits.add(getMapkitByIndexFile(Path.of("data/mapkits/" + mapkitUid + "/index.mk")));
                     }
 
                     size = path.toFile().length();
@@ -103,7 +129,7 @@ public class ServerContentManager {
                 }
             }
 
-            return new Map(name, size, mapkits);
+            return new Map(name, FileDataUtils.splitPath(path.toString()).getSecond(), size, mapkits);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -118,7 +144,7 @@ public class ServerContentManager {
                     .filter(path -> path.toFile().getName().endsWith(".mk"))
                     .collect(Collectors.toSet());
 
-            paths.forEach(path -> result.add(getMapkit(path)));
+            paths.forEach(path -> result.add(getMapkitByIndexFile(path)));
 
             return result;
         } catch (IOException e) {
@@ -126,7 +152,7 @@ public class ServerContentManager {
         }
     }
 
-    private Mapkit getMapkit(Path path) {
+    private Mapkit getMapkitByIndexFile(Path path) {
         try {
             String name = null;
             String uid = null;
@@ -162,7 +188,7 @@ public class ServerContentManager {
         return result.getValue();
     }
 
-    public record Mapkit(String uid, String name, long totalSize) {
+    public record Mapkit(@NotNull String uid, @NotNull String name, long totalSize) {
         @Override
         public String toString() {
             return "Mapkit{" +
@@ -173,7 +199,7 @@ public class ServerContentManager {
         }
     }
 
-    public record Map(String name, long size, Set<Mapkit> mapkits) {
+    public record Map(@NotNull String name, @NotNull String fileName, long size, @NotNull Set<Mapkit> mapkits) {
         @Override
         public String toString() {
             StringBuilder s = new StringBuilder();
@@ -181,6 +207,7 @@ public class ServerContentManager {
 
             return "Map{" +
                     "name='" + name + '\'' +
+                    ", fileName='" + fileName + '\'' +
                     ", size=" + size +
                     ", mapkits=" + s +
                     '}';
