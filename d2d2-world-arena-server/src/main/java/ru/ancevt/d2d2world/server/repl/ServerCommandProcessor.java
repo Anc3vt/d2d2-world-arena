@@ -100,7 +100,7 @@ public class ServerCommandProcessor {
         TextTable table = new TextTable();
         table.setDecorEnabled(false);
         table.setColumnNames(new String[]{
-                "id", "hash", "name", "color", "clntProtVer", "address", "ping", "lastChatMsgId", "ctrlr", "x", "y"
+                "id", "hash", "name", "color", "clntProtVer", "address", "ping"
         });
 
         MODULE_PLAYER_MANAGER.getPlayerList().forEach(p -> {
@@ -112,10 +112,7 @@ public class ServerCommandProcessor {
                     p.getClientProtocolVersion(),
                     p.getAddress(),
                     p.getPingValue(),
-                    p.getLastSeenChatMessageId(),
-                    p.getControllerState(),
-                    p.getX(),
-                    p.getY()
+                    p.getLastSeenChatMessageId()
             );
         });
 

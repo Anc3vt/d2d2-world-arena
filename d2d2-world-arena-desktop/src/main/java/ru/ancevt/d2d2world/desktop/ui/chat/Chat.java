@@ -44,7 +44,7 @@ public class Chat extends DisplayObjectContainer {
 
     private static final float DEFAULT_WIDTH = 900.0f / 2.0f;
     private static final float DEFAULT_HEIGHT = 600.0f / 3.0f;
-    private static final int INPUT_MAX_LENGTH = 80;
+    private static final int INPUT_MAX_LENGTH = 100;
 
     private final UiTextInput input;
     private final List<ChatMessage> messages;
@@ -155,10 +155,10 @@ public class Chat extends DisplayObjectContainer {
         return scroll;
     }
 
-    public void addServerMessage(int chatMessageId, @NotNull String messageText, Color textColor) {
+    /*public void addServerMessage(int chatMessageId, @NotNull String messageText, Color textColor) {
         addMessage(new ChatMessage(chatMessageId, messageText, textColor));
         redraw();
-    }
+    }*/
 
     public void addPlayerMessage(int id, @NotNull RemotePlayer remotePlayer, @NotNull String messageText,
                                  Color textColor) {
@@ -178,6 +178,23 @@ public class Chat extends DisplayObjectContainer {
                                  int playerColor,
                                  @NotNull String messageText,
                                  @NotNull Color textColor) {
+
+        if (messageText.length() > 70) {
+            StringBuilder s = new StringBuilder();
+            for (int i = 0; i < messageText.length(); i += 70) {
+                String part = messageText.substring(i, Math.min(i + 70, messageText.length() - 1));
+                addPlayerMessage(id, playerId, playerName, playerColor, part, textColor);
+            }
+            return;
+        }
+
+        if (messageText.contains("\n")) {
+            messageText.lines().forEach(line ->
+                    addPlayerMessage(id, playerId, playerName, playerColor, line, textColor));
+            return;
+        }
+
+
         addMessage(new ChatMessage(id, playerId, playerName, playerColor, messageText, textColor));
         if (id != 0) lastChatMessageId = id;
         redraw();
@@ -187,14 +204,14 @@ public class Chat extends DisplayObjectContainer {
         if (messageText.length() > 100) {
             StringBuilder s = new StringBuilder();
             for (int i = 0; i < messageText.length(); i += 100) {
-                String part = messageText.substring(i, Math.min(i + 100, messageText.length()-1));
+                String part = messageText.substring(i, Math.min(i + 100, messageText.length() - 1));
                 addMessage(part, textColor);
             }
             return;
         }
 
         if (messageText.contains("\n")) {
-            messageText.lines().forEach(line -> addMessage(messageText, textColor));
+            messageText.lines().forEach(line -> addMessage(line, textColor));
             return;
         }
 
@@ -352,7 +369,7 @@ public class Chat extends DisplayObjectContainer {
         repl.addCommand("s", a -> {
             idCounter.setValue(idCounter.getValue() + 1);
             String messageText = a.get(String.class, new String[]{"-m"});
-            chat.addServerMessage(idCounter.getValue(), messageText, Color.GRAY);
+            //chat.addServerMessage(idCounter.getValue(), messageText, Color.GRAY);
             return null;
         });
         new Thread(repl::start).start();

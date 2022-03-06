@@ -220,7 +220,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor) {
-        chat.addServerMessage(chatMessageId, "Server: " + chatMessageText, Color.of(chatMessageTextColor));
+        chat.addMessage("Server: " + chatMessageText, Color.of(chatMessageTextColor));
     }
 
     /**
