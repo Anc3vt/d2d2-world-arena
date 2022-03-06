@@ -47,8 +47,8 @@ public class FileSender {
     private int filesize;
 
     public FileSender(String path, boolean compress) {
-        if(FileDataUtils.isParent(path, "data/")) {
-            throw new IllegalStateException("secure error, " + path);
+        if (!isSecure(path)) {
+            throw new IllegalStateException("security error");
         }
 
         this.path = path;
@@ -137,6 +137,10 @@ public class FileSender {
         void fileSendComplete();
     }
 
+    public static boolean isSecure(String path) {
+        File data = new File("data/");
+        return FileDataUtils.isParent(data, new File(path));
+    }
 
     public static void main(String[] args) throws IOException {
         System.out.println(Path.of("d2d2-core/../../../").toAbsolutePath().toRealPath().toString());

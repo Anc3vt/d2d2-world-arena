@@ -114,10 +114,7 @@ public class FileDataUtils {
         return Pair.of(directory, filename);
     }
 
-    public static boolean isParent(String parentPath, String filePath) {
-        File parent = new File(parentPath);
-        File file = new File(filePath);
-
+    public static boolean isParent(@NotNull File parent, @NotNull File file) {
         File f;
         try {
             parent = parent.getCanonicalFile();
@@ -128,12 +125,7 @@ public class FileDataUtils {
         }
 
         while (f != null) {
-            // equals() only works for paths that are normalized, hence the need for
-            // getCanonicalFile() above. "a" isn't equal to "./a", for example.
-            if (parent.equals(f)) {
-                return true;
-            }
-
+            if (parent.equals(f)) return true;
             f = f.getParentFile();
         }
 

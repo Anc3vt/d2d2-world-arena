@@ -80,10 +80,15 @@ public class ServerCommandProcessor {
     }
 
     private @NotNull Object cmd_syncdir(@NotNull Args args) {
-        int playerId = args.get(int.class, 0);
-        String path = args.get(String.class, 1);
-        MODULE_CONTENT_MANAGER.syncSendDirectoryToPlayer(path, playerId);
-        return "sync path " + path;
+        try {
+            int playerId = args.get(int.class, 0);
+
+            String path = args.get(String.class, 1);
+            MODULE_CONTENT_MANAGER.syncSendDirectoryToPlayer(path, playerId);
+            return "sync path " + path;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     private @NotNull @Unmodifiable Object cmd_loopdelay(@NotNull Args args) {
