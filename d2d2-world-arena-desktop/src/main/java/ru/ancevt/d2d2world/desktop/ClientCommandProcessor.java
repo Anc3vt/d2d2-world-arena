@@ -18,6 +18,7 @@
 package ru.ancevt.d2d2world.desktop;
 
 import ru.ancevt.commons.hash.MD5;
+import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
@@ -44,15 +45,7 @@ public class ClientCommandProcessor {
         switch (command) {
             case "/exit", "/q", "/quit" -> {
                 client.sendExitRequest();
-
-                // TODO: improve this crack
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.exit(0);
-
+                GameRoot.INSTANCE.exit();
             }
 
             case "//players" -> {

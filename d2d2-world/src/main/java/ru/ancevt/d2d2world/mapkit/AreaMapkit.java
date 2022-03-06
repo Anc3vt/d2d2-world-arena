@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.Sprite;
-import ru.ancevt.d2d2world.constant.DataKey;
+import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.gameobject.area.AreaCheckpoint;
 import ru.ancevt.d2d2world.gameobject.area.AreaCollision;

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Pair;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -74,6 +75,15 @@ public class FileDataUtils {
         }
 
         return dir;
+    }
+
+    public static String readString(String path) {
+        try {
+            if(!exists(path)) return "";
+            return Files.readString(Path.of(path), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public static void save(String path, byte[] bytes) {

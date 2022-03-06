@@ -48,16 +48,32 @@ public class ServerCommandProcessor {
     }
 
     private void registerCommands() {
+        repl.addCommand("help", this::cmd_help);
         repl.addCommand("players", this::cmd_players);
         repl.addCommand("exit", this::cmd_exit);
         repl.addCommand("loopdelay", this::cmd_loopdelay);
         repl.addCommand("syncdir", this::cmd_syncdir);
-        repl.addCommand("help", this::cmd_help);
+        repl.addCommand("mapkits", this::cmd_mapkits);
+        repl.addCommand("maps", this::cmd_maps);
+    }
 
+    private @NotNull @Unmodifiable Object cmd_maps(Args args) {
+        StringBuilder s = new StringBuilder();
+        MODULE_CONTENT_MANAGER.getMaps().forEach(mapkit -> s.append(mapkit.toString()).append('\n'));
+        System.out.println(s);
+        return s.toString();
     }
 
     @Contract(pure = true)
-    private @NotNull Object cmd_help(Args args) {
+    private @NotNull @Unmodifiable Object cmd_mapkits(Args args) {
+        StringBuilder s = new StringBuilder();
+        MODULE_CONTENT_MANAGER.getMapkits().forEach(mapkit -> s.append(mapkit.toString()).append('\n'));
+        System.out.println(s);
+        return s.toString();
+    }
+
+    @Contract(pure = true)
+    private @NotNull @Unmodifiable Object cmd_help(Args args) {
         StringBuilder s = new StringBuilder();
         repl.getCommands().forEach(c -> s.append(c.getCommandWord()).append('\n'));
         return s.toString();

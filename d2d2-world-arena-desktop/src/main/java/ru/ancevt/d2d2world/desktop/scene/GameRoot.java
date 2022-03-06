@@ -38,16 +38,22 @@ import ru.ancevt.d2d2world.net.client.ClientListener;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
 import ru.ancevt.d2d2world.net.client.ServerInfo;
+import ru.ancevt.d2d2world.net.transfer.FileReceiver;
+import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import ru.ancevt.net.tcpb254.CloseStatus;
 
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.String.format;
 import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
 
 @Slf4j
-public class GameRoot extends Root implements ClientListener {
+public class GameRoot extends Root implements ClientListener, FileReceiverManager.FileReceiverManagerListener {
 
     public static final int DEFAULT_PORT = 2245;
+
+    // TODO: refactor
+    public static GameRoot INSTANCE;
 
     private final Client client = modules.get(Client.class);
     private final DesktopConfig desktopConfig = modules.get(DesktopConfig.class);
@@ -115,6 +121,10 @@ public class GameRoot extends Root implements ClientListener {
         add(chat, 10, 10);
 
         tabWindow = new TabWindow();
+
+        FileReceiverManager.INSTANCE.addFileReceiverManagerListener(this);
+
+        INSTANCE = this;
     }
 
     private void setTabWindowVisible(boolean value) {
@@ -246,6 +256,28 @@ public class GameRoot extends Root implements ClientListener {
         client.sendPlayerEnterRequest();
     }
 
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void progress(FileReceiver fileReceiver) {
+        chat.addMessage(
+                format("%d/%d sync %s", fileReceiver.bytesLoaded(), fileReceiver.bytesTotal(), fileReceiver.getPath()),
+                Color.DARK_GRAY
+        );
+    }
+
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void complete(FileReceiver fileReceiver) {
+        chat.addMessage(
+                format("%d/%d sync complete %s", fileReceiver.bytesLoaded(), fileReceiver.bytesTotal(), fileReceiver.getPath()),
+                Color.DARK_GRAY
+        );
+    }
+
     private boolean clientCommand(String text) {
         return clientCommandProcessor.process(text);
     }
@@ -256,7 +288,7 @@ public class GameRoot extends Root implements ClientListener {
 
     public void start(@NotNull String server, String localPlayerName) {
         log.debug("Staring... server: {}, player name: {}", server, localPlayerName);
-        if(client.isConnected()) {
+        if (client.isConnected()) {
             client.close();
         }
         worldScene.init();
@@ -275,6 +307,12 @@ public class GameRoot extends Root implements ClientListener {
     public void setServerName(String serverName) {
         this.serverName = serverName;
     }
+
+    public void exit() {
+        chat.dispose();
+        System.exit(0);
+    }
+
 }
 
 

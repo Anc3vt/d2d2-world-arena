@@ -18,7 +18,7 @@
 package ru.ancevt.d2d2world.editor.swing;
 
 import ru.ancevt.d2d2.display.Color;
-import ru.ancevt.d2d2world.constant.DataKey;
+import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.map.GameMap;

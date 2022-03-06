@@ -20,22 +20,20 @@ package ru.ancevt.d2d2world.desktop.ui.chat;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.d2d2.D2D2;
-import ru.ancevt.d2d2.display.Color;
-import ru.ancevt.d2d2.display.DisplayObject;
-import ru.ancevt.d2d2.display.DisplayObjectContainer;
-import ru.ancevt.d2d2.display.Root;
-import ru.ancevt.d2d2.display.ScaleMode;
+import ru.ancevt.d2d2.display.*;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.d2d2world.desktop.ui.Font;
+import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
-import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.util.repl.ReplInterpreter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -73,6 +71,8 @@ public class Chat extends DisplayObjectContainer {
         input.addEventListener(UiTextInputEvent.TEXT_ENTER, this::textInputEvent);
         input.addEventListener(UiTextInputEvent.TEXT_CHANGE, this::textInputEvent);
         input.addEventListener(UiTextInputEvent.TEXT_INPUT_KEY_DOWN, this::textInputEvent);
+
+        loadHistory();
 
         redraw();
     }
@@ -184,6 +184,11 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void addMessage(@NotNull String messageText, @NotNull Color textColor) {
+        if (messageText.contains("\n")) {
+            messageText.lines().forEach(line -> addMessage(messageText, textColor));
+            return;
+        }
+
         addMessage(new ChatMessage(0, messageText, textColor));
         redraw();
     }
@@ -289,6 +294,16 @@ public class Chat extends DisplayObjectContainer {
 
         input.setText(history.get(historyIndex));
         input.moveCaretToEnd();
+    }
+
+    public void dispose() {
+        String toSave = history.stream().reduce("", (s1, s2) -> s1.concat('\n' + s2));
+        FileDataUtils.save("data/chat-history", toSave.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private void loadHistory() {
+        history.addAll(FileDataUtils.readString("data/chat-history").lines().toList());
+        historyIndex = history.size();
     }
 
 

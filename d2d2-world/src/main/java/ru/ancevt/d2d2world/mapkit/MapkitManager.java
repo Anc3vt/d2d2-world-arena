@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.mapkit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ancevt.d2d2world.constant.DataKey;
+import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.DataEntryLoader;

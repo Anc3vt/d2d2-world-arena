@@ -32,7 +32,7 @@ import static ru.ancevt.d2d2world.net.transfer.Headers.newHeaders;
 
 @Slf4j
 public class FileSender {
-    public static final int CHUNK_SIZE = 4096;
+    public static final int CHUNK_SIZE = 65536;
     public static final int DELAY = 10;
 
     private final String path;
@@ -74,6 +74,7 @@ public class FileSender {
             FileInputStream fileInputStream = new FileInputStream(file);
 
             filesize = (int) file.length();
+
             int left = filesize;
             while (left > 0) {
                 byte[] bytes = new byte[min(left, CHUNK_SIZE)];

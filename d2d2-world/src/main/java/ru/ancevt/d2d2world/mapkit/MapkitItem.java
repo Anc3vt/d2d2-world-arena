@@ -22,7 +22,7 @@ import ru.ancevt.d2d2.display.texture.Texture;
 import ru.ancevt.d2d2.display.texture.TextureAtlas;
 import ru.ancevt.d2d2.sound.Sound;
 import ru.ancevt.d2d2world.constant.AnimationKey;
-import ru.ancevt.d2d2world.constant.DataKey;
+import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.constant.SoundKey;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.IntRectangle;
