@@ -79,7 +79,7 @@ public class FileDataUtils {
 
     public static String readString(String path) {
         try {
-            if(!exists(path)) return "";
+            if (!exists(path)) return "";
             return Files.readString(Path.of(path), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -112,6 +112,32 @@ public class FileDataUtils {
         String directory = path.substring(0, path.lastIndexOf(File.separatorChar) + 1);
         String filename = path.substring(path.lastIndexOf(File.separatorChar) + 1);
         return Pair.of(directory, filename);
+    }
+
+    public static boolean isParent(String parentPath, String filePath) {
+        File parent = new File(parentPath);
+        File file = new File(filePath);
+
+        File f;
+        try {
+            parent = parent.getCanonicalFile();
+
+            f = file.getCanonicalFile();
+        } catch (IOException e) {
+            return false;
+        }
+
+        while (f != null) {
+            // equals() only works for paths that are normalized, hence the need for
+            // getCanonicalFile() above. "a" isn't equal to "./a", for example.
+            if (parent.equals(f)) {
+                return true;
+            }
+
+            f = f.getParentFile();
+        }
+
+        return false;
     }
 }
 

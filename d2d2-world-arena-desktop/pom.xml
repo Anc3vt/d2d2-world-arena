@@ -91,6 +91,7 @@
         <dependency>
             <groupId>ru.ancevt.d2d2</groupId>
             <artifactId>d2d2-core</artifactId>
+            <version>1.0.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>ru.ancevt.d2d2</groupId>

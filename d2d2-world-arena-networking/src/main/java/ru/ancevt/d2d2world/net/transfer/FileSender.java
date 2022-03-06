@@ -19,14 +19,17 @@ package ru.ancevt.d2d2world.net.transfer;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.concurrent.Async;
+import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static java.lang.Math.min;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static ru.ancevt.d2d2world.data.GZIP.compress;
 import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.createMessageFileData;
 import static ru.ancevt.d2d2world.net.transfer.Headers.newHeaders;
 
@@ -36,14 +39,20 @@ public class FileSender {
     public static final int DELAY = 10;
 
     private final String path;
+    private final boolean compress;
     private File file;
 
     private CompleteListener completeListener;
     private IConnection connection;
     private int filesize;
 
-    public FileSender(String path) {
+    public FileSender(String path, boolean compress) {
+        if(FileDataUtils.isParent(path, "data/")) {
+            throw new IllegalStateException("secure error, " + path);
+        }
+
         this.path = path;
+        this.compress = compress;
     }
 
     public void setCompleteListener(CompleteListener completeListener) {
@@ -95,6 +104,10 @@ public class FileSender {
     }
 
     private void sendChunk(byte[] bytes, boolean first) {
+        if (compress) {
+            bytes = compress(bytes);
+        }
+
         if (first) {
             connection.send(createMessageFileData(
                     newHeaders()
@@ -122,6 +135,11 @@ public class FileSender {
     @FunctionalInterface
     public interface CompleteListener {
         void fileSendComplete();
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        System.out.println(Path.of("d2d2-core/../../../").toAbsolutePath().toRealPath().toString());
     }
 }
 

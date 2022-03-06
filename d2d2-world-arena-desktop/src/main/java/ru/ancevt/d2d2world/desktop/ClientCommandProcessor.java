@@ -48,6 +48,11 @@ public class ClientCommandProcessor {
                 GameRoot.INSTANCE.exit();
             }
 
+            case "//connection" -> {
+                chat.addMessage(client.getConnection().toString());
+                return true;
+            }
+
             case "//players" -> {
                 var pm = RemotePlayerManager.INSTANCE;
                 TextTable tt = new TextTable();
@@ -65,10 +70,7 @@ public class ClientCommandProcessor {
                 pm.getRemotePlayerList().forEach(
                         p -> tt.addRow(p.getId(), p.getName(), p.getPing()));
 
-                String[] lines = tt.render().split("\n");
-                for (String line : lines) {
-                    chat.addMessage(line);
-                }
+                chat.addMessage(tt.render());
                 return true;
             }
 

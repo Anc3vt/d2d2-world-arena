@@ -49,6 +49,7 @@ public class ServerConfig {
     public static final String RCON_PASSWORD = "rcon.password";
     public static final String WORLD_DEFAULT_MAP = "world.default-map";
     public static final String WORLD_DEFAULT_MOD = "world.default-mod";
+    public static final String CONTENT_COMPRESSION = "content.compression";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER_NAME, "D2D2 World Arena Server");
@@ -60,6 +61,7 @@ public class ServerConfig {
         put(RCON_PASSWORD, "changeme");
         put(WORLD_DEFAULT_MAP, "map0.wam");
         put(WORLD_DEFAULT_MOD, "mod0.js");
+        put(CONTENT_COMPRESSION, "true");
     }};
 
     private final Properties properties;

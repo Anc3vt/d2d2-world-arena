@@ -184,6 +184,15 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void addMessage(@NotNull String messageText, @NotNull Color textColor) {
+        if (messageText.length() > 100) {
+            StringBuilder s = new StringBuilder();
+            for (int i = 0; i < messageText.length(); i += 100) {
+                String part = messageText.substring(i, Math.min(i + 100, messageText.length()-1));
+                addMessage(part, textColor);
+            }
+            return;
+        }
+
         if (messageText.contains("\n")) {
             messageText.lines().forEach(line -> addMessage(messageText, textColor));
             return;

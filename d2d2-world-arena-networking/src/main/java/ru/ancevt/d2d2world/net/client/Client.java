@@ -389,6 +389,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void sendRconCommand(String rconCommandText) {
         sender.send(createMessageRconCommand(rconCommandText, ""));
     }
+
+    public IConnection getConnection() {
+        return connection;
+    }
 }
 
 

@@ -72,7 +72,7 @@ public class FileTransferTest {
         server.addServerListener(new ServerListenerAdapter() {
             @Override
             public void connectionEstablished(IConnection connectionWithClient) {
-                FileSender fileSender = new FileSender(file.getPath());
+                FileSender fileSender = new FileSender(file.getPath(), true);
                 fileSender.send(connectionWithClient);
             }
         });
@@ -150,7 +150,7 @@ public class FileTransferTest {
             @Override
             public void connectionEstablished(IConnection connectionWithClient) {
                 files.forEach(file -> {
-                    FileSender fileSender = new FileSender(file.getPath());
+                    FileSender fileSender = new FileSender(file.getPath(), true);
                     fileSender.send(connectionWithClient);
                     System.out.println("send fileSender " + fileSender);
                 });
@@ -211,6 +211,7 @@ public class FileTransferTest {
 
     @BeforeEach
     void beforeEachCleanup() {
+        FileReceiverManager.INSTANCE.setCompressionEnabled(true);
         deleteDirectory(new File("data/"));
         deleteDirectory(new File("one/"));
     }

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2world.data.file.FileDataUtils;
 
 import static java.lang.Integer.parseInt;
+import static ru.ancevt.d2d2world.data.GZIP.decompress;
 import static ru.ancevt.d2d2world.net.transfer.Headers.BEGIN;
 import static ru.ancevt.d2d2world.net.transfer.Headers.SIZE;
 
@@ -29,11 +30,13 @@ import static ru.ancevt.d2d2world.net.transfer.Headers.SIZE;
 public class FileReceiver {
 
     private final String path;
+    private final boolean compressed;
     private int totalContentLength;
     private int currentContentLength;
 
-    public FileReceiver(@NotNull String path) {
+    public FileReceiver(@NotNull String path, boolean compressed) {
         this.path = path;
+        this.compressed = compressed;
     }
 
     public String getPath() {
@@ -49,6 +52,10 @@ public class FileReceiver {
     }
 
     public void bytesReceived(@NotNull Headers headers, byte @NotNull [] contentBytes) {
+        if(compressed) {
+            contentBytes = decompress(contentBytes);
+        }
+
         log.trace("bytesReceived\n{}<contentLength:{}>", headers, contentBytes.length);
 
         if (headers.contains(SIZE)) {
@@ -75,6 +82,7 @@ public class FileReceiver {
                 "path='" + path + '\'' +
                 ", bytesTotal=" + totalContentLength +
                 ", bytesLoaded=" + currentContentLength +
+                ", compressed=" + compressed +
                 '}';
     }
 }

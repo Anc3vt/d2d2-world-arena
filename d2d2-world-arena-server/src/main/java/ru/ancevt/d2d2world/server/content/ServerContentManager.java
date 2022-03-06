@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 
 import static java.nio.file.Files.newBufferedReader;
 import static ru.ancevt.d2d2world.data.DataKey.*;
+import static ru.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
+import static ru.ancevt.d2d2world.server.ServerConfig.MODULE_SERVER_CONFIG;
 
 @Slf4j
 public class ServerContentManager {
@@ -42,7 +44,7 @@ public class ServerContentManager {
     }
 
     public void syncSendFileToPlayer(String path, int playerId) {
-        FileSender fileSender = new FileSender(path);
+        FileSender fileSender = new FileSender(path, MODULE_SERVER_CONFIG.getString(CONTENT_COMPRESSION).equals("true"));
         if (fileSender.isFileExists()) {
             GeneralService.MODULE_GENERAL.getConnection(playerId).ifPresent(fileSender::send);
         }
