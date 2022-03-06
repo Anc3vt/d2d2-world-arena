@@ -19,6 +19,7 @@ package ru.ancevt.d2d2world.net.transfer;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.concurrent.Async;
+import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 
@@ -42,13 +43,16 @@ public class FileSender {
 
     private final String path;
     private final boolean compress;
+    private final boolean hash;
     private File file;
 
     private CompleteListener completeListener;
     private IConnection connection;
     private int filesize;
+    private String hashValue;
 
-    public FileSender(String path, boolean compress) {
+    public FileSender(String path, boolean compress, boolean hash) {
+        this.hash = hash;
         if (parentDirectorySecurityEnabled && !isSecure(path)) {
             throw new IllegalStateException("security error");
         }
@@ -68,6 +72,10 @@ public class FileSender {
     public void send(IConnection connection) {
         this.connection = connection;
         file = new File(path);
+
+        if (hash) {
+            hashValue = MD5.hashFile(path);
+        }
 
         log.trace("send {} to connection {}", path, connection.getId());
 
@@ -117,6 +125,9 @@ public class FileSender {
 
         if (first) {
             headers.put(BEGIN, "true");
+            if(hash) {
+                headers.put(HASH, hashValue);
+            }
         }
 
         if (compress) {

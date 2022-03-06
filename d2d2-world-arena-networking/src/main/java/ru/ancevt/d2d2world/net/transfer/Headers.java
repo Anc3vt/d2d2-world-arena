@@ -28,6 +28,8 @@ public class Headers {
     public static final String BEGIN = "Begin";
     public static final String PATH = "Path"; // mapkits/<mapkit-uid>/index.mk, e.t.c.
     public static final String COMPRESSION = "Compression";
+    public static final String HASH = "Hash";
+    public static final String UP_TO_DATE = "UpToDate";
     public static final String ORIGINAL_SIZE = "OriginalSize"; // decompressed bytes
 
     private final Map<String, String> map;

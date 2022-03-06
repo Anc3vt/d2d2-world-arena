@@ -46,7 +46,9 @@ public class ServerContentManager {
     }
 
     public void syncSendFileToPlayer(String path, int playerId) {
-        FileSender fileSender = new FileSender(path, MODULE_SERVER_CONFIG.getString(CONTENT_COMPRESSION).equals("true"));
+        FileSender fileSender = new FileSender(
+                path, MODULE_SERVER_CONFIG.getString(CONTENT_COMPRESSION).equals("true"), true
+        );
         if (fileSender.isFileExists()) {
             GeneralService.MODULE_GENERAL.getConnection(playerId).ifPresent(fileSender::send);
         }

@@ -25,6 +25,8 @@ import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.commons.regex.PatternMatcher;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
+import ru.ancevt.d2d2world.net.transfer.FileSender;
+import ru.ancevt.d2d2world.net.transfer.Headers;
 import ru.ancevt.d2d2world.server.ServerConfig;
 import ru.ancevt.d2d2world.server.ServerStateInfo;
 import ru.ancevt.d2d2world.server.ServerTimer;
@@ -43,6 +45,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
+import static ru.ancevt.d2d2world.net.transfer.Headers.*;
+import static ru.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
@@ -105,7 +109,20 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void requestFile(int connectionId, @NotNull String headers) {
-        throw new NotImplementedException();
+        Headers h = Headers.of(headers);
+        String path = h.get(PATH);
+        String hash = h.get(HASH);
+        if (hash.equals(MD5.hashFile(path))) {
+            serverSender.sendToPlayer(connectionId, createMessageFileData(
+                    newHeaders()
+                            .put(UP_TO_DATE, "true")
+                            .put(PATH, path)
+                            .toString(), new byte[0]));
+        } else {
+            FileSender fileSender = new FileSender(path, serverConfig.getBoolean(CONTENT_COMPRESSION), true);
+            getConnection(connectionId).ifPresent(fileSender::send);
+        }
+
     }
 
     /**

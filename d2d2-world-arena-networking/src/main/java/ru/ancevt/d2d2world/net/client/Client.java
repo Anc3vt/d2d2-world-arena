@@ -20,10 +20,12 @@ package ru.ancevt.d2d2world.net.client;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.exception.NotImplementedException;
+import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
+import ru.ancevt.d2d2world.net.transfer.Headers;
 import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
 import ru.ancevt.net.tcpb254.connection.ConnectionListener;
@@ -32,15 +34,9 @@ import ru.ancevt.net.tcpb254.connection.IConnection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerControllerAndXYReport;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerEnterRequest;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerExitRequest;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerPingReport;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerTextToChat;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageRconCommand;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageRconLogin;
-import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageServerInfoRequest;
+import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.*;
 import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;
+import static ru.ancevt.d2d2world.net.transfer.Headers.*;
 
 @Slf4j
 public class Client implements ConnectionListener, ClientProtocolImplListener {
@@ -271,6 +267,14 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void sendServerInfoRequest() {
         pingRequestTime = System.currentTimeMillis();
         sender.send(createMessageServerInfoRequest());
+    }
+
+    public void sendFileRequest(@NotNull String path) {
+        sendFileRequest(newHeaders().put(PATH, path).put(HASH, MD5.hashFile(path)));
+    }
+
+    public void sendFileRequest(@NotNull Headers headers) {
+        sender.send(createMessageFileRequest(headers.toString()));
     }
 
     ///

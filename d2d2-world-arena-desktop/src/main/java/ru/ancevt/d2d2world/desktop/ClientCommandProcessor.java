@@ -48,6 +48,12 @@ public class ClientCommandProcessor {
                 GameRoot.INSTANCE.exit();
             }
 
+            case "//getfile" -> {
+                String path = tokens.get(String.class, 1);
+                client.sendFileRequest(path);
+                return true;
+            }
+
             case "//connection" -> {
                 chat.addMessage(client.getConnection().toString());
                 return true;

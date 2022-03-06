@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -99,6 +100,10 @@ public class ServerConfig {
         } catch (NumberFormatException ex) {
             return 0;
         }
+    }
+
+    public boolean getBoolean(@NotNull String key) {
+        return parseBoolean(getString(key));
     }
 
     private void createDefault() {

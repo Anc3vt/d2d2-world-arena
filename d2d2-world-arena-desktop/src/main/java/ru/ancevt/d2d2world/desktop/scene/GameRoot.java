@@ -233,6 +233,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                            int playerColor,
                            @NotNull String chatMessageText,
                            int textColor) {
+
         chat.addPlayerMessage(chatMessageId, playerId, playerName, playerColor, chatMessageText, Color.of(textColor));
     }
 

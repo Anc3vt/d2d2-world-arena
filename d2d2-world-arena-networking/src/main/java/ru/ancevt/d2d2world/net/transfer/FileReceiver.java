@@ -59,6 +59,11 @@ public class FileReceiver {
             totalContentLength = parseInt(headers.get(ORIGINAL_SIZE));
         }
 
+        if (headers.contains(UP_TO_DATE)) {
+            FileReceiverManager.INSTANCE.wholeFileWritten(this);
+            return;
+        }
+
         String pathToAppend = path.startsWith("data/") ? path : "data/" + path;
 
         if (headers.contains(BEGIN)) {
