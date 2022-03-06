@@ -164,6 +164,10 @@ public class MessageType {
     //                                           CLIENT <==> SERVER
 
     /**
+     * b)t i)gameObjectId f)x f)y b)action
+     */
+    public static final int SERVER_SYNC = 120;
+    /**
      * File or part of file
      * b)t s)S)headers i)contentLength L)data
      */

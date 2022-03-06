@@ -127,24 +127,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         INSTANCE = this;
     }
 
-    private void setTabWindowVisible(boolean value) {
-        tabWindow.removeFromParent();
-
-        if (value) {
-            tabWindow.setServerName(serverName, 0, 0);
-            tabWindow.setPlayers(
-                    client.getLocalPlayerId(),
-                    client.getLocalPlayerName(),
-                    client.getLocalPlayerFrags(),
-                    client.getLocalPlayerPing(),
-                    Color.of(client.getLocalPlayerColor()),
-                    RemotePlayerManager.INSTANCE.getRemotePlayerList()
-            );
-
-            add(tabWindow);
-        }
-    }
-
     /**
      * {@link ClientListener} method
      */
@@ -278,6 +260,24 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 format("sync complete %s", fileReceiver.getPath()),
                 Color.DARK_GRAY
         );
+    }
+
+    private void setTabWindowVisible(boolean value) {
+        tabWindow.removeFromParent();
+
+        if (value) {
+            tabWindow.setServerName(serverName, 0, 0);
+            tabWindow.setPlayers(
+                    client.getLocalPlayerId(),
+                    client.getLocalPlayerName(),
+                    client.getLocalPlayerFrags(),
+                    client.getLocalPlayerPing(),
+                    Color.of(client.getLocalPlayerColor()),
+                    RemotePlayerManager.INSTANCE.getRemotePlayerList()
+            );
+
+            add(tabWindow);
+        }
     }
 
     private boolean clientCommand(String text) {
