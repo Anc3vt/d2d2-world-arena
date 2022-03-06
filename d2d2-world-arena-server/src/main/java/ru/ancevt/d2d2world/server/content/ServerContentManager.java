@@ -69,7 +69,7 @@ public class ServerContentManager {
                 .findAny()
                 .ifPresent(
                         map -> {
-                            syncSendFileToPlayer("data/maps/" + map.fileName(), playerId);
+                            syncSendFileToPlayer("data/maps/" + map.filename(), playerId);
                             map.mapkits().forEach(mapkit -> {
                                 syncSendMapkit(mapkit.name(), playerId);
                             });
@@ -90,7 +90,6 @@ public class ServerContentManager {
             throw new IllegalStateException(e);
         }
     }
-
 
     public Set<Map> getMaps() {
         try {
@@ -175,7 +174,13 @@ public class ServerContentManager {
                 throw new IllegalStateException("mapkit uid or name can not be a null (" + uid + "," + name + ")");
             }
 
-            return new Mapkit(uid, name, totalFilesize);
+            Set<String> files = new HashSet<>();
+
+            Files.walk(Path.of("data/mapkits/" + uid + "/"))
+                    .filter(Files::isRegularFile)
+                    .forEach(p->files.add(p.getFileName().toString()));
+
+            return new Mapkit(uid, name, totalFilesize, files);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -190,18 +195,19 @@ public class ServerContentManager {
         return result.getValue();
     }
 
-    public record Mapkit(@NotNull String uid, @NotNull String name, long totalSize) {
+    public record Mapkit(@NotNull String uid, @NotNull String name, long totalSize, @NotNull Set<String> files) {
         @Override
         public String toString() {
             return "Mapkit{" +
                     "uid='" + uid + '\'' +
                     ", name='" + name + '\'' +
                     ", totalSize=" + totalSize +
+                    ", files=" + files +
                     '}';
         }
     }
 
-    public record Map(@NotNull String name, @NotNull String fileName, long size, @NotNull Set<Mapkit> mapkits) {
+    public record Map(@NotNull String name, @NotNull String filename, long size, @NotNull Set<Mapkit> mapkits) {
         @Override
         public String toString() {
             StringBuilder s = new StringBuilder();
@@ -209,7 +215,7 @@ public class ServerContentManager {
 
             return "Map{" +
                     "name='" + name + '\'' +
-                    ", fileName='" + fileName + '\'' +
+                    ", filename='" + filename + '\'' +
                     ", size=" + size +
                     ", mapkits=" + s +
                     '}';

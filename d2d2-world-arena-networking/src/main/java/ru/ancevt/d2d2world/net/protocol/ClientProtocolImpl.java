@@ -23,6 +23,7 @@ import ru.ancevt.commons.io.ByteInputReader;
 import ru.ancevt.commons.io.ByteOutputWriter;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.d2d2world.net.client.ServerInfo;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.message.MessageType;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
@@ -31,6 +32,8 @@ import ru.ancevt.d2d2world.net.transfer.Headers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static ru.ancevt.d2d2world.net.JsonEngine.gson;
 
 @Slf4j
 public final class ClientProtocolImpl extends ProtocolImpl {
@@ -167,9 +170,13 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 }
 
                 case MessageType.EXTRA -> {
-                    log("received EXTRA");
+                    String className = in.readUtf(short.class);
                     String extraDataFromServer = in.readUtf(int.class);
-                    clientProtocolImplListeners.forEach(l -> l.extraFromServer(extraDataFromServer));
+                    log("received EXTRA " + className + "\n" + extraDataFromServer);
+
+                    ExtraDto extraDto = (ExtraDto) gson().fromJson(extraDataFromServer, Class.forName(className));
+
+                    clientProtocolImplListeners.forEach(l -> l.extraFromServer(extraDto));
                 }
 
                 case MessageType.ERROR -> {

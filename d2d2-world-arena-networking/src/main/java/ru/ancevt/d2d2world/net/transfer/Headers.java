@@ -85,7 +85,7 @@ public class Headers {
 
     public String get(String key) {
         if (!contains(key)) {
-            throw new IllegalStateException("no suck key '" + key + "'");
+            throw new IllegalStateException("no such key '" + key + "'");
         }
         return map.get(key);
     }

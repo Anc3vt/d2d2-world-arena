@@ -77,6 +77,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         MODULE_SERVER_STATE_INFO.setName(MODULE_SERVER_CONFIG.getString(SERVER_NAME));
         MODULE_SERVER_STATE_INFO.setVersion(getServerVersion());
         MODULE_SERVER_STATE_INFO.setMaxPlayers(MODULE_SERVER_CONFIG.getInt(SERVER_MAX_PLAYERS));
+        MODULE_SERVER_STATE_INFO.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
 
         MODULE_SERVER_UNIT.server.addServerListener(this);
 
@@ -106,12 +107,18 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         return properties.getProperty("project.version");
     }
 
+    /**
+     * {@link ServerListener method}
+     */
     @Override
     public void serverStarted() {
         log.info("Version: " + getServerVersion());
         log.info("Server started at {}:{}", MODULE_SERVER_CONFIG.getString(SERVER_HOST), MODULE_SERVER_CONFIG.getInt(SERVER_PORT));
     }
 
+    /**
+     * {@link ServerListener method}
+     */
     @Override
     public void connectionAccepted(@NotNull IConnection connection) {
         log.info("Connection accepted {}", connection.toString());
@@ -155,27 +162,42 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         });
     }
 
+    /**
+     * {@link ServerListener method}
+     */
     @Override
     public void connectionClosed(@NotNull IConnection connection, @NotNull CloseStatus status) {
         log.info("Connection closed {}, status: {}", connection.toString(), status.toString());
         MODULE_GENERAL.connectionClosed(connection.getId(), status);
     }
 
+    /**
+     * {@link ServerListener method}
+     */
     @Override
     public void connectionBytesReceived(@NotNull IConnection connection, byte[] bytes) {
         MODULE_SERVER_PROTOCOL.bytesReceived(connection.getId(), bytes);
     }
 
+    /**
+     * {@link ServerListener method}
+     */
     @Override
     public void serverClosed(CloseStatus status) {
         log.info("Server closed " + status);
     }
 
+    /**
+     * {@link ServerListener method}
+     */
     @Override
     public void connectionEstablished(IConnection connectionWithClient) {
 
     }
 
+    /**
+     * {@link Thread.UncaughtExceptionHandler method}
+     */
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         log.error("Uncaught exception", e);

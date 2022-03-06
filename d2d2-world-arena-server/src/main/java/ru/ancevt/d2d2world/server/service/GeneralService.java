@@ -23,6 +23,7 @@ import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.commons.regex.PatternMatcher;
+import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.net.transfer.FileSender;
@@ -34,6 +35,7 @@ import ru.ancevt.d2d2world.server.ServerTimerListener;
 import ru.ancevt.d2d2world.server.chat.ServerChat;
 import ru.ancevt.d2d2world.server.chat.ServerChatListener;
 import ru.ancevt.d2d2world.server.chat.ServerChatMessage;
+import ru.ancevt.d2d2world.server.content.ServerContentManager;
 import ru.ancevt.d2d2world.server.player.Player;
 import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
 import ru.ancevt.d2d2world.server.repl.ServerCommandProcessor;
@@ -41,12 +43,16 @@ import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 import ru.ancevt.net.tcpb254.server.IServer;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
 import static ru.ancevt.d2d2world.net.transfer.Headers.*;
 import static ru.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
+import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
+import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
@@ -62,7 +68,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
     private final ServerSender serverSender = ServerSender.MODULE_SENDER;
     private final ServerPlayerManager serverPlayerManager = ServerPlayerManager.MODULE_PLAYER_MANAGER;
-    private final ServerStateInfo serverStateInfo = ServerStateInfo.MODULE_SERVER_STATE_INFO;
+    private final ServerStateInfo serverStateInfo = MODULE_SERVER_STATE_INFO;
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 
     private GeneralService() {
@@ -111,8 +117,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     public void requestFile(int connectionId, @NotNull String headers) {
         Headers h = Headers.of(headers);
         String path = h.get(PATH);
-        String hash = h.get(HASH);
-        if (hash.equals(MD5.hashFile(path))) {
+
+
+        if (h.contains(HASH) && h.get(HASH).equals(MD5.hashFile(path))) {
             serverSender.sendToPlayer(connectionId, createMessageFileData(
                     newHeaders()
                             .put(UP_TO_DATE, "true")
@@ -250,6 +257,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 connectionId
         );
 
+        // send to new player current map and mapkit info
+        sendCurrentMapInfoToPlayer(connectionId);
+
         // send chat history to new player
         serverChat.getMessages(10).forEach(serverChatMessage -> {
             if (serverChatMessage.isFromPlayer()) {
@@ -345,7 +355,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void extraFromPlayer(int playerId, @NotNull String extraData) {
+    public void extraFromPlayer(int playerId, @NotNull String className, String extraDataFromPlayer) {
         throw new NotImplementedException();
     }
 
@@ -391,6 +401,38 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     serverChatMessage.getText()
             );
         }
+    }
+
+    private void sendCurrentMapInfoToPlayer(int playerId) {
+        String mapName = MODULE_SERVER_STATE_INFO.getMap();
+
+        ServerContentManager.Map map = MODULE_CONTENT_MANAGER.getMaps()
+                .stream()
+                .filter(m -> m.name().equals(mapName))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("no such map on disk: " + mapName));
+
+        var builder =
+                ServerMapInfoDto.builder()
+                        .name(map.name())
+                        .filename(map.filename());
+
+        Set<ServerMapInfoDto.Mapkit> mapkits = new HashSet<>();
+
+        map.mapkits().forEach(
+                mk -> {
+                    mapkits.add(ServerMapInfoDto.Mapkit.builder()
+                                    .uid(mk.uid())
+                                    .name(mk.name())
+                                    .files(Set.copyOf(mk.files()))
+                                    .build());
+                }
+
+        );
+
+        builder.mapkits(mapkits);
+
+        serverSender.sendToPlayer(playerId, createMessageExtra(builder.build()));
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {

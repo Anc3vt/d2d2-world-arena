@@ -19,7 +19,10 @@ package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.io.ByteOutputWriter;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
 import ru.ancevt.d2d2world.net.message.MessageType;
+
+import static ru.ancevt.d2d2world.net.JsonEngine.gson;
 
 public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProtocolImpl  {
 
@@ -34,10 +37,11 @@ public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProt
                 .toArray();
     }
 
-    public static byte[] createMessageExtra(@NotNull String extraData) {
+    public static byte[] createMessageExtra(@NotNull ExtraDto object) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.EXTRA)
-                .writeUtf(int.class, extraData)
+                .writeUtf(short.class, object.getClass().getName())
+                .writeUtf(int.class, gson().toJson(object))
                 .toArray();
     }
 

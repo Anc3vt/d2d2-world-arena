@@ -19,6 +19,7 @@ package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2world.net.client.ServerInfo;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
 
 public class ClientProtocolListenerAdapter implements ClientProtocolImplListener {
     @Override
@@ -52,7 +53,7 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
     }
 
     @Override
-    public void extraFromServer(@NotNull String extraDataFromServer) {
+    public void extraFromServer(@NotNull ExtraDto extraDto) {
 
     }
 

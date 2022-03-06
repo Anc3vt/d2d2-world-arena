@@ -21,10 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
+import ru.ancevt.d2d2world.data.file.FileDataUtils;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
+import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
+import ru.ancevt.d2d2world.net.transfer.FileReceiver;
+import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import ru.ancevt.d2d2world.net.transfer.Headers;
 import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
@@ -32,6 +37,8 @@ import ru.ancevt.net.tcpb254.connection.ConnectionListener;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static ru.ancevt.d2d2world.net.client.RemotePlayerManager.PLAYER_MANAGER;
@@ -170,10 +177,39 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     /**
      * {@link ClientProtocolImplListener} method
      */
-
     @Override
-    public void extraFromServer(@NotNull String extraDataFromServer) {
-        throw new NotImplementedException();
+    public void extraFromServer(@NotNull ExtraDto extraDto) {
+        log.info("extraFromServer: {}", extraDto);
+
+
+        // TODO: extract to separate handler, maybe it should be a class
+        if (extraDto instanceof ServerMapInfoDto dto) {
+
+            Queue<String> queue = new ConcurrentLinkedDeque<>();
+
+            queue.add(sendFileRequest("data/maps/" + dto.getFilename()));
+            dto.getMapkits().forEach(
+                    mk -> mk.getFiles()
+                            .forEach(
+                                    filename -> queue.add(sendFileRequest("data/mapkits/" + mk.getUid() + "/" + filename))
+                            )
+            );
+            FileReceiverManager.INSTANCE.addFileReceiverManagerListener(new FileReceiverManager.FileReceiverManagerListener() {
+                @Override
+                public void progress(FileReceiver fileReceiver) {
+
+                }
+
+                @Override
+                public void complete(FileReceiver fileReceiver) {
+                    queue.remove(fileReceiver.getPath());
+                    if (queue.isEmpty()) {
+                        clientListeners.forEach(l -> l.mapContentLoaded(dto.getFilename()));
+                        FileReceiverManager.INSTANCE.removeFileReceiverManagerListener(this);
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -268,12 +304,19 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         sender.send(createMessageServerInfoRequest());
     }
 
-    public void sendFileRequest(@NotNull String path) {
-        sendFileRequest(newHeaders().put(PATH, path).put(HASH, MD5.hashFile(path)));
+    public String sendFileRequest(@NotNull String path) {
+        var h = newHeaders();
+
+        if (FileDataUtils.exists(path)) {
+            h.put(HASH, MD5.hashFile(path));
+        }
+
+        return sendFileRequest(h.put(PATH, path));
     }
 
-    public void sendFileRequest(@NotNull Headers headers) {
+    public String sendFileRequest(@NotNull Headers headers) {
         sender.send(createMessageFileRequest(headers.toString()));
+        return headers.get(PATH);
     }
 
     ///

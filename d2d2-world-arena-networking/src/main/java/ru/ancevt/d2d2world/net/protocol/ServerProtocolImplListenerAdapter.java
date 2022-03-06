@@ -46,7 +46,7 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     }
 
     @Override
-    public void extraFromPlayer(int playerId, @NotNull String extraData) {
+    public void extraFromPlayer(int playerId, @NotNull String className, String extraDataFromPlayer) {
 
     }
 

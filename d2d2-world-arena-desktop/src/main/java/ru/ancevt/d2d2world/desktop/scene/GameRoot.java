@@ -167,7 +167,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void rconResponse(String rconResponseData) {
+    public void rconResponse(@NotNull String rconResponseData) {
         rconResponseData.lines().forEach(MODULE_CHAT::addMessage);
     }
 
@@ -236,6 +236,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         MODULE_CLIENT.sendPlayerEnterRequest();
     }
 
+    @Override
+    public void mapContentLoaded(String mapFilename) {
+        worldScene.loadMap(mapFilename);
+    }
+
     /**
      * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
@@ -254,7 +259,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     @Override
     public void complete(@NotNull FileReceiver fileReceiver) {
         MODULE_CHAT.addMessage(
-                format("sync complete %s", fileReceiver.getPath()),
+                format("sync up-to-date %s", fileReceiver.getPath()),
                 Color.DARK_GRAY
         );
     }

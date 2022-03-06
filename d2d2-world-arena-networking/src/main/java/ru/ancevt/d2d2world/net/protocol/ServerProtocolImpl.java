@@ -125,9 +125,10 @@ public final class ServerProtocolImpl extends ProtocolImpl {
             }
 
             case MessageType.EXTRA -> {
-                log("received EXTRA");
+                String className = in.readUtf(short.class);
                 String extraDataFromPlayer = in.readUtf(int.class);
-                serverProtocolImplListeners.forEach(l -> l.extraFromPlayer(connectionId, extraDataFromPlayer));
+                log("received EXTRA " + className + "\n" + extraDataFromPlayer);
+                serverProtocolImplListeners.forEach(l -> l.extraFromPlayer(connectionId, className, extraDataFromPlayer));
             }
 
             case MessageType.ERROR -> {

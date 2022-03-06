@@ -31,7 +31,7 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
 
     void playerPingReport(int playerId, int ping);
 
-    void extraFromPlayer(int playerId, @NotNull String extraData);
+    void extraFromPlayer(int playerId, @NotNull String className, @NotNull String extraDataFromPlayer);
 
     void rconLogin(int playerId, @NotNull String passwordHash);
 

@@ -19,6 +19,7 @@ package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2world.net.client.ServerInfo;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
 
 public non-sealed interface ClientProtocolImplListener extends ProtocolImplListener {
 
@@ -40,14 +41,14 @@ public non-sealed interface ClientProtocolImplListener extends ProtocolImplListe
 
     void remotePlayerExit(int remotePlayerId, int remotePlayerExitCause);
 
-    void extraFromServer(@NotNull String extraDataFromServer);
+    void extraFromServer(@NotNull ExtraDto extraDto);
 
     void errorFromServer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails);
 
     void playerPingResponse();
 
     void remotePlayerPing(int remotePlayerId, int remotePlayerPing);
-    
+
     void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor);
 
     void playerChat(int chatMessageId,

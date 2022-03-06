@@ -78,19 +78,22 @@ public class WorldScene extends DisplayObjectContainer {
 
     public void init() {
         world.clear();
+    }
+
+    public void loadMap(String mapFilename) {
+        world.clear();
+
 
         Async.run(() -> {
             try {
                 long timeBefore = System.currentTimeMillis();
-                world.setMap(MapIO.load("map0.wam"));
+                world.setMap(MapIO.load(mapFilename));
                 mapLoaded();
-                log.info("Map loaded {}ms", (System.currentTimeMillis() - timeBefore));
+                log.info("Map '" + mapFilename + "' loaded {}ms", (System.currentTimeMillis() - timeBefore));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             }
         });
-
-        System.out.println("WC: reinit");
     }
 
     private void mapLoaded() {

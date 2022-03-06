@@ -50,4 +50,6 @@ public interface ClientListener {
     void fileData(@NotNull String headers, byte[] fileData);
 
     void rconResponse(String rconResponseData);
+
+    void mapContentLoaded(String mapFilename);
 }
