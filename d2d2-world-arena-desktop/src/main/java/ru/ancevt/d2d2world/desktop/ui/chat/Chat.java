@@ -40,6 +40,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Chat extends DisplayObjectContainer {
 
+    public static final Chat MODULE_CHAT = new Chat();
+
     private static final int MAX_MESSAGES = 100;
 
     private static final float DEFAULT_WIDTH = 900.0f / 2.0f;
@@ -57,7 +59,7 @@ public class Chat extends DisplayObjectContainer {
     private boolean shadowEnabled;
     private int historyIndex;
 
-    public Chat() {
+    private Chat() {
         input = new UiTextInput();
         messages = new CopyOnWriteArrayList<>();
         displayedMessages = new CopyOnWriteArrayList<>();
@@ -82,7 +84,7 @@ public class Chat extends DisplayObjectContainer {
         messages.forEach(m -> m.setShadowEnabled(b));
     }
 
-    public boolean getShadowEnabled() {
+    public boolean isShadowEnabled() {
         return shadowEnabled;
     }
 
@@ -224,7 +226,7 @@ public class Chat extends DisplayObjectContainer {
     }
 
     private void addMessage(@NotNull ChatMessage chatMessage) {
-        chatMessage.setShadowEnabled(getShadowEnabled());
+        chatMessage.setShadowEnabled(isShadowEnabled());
         messages.add(chatMessage);
 
         if (messages.size() > MAX_MESSAGES) {
@@ -387,7 +389,7 @@ public class Chat extends DisplayObjectContainer {
                 }
 
                 case KeyCode.F8 -> {
-                    chat.setShadowEnabled(!chat.getShadowEnabled());
+                    chat.setShadowEnabled(!chat.isShadowEnabled());
                 }
 
                 case KeyCode.F6, KeyCode.T -> {

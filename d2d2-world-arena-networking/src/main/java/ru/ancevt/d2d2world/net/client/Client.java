@@ -34,6 +34,7 @@ import ru.ancevt.net.tcpb254.connection.IConnection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static ru.ancevt.d2d2world.net.client.RemotePlayerManager.PLAYER_MANAGER;
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.*;
 import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;
 import static ru.ancevt.d2d2world.net.transfer.Headers.*;
@@ -41,9 +42,9 @@ import static ru.ancevt.d2d2world.net.transfer.Headers.*;
 @Slf4j
 public class Client implements ConnectionListener, ClientProtocolImplListener {
 
+    public static final Client MODULE_CLIENT = new Client();
+
     private IConnection connection;
-    private final ClientProtocolImpl protocolImpl;
-    private final RemotePlayerManager remotePlayerManager;
     private final List<ClientListener> clientListeners;
     private ClientSender sender;
     private String serverProtocolVersion;
@@ -55,12 +56,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     private int localPlayerColor;
     private ServerInfo serverInfo;
 
-    public Client() {
-        remotePlayerManager = RemotePlayerManager.INSTANCE;
+    private Client() {
         clientListeners = new CopyOnWriteArrayList<>();
 
-        protocolImpl = new ClientProtocolImpl();
-        protocolImpl.addClientProtocolImplListener(this);
+        MODULE_CLIENT_PROTOCOL.addClientProtocolImplListener(this);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void connectionBytesReceived(byte[] bytes) {
-        protocolImpl.bytesReceived(bytes);
+        MODULE_CLIENT_PROTOCOL.bytesReceived(bytes);
     }
 
     /**
@@ -124,7 +123,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                                       int remotePlayerColor,
                                       @NotNull String remotePlayerExtraData) {
 
-        remotePlayerManager.getRemotePlayer(remotePlayerId).ifPresentOrElse(
+        PLAYER_MANAGER.getRemotePlayer(remotePlayerId).ifPresentOrElse(
                 // if present
                 remotePlayer -> {
                     remotePlayer.update(remotePlayerName, remotePlayerColor);
@@ -133,7 +132,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
                 // or else
                 () -> {
-                    RemotePlayer remotePlayer = remotePlayerManager.createRemotePlayer(
+                    RemotePlayer remotePlayer = PLAYER_MANAGER.createRemotePlayer(
                             remotePlayerId,
                             remotePlayerName,
                             remotePlayerColor
@@ -152,7 +151,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                                             float remotePlayerX,
                                             float remotePlayerY) {
 
-        remotePlayerManager.getRemotePlayer(remotePlayerId).ifPresent(remotePlayer -> {
+        PLAYER_MANAGER.getRemotePlayer(remotePlayerId).ifPresent(remotePlayer -> {
             remotePlayer.setControllerState(remotePlayerControllerState);
             remotePlayer.setXY(remotePlayerX, remotePlayerY);
         });
@@ -163,7 +162,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void remotePlayerExit(int remotePlayerId, int remotePlayerExitCause) {
-        remotePlayerManager.removeRemotePlayer(remotePlayerId).ifPresent(
+        PLAYER_MANAGER.removeRemotePlayer(remotePlayerId).ifPresent(
                 remotePlayer -> clientListeners.forEach(l -> l.remotePlayerExit(remotePlayer))
         );
     }
@@ -200,7 +199,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void remotePlayerPing(int remotePlayerId, int remotePlayerPing) {
-        remotePlayerManager.getRemotePlayer(remotePlayerId).ifPresent(
+        PLAYER_MANAGER.getRemotePlayer(remotePlayerId).ifPresent(
                 remotePlayer -> remotePlayer.setPing(remotePlayerPing)
         );
     }
@@ -233,7 +232,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void serverInfoResponse(@NotNull ServerInfo result) {
-        localPlayerPing = (int)(System.currentTimeMillis() - pingRequestTime);
+        localPlayerPing = (int) (System.currentTimeMillis() - pingRequestTime);
         clientListeners.forEach(l -> l.serverInfo(result));
         sender.send(ClientProtocolImpl.createMessagePlayerPingReport(localPlayerPing));
     }
@@ -306,10 +305,6 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     public void removeClientListener(ClientListener l) {
         clientListeners.remove(l);
-    }
-
-    public RemotePlayerManager getRemotePlayerManager() {
-        return remotePlayerManager;
     }
 
     public String getLocalPlayerName() {

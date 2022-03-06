@@ -158,7 +158,6 @@ public class TabWindow extends DisplayObjectContainer {
 
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
-        root.setBackgroundColor(Color.DARK_BLUE);
 
         TabWindow tabWindow = new TabWindow();
 

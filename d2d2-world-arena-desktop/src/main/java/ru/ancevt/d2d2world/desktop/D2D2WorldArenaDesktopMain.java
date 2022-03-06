@@ -24,28 +24,25 @@ import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
-import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
-import ru.ancevt.d2d2world.net.client.Client;
 
 import java.io.IOException;
 import java.util.Properties;
 
-import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+import static ru.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 
 @Slf4j
 public class D2D2WorldArenaDesktopMain {
 
     public static void main(String[] args) throws IOException {
         // Load desktopConfig properties
-        DesktopConfig desktopConfig = new DesktopConfig();
-        desktopConfig.load();
+        MODULE_CONFIG.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
-                desktopConfig.setProperty(key, value);
+                MODULE_CONFIG.setProperty(key, value);
             }
         }
 
@@ -58,23 +55,16 @@ public class D2D2WorldArenaDesktopMain {
         log.info(projectName);
         log.info(version);
 
-        String autoEnterPlayerName = desktopConfig.getString(DesktopConfig.PLAYER);
+        String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYER);
 
         D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
         D2D2World.init();
-
-        // Module initialization section: THE ORDER IS IMPORTANT!
-        modules.add(desktopConfig);
-        modules.add(new Client());
-        modules.add(new Chat());
-        modules.add(new ClientCommandProcessor());
-        //
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version);
 
         if (!autoEnterPlayerName.isEmpty()) {
             introRoot.addEventListener(Event.ADD_TO_STAGE,
-                    e -> introRoot.enter(desktopConfig.getString(DesktopConfig.SERVER), autoEnterPlayerName));
+                    e -> introRoot.enter(MODULE_CONFIG.getString(DesktopConfig.SERVER), autoEnterPlayerName));
         }
 
         D2D2.getStage().setRoot(introRoot);

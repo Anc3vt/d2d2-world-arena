@@ -19,22 +19,18 @@ package ru.ancevt.d2d2world.desktop;
 
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
-import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
-import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
 import ru.ancevt.util.args.Args;
 import ru.ancevt.util.texttable.TextTable;
 
-import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+import static ru.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
+import static ru.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
 
 public class ClientCommandProcessor {
 
-    private final Chat chat;
-    private final Client client;
+    public static final ClientCommandProcessor MODULE_COMMAND_PROCESSOR = new ClientCommandProcessor();
 
-    public ClientCommandProcessor() {
-        client = modules.get(Client.class);
-        chat = modules.get(Chat.class);
+    private ClientCommandProcessor() {
     }
 
     public boolean process(String text) {
@@ -44,39 +40,39 @@ public class ClientCommandProcessor {
 
         switch (command) {
             case "/exit", "/q", "/quit" -> {
-                client.sendExitRequest();
+                MODULE_CLIENT.sendExitRequest();
                 GameRoot.INSTANCE.exit();
             }
 
             case "//getfile" -> {
                 String path = tokens.get(String.class, 1);
-                client.sendFileRequest(path);
+                MODULE_CLIENT.sendFileRequest(path);
                 return true;
             }
 
             case "//connection" -> {
-                chat.addMessage(client.getConnection().toString());
+                MODULE_CHAT.addMessage(MODULE_CLIENT.getConnection().toString());
                 return true;
             }
 
             case "//players" -> {
-                var pm = RemotePlayerManager.INSTANCE;
+                var pm = RemotePlayerManager.PLAYER_MANAGER;
                 TextTable tt = new TextTable();
                 tt.setDecorEnabled(false);
 
                 tt.setColumnNames(new String[]{"id", "name", "ping"});
 
                 tt.addRow(
-                        client.getLocalPlayerId(),
-                        client.getLocalPlayerName(),
-                        client.getLocalPlayerPing(),
-                        Integer.toString(client.getLocalPlayerColor(), 16)
+                        MODULE_CLIENT.getLocalPlayerId(),
+                        MODULE_CLIENT.getLocalPlayerName(),
+                        MODULE_CLIENT.getLocalPlayerPing(),
+                        Integer.toString(MODULE_CLIENT.getLocalPlayerColor(), 16)
                 );
 
                 pm.getRemotePlayerList().forEach(
                         p -> tt.addRow(p.getId(), p.getName(), p.getPing()));
 
-                chat.addMessage(tt.render());
+                MODULE_CHAT.addMessage(tt.render());
                 return true;
             }
 
@@ -84,10 +80,10 @@ public class ClientCommandProcessor {
                 // if the second (at index 1) token from command text is 'login'
                 if ("login".equals(tokens.get(String.class, 1, ""))) {
                     String passwordHash = MD5.hash(tokens.get(String.class, 2, ""));
-                    client.sendRconLoginRequest(passwordHash);
+                    MODULE_CLIENT.sendRconLoginRequest(passwordHash);
                 } else {
                     // send rcon command String beginning from 6 index
-                    client.sendRconCommand(text.substring(6));
+                    MODULE_CLIENT.sendRconCommand(text.substring(6));
                 }
                 return true;
             }

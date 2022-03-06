@@ -34,11 +34,9 @@ import ru.ancevt.d2d2.touch.TouchButton;
 
 public class UiTextInput extends DisplayObjectContainer implements EventListener {
 
-
     public static void main(String[] args) {
         D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
         Root root = D2D2.getStage().getRoot();
-        root.setBackgroundColor(new Color(0, 0, 40));
 
         UiTextInput uiTextInput = new UiTextInput();
         root.add(uiTextInput, 100, 100);
@@ -50,7 +48,6 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
     }
-
 
     public static final int DOWN_DELAY = 30;
 

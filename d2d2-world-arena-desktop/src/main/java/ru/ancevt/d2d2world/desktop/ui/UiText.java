@@ -136,7 +136,9 @@ public class UiText extends DisplayObjectContainer {
     }
 
     public void redraw() {
-        if (shadow != null) shadow.removeFromParent();
+        if (shadow != null) {
+            shadow.removeFromParent();
+        }
 
         if (shadowEnabled) {
             bitmapTextShadow = new BitmapText(Font.getBitmapFont());
@@ -149,7 +151,7 @@ public class UiText extends DisplayObjectContainer {
             }
 
             shadow = bitmapTextShadow;//.toSprite();
-            add(shadow, 0, 0);
+            add(shadow, 0, -1);
         }
 
         if (fore != null) fore.removeFromParent();
@@ -164,7 +166,6 @@ public class UiText extends DisplayObjectContainer {
         }
 
         fore = bitmapText;//.toSprite();
-        shadow = bitmapTextShadow;//.toSprite();
 
         add(fore, 1, 0);
     }

@@ -23,7 +23,6 @@ import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.Stage;
 import ru.ancevt.d2d2.event.Event;
-import ru.ancevt.d2d2world.desktop.ThanksToHtmlParser;
 import ru.ancevt.d2d2world.desktop.net.HttpUtfLoader;
 import ru.ancevt.d2d2world.ui.Preloader;
 

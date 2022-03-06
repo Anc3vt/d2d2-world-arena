@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class RemotePlayerManager {
-    public static final RemotePlayerManager INSTANCE = new RemotePlayerManager();
+    public static final RemotePlayerManager PLAYER_MANAGER = new RemotePlayerManager();
 
     private final Map<Integer, RemotePlayer> remotePlayerMap;
 

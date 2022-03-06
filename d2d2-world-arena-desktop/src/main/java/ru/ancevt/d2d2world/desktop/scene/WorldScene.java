@@ -24,15 +24,12 @@ import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2world.control.Controller;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
-import ru.ancevt.d2d2world.desktop.DesktopConfig;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
-import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.gameobject.character.Ava;
 import ru.ancevt.d2d2world.gameobject.character.Blake;
 import ru.ancevt.d2d2world.map.MapIO;
-import ru.ancevt.d2d2world.net.client.Client;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.d2d2world.world.World;
 
@@ -41,16 +38,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static ru.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_WORLD_ALPHA;
-import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+import static ru.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static ru.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
+import static ru.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
 
 @Slf4j
 public class WorldScene extends DisplayObjectContainer {
 
     private final World world = new World();
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
-    private final Client client = modules.get(Client.class);
-    private final Chat chat = modules.get(Chat.class);
-    private final DesktopConfig config = modules.get(DesktopConfig.class);
     private final PlayerActor localPlayerActor;
     private final BitmapText debug;
     private boolean eventsAdded;
@@ -77,7 +73,7 @@ public class WorldScene extends DisplayObjectContainer {
         debug = new BitmapText();
         debug.setText("debug");
 
-        world.setAlpha(config.getFloat(DEBUG_WORLD_ALPHA));
+        world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
     }
 
     public void init() {
@@ -131,8 +127,8 @@ public class WorldScene extends DisplayObjectContainer {
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
             });
 
-            chat.addEventListener(ChatEvent.CHAT_INPUT_OPEN, e -> localPlayerController.setEnabled(false));
-            chat.addEventListener(ChatEvent.CHAT_INPUT_CLOSE, e -> localPlayerController.setEnabled(true));
+            MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_OPEN, e -> localPlayerController.setEnabled(false));
+            MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_CLOSE, e -> localPlayerController.setEnabled(true));
             eventsAdded = true;
         }
     }
@@ -140,9 +136,9 @@ public class WorldScene extends DisplayObjectContainer {
     @Override
     public void onEachFrame() {
         super.onEachFrame();
-        if (!client.isConnected() || !client.isEnteredServer()) return;
+        if (!MODULE_CLIENT.isConnected() || !MODULE_CLIENT.isEnteredServer()) return;
 
-        client.sendLocalPlayerControllerAndXYReport(
+        MODULE_CLIENT.sendLocalPlayerControllerAndXYReport(
                 localPlayerController.getState(),
                 localPlayerActor.getX(),
                 localPlayerActor.getY()
@@ -156,7 +152,7 @@ public class WorldScene extends DisplayObjectContainer {
         debug.setText(remotePlayerMap + "");
 
         if (frameCounter % 1000 == 0) {
-            client.sendServerInfoRequest();
+            MODULE_CLIENT.sendServerInfoRequest();
         }
 
         frameCounter++;
@@ -186,7 +182,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         PlayerActor playerActor = new Blake();
 
-        chat.addMessage("");
+        MODULE_CHAT.addMessage("");
 
         playerActor.add(uiText, -uiText.getTextWidth() / 4, -30f);
         Controller controller = new Controller();

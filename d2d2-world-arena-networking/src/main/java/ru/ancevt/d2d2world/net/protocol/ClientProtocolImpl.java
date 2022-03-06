@@ -35,9 +35,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public final class ClientProtocolImpl extends ProtocolImpl {
 
+    public static final ClientProtocolImpl MODULE_CLIENT_PROTOCOL = new ClientProtocolImpl();
+
     private final List<ClientProtocolImplListener> clientProtocolImplListeners;
 
-    public ClientProtocolImpl() {
+    private ClientProtocolImpl() {
         this.clientProtocolImplListeners = new CopyOnWriteArrayList<>();
     }
 

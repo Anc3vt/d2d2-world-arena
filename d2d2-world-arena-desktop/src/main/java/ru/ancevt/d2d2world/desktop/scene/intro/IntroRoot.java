@@ -33,13 +33,8 @@ import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2.panels.Button;
-import ru.ancevt.d2d2world.desktop.DesktopConfig;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
-import ru.ancevt.d2d2world.desktop.ui.Font;
-import ru.ancevt.d2d2world.desktop.ui.UiText;
-import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
-import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
-import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
+import ru.ancevt.d2d2world.desktop.ui.*;
 import ru.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
 import ru.ancevt.d2d2world.net.client.ServerInfo;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
@@ -50,7 +45,8 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
-import static ru.ancevt.d2d2world.desktop.ModuleContainer.modules;
+import static ru.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static ru.ancevt.d2d2world.desktop.DesktopConfig.SERVER;
 
 @Slf4j
 public class IntroRoot extends Root {
@@ -76,8 +72,7 @@ public class IntroRoot extends Root {
         labelPlayerName.setText("Player name:");
 
         uiTextInputServer = new UiTextInput();
-        DesktopConfig desktopConfig = modules.get(DesktopConfig.class);
-        uiTextInputServer.setText(desktopConfig.getString(DesktopConfig.SERVER));
+        uiTextInputServer.setText(MODULE_CONFIG.getString(SERVER));
 
         uiTextInputPlayerName = new UiTextInput();
         uiTextInputPlayerName.requestFocus();

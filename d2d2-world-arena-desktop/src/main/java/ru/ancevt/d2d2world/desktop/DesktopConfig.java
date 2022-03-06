@@ -37,6 +37,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Slf4j
 public class DesktopConfig {
 
+    public static final DesktopConfig MODULE_CONFIG = new DesktopConfig();
+
     public static final String FILE_NAME = "d2d2-world-arena-desktop.conf";
 
     public static final String SERVER = "server";
@@ -51,7 +53,7 @@ public class DesktopConfig {
 
     private final Properties properties;
 
-    public DesktopConfig() {
+    private DesktopConfig() {
         properties = new Properties();
     }
 
