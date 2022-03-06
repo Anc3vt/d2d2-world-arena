@@ -211,7 +211,7 @@ public class FileTransferTest {
 
     @BeforeEach
     void beforeEachCleanup() {
-        FileReceiverManager.INSTANCE.setCompressionEnabled(true);
+        FileSender.parentDirectorySecurityEnabled = false;
         deleteDirectory(new File("data/"));
         deleteDirectory(new File("one/"));
     }

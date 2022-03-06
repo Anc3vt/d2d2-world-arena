@@ -31,10 +31,12 @@ import static java.lang.Math.min;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.ancevt.d2d2world.data.GZIP.compress;
 import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.createMessageFileData;
-import static ru.ancevt.d2d2world.net.transfer.Headers.newHeaders;
+import static ru.ancevt.d2d2world.net.transfer.Headers.*;
 
 @Slf4j
 public class FileSender {
+    public static boolean parentDirectorySecurityEnabled = true;
+
     public static final int CHUNK_SIZE = 65536;
     public static final int DELAY = 10;
 
@@ -47,7 +49,7 @@ public class FileSender {
     private int filesize;
 
     public FileSender(String path, boolean compress) {
-        if (!isSecure(path)) {
+        if (parentDirectorySecurityEnabled && !isSecure(path)) {
             throw new IllegalStateException("security error");
         }
 
@@ -108,24 +110,20 @@ public class FileSender {
             bytes = compress(bytes);
         }
 
+        Headers headers = newHeaders();
+
+        headers.put(PATH, path)
+                .put(ORIGINAL_SIZE, String.valueOf(filesize));
+
         if (first) {
-            connection.send(createMessageFileData(
-                    newHeaders()
-                            .put(Headers.PATH, path)
-                            .put(Headers.BEGIN, "true")
-                            .put(Headers.SIZE, String.valueOf(filesize))
-                            .toString(),
-                    bytes)
-            );
-        } else {
-            connection.send(createMessageFileData(
-                    newHeaders()
-                            .put(Headers.PATH, path)
-                            .put(Headers.SIZE, String.valueOf(filesize))
-                            .toString(),
-                    bytes)
-            );
+            headers.put(BEGIN, "true");
         }
+
+        if (compress) {
+            headers.put(COMPRESSION, "true");
+        }
+
+        connection.send(createMessageFileData(headers.toString(), bytes));
     }
 
     public boolean isFileExists() {

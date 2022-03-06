@@ -18,19 +18,10 @@ public class FileReceiverManager {
     private final Map<String, FileReceiver> fileReceiverMap;
 
     private final List<FileReceiverManagerListener> fileReceiverManagerListeners;
-    private boolean compression;
 
     private FileReceiverManager() {
         fileReceiverMap = new ConcurrentHashMap<>();
         fileReceiverManagerListeners = new CopyOnWriteArrayList<>();
-    }
-
-    public void setCompressionEnabled(boolean compression) {
-        this.compression = compression;
-    }
-
-    public boolean isCompressionEnabled() {
-        return compression;
     }
 
     public void addFileReceiverManagerListener(FileReceiverManagerListener l) {
@@ -57,13 +48,13 @@ public class FileReceiverManager {
         if (fileReceiverMap.containsKey(path)) {
             return fileReceiverMap.get(path);
         } else {
-            FileReceiver fileReceiver = new FileReceiver(path, compression);
+            FileReceiver fileReceiver = new FileReceiver(path);
             fileReceiverMap.put(path, fileReceiver);
             return fileReceiver;
         }
     }
 
-    public void wholeFileWritten(FileReceiver fileReceiver) {
+    public void wholeFileWritten(@NotNull FileReceiver fileReceiver) {
         fileReceiverMap.remove(fileReceiver.getPath());
         fileReceiverManagerListeners.forEach(l -> l.complete(fileReceiver));
     }

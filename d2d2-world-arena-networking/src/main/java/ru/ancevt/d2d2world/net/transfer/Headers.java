@@ -27,7 +27,8 @@ public class Headers {
     private static final String DELIMITER = ":";
     public static final String BEGIN = "Begin";
     public static final String PATH = "Path"; // mapkits/<mapkit-uid>/index.mk, e.t.c.
-    public static final String SIZE = "Size"; // bytes
+    public static final String COMPRESSION = "Compression";
+    public static final String ORIGINAL_SIZE = "OriginalSize"; // decompressed bytes
 
     private final Map<String, String> map;
 

@@ -26,7 +26,6 @@ import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import ru.ancevt.d2d2world.desktop.ui.chat.Chat;
 import ru.ancevt.d2d2world.net.client.Client;
-import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -70,7 +69,6 @@ public class D2D2WorldArenaDesktopMain {
         modules.add(new Chat());
         modules.add(new ClientCommandProcessor());
         //
-        FileReceiverManager.INSTANCE.setCompressionEnabled(true);
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version);
 
