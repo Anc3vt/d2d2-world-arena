@@ -86,7 +86,6 @@ public class Renderer implements IRenderer {
         GL30.glEnable(GL30.GL_BLEND);
         GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
-
         GL30.glMatrixMode(GL30.GL_MODELVIEW);
         GL30.glLoadIdentity();
 
@@ -188,7 +187,7 @@ public class Renderer implements IRenderer {
 
         boolean bindResult = D2D2.getTextureManager().getTextureEngine().bind(textureAtlas);
 
-        if(!bindResult) {
+        if (!bindResult) {
             return;
         }
 
@@ -257,7 +256,7 @@ public class Renderer implements IRenderer {
 
         boolean bindResult = D2D2.getTextureManager().getTextureEngine().bind(textureAtlas);
 
-        if(!bindResult) return;
+        if (!bindResult) return;
 
         D2D2.getTextureManager().getTextureEngine().enable(textureAtlas);
 
@@ -320,15 +319,21 @@ public class Renderer implements IRenderer {
         D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
     }
 
+    float nextHalf(float v) {
+        return (float) (Math.ceil(v * 2) / 2);
+    }
+
     private void drawChar(
             float x,
             float y,
-            int textureWidth,
-            int textureHeight,
+            int textureAtlasWidth,
+            int textureAtlasHeight,
             BitmapCharInfo charInfo,
             float scX,
             float scY) {
 
+        //scX = nextHalf(scX);
+        scY = nextHalf(scY);
 
         float charWidth = charInfo.width();
         float charHeight = charInfo.height();
@@ -336,10 +341,10 @@ public class Renderer implements IRenderer {
         float xOnTexture = charInfo.x();
         float yOnTexture = charInfo.y() + charHeight;
 
-        float cx = xOnTexture / textureWidth;
-        float cy = -yOnTexture / textureHeight;
-        float cw = charWidth / textureWidth;
-        float ch = -charHeight / textureHeight;
+        float cx = xOnTexture / textureAtlasWidth;
+        float cy = -yOnTexture / textureAtlasHeight;
+        float cw = charWidth / textureAtlasWidth;
+        float ch = -charHeight / textureAtlasHeight;
 
         GL30.glTexCoord2d(cx, -cy);
         GL30.glVertex2d(x, y);
@@ -369,6 +374,7 @@ public class Renderer implements IRenderer {
     public void setLWJGLTextureEngine(LWJGLTextureEngine textureEngine) {
         this.textureEngine = textureEngine;
     }
+
 }
 
 
