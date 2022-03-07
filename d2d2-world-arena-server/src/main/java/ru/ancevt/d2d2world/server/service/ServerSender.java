@@ -36,7 +36,7 @@ public class ServerSender {
                     .stream()
                     .filter(c -> c.getId() == playerId)
                     .findAny()
-                    .orElseThrow(IllegalStateException::new)
+                    .orElseThrow()
                     .send(bytes);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

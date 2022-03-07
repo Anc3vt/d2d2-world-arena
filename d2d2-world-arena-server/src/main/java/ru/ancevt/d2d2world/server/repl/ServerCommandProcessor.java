@@ -22,15 +22,17 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import ru.ancevt.net.tcpb254.connection.IConnection;
 import ru.ancevt.util.args.Args;
 import ru.ancevt.util.repl.ReplInterpreter;
 import ru.ancevt.util.texttable.TextTable;
 
-import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
 import static ru.ancevt.d2d2world.server.ServerTimer.MODULE_TIMER;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
+import static ru.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
 import static ru.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
 import static ru.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
+import static ru.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
 
 @Slf4j
 public class ServerCommandProcessor {
@@ -59,6 +61,48 @@ public class ServerCommandProcessor {
         repl.addCommand("mapkits", this::cmd_mapkits);
         repl.addCommand("maps", this::cmd_maps);
         repl.addCommand("setmap", this::cmd_setmap);
+        repl.addCommand("banlist", this::cmd_banlist);
+        repl.addCommand("ban", this::cmd_ban);
+        repl.addCommand("unban", this::cmd_unban);
+    }
+
+    private Object cmd_unban(Args args) {
+        try {
+            String a = args.get(String.class, 0);
+            String ip = a.contains(".") ? a : IConnection.getIpFromAddress(MODULE_GENERAL.getConnection(args.get(int.class, 0)).orElseThrow().getRemoteAddress());
+            MODULE_BANLIST.unban(ip);
+            String result = "Unbanned ip " + ip;
+            System.out.println(result);
+            return result;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    private @NotNull Object cmd_ban(@NotNull Args args) {
+        try {
+            String a = args.get(String.class, 0);
+            String ip = a.contains(".") ? a : IConnection.getIpFromAddress(MODULE_GENERAL.getConnection(args.get(int.class, 0)).orElseThrow().getRemoteAddress());
+            MODULE_BANLIST.ban(ip);
+            String result = "Banned ip " + ip;
+            System.out.println(result);
+
+            MODULE_SERVER_UNIT.server.getConnections().stream().filter(c -> {
+                String connectionIp = IConnection.getIpFromAddress(c.getRemoteAddress());
+                return connectionIp.equals(ip);
+            }).findAny().orElseThrow().closeIfOpen();
+
+            return result;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    private @NotNull @Unmodifiable Object cmd_banlist(Args args) {
+        StringBuilder s = new StringBuilder();
+        MODULE_BANLIST.getList().forEach(ip -> s.append(ip).append('\n'));
+        System.out.println(s);
+        return s.toString();
     }
 
     private Object cmd_setmap(Args args) {

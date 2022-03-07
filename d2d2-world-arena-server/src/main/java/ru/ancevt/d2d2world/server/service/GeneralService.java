@@ -28,10 +28,7 @@ import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.net.transfer.FileSender;
 import ru.ancevt.d2d2world.net.transfer.Headers;
-import ru.ancevt.d2d2world.server.ServerConfig;
-import ru.ancevt.d2d2world.server.ServerStateInfo;
-import ru.ancevt.d2d2world.server.ServerTimer;
-import ru.ancevt.d2d2world.server.ServerTimerListener;
+import ru.ancevt.d2d2world.server.*;
 import ru.ancevt.d2d2world.server.chat.ServerChat;
 import ru.ancevt.d2d2world.server.chat.ServerChatListener;
 import ru.ancevt.d2d2world.server.chat.ServerChatMessage;
@@ -53,6 +50,7 @@ import static ru.ancevt.d2d2world.net.transfer.Headers.*;
 import static ru.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
 import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
+import static ru.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
@@ -85,6 +83,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             Optional<IConnection> oConnection = getConnection(playerId);
             String address = oConnection.isPresent() ? oConnection.get().getRemoteAddress() : "unknown";
             log.trace("Server info request from connection id {}, address {}", playerId, address);
+        }
+
+        if (MODULE_BANLIST.ifBannedCloseConnection(getConnection(playerId).orElseThrow())) {
+            log.info("Banned ip connection attempt: {}", playerId);
+            return;
         }
 
         List<Pair<Integer, String>> players =
@@ -181,6 +184,12 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                    @NotNull String playerName,
                                    @NotNull String clientProtocolVersion,
                                    @NotNull String extraData) {
+
+        if (MODULE_BANLIST.ifBannedCloseConnection(getConnection(connectionId).orElseThrow())) {
+            log.info("Banned ip enter attempt: {}", connectionId);
+            return;
+        }
+
 
         log.trace("Player enter request {}({}), client protocol version: {}, extra data: {}",
                 playerName, connectionId, clientProtocolVersion, extraData
@@ -404,7 +413,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     }
 
     public void setMap(String mapName) {
-        if(MODULE_CONTENT_MANAGER.containsMap(mapName)) {
+        if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             MODULE_SERVER_STATE_INFO.setMap(mapName);
             sendCurrentMapInfoToAll();
         } else {

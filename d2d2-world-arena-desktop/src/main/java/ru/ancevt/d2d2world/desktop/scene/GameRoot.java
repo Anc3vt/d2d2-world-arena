@@ -59,6 +59,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     private final WorldScene worldScene;
     private final TabWindow tabWindow;
     private String serverName;
+    private int attempts;
 
     public GameRoot() {
         UiTextInputProcessor.enableRoot(this);
@@ -223,8 +224,14 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     public void clientConnectionClosed(@NotNull CloseStatus status) {
         worldScene.stop();
         MODULE_CHAT.addMessage(status.getErrorMessage(), Color.RED);
-        new Lock().lock(1, TimeUnit.SECONDS);
-        start(server, MODULE_CLIENT.getLocalPlayerName());
+        new Lock().lock(5, TimeUnit.SECONDS);
+        if(attempts < 10) {
+            start(server, MODULE_CLIENT.getLocalPlayerName());
+        } else {
+            MODULE_CHAT.addMessage("Can't establish connection. Please try again later");
+            setBackgroundColor(Color.BLACK);
+        }
+        attempts++;
     }
 
     /**

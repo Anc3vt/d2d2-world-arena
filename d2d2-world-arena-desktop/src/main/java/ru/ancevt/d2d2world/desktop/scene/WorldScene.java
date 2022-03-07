@@ -118,7 +118,6 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setViewportSize(getStage().getStageWidth(), getStage().getStageHeight());
 
         setXY(getStage().getStageWidth() / 2, getStage().getStageHeight() / 2);
-        //shadowRadial.setXY(-getStage().getStageWidth() / 2, -getStage().getStageHeight() / 2);
 
         //getRoot().add(debug, 10, 250);
 

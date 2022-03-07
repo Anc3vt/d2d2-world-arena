@@ -52,7 +52,7 @@ public class Player {
     }
 
     public String getIp() {
-        if(ip == null) {
+        if (ip == null) {
             String text = getAddress();
             if (text.startsWith("/")) {
                 text = text.replaceAll("/", "");
