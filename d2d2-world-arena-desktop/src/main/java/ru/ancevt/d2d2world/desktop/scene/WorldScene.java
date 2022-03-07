@@ -22,6 +22,7 @@ import ru.ancevt.commons.concurrent.Async;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.InputEvent;
+import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.control.Controller;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
 import ru.ancevt.d2d2world.desktop.ui.UiText;
@@ -72,7 +73,14 @@ public class WorldScene extends DisplayObjectContainer {
 
         add(world);
 
-        shadowRadial = new ShadowRadial();
+        shadowRadial = new ShadowRadial() {
+            @Override
+            public void onEachFrame() {
+                setXY(localPlayerActor.getX() + 35, localPlayerActor.getY());
+            }
+        };
+        shadowRadial.setScale(2f,2f);
+        world.add(shadowRadial);
 
         debug = new BitmapText();
         debug.setText("debug");
@@ -110,7 +118,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setViewportSize(getStage().getStageWidth(), getStage().getStageHeight());
 
         setXY(getStage().getStageWidth() / 2, getStage().getStageHeight() / 2);
-        shadowRadial.setXY(-getStage().getStageWidth() / 2, -getStage().getStageHeight() / 2);
+        //shadowRadial.setXY(-getStage().getStageWidth() / 2, -getStage().getStageHeight() / 2);
 
         //getRoot().add(debug, 10, 250);
 
@@ -132,6 +140,13 @@ public class WorldScene extends DisplayObjectContainer {
             getRoot().addEventListener(InputEvent.KEY_DOWN, event -> {
                 var e = (InputEvent) event;
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
+
+                if (e.getKeyCode() == KeyCode.F11) {
+                    if(shadowRadial.getDarknessValue() == 0) return;
+                    shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() - 1);
+                } else if (e.getKeyCode() == KeyCode.F12) {
+                    shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() + 1);
+                }
             });
             getRoot().addEventListener(InputEvent.KEY_UP, event -> {
                 var e = (InputEvent) event;
