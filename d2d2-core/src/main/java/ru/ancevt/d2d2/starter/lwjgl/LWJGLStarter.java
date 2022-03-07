@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2.lwjgl;
+package ru.ancevt.d2d2.starter.lwjgl;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -124,8 +124,8 @@ public class LWJGLStarter implements D2D2Starter {
         stage = new Stage();
         stage.setStageSize(width, height);
         stage.onResize(width, height);
-        renderer = new Renderer(stage);
-        ((Renderer)renderer).setLWJGLTextureEngine((LWJGLTextureEngine) D2D2.getTextureManager().getTextureEngine());
+        renderer = new LWJGLRenderer(stage);
+        ((LWJGLRenderer)renderer).setLWJGLTextureEngine((LWJGLTextureEngine) D2D2.getTextureManager().getTextureEngine());
         windowId = createWindow();
         setVisible(true);
     }

@@ -24,7 +24,7 @@ import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.IDisplayObject;
 import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.event.Event;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
 
 import java.util.ArrayList;

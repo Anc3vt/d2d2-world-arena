@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2.lwjgl;
+package ru.ancevt.d2d2.starter.lwjgl;
 
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
@@ -41,20 +41,18 @@ import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
-public class Renderer implements IRenderer {
+public class LWJGLRenderer implements IRenderer {
 
     private static final boolean ANTIALIASING_ENABLED = false;
     private final Stage stage;
-    private long windowId;
     private LWJGLTextureEngine textureEngine;
 
-    public Renderer(Stage stage) {
+    public LWJGLRenderer(Stage stage) {
         this.stage = stage;
     }
 
     @Override
     public void init(long windowId) {
-        this.windowId = windowId;
 
         GL30.glEnable(GL_BLEND);
         GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

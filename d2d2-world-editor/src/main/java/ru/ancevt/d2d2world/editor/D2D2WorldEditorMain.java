@@ -24,7 +24,7 @@ import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
 import ru.ancevt.d2d2world.editor.panels.MapkitToolsPanel;

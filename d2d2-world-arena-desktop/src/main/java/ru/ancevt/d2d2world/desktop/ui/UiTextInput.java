@@ -29,16 +29,23 @@ import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2.event.TouchEvent;
 import ru.ancevt.d2d2.input.Clipboard;
 import ru.ancevt.d2d2.input.KeyCode;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.norender.NoRenderStarter;
 import ru.ancevt.d2d2.touch.TouchButton;
 
 public class UiTextInput extends DisplayObjectContainer implements EventListener {
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        D2D2.init(new NoRenderStarter(800, 600));
+        //D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
         Root root = D2D2.getStage().getRoot();
 
-        UiTextInput uiTextInput = new UiTextInput();
+        UiTextInput uiTextInput = new UiTextInput() {
+            @Override
+            public void onEachFrame() {
+                moveX(0.5f);
+                System.out.println(getX());
+            }
+        };
         root.add(uiTextInput, 100, 100);
 
         UiTextInput uiTextInput1 = new UiTextInput();

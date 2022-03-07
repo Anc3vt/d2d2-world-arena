@@ -27,7 +27,7 @@ import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2.event.IEventDispatcher;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2.panels.Button;
 import ru.ancevt.d2d2.panels.TitledPanel;
 import ru.ancevt.d2d2world.D2D2World;

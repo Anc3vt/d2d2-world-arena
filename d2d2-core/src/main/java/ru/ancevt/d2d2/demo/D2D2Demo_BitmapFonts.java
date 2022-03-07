@@ -22,7 +22,7 @@ import ru.ancevt.d2d2.debug.FpsMeter;
 import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.display.text.BitmapFont;
 import ru.ancevt.d2d2.display.text.BitmapText;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_BitmapFonts {
 

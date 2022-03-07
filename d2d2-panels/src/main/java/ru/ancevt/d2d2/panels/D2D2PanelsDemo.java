@@ -23,7 +23,7 @@ import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.display.Sprite;
 import ru.ancevt.d2d2.display.Stage;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 
 public class D2D2PanelsDemo {
     public static void main(String[] args) {

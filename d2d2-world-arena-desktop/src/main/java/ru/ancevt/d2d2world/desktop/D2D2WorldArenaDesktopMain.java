@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 
@@ -57,6 +57,7 @@ public class D2D2WorldArenaDesktopMain {
 
         String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYER);
 
+        //D2D2.init(new NoRenderStarter(900, 600));
         D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
         D2D2World.init();
 
@@ -70,7 +71,6 @@ public class D2D2WorldArenaDesktopMain {
         D2D2.getStage().setRoot(introRoot);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
-
 
         System.exit(0);
     }

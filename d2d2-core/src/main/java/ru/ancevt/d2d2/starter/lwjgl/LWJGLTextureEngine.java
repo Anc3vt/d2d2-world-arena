@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.ancevt.d2d2.lwjgl;
+package ru.ancevt.d2d2.starter.lwjgl;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import org.lwjgl.BufferUtils;
@@ -90,7 +90,6 @@ public class LWJGLTextureEngine implements ITextureEngine {
     public TextureAtlas createTextureAtlas(InputStream pngInputStream) {
         try {
             BufferedImage bufferedImage = ImageIO.read(pngInputStream);
-
             TextureAtlas textureAtlas = createTextureAtlasFromBufferedImage(bufferedImage);
             mapping.images().put(textureAtlas.getId(), bufferedImage);
             return textureAtlas;
@@ -273,6 +272,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
             TextureAtlas textureAtlas = unloadQueue.poll();
             glDeleteTextures(mapping.ids().get(textureAtlas.getId()));
             mapping.ids().remove(textureAtlas.getId());
+            mapping.images().remove(textureAtlas.getId());
         }
     }
 

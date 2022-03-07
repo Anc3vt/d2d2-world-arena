@@ -21,7 +21,7 @@ import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.display.Sprite;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.D2D2World;
 
 public class Preloader extends DisplayObjectContainer {

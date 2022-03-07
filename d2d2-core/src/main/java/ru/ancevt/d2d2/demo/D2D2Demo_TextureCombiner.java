@@ -28,7 +28,7 @@ import ru.ancevt.d2d2.display.texture.TextureCombiner;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_TextureCombiner {
     private static Root root;

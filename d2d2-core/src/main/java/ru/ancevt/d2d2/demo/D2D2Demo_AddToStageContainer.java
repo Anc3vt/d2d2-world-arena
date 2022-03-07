@@ -22,7 +22,7 @@ import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.display.Sprite;
 import ru.ancevt.d2d2.event.Event;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_AddToStageContainer {
     public static void main(String[] args) {

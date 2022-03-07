@@ -26,7 +26,7 @@ import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.EventListener;
 import ru.ancevt.d2d2.event.TouchEvent;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2.touch.TouchButton;
 
 import java.util.Objects;

@@ -26,7 +26,7 @@ import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.display.Sprite;
 import ru.ancevt.d2d2.display.texture.Texture;
 import ru.ancevt.d2d2.display.texture.TextureManager;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_IFramed {
 

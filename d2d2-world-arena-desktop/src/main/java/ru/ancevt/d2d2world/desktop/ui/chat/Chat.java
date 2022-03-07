@@ -24,7 +24,7 @@ import ru.ancevt.d2d2.display.*;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
-import ru.ancevt.d2d2.lwjgl.LWJGLStarter;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.d2d2world.desktop.ui.Font;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
