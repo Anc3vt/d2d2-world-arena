@@ -19,15 +19,13 @@ package ru.ancevt.d2d2world.mapkit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.DataEntryLoader;
+import ru.ancevt.d2d2world.data.DataKey;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MapkitManager {
 
@@ -53,6 +51,21 @@ public class MapkitManager {
         put(new AreaMapkit());
     }
 
+    public void disposeExternalMapkits() {
+        Queue<String> keysToRemove = new LinkedList<>();
+        mapkits.values()
+                .stream()
+                .filter(m -> m instanceof ExternalMapkit)
+                .forEach(m -> {
+                    m.dispose();
+                    keysToRemove.add(m.getUid());
+                });
+
+        while (!keysToRemove.isEmpty()) {
+            mapkits.remove(keysToRemove.poll());
+        }
+    }
+
     public Mapkit get(String uid) {
         if (!mapkits.containsKey(uid)) {
             throw new IllegalStateException("mapkit not found, uid: " + uid + ". Must be one of: " + mapkits.keySet());
@@ -63,9 +76,7 @@ public class MapkitManager {
     public Mapkit load(String mapkitDirName) throws IOException {
         log.debug("load mapkit " + mapkitDirName);
 
-        DataEntry[] dataLines = DataEntryLoader.load(
-                ResourcePath.MAPKITS + mapkitDirName + INDEX
-        );
+        DataEntry[] dataLines = DataEntryLoader.load(ResourcePath.MAPKITS + mapkitDirName + INDEX);
 
         String uid = dataLines[0].getString(DataKey.UID);
         if (!uid.equals(mapkitDirName)) {
@@ -74,7 +85,7 @@ public class MapkitManager {
 
         String name = dataLines[0].getString(DataKey.NAME);
 
-        Mapkit mapkit = createMapkit(uid, name);
+        Mapkit mapkit = createExternalMapkit(uid, name);
 
         for (DataEntry dataEntry : dataLines) {
             log.debug("loaded data line: " + dataEntry.toString());
@@ -93,7 +104,7 @@ public class MapkitManager {
 
     public Mapkit getByName(String name) {
         for (Mapkit mapkit : mapkits.values()) {
-            if(mapkit.getName().equals(name)) {
+            if (mapkit.getName().equals(name)) {
                 return mapkit;
             }
         }
@@ -120,8 +131,8 @@ public class MapkitManager {
                 '}';
     }
 
-    private Mapkit createMapkit(String uid, String name) {
-        return new Mapkit(uid, name);
+    private Mapkit createExternalMapkit(String uid, String name) {
+        return new ExternalMapkit(uid, name);
     }
 
     public Set<String> keySet() {

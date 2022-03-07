@@ -91,6 +91,10 @@ public class ServerContentManager {
         }
     }
 
+    public boolean containsMap(String mapName) {
+        return getMaps().stream().anyMatch(m -> m.name().equals(mapName));
+    }
+
     public Set<Map> getMaps() {
         try {
             Set<Map> result = new HashSet<>();
@@ -178,7 +182,7 @@ public class ServerContentManager {
 
             Files.walk(Path.of("data/mapkits/" + uid + "/"))
                     .filter(Files::isRegularFile)
-                    .forEach(p->files.add(p.getFileName().toString()));
+                    .forEach(p -> files.add(p.getFileName().toString()));
 
             return new Mapkit(uid, name, totalFilesize, files);
         } catch (IOException e) {

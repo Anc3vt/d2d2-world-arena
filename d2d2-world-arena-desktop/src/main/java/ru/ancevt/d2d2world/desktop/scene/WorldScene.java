@@ -30,6 +30,7 @@ import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.gameobject.character.Ava;
 import ru.ancevt.d2d2world.gameobject.character.Blake;
 import ru.ancevt.d2d2world.map.MapIO;
+import ru.ancevt.d2d2world.mapkit.MapkitManager;
 import ru.ancevt.d2d2world.net.client.RemotePlayer;
 import ru.ancevt.d2d2world.world.World;
 
@@ -49,6 +50,7 @@ public class WorldScene extends DisplayObjectContainer {
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
     private final PlayerActor localPlayerActor;
     private final BitmapText debug;
+    private final ShadowRadial shadowRadial;
     private boolean eventsAdded;
 
     private final Map<RemotePlayer, PlayerActor> remotePlayerMap;
@@ -70,6 +72,8 @@ public class WorldScene extends DisplayObjectContainer {
 
         add(world);
 
+        shadowRadial = new ShadowRadial();
+
         debug = new BitmapText();
         debug.setText("debug");
 
@@ -81,8 +85,9 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void loadMap(String mapFilename) {
-        world.clear();
+        MapkitManager.getInstance().disposeExternalMapkits();
 
+        world.clear();
 
         Async.run(() -> {
             try {
@@ -105,6 +110,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setViewportSize(getStage().getStageWidth(), getStage().getStageHeight());
 
         setXY(getStage().getStageWidth() / 2, getStage().getStageHeight() / 2);
+        shadowRadial.setXY(-getStage().getStageWidth() / 2, -getStage().getStageHeight() / 2);
 
         //getRoot().add(debug, 10, 250);
 
@@ -115,6 +121,8 @@ public class WorldScene extends DisplayObjectContainer {
                 world.addGameObject(playerActor, 5, false);
             }
         });
+
+        start();
 
         dispatchEvent(new SceneEvent(SceneEvent.MAP_LOADED, this));
     }

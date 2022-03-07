@@ -26,6 +26,7 @@ import ru.ancevt.util.args.Args;
 import ru.ancevt.util.repl.ReplInterpreter;
 import ru.ancevt.util.texttable.TextTable;
 
+import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
 import static ru.ancevt.d2d2world.server.ServerTimer.MODULE_TIMER;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static ru.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
@@ -57,6 +58,17 @@ public class ServerCommandProcessor {
         repl.addCommand("syncmapkit", this::cmd_syncmapkit);
         repl.addCommand("mapkits", this::cmd_mapkits);
         repl.addCommand("maps", this::cmd_maps);
+        repl.addCommand("setmap", this::cmd_setmap);
+    }
+
+    private Object cmd_setmap(Args args) {
+        try {
+            String mapName = args.get(String.class, 0);
+            MODULE_GENERAL.setMap(mapName);
+            return "set map '" + mapName + "'";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     private @NotNull Object cmd_syncmapkit(@NotNull Args args) {

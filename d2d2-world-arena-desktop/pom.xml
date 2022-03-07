@@ -232,7 +232,6 @@
             </dependencies>
         </profile>
 
-
         <profile>
             <id>desktop</id>
             <build>
@@ -262,7 +261,14 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
 
+        <profile>
+            <id>exe</id>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>com.akathist.maven.plugins.launch4j</groupId>
                         <artifactId>launch4j-maven-plugin</artifactId>
@@ -304,5 +310,6 @@
                 </plugins>
             </build>
         </profile>
+
     </profiles>
 </project>

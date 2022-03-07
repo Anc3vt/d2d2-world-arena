@@ -63,7 +63,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     public GameRoot() {
         UiTextInputProcessor.enableRoot(this);
 
-        setBackgroundColor(Color.WHITE);
+        setBackgroundColor(Color.BLACK);
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
 
         MODULE_CLIENT.addClientListener(this);
@@ -248,7 +248,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     public void progress(@NotNull FileReceiver fileReceiver) {
         int proc = (fileReceiver.bytesLoaded() / fileReceiver.bytesTotal()) * 100;
         MODULE_CHAT.addMessage(
-                format("%d%% sync %s", proc, fileReceiver.getPath()),
+                format("%d%% content load %s", proc, fileReceiver.getPath()),
                 Color.DARK_GRAY
         );
     }
@@ -259,7 +259,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     @Override
     public void complete(@NotNull FileReceiver fileReceiver) {
         MODULE_CHAT.addMessage(
-                format("sync up-to-date %s", fileReceiver.getPath()),
+                format("content up-to-date %s", fileReceiver.getPath()),
                 Color.DARK_GRAY
         );
     }

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Mapkit {
+public abstract class Mapkit {
 
     private final String name;
     private final Map<String, MapkitItem> items;

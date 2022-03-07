@@ -403,9 +403,16 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         }
     }
 
-    private void sendCurrentMapInfoToPlayer(int playerId) {
-        String mapName = MODULE_SERVER_STATE_INFO.getMap();
+    public void setMap(String mapName) {
+        if(MODULE_CONTENT_MANAGER.containsMap(mapName)) {
+            MODULE_SERVER_STATE_INFO.setMap(mapName);
+            sendCurrentMapInfoToAll();
+        } else {
+            throw new IllegalStateException("no such map '" + mapName + "'");
+        }
+    }
 
+    private ServerMapInfoDto createServerMapInfoDto(String mapName) {
         ServerContentManager.Map map = MODULE_CONTENT_MANAGER.getMaps()
                 .stream()
                 .filter(m -> m.name().equals(mapName))
@@ -422,17 +429,26 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         map.mapkits().forEach(
                 mk -> {
                     mapkits.add(ServerMapInfoDto.Mapkit.builder()
-                                    .uid(mk.uid())
-                                    .name(mk.name())
-                                    .files(Set.copyOf(mk.files()))
-                                    .build());
+                            .uid(mk.uid())
+                            .name(mk.name())
+                            .files(Set.copyOf(mk.files()))
+                            .build());
                 }
-
         );
 
         builder.mapkits(mapkits);
 
-        serverSender.sendToPlayer(playerId, createMessageExtra(builder.build()));
+        return builder.build();
+    }
+
+    private void sendCurrentMapInfoToAll() {
+        String mapName = MODULE_SERVER_STATE_INFO.getMap();
+        serverSender.sendToAll(createMessageExtra(createServerMapInfoDto(mapName)));
+    }
+
+    private void sendCurrentMapInfoToPlayer(int playerId) {
+        String mapName = MODULE_SERVER_STATE_INFO.getMap();
+        serverSender.sendToPlayer(playerId, createMessageExtra(createServerMapInfoDto(mapName)));
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {
