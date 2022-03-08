@@ -33,13 +33,11 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     private final MapkitItem mapkitItem;
     private final int id;
 
-
     public Animated(MapkitItem mapKitItem, int gameObjectId) {
         this.mapkitItem = mapKitItem;
         this.id = gameObjectId;
 
         prepareAnimations();
-        setAnimation(AnimationKey.IDLE);
     }
 
     private void prepareAnimations() {
@@ -107,8 +105,9 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
                 fs.play();
                 add(fs);
             }
-
         }
+
+        if(getWorld() != null) getWorld().getSyncManager().animation(this, loop);
     }
 
     private void fixXY() {
@@ -119,7 +118,6 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             }
         }
     }
-
 
     @Override
     public void setDirection(int direction) {
@@ -136,6 +134,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
         }
 
         fixXY();
+        if(getWorld() != null) getWorld().getSyncManager().direction(this);
     }
 
     @Override

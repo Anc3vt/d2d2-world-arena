@@ -44,6 +44,13 @@ public class D2D2WorldArenaDesktopMain {
                 String value = split[1];
                 MODULE_CONFIG.setProperty(key, value);
             }
+            if(arg.startsWith("-S")) {
+                arg = arg.substring(2);
+                String[] split = arg.split("=");
+                String key = split[0];
+                String value = split[1];
+                System.setProperty(key, value);
+            }
         }
 
         // Load project properties

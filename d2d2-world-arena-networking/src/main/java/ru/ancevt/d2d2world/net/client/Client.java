@@ -24,10 +24,9 @@ import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.d2d2world.net.dto.ExtraDto;
 import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
-import ru.ancevt.d2d2world.net.message.Message;
+import ru.ancevt.d2d2world.net.message.SyncDataReceiver;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
-import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import ru.ancevt.d2d2world.net.transfer.Headers;
@@ -61,20 +60,28 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     private int localPlayerFrags;
     private int localPlayerPing;
     private int localPlayerColor;
-    private ServerInfo serverInfo;
+    private final SyncDataReceiver syncDataReceiver;
 
     private Client() {
+        syncDataReceiver = new SyncDataReceiver();
         clientListeners = new CopyOnWriteArrayList<>();
 
         MODULE_CLIENT_PROTOCOL.addClientProtocolImplListener(this);
     }
 
+    public SyncDataReceiver getSyncDataReceiver() {
+        return syncDataReceiver;
+    }
+
+    // CONNECTION LISTENERS:
+
+    /**
+     * {@link ConnectionListener} method
+     */
     @Override
     public void connectionEstablished() {
         clientListeners.forEach(ClientListener::clientConnectionEstablished);
     }
-
-    // CONNECTION LISTENERS:
 
     /**
      * {@link ConnectionListener} method
@@ -147,21 +154,6 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
                     clientListeners.forEach(l -> l.remotePlayerIntroduce(remotePlayer));
                 });
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void remotePlayerControllerAndXY(int remotePlayerId,
-                                            int remotePlayerControllerState,
-                                            float remotePlayerX,
-                                            float remotePlayerY) {
-
-        PLAYER_MANAGER.getRemotePlayer(remotePlayerId).ifPresent(remotePlayer -> {
-            remotePlayer.setControllerState(remotePlayerControllerState);
-            remotePlayer.setXY(remotePlayerX, remotePlayerY);
-        });
     }
 
     /**
@@ -289,14 +281,21 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         clientListeners.forEach(l -> l.fileData(headers, fileData));
     }
 
-    // SENDERS:
+    /**
+     * {@link ClientProtocolImplListener} method
+     */
+    @Override
+    public void serverSyncData(byte @NotNull [] syncData) {
+        syncDataReceiver.bytesReceived(syncData);
+    }
 
+    // SENDERS:
     public void sendPlayerEnterRequest() {
         sender.send(createMessagePlayerEnterRequest(localPlayerName, PROTOCOL_VERSION, ""));
     }
 
-    public void sendLocalPlayerControllerAndXYReport(int controllerState, float x, float y) {
-        sender.send(createMessagePlayerControllerAndXYReport(controllerState, x, y));
+    public void sendLocalPlayerController(int controllerState) {
+        sender.send(createMessagePlayerController(controllerState));
     }
 
     public void sendServerInfoRequest() {
@@ -319,11 +318,11 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         return headers.get(PATH);
     }
 
-    ///
-
-    public ServerInfo getServerInfo() {
-        return serverInfo;
+    public void sendExtra(ExtraDto dto) {
+        sender.send(createMessageExtra(dto));
     }
+
+    ///
 
     public boolean isEnteredServer() {
         return localPlayerName != null;
@@ -384,20 +383,6 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     public int getLocalPlayerFrags() {
         return localPlayerFrags;
-    }
-
-    private static byte[] debugReceived(@NotNull String playerNameOrId, byte[] bytes) {
-        log.debug("Player {} received {}", playerNameOrId, Message.debug(bytes));
-        return bytes;
-    }
-
-    private static byte[] debugSent(@NotNull String playerNameOrId, byte[] bytes) {
-        log.debug("Player {} sent {}", playerNameOrId, Message.debug(bytes));
-        return bytes;
-    }
-
-    public void sendPlayerControllerAndXY(int controllerState, float x, float y) {
-        connection.send(ServerProtocolImpl.createMessageRemotePlayerControllerAndXY(localPlayerId, controllerState, x, y));
     }
 
     public void close() {

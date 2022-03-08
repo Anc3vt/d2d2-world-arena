@@ -24,7 +24,7 @@ import ru.ancevt.d2d2world.net.message.MessageType;
 
 import static ru.ancevt.d2d2world.net.JsonEngine.gson;
 
-public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProtocolImpl  {
+public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProtocolImpl {
 
     public static final String PROTOCOL_VERSION = "1.0";
 
@@ -34,7 +34,7 @@ public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProt
                 .writeUtf(short.class, headers)
                 .writeInt(fileData.length)
                 .writeBytes(fileData)
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessageExtra(@NotNull ExtraDto object) {
@@ -42,7 +42,7 @@ public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProt
                 .writeByte(MessageType.EXTRA)
                 .writeUtf(short.class, object.getClass().getName())
                 .writeUtf(int.class, gson().toJson(object))
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessageError(int errorCode, @NotNull String errorMessage, @NotNull String errorDetail) {
@@ -51,6 +51,6 @@ public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProt
                 .writeShort(errorCode)
                 .writeUtf(byte.class, errorMessage)
                 .writeUtf(int.class, errorDetail)
-                .toArray();
+                .toByteArray();
     }
 }

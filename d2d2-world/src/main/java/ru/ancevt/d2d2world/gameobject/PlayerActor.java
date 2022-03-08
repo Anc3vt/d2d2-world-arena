@@ -20,14 +20,16 @@ package ru.ancevt.d2d2world.gameobject;
 import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
-public class PlayerActor extends Actor {
+public class PlayerActor extends Actor implements ISynchronized {
 
-    public PlayerActor(MapkitItem mapkitItem) {
-        super(mapkitItem, 0);
+    public PlayerActor(MapkitItem mapkitItem, int gameObjectId) {
+        super(mapkitItem, gameObjectId);
 
         BitmapText playerNameBitmapText = new BitmapText();
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
     }
+
+    
 
 }

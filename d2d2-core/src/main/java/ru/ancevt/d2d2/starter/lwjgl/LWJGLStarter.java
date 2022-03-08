@@ -125,7 +125,7 @@ public class LWJGLStarter implements D2D2Starter {
         stage.setStageSize(width, height);
         stage.onResize(width, height);
         renderer = new LWJGLRenderer(stage);
-        ((LWJGLRenderer)renderer).setLWJGLTextureEngine((LWJGLTextureEngine) D2D2.getTextureManager().getTextureEngine());
+        ((LWJGLRenderer) renderer).setLWJGLTextureEngine((LWJGLTextureEngine) D2D2.getTextureManager().getTextureEngine());
         windowId = createWindow();
         setVisible(true);
     }
@@ -340,11 +340,21 @@ public class LWJGLStarter implements D2D2Starter {
 
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         assert videoMode != null;
-        glfwSetWindowPos(
-                resultWindowId,
-                (videoMode.width() - width) / 2,
-                20 //(videoMode.height() - height) / 2
-        );
+
+        if (System.getProperty("window100400") != null) {
+            glfwSetWindowPos(
+                    resultWindowId,
+                    100,
+                    400 //(videoMode.height() - height) / 2
+            );
+        } else {
+            glfwSetWindowPos(
+                    resultWindowId,
+                    (videoMode.width() - width) / 2,
+                    (videoMode.height() - height) / 2
+            );
+        }
+
 
         glfwMakeContextCurrent(resultWindowId);
         GL.createCapabilities();

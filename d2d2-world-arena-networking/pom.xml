@@ -73,6 +73,10 @@
             <artifactId>tcpb254</artifactId>
         </dependency>
         <dependency>
+            <groupId>ru.ancevt.d2d2</groupId>
+            <artifactId>d2d2-world</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ru.ancevt.d2d2world</groupId>
             <artifactId>d2d2-world-data</artifactId>
         </dependency>

@@ -88,9 +88,9 @@ public class MessageType {
     public static final int CLIENT_PLAYER_EXIT_REQUEST = 2;
 
     /**
-     * b)t b)controllerState f)x f)y
+     * b)t b)controllerState
      */
-    public static final int CLIENT_PLAYER_CONTROLLER_AND_XY_REPORT = 3;
+    public static final int CLIENT_PLAYER_CONTROLLER = 3;
 
     /**
      * b)t b)S)chat msg text
@@ -116,7 +116,7 @@ public class MessageType {
 
 
     /**
-     * b)t b)S)serverName b)S)serverVersion b)S)serverProtocolVersion b)S) mapName b)S)mapkitName b)S)modeName s)maxPlayers
+     * b)t b)S)serverName b)S)serverVersion b)S)serverProtocolVersion b)S)mapName b)S)mapkitName b)S)modeName s)maxPlayers
      * ( s)playerId b)S)playerName )...
      */
     public static final int SERVER_INFO_RESPONSE = 100;
@@ -147,11 +147,6 @@ public class MessageType {
     public static final int SERVER_TEXT_TO_PLAYER = 109;
 
     /**
-     * b)t s)playerId b)controllerState f)x f)y
-     */
-    public static final int SERVER_REMOTE_PLAYER_CONTROLLER_AND_XY = 105;
-
-    /**
      * b)t s)playerId b)exitCause
      */
     public static final int SERVER_REMOTE_PLAYER_EXIT = 106;
@@ -161,12 +156,13 @@ public class MessageType {
      */
     public static final int SERVER_REMOTE_PLAYER_PING_VALUE = 108;
 
+    /**
+     * b)t B)DATA
+     */
+    public static final int SERVER_SYNC_DATA = 120;
+
     //                                           CLIENT <==> SERVER
 
-    /**
-     * b)t i)gameObjectId f)x f)y b)action
-     */
-    public static final int SERVER_SYNC = 120;
     /**
      * File or part of file
      * b)t s)S)headers i)contentLength L)data

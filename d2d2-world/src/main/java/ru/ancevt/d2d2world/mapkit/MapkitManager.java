@@ -108,7 +108,7 @@ public class MapkitManager {
                 return mapkit;
             }
         }
-        throw new IllegalStateException("no suck mapkit name: " + name);
+        throw new IllegalStateException("no such mapkit name: " + name);
     }
 
     private void put(Mapkit mapkit) {

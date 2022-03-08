@@ -22,7 +22,7 @@ import ru.ancevt.d2d2world.constant.Direction;
 import ru.ancevt.d2d2world.gameobject.IDirectioned;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 
-public class Camera implements IDirectioned {
+public class Camera {
 	
 	public static final int DEFAULT_VIEWPORT_WIDTH = 420;
 	public static final int DEFAULT_VIEWPORT_HEIGHT = 240;
@@ -247,12 +247,10 @@ public class Camera implements IDirectioned {
 		}
 	}
 
-	@Override
 	public void setDirection(int direction) {
 		this.direction = direction;
 	}
 
-	@Override
 	public int getDirection() {
 		return direction;
 	}

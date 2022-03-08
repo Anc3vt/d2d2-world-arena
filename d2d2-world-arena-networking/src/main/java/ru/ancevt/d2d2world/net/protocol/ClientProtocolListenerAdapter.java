@@ -43,11 +43,6 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
     }
 
     @Override
-    public void remotePlayerControllerAndXY(int remotePlayerId, int remotePlayerControllerState, float remotePlayerX, float remotePlayerY) {
-
-    }
-
-    @Override
     public void remotePlayerExit(int remotePlayerId, int remotePlayerExitCause) {
 
     }
@@ -94,6 +89,11 @@ public class ClientProtocolListenerAdapter implements ClientProtocolImplListener
 
     @Override
     public void fileData(@NotNull String headers, byte[] fileData) {
+
+    }
+
+    @Override
+    public void serverSyncData(byte @NotNull [] syncData) {
 
     }
 }

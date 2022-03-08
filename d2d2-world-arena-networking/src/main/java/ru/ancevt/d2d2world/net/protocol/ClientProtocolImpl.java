@@ -59,13 +59,18 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         ByteInputReader in = message.inputReader();
 
         try {
-
             switch (message.getType()) {
 
                 case MessageType.SERVER_INFO_RESPONSE -> {
                     log("received SERVER_INFO_RESPONSE");
                     ServerInfo result = readServerInfoResponseBytes(bytes);
                     clientProtocolImplListeners.forEach(l -> l.serverInfoResponse(result));
+                }
+
+                case MessageType.SERVER_SYNC_DATA -> {
+                    int length = in.readShort();
+                    byte[] syncData = in.readBytes(length);
+                    clientProtocolImplListeners.forEach(l -> l.serverSyncData(syncData));
                 }
 
                 case MessageType.SERVER_RCON_RESPONSE -> {
@@ -132,18 +137,6 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                     int textColor = in.readInt();
                     String text = in.readUtf(byte.class);
                     clientProtocolImplListeners.forEach(l -> l.serverTextToPlayer(text, textColor));
-                }
-
-                case MessageType.SERVER_REMOTE_PLAYER_CONTROLLER_AND_XY -> {
-                    int remotePlayerId = in.readShort();
-                    int remotePlayerControllerState = in.readByte();
-                    float remotePlayerX = in.readFloat();
-                    float remotePlayerY = in.readFloat();
-
-                    System.setProperty("debug", System.currentTimeMillis() + " " + remotePlayerX);
-
-                    clientProtocolImplListeners.forEach(l -> l.remotePlayerControllerAndXY(
-                            remotePlayerId, remotePlayerControllerState, remotePlayerX, remotePlayerY));
                 }
 
                 case MessageType.SERVER_REMOTE_PLAYER_EXIT -> {
@@ -233,7 +226,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.CLIENT_RCON_LOGIN)
                 .writeUtf(byte.class, passwordHash)
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessageRconCommand(@NotNull String commandText, @NotNull String extraData) {
@@ -241,7 +234,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 .writeByte(MessageType.CLIENT_RCON_COMMAND)
                 .writeUtf(byte.class, commandText)
                 .writeUtf(int.class, extraData)
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessagePlayerEnterRequest(@NotNull String playerName,
@@ -252,41 +245,39 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 .writeUtf(byte.class, playerName)
                 .writeUtf(byte.class, clientProtocolVersion)
                 .writeUtf(int.class, extraData)
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessagePlayerExitRequest() {
         return new byte[]{MessageType.CLIENT_PLAYER_EXIT_REQUEST};
     }
 
-    public static byte[] createMessagePlayerControllerAndXYReport(int controllerState, float x, float y) {
+    public static byte[] createMessagePlayerController(int controllerState) {
         return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.CLIENT_PLAYER_CONTROLLER_AND_XY_REPORT)
+                .writeByte(MessageType.CLIENT_PLAYER_CONTROLLER)
                 .writeByte(controllerState)
-                .writeFloat(x)
-                .writeFloat(y)
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessagePlayerTextToChat(String chatMessageText) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.CLIENT_PLAYER_TEXT_TO_CHAT)
                 .writeUtf(byte.class, chatMessageText)
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessageFileRequest(@NotNull String headers) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.CLIENT_REQUEST_FILE)
                 .writeUtf(short.class, headers)
-                .toArray();
+                .toByteArray();
     }
 
     public static byte[] createMessagePlayerPingReport(int ping) {
         return ByteOutputWriter.newInstance(3)
                 .writeByte(MessageType.CLIENT_PLAYER_PING_REPORT)
                 .writeShort(ping)
-                .toArray();
+                .toByteArray();
     }
 }
 

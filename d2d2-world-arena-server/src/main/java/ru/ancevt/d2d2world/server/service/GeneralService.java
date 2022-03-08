@@ -23,12 +23,18 @@ import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.commons.regex.PatternMatcher;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
+import ru.ancevt.d2d2world.net.dto.MapLoadedDto;
 import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
+import ru.ancevt.d2d2world.net.protocol.SyncManager;
 import ru.ancevt.d2d2world.net.transfer.FileSender;
 import ru.ancevt.d2d2world.net.transfer.Headers;
-import ru.ancevt.d2d2world.server.*;
+import ru.ancevt.d2d2world.server.ServerConfig;
+import ru.ancevt.d2d2world.server.ServerStateInfo;
+import ru.ancevt.d2d2world.server.ServerTimer;
+import ru.ancevt.d2d2world.server.ServerTimerListener;
 import ru.ancevt.d2d2world.server.chat.ServerChat;
 import ru.ancevt.d2d2world.server.chat.ServerChatListener;
 import ru.ancevt.d2d2world.server.chat.ServerChatMessage;
@@ -51,6 +57,8 @@ import static ru.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
 import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static ru.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
+import static ru.ancevt.d2d2world.server.service.ServerSender.MODULE_SENDER;
+import static ru.ancevt.d2d2world.server.simulation.ServerWorld.MODULE_WORLD;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
@@ -64,7 +72,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerTimer serverTimer = ServerTimer.MODULE_TIMER;
     private final SyncService syncService = SyncService.MODULE_SYNC;
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
-    private final ServerSender serverSender = ServerSender.MODULE_SENDER;
+    private final ServerSender serverSender = MODULE_SENDER;
     private final ServerPlayerManager serverPlayerManager = ServerPlayerManager.MODULE_PLAYER_MANAGER;
     private final ServerStateInfo serverStateInfo = MODULE_SERVER_STATE_INFO;
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
@@ -226,11 +234,13 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 extraData
         );
 
+        MODULE_WORLD.addPlayer(newPlayer);
+
         log.info("Player enter {}({})", playerName, connectionId);
 
         // now the connection id is new player id
         // send to new player info about all others
-        oldPlayerList.forEach(p -> serverSender.sendToPlayer(
+        serverPlayerManager.getPlayerList().forEach(p -> serverSender.sendToPlayer(
                         connectionId,
                         createMessageRemotePlayerIntroduce(
                                 p.getId(),
@@ -303,11 +313,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void playerControllerAndXYReport(int playerId, int controllerState, float x, float y) {
-        serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
-            player.setControllerState(controllerState);
-            player.setXY(x, y);
-        });
+    public void playerController(int playerId, int controllerState) {
+        serverPlayerManager.getPlayerById(playerId).ifPresent(player -> player.setControllerState(controllerState));
     }
 
     /**
@@ -331,13 +338,15 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void playerExitRequest(int playerId) {
-        serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
-            serverChat.text("Player " + p.getName() + "(" + playerId + ") exit", 0x999999);
-            serverPlayerManager.removePlayer(p);
+        serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
+            serverChat.text("Player " + player.getName() + "(" + playerId + ") exit", 0x999999);
+            serverPlayerManager.removePlayer(player);
             serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
 
+            MODULE_WORLD.removePlayer(player);
+
             if (log.isInfoEnabled()) {
-                log.info("Exit: {}({}), address: {}", p.getName(), playerId, p.getAddress());
+                log.info("Exit: {}({}), address: {}", player.getName(), playerId, player.getAddress());
             }
         });
 
@@ -364,8 +373,12 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void extraFromPlayer(int playerId, @NotNull String className, String extraDataFromPlayer) {
-        throw new NotImplementedException();
+    public void extraFromPlayer(int connectionId, ExtraDto extraDto) {
+        if (extraDto instanceof MapLoadedDto) {
+            MODULE_WORLD.getWorld().getSyncGameObjects().forEach(o -> {
+                MODULE_SENDER.sendToPlayer(connectionId, new SyncManager().createSyncMessage(o));
+            });
+        }
     }
 
     /**
@@ -415,6 +428,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     public void setMap(String mapName) {
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             MODULE_SERVER_STATE_INFO.setMap(mapName);
+            MODULE_WORLD.loadMap(mapName);
             sendCurrentMapInfoToAll();
         } else {
             throw new IllegalStateException("no such map '" + mapName + "'");
@@ -436,13 +450,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         Set<ServerMapInfoDto.Mapkit> mapkits = new HashSet<>();
 
         map.mapkits().forEach(
-                mk -> {
-                    mapkits.add(ServerMapInfoDto.Mapkit.builder()
-                            .uid(mk.uid())
-                            .name(mk.name())
-                            .files(Set.copyOf(mk.files()))
-                            .build());
-                }
+                mk -> mapkits.add(ServerMapInfoDto.Mapkit.builder()
+                        .uid(mk.uid())
+                        .name(mk.name())
+                        .files(Set.copyOf(mk.files()))
+                        .build())
         );
 
         builder.mapkits(mapkits);
@@ -476,6 +488,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     serverPlayerManager.removePlayer(player);
                     serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.LOST_CONNECTION));
                     serverChat.text("Player " + player.getName() + "(" + playerId + ") lost connection");
+                    MODULE_WORLD.removePlayer(player);
                 }
         );
     }

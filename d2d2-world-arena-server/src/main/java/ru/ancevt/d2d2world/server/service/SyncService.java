@@ -30,7 +30,7 @@ public class SyncService {
     }
 
     public void syncFirstLevel() {
-        ServerPlayerManager.MODULE_PLAYER_MANAGER.getPlayerList().forEach(p ->
+        /*ServerPlayerManager.MODULE_PLAYER_MANAGER.getPlayerList().forEach(p ->
                 ServerSender.MODULE_SENDER.sendToAllExcluding(
                         ServerProtocolImpl.createMessageRemotePlayerControllerAndXY(
                                 p.getId(),
@@ -39,7 +39,7 @@ public class SyncService {
                                 p.getY()
                         ),
                         p.getId())
-        );
+        );*/
     }
 
     public void syncSecondLevel() {

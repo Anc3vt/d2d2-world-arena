@@ -18,6 +18,7 @@
 package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
 
 public class ServerProtocolImplListenerAdapter implements ServerProtocolImplListener {
     @Override
@@ -31,7 +32,7 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     }
 
     @Override
-    public void playerControllerAndXYReport(int playerId, int controllerState, float x, float y) {
+    public void playerController(int playerId, int controllerState) {
 
     }
 
@@ -46,7 +47,7 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     }
 
     @Override
-    public void extraFromPlayer(int playerId, @NotNull String className, String extraDataFromPlayer) {
+    public void extraFromPlayer(int connectionId, ExtraDto extraDto) {
 
     }
 

@@ -17,7 +17,6 @@
  */
 package ru.ancevt.d2d2world.gameobject;
 
-import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2world.constant.AnimationKey;
 import ru.ancevt.d2d2world.constant.Direction;
@@ -28,7 +27,7 @@ import ru.ancevt.d2d2world.gameobject.weapon.Weapon;
 import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.world.World;
 
-abstract public class Actor extends Animated implements
+abstract public class Actor extends Animated implements ISynchronized,
         IProcessable,
         IDirectioned,
         IMovable,
@@ -54,7 +53,6 @@ abstract public class Actor extends Animated implements
     private boolean collisionEnabled;
     private float collisionX, collisionY, collisionWidth, collisionHeight;
     private float weight;
-    private PlainRect collisionRect;
     private ICollision floor;
     private float velocityX, velocityY;
     private float jumpPower;
@@ -76,6 +74,7 @@ abstract public class Actor extends Animated implements
         setCollisionEnabled(true);
         setAnimation(AnimationKey.IDLE);
         setDirection(Direction.RIGHT);
+        setController(new Controller());
     }
 
     @Override
@@ -118,6 +117,28 @@ abstract public class Actor extends Animated implements
         debug(o);
         if (bitmapTextDebug != null && bitmapTextDebug.hasParent())
             bitmapTextDebug.setXY(offsetX, offsetY);
+    }
+
+    @Override
+    public void setX(float value) {
+        if (value == getX()) return;
+        super.setX(value);
+        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+    }
+
+    @Override
+    public void setY(float value) {
+        if (value == getY()) return;
+        super.setY(value);
+        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+    }
+
+    @Override
+    public void setXY(float x, float y) {
+        if (x == getX() && y == getY()) return;
+        super.setX(x);
+        super.setY(y);
+        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override
@@ -164,6 +185,7 @@ abstract public class Actor extends Animated implements
     @Override
     public void setMaxHealth(int health) {
         this.maxHealth = health;
+        if (getWorld() != null) getWorld().getSyncManager().maxHealth(this);
     }
 
     @Override
@@ -179,6 +201,7 @@ abstract public class Actor extends Animated implements
 
         if (health <= 0 && isAlive()) death();
 
+        if (getWorld() != null) getWorld().getSyncManager().health(this);
     }
 
     @Override
@@ -288,7 +311,6 @@ abstract public class Actor extends Animated implements
         setAlive(true);
     }
 
-
     @Override
     public float getWeight() {
         return weight;
@@ -383,21 +405,6 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void process() {
-
-    }
-
-    @Override
-    public float getWidth() {
-        return collisionWidth;
-    }
-
-    @Override
-    public float getHeight() {
-        return collisionHeight;
-    }
-
-    @Override
-    public void onEachFrame() {
         setAnimation(AnimationKey.IDLE);
 
         if (attackTime > 0) {
@@ -464,7 +471,16 @@ abstract public class Actor extends Animated implements
 
         movingSpeedX =
                 movingSpeedY = 0.0f;
-        super.onEachFrame();
+    }
+
+    @Override
+    public float getWidth() {
+        return collisionWidth;
+    }
+
+    @Override
+    public float getHeight() {
+        return collisionHeight;
     }
 
     protected boolean isAttackingNow() {
@@ -549,20 +565,25 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void move(float toX, float toY) {
-        moveX(toX);
-        moveY(toY);
+        movingSpeedX = toX;
+        movingSpeedY = toY;
+        super.moveX(toX);
+        super.moveY(toY);
+        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override
     public void moveX(float value) {
         movingSpeedX = value;
         super.moveX(value);
+        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override
     public void moveY(float value) {
         movingSpeedY = value;
         super.moveY(value);
+        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override

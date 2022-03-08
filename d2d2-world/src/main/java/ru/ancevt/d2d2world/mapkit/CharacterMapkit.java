@@ -17,6 +17,9 @@
  */
 package ru.ancevt.d2d2world.mapkit;
 
+import ru.ancevt.d2d2world.data.DataEntry;
+import ru.ancevt.d2d2world.gameobject.PlayerActor;
+
 public class CharacterMapkit extends Mapkit {
 
     public static final String ID = "character-mapkit";
@@ -24,6 +27,75 @@ public class CharacterMapkit extends Mapkit {
 
     CharacterMapkit() {
         super(ID, NAME);
+        blakeMapkitItem();
+        avaMapkitItem();
+    }
+
+    private void blakeMapkitItem() {
+        String mapkitData = """
+                id = character_blake |
+                class =""" + PlayerActor.class.getName() + """
+                |
+                damagePower = 1 |
+                weight = 1 |
+                maxHealth = 100 |
+                health = 100 |
+                speed = 0.75 |
+                jumpPower = 8 |
+                collisionX = -6 |
+                collisionY = -12 |
+                collisionWidth = 12 |
+                collisionHeight = 28 |
+                atlas=blake-and-ava-tileset.png |
+                idle = 0,0,48,48; 48,0,48,48 |
+                attack = 96,0,48,48; 144,0,48,48 |
+                walk = 192,0,48,48; 240,0,48,48; 288,0,48,48; 336,0,48,48 |
+                walk-attack = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48 |
+                jump = 192,48,48,48 |
+                fall = 240,48,48,48 |
+                jump-attack = 288,48,48,48 |
+                fall-attack = 336,48,48,48 |
+                hook = 288,96,48,48 |
+                hook-attack = 336,96,48,48 |
+                damage = 48,144,48,48
+                """;
+
+        DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));
+        createItem(mapkitDataEntry);
+    }
+
+    private void avaMapkitItem() {
+        String mapkitData = """
+                id = character_ava |
+                class =""" + PlayerActor.class.getName() + """
+                |
+                damagePower = 1 |
+                weight = 1 |
+                maxHealth = 100 |
+                health = 100 |
+                speed = 0.75 |
+                jumpPower = 8 |
+                collisionX = -6 |
+                collisionY = -12 |
+                collisionWidth = 12 |
+                collisionHeight = 28 |
+                atlas=blake-and-ava-tileset.png |
+                                
+                idle = 0,192,48,48; 48,192,48,48 |
+                attack = 96,192,48,48; 144,192,48,48 |
+                walk = 192,192,48,48; 240,192,48,48; 288,192,48,48; 336,192,48,48 |
+                walk-attack = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48 |
+                jump = 192,240,48,48 |
+                fall = 240,240,48,48 |
+                jump-attack = 288,240,48,48 |
+                fall-attack = 336,240,48,48 |
+                hook = 288,288,48,48 |
+                hook-attack = 336,288,48,48 |
+                damage = 48,336,48,48
+                """;
+
+        DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));
+        createItem(mapkitDataEntry);
     }
 
 }

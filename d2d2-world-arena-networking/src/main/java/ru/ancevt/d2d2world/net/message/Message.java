@@ -17,10 +17,10 @@
  */
 package ru.ancevt.d2d2world.net.message;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.io.ByteInputReader;
 import ru.ancevt.d2d2world.net.client.ErrorInfo;
-
-import java.util.Arrays;
 
 public class Message {
 
@@ -68,60 +68,9 @@ public class Message {
         return byteInputReader;
     }
 
-    public static Message of(byte[] bytes) {
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull Message of(byte[] bytes) {
         return new Message(bytes);
     }
 
-    public static String debug(byte[] bytes) {
-        StringBuilder s = new StringBuilder();
-
-        int type = bytes[0] & 0xFF;
-
-        s.append(switch (type) {
-            case MessageType.CLIENT_RCON_COMMAND -> "REMOTE_CONTROL_COMMAND";
-            case MessageType.CLIENT_RCON_LOGIN -> "REMOTE_CONTROL_LOGIN";
-            case MessageType.CLIENT_PLAYER_ENTER_REQUEST -> "PLAYER_ENTER_REQUEST";
-            case MessageType.CLIENT_PLAYER_EXIT_REQUEST -> "PLAYER_EXIT_REQUEST";
-            case MessageType.CLIENT_PLAYER_CONTROLLER_AND_XY_REPORT -> "PLAYER_CONTROLLER_AND_XY_REPORT";
-            case MessageType.CLIENT_PLAYER_TEXT_TO_CHAT -> "PLAYER_TEXT_TO_CHAT";
-            case MessageType.SERVER_PLAYER_ENTER_RESPONSE -> "PLAYER_ENTER_RESPONSE";
-            case MessageType.SERVER_REMOTE_PLAYER_INTRODUCE -> "REMOTE_PLAYER_INTRODUCE";
-            case MessageType.SERVER_CHAT -> "REMOTE_PLAYER_CHAT";
-            case MessageType.SERVER_REMOTE_PLAYER_CONTROLLER_AND_XY -> "REMOTE_PLAYER_CONTROLLER_AND_XY";
-            case MessageType.SERVER_REMOTE_PLAYER_EXIT -> "REMOTE_PLAYER_EXIT";
-            case MessageType.ERROR -> "ERROR";
-            case MessageType.EXTRA -> "EXTRA";
-            default -> "unknown(%d)";
-        });
-
-        s.append(String.format("(%d), ", type));
-
-        s.append(Arrays.toString(bytes));
-
-        return s.toString();
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

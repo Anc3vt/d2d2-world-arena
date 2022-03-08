@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.commons.concurrent.Async;
+import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListenerAdapter;
 import ru.ancevt.net.tcpb254.CloseStatus;
@@ -41,6 +42,7 @@ import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INF
 import static ru.ancevt.d2d2world.server.repl.ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static ru.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static ru.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
+import static ru.ancevt.d2d2world.server.simulation.ServerWorld.MODULE_WORLD;
 
 @Slf4j
 public class D2D2WorldArenaServerMain implements ServerListener, Thread.UncaughtExceptionHandler {
@@ -114,6 +116,10 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     public void serverStarted() {
         log.info("Version: " + getServerVersion());
         log.info("Server started at {}:{}", MODULE_SERVER_CONFIG.getString(SERVER_HOST), MODULE_SERVER_CONFIG.getInt(SERVER_PORT));
+
+        MODULE_WORLD.start();
+        D2D2World.init();
+        MODULE_GENERAL.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
     }
 
     /**

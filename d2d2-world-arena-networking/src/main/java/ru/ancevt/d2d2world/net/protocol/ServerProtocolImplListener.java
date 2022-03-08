@@ -18,6 +18,7 @@
 package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.d2d2world.net.dto.ExtraDto;
 
 public non-sealed interface ServerProtocolImplListener extends ProtocolImplListener {
 
@@ -25,13 +26,11 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
 
     void playerExitRequest(int playerId);
 
-    void playerControllerAndXYReport(int playerId, int controllerState, float x, float y);
+    void playerController(int playerId, int controllerState);
 
     void playerTextToChat(int playerId, @NotNull String text);
 
     void playerPingReport(int playerId, int ping);
-
-    void extraFromPlayer(int playerId, @NotNull String className, @NotNull String extraDataFromPlayer);
 
     void rconLogin(int playerId, @NotNull String passwordHash);
 
@@ -43,4 +42,5 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
 
     void requestFile(int connectionId, @NotNull String headers);
 
+    void extraFromPlayer(int connectionId, ExtraDto extraDto);
 }

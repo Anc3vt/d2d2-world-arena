@@ -89,7 +89,7 @@ public class TcpTest {
         writeBytesTo(w, 10, 1);
         writeBytesTo(w, 1, 2);
 
-        connection.send(w.toArray());
+        connection.send(w.toByteArray());
         lock.lock(250, TimeUnit.MILLISECONDS);
 
         assertThat(firstByte.getValue(), equalTo(0));
@@ -268,7 +268,7 @@ public class TcpTest {
                     System.out.println("Connection established: " + connectionWithClient);
                     ByteOutputWriter w = ByteOutputWriter.newInstance();
                     w.writeUtf(int.class, string);
-                    byte[] array = w.toArray();
+                    byte[] array = w.toByteArray();
                     connectionWithClient.send(array);
                     System.out.println("Server sent " + array.length + " bytes of string");
                 } catch (Exception e) {
@@ -354,7 +354,7 @@ public class TcpTest {
                     for (int i = 0; i < middleBytesLength; i++) w.writeByte(middleByte);
                     w.writeByte(lastByte);
 
-                    byte[] array = w.toArray();
+                    byte[] array = w.toByteArray();
                     System.out.println("Server sent " + array.length + " byte packet");
                     bytesSent.setValue(array.length);
                     connectionWithClient.send(array);

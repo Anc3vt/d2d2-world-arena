@@ -34,10 +34,6 @@ public non-sealed interface ClientProtocolImplListener extends ProtocolImplListe
                                int remotePlayerColor,
                                @NotNull String remotePlayerExtraData);
 
-    void remotePlayerControllerAndXY(int remotePlayerId,
-                                     int remotePlayerControllerState,
-                                     float remotePlayerX,
-                                     float remotePlayerY);
 
     void remotePlayerExit(int remotePlayerId, int remotePlayerExitCause);
 
@@ -62,4 +58,6 @@ public non-sealed interface ClientProtocolImplListener extends ProtocolImplListe
     void serverTextToPlayer(@NotNull String text, int textColor);
 
     void fileData(@NotNull String headers, byte[] fileData);
+
+    void serverSyncData(byte @NotNull [] syncData);
 }

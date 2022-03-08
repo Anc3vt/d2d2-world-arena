@@ -17,28 +17,28 @@
  */
 package ru.ancevt.d2d2world.world;
 
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.common.BorderedRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.exception.NotImplementedException;
-import ru.ancevt.d2d2world.gameobject.Actor;
-import ru.ancevt.d2d2world.gameobject.IGameObject;
-import ru.ancevt.d2d2world.gameobject.IResettable;
-import ru.ancevt.d2d2world.gameobject.Scenery;
+import ru.ancevt.d2d2world.gameobject.*;
 import ru.ancevt.d2d2world.gameobject.area.Area;
 import ru.ancevt.d2d2world.gameobject.weapon.Weapon;
 import ru.ancevt.d2d2world.map.GameMap;
 import ru.ancevt.d2d2world.map.Room;
 import ru.ancevt.d2d2world.process.PlayProcessor;
+import ru.ancevt.d2d2world.sync.ISyncManager;
+import ru.ancevt.d2d2world.sync.StubSyncManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class World extends DisplayObjectContainer {
 
     private final List<IGameObject> gameObjects;
+    private final Map<Integer, IGameObject> gameObjectMap;
     private final Layer[] layers;
     private final PlayProcessor playProcessor;
     private final Camera camera;
@@ -52,8 +52,13 @@ public class World extends DisplayObjectContainer {
     private Room currentRoom;
     private boolean playing;
     private boolean switchingRoomsNow;
+    private ISyncManager syncManager;
 
-    public World() {
+    public World(@NotNull ISyncManager syncManager) {
+        this.syncManager = syncManager;
+
+        gameObjectMap = new HashMap<>();
+
         gameObjects = new ArrayList<>();
         layers = new Layer[Layer.LAYER_COUNT];
         for (int i = 0; i < layers.length; i++) {
@@ -63,6 +68,18 @@ public class World extends DisplayObjectContainer {
 
         playProcessor = new PlayProcessor(this);
         camera = new Camera(this);
+    }
+
+    public World() {
+        this(new StubSyncManager());
+    }
+
+    public void setSyncManager(ISyncManager syncManager) {
+        this.syncManager = syncManager;
+    }
+
+    public @NotNull ISyncManager getSyncManager() {
+        return syncManager;
     }
 
     public PlayProcessor getPlayProcessor() {
@@ -185,8 +202,16 @@ public class World extends DisplayObjectContainer {
         return areasVisible;
     }
 
+    public List<IGameObject> getSyncGameObjects() {
+        return gameObjects.stream().filter(o->o instanceof ISynchronized).toList();
+    }
+
     public IGameObject getGameObject(int index) {
         return gameObjects.get(index);
+    }
+
+    public IGameObject getGameObjectById(int id) {
+        return gameObjectMap.get(id);
     }
 
     public int getGameObjectCount() {
@@ -270,9 +295,12 @@ public class World extends DisplayObjectContainer {
 
     public void addGameObject(IGameObject gameObject, int layerIndex, boolean updateRoom) {
         gameObjects.add(gameObject);
+        gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
         getLayer(layerIndex).add(gameObject);
 
         gameObject.setWorld(this);
+
+        getSyncManager().newGameObject(gameObject);
 
         if (updateRoom)
             currentRoom.addGameObject(layerIndex, gameObject);
@@ -280,10 +308,13 @@ public class World extends DisplayObjectContainer {
 
     public void removeGameObject(IGameObject gameObject, boolean updateRoom) {
         gameObjects.remove(gameObject);
+        gameObjectMap.remove(gameObject.getGameObjectId());
         for (int layerIndex = 0; layerIndex < layers.length; layerIndex++) {
             Layer layer = layers[layerIndex];
             if (layer == gameObject.getParent()) {
                 layer.remove(gameObject);
+                gameObject.setWorld(null);
+                getSyncManager().remove(gameObject);
                 if (updateRoom) currentRoom.removeGameObject(layerIndex, gameObject);
             }
         }

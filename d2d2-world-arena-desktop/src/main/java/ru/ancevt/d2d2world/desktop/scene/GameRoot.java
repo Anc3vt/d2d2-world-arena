@@ -129,7 +129,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void remotePlayerIntroduce(@NotNull RemotePlayer remotePlayer) {
-        worldScene.addRemotePlayer(remotePlayer);
+
     }
 
     /**
@@ -177,8 +177,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void remotePlayerExit(@NotNull RemotePlayer remotePlayer) {
-        MODULE_CHAT.addMessage(remotePlayer.getName() + "(" + remotePlayer.getId() + ") exit", Color.GRAY);
-        worldScene.removeRemotePlayer(remotePlayer);
+
     }
 
     /**

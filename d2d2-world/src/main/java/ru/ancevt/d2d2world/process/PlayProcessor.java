@@ -45,11 +45,21 @@ public class PlayProcessor {
     private float gravity;
 
     private int delay;
+    private boolean enabled;
 
     public PlayProcessor(World world) {
         this.world = world;
         gravity = DEFAULT_GRAVITY;
         setSpeed(DEFAULT_SPEED);
+        setEnabled(true);
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public void setGravity(float gravity) {
@@ -65,6 +75,8 @@ public class PlayProcessor {
     }
 
     public final synchronized void process() {
+        if(!enabled) return;
+
         IGravitied gravitied;
 
         for (int i = 0; i < world.getGameObjectCount(); i++) {

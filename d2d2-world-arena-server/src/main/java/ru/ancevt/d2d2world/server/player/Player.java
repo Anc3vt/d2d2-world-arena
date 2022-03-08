@@ -30,8 +30,6 @@ public class Player {
     private final String clientProtocolVersion;
     private String ip;
     private int controllerState;
-    private float x;
-    private float y;
 
     private int lastSeenChatMessageId;
     private int ping;
@@ -91,14 +89,6 @@ public class Player {
         return controllerState;
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
     public int getColor() {
         return color;
     }
@@ -113,11 +103,6 @@ public class Player {
 
     public String getAddress() {
         return address;
-    }
-
-    public void setXY(float x, float y) {
-        this.x = x;
-        this.y = y;
     }
 
     public int getPingValue() {
@@ -137,8 +122,6 @@ public class Player {
                 ", color=" + color +
                 ", clientProtocolVersion='" + clientProtocolVersion + '\'' +
                 ", controllerState=" + controllerState +
-                ", x=" + x +
-                ", y=" + y +
                 ", lastSeenChatMessageId=" + lastSeenChatMessageId +
                 ", ping=" + ping +
                 ", rconLoggedIn=" + rconLoggedIn +

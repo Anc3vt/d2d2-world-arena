@@ -29,14 +29,16 @@ import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
 import ru.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
-import ru.ancevt.d2d2world.gameobject.character.Blake;
 import ru.ancevt.d2d2world.map.GameMap;
 import ru.ancevt.d2d2world.map.MapIO;
+import ru.ancevt.d2d2world.mapkit.CharacterMapkit;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
 import ru.ancevt.d2d2world.world.World;
 import ru.ancevt.util.args.Args;
 
 import java.io.IOException;
+
+import static ru.ancevt.d2d2world.data.Properties.setProperties;
 
 public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
@@ -106,7 +108,8 @@ public class D2D2WorldEditorMain {
 
         /* Player */
 
-        PlayerActor playerActor = new Blake();
+        PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("character_blake").createGameObject(0);
+        setProperties(playerActor, playerActor.getMapkitItem().getDataEntry());
         world.addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);

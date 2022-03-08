@@ -23,8 +23,6 @@ public class RemotePlayer {
     private String name;
     private int color;
     private int controllerState;
-    private float x;
-    private float y;
     private int ping;
     private int frags;
 
@@ -78,27 +76,6 @@ public class RemotePlayer {
         this.controllerState = controllerState;
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public void setXY(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-
     @Override
     public String toString() {
         return "RemotePlayer{" +
@@ -106,8 +83,6 @@ public class RemotePlayer {
                 ", name='" + name + '\'' +
                 ", color=" + color +
                 ", controllerState=" + controllerState +
-                ", x=" + x +
-                ", y=" + y +
                 ", ping=" + ping +
                 ", frags=" + frags +
                 '}';
