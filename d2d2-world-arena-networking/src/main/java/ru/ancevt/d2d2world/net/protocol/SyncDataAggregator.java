@@ -8,16 +8,18 @@ import ru.ancevt.d2d2world.gameobject.IDirectioned;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.net.message.MessageType;
-import ru.ancevt.d2d2world.net.message.SyncDataType;
-import ru.ancevt.d2d2world.sync.ISyncManager;
+import ru.ancevt.d2d2world.sync.SyncDataType;
+import ru.ancevt.d2d2world.sync.ISyncDataAggregator;
+
+import java.io.ByteArrayInputStream;
 
 import static ru.ancevt.d2d2world.data.Properties.getProperties;
 
-public class SyncManager implements ISyncManager {
+public class SyncDataAggregator implements ISyncDataAggregator {
 
     private ByteOutputWriter buffer;
 
-    public SyncManager() {
+    public SyncDataAggregator() {
         buffer = ByteOutputWriter.newInstance();
     }
 
@@ -36,8 +38,6 @@ public class SyncManager implements ISyncManager {
 
     @Override
     public void xy(@NotNull IGameObject gameObject) {
-        // System.out.println(">> xy " + gameObject);
-
         buffer.writeByte(SyncDataType.XY)
                 .writeInt(gameObject.getGameObjectId())
                 .writeFloat(gameObject.getX())
@@ -47,8 +47,8 @@ public class SyncManager implements ISyncManager {
 
     @Override
     public void animation(@NotNull IAnimated animated, boolean loop) {
-        buffer.writeByte(SyncDataType.ANIMATION).
-                writeInt(animated.getGameObjectId())
+        buffer.writeByte(SyncDataType.ANIMATION)
+                .writeInt(animated.getGameObjectId())
                 .writeByte(animated.getAnimation())
                 .writeByte(loop ? 1 : 0)
                 .toByteArray();
@@ -116,6 +116,9 @@ public class SyncManager implements ISyncManager {
     @Override
     public synchronized byte[] createSyncMessage() {
         byte[] data = buffer.toByteArray();
+
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(data);
 
         byte[] result = ByteOutputWriter.newInstance()
                 .writeByte(MessageType.SERVER_SYNC_DATA)

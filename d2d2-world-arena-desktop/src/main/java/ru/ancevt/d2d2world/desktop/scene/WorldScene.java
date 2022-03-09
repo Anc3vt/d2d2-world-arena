@@ -21,12 +21,17 @@ import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.concurrent.Async;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.text.BitmapText;
+import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
+import ru.ancevt.d2d2world.debug.DebugPanel;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
+import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.map.MapIO;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
 import ru.ancevt.d2d2world.net.dto.MapLoadedDto;
+import ru.ancevt.d2d2world.sync.SyncDataReceiver;
+import ru.ancevt.d2d2world.sync.SyncMotion;
 import ru.ancevt.d2d2world.world.World;
 
 import java.io.IOException;
@@ -51,7 +56,7 @@ public class WorldScene extends DisplayObjectContainer {
         world = new World();
         world.getPlayProcessor().setEnabled(false);
 
-        MODULE_CLIENT.getSyncDataReceiver().setWorld(world);
+        ((SyncDataReceiver)MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
 
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
@@ -75,6 +80,14 @@ public class WorldScene extends DisplayObjectContainer {
         debug.setText("debug");
 
         world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
+
+        addEventListener(WorldScene.class, Event.ADD_TO_STAGE, this::this_addToStage);
+    }
+
+    private void this_addToStage(Event event) {
+        removeEventListeners(WorldScene.class);
+
+        getRoot().add(new DebugPanel(SyncMotion.class.getSimpleName()));
     }
 
     public void init() {
@@ -86,6 +99,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         MapkitManager.getInstance().disposeExternalMapkits();
 
+        world.setSceneryPacked(false);
         world.clear();
 
         Async.run(() -> {
@@ -123,8 +137,12 @@ public class WorldScene extends DisplayObjectContainer {
         if (!eventsAdded) {
             getRoot().addEventListener(InputEvent.KEY_DOWN, event -> {
                 var e = (InputEvent) event;
+                final int oldState = localPlayerController.getState();
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
-                MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+
+                if (oldState != localPlayerController.getState()) {
+                    MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                }
                 /*if (e.getKeyCode() == KeyCode.F11) {
                     if(shadowRadial.getDarknessValue() == 0) return;
                     shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() - 1);
@@ -134,8 +152,11 @@ public class WorldScene extends DisplayObjectContainer {
             });
             getRoot().addEventListener(InputEvent.KEY_UP, event -> {
                 var e = (InputEvent) event;
+                final int oldState = localPlayerController.getState();
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
-                MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                if (oldState != localPlayerController.getState()) {
+                    MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                }
             });
 
             MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_OPEN, e -> localPlayerController.setEnabled(false));
@@ -144,10 +165,20 @@ public class WorldScene extends DisplayObjectContainer {
         }
     }
 
+    public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
+        PlayerActor localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+        localPlayerActor.setController(localPlayerController);
+        localPlayerActor.setLocalPlayerActor(true);
+        world.getCamera().setAttachedTo(localPlayerActor);
+        world.getCamera().setBoundsLock(true);
+    }
+
     @Override
     public void onEachFrame() {
         super.onEachFrame();
         if (!MODULE_CLIENT.isConnected() || !MODULE_CLIENT.isEnteredServer()) return;
+
+        SyncMotion.process();
 
         if (frameCounter % 1000 == 0) {
             MODULE_CLIENT.sendServerInfoRequest();

@@ -37,11 +37,11 @@ public class CharacterMapkit extends Mapkit {
                 class =""" + PlayerActor.class.getName() + """
                 |
                 damagePower = 1 |
-                weight = 1 |
+                weight = 0.5 |
                 maxHealth = 100 |
                 health = 100 |
                 speed = 0.75 |
-                jumpPower = 8 |
+                jumpPower = 4 |
                 collisionX = -6 |
                 collisionY = -12 |
                 collisionWidth = 12 |

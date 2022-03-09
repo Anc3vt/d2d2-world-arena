@@ -50,7 +50,7 @@ public final class DataEntryLoader {
                 if (!startsWithWhite(line)) {
 
                     if (stringBuilder.length() > 0) {
-                        log.debug("creating data entry {}", stringBuilder.toString());
+                        //log.debug("creating data entry {}", stringBuilder);
                         result.add(DataEntry.newInstance(stringBuilder.toString()));
                     }
                     stringBuilder.setLength(0);
@@ -65,7 +65,7 @@ public final class DataEntryLoader {
             }
 
             if (stringBuilder.length() > 0) {
-                log.debug("creating data entry {}", stringBuilder.toString());
+                //log.debug("creating data entry {}", stringBuilder.toString());
                 result.add(DataEntry.newInstance(stringBuilder.toString()));
             }
         }

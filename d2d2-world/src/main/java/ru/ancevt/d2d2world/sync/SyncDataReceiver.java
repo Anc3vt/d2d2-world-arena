@@ -1,4 +1,4 @@
-package ru.ancevt.d2d2world.net.message;
+package ru.ancevt.d2d2world.sync;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.io.ByteInputReader;
@@ -11,10 +11,8 @@ import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
 import ru.ancevt.d2d2world.world.World;
 
-import static ru.ancevt.d2d2world.net.message.SyncDataType.*;
-
 @Slf4j
-public class SyncDataReceiver {
+public class SyncDataReceiver implements ISyncDataReceiver {
 
     private World world;
     private boolean enabled;
@@ -39,7 +37,8 @@ public class SyncDataReceiver {
         return world;
     }
 
-    public void bytesReceived(byte[] syncData) {
+    @Override
+    public synchronized void bytesReceived(byte[] syncData) {
         if (!enabled) return;
 
         ByteInputReader in = ByteInputReader.newInstance(syncData);
@@ -48,11 +47,10 @@ public class SyncDataReceiver {
 
             try {
                 int type = in.readByte();
-                System.out.println(">> " + type);
                 int gameObjectId = in.readInt();
 
                 switch (type) {
-                    case NEW -> {
+                    case SyncDataType.NEW -> {
                         int layer = in.readByte();
                         String mapkitName = in.readUtf(byte.class);
                         String mapkitItemId = in.readUtf(byte.class);
@@ -60,35 +58,34 @@ public class SyncDataReceiver {
                         createGameObject(gameObjectId, layer, mapkitName, mapkitItemId, dataEntryText);
                     }
 
-                    case REMOVE -> {
+                    case SyncDataType.REMOVE -> {
                         removeGameObject(in.readInt());
                     }
 
-                    case ANIMATION -> {
+                    case SyncDataType.ANIMATION -> {
                         setAnimation(gameObjectId, in.readByte(), in.readByte() == 1);
                     }
 
-                    case XY -> {
+                    case SyncDataType.XY -> {
                         setXY(gameObjectId, in.readFloat(), in.readFloat());
                     }
 
-                    case HEALTH -> {
+                    case SyncDataType.HEALTH -> {
                         setHealth(gameObjectId, in.readShort());
                     }
 
-                    case MAX_HEALTH -> {
+                    case SyncDataType.MAX_HEALTH -> {
                         setMaxHealth(gameObjectId, in.readShort());
                     }
 
-                    case DIRECTION -> {
+                    case SyncDataType.DIRECTION -> {
                         setDirection(gameObjectId, in.readByte() - 1);
                     }
 
                     default -> throw new IllegalStateException("no such SyncDataType " + type);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(0);
+                log.error(e.getMessage(), e);
             }
         }
     }
@@ -114,7 +111,10 @@ public class SyncDataReceiver {
 
     private void setXY(int gameObjectId, float x, float y) {
         IGameObject o = world.getGameObjectById(gameObjectId);
-        if (o != null) o.setXY(x, y);
+        if (o != null) {
+            SyncMotion.syncMove(o, x, y);
+            //o.setXY(x, y);
+        }
     }
 
     private void setAnimation(int gameObjectId, int animKey, boolean loop) {

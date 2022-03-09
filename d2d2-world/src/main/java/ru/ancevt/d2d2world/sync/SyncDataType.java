@@ -1,4 +1,4 @@
-package ru.ancevt.d2d2world.net.message;
+package ru.ancevt.d2d2world.sync;
 
 public class SyncDataType {
 

@@ -6,7 +6,7 @@ import ru.ancevt.d2d2world.gameobject.IDestroyable;
 import ru.ancevt.d2d2world.gameobject.IDirectioned;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 
-public class StubSyncManager implements ISyncManager {
+public class StubSyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public void newGameObject(IGameObject gameObject) {

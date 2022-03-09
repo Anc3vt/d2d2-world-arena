@@ -1,0 +1,81 @@
+package ru.ancevt.d2d2world.sync;
+
+import ru.ancevt.commons.Pair;
+import ru.ancevt.d2d2.D2D2;
+import ru.ancevt.d2d2.display.IDisplayObject;
+import ru.ancevt.d2d2.display.Root;
+import ru.ancevt.d2d2.display.Sprite;
+import ru.ancevt.d2d2.event.Event;
+import ru.ancevt.d2d2.event.InputEvent;
+import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+public class SyncMotion {
+
+    private static final Map<IDisplayObject, Pair<Float, Float>> map = new HashMap<>();
+
+    public static void syncMove(IDisplayObject o, float x, float y) {
+        //var targetXY = map.get(o);
+        map.put(o, Pair.of(x, y));
+
+        o.removeEventListeners(SyncMotion.class);
+        o.addEventListener(SyncMotion.class, Event.REMOVE_FROM_STAGE, event -> {
+            map.remove(o);
+            o.removeEventListeners(SyncMotion.class);
+        });
+    }
+
+    public static void clear() {
+        map.clear();
+    }
+
+    public static void process() {
+        List<IDisplayObject> toRemove = new LinkedList<>();
+
+        map.forEach((displayObject, targetXY) -> {
+            float oX = displayObject.getX();
+            float oY = displayObject.getY();
+
+            float tX = targetXY.getFirst();
+            float tY = targetXY.getSecond();
+
+            final float factor = 5f;
+
+            float speedX = (tX - oX) / factor;
+            float speedY = (tY - oY);
+
+            displayObject.move(speedX, speedY);
+
+            String text = displayObject.getX() + ", " + displayObject.getY() + "\n" + tX + ", " + tY + "\n" + Math.random();
+            System.setProperty(SyncMotion.class.getSimpleName(), text);
+
+            if (Math.abs(tX - oX) < 1f && Math.abs(tY - oY) < 1f) {
+                toRemove.add(displayObject);
+            }
+        });
+
+        toRemove.forEach(map::remove);
+    }
+
+    public static void main(String[] args) {
+        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+
+        Sprite sprite = new Sprite("satellite");
+
+        root.add(sprite);
+
+        root.addEventListener(InputEvent.MOUSE_DOWN, event -> {
+            if (event instanceof InputEvent e) {
+                SyncMotion.syncMove(sprite, e.getX(), e.getY());
+            }
+        });
+
+        root.addEventListener(Event.EACH_FRAME, event -> SyncMotion.process());
+
+        D2D2.loop();
+    }
+}

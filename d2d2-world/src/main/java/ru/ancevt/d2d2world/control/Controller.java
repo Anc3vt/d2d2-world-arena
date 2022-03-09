@@ -128,11 +128,17 @@ public class Controller {
     }
 
     public void applyState(int s) {
-        setA((s & 1) != 0);
-        setB((s & 2) != 0);
-        setC((s & 4) != 0);
-        setLeft((s & 8) != 0);
-        setRight((s & 16) != 0);
+        final boolean a = (s & 1) != 0;
+        final boolean b = (s & 2) != 0;
+        final boolean c = (s & 4) != 0;
+        final boolean l = (s & 8) != 0;
+        final boolean r = (s & 16) != 0;
+
+        if (a != isA()) setA(a);
+        if (b != isB()) setB(b);
+        if (c != isC()) setC(c);
+        if (l != isLeft()) setLeft(l);
+        if (r != isRight()) setRight(r);
     }
 
     public int getState() {
@@ -143,14 +149,5 @@ public class Controller {
         if (isLeft()) r += 8;
         if (isRight()) r += 16;
         return r;
-    }
-
-    public static void main(String[] args) {
-        var c = new Controller();
-        c.setEnabled(true);
-        c.setRight(true);
-        c.setA(true);
-
-        System.out.println(c.getState());
     }
 }

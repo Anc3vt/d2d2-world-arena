@@ -52,4 +52,6 @@ public interface ClientListener {
     void rconResponse(String rconResponseData);
 
     void mapContentLoaded(String mapFilename);
+
+    void localPlayerActorGameObjectId(int playerActorGameObjectId);
 }

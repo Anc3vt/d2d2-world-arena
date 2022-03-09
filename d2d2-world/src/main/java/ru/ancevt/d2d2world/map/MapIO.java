@@ -59,7 +59,7 @@ public class MapIO {
 
         for (DataEntry dataEntry : dataEntries) {
 
-            log.debug("loaded data entry {}", dataEntry.toString());
+            //log.debug("loaded data entry {}", dataEntry.toString());
 
             if (dataEntry.containsKey(DataKey.MAP)) {
                 setProperties(map, dataEntry);

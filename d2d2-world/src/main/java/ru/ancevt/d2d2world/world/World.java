@@ -30,8 +30,8 @@ import ru.ancevt.d2d2world.gameobject.weapon.Weapon;
 import ru.ancevt.d2d2world.map.GameMap;
 import ru.ancevt.d2d2world.map.Room;
 import ru.ancevt.d2d2world.process.PlayProcessor;
-import ru.ancevt.d2d2world.sync.ISyncManager;
-import ru.ancevt.d2d2world.sync.StubSyncManager;
+import ru.ancevt.d2d2world.sync.ISyncDataAggregator;
+import ru.ancevt.d2d2world.sync.StubSyncDataAggregator;
 
 import java.util.*;
 
@@ -52,9 +52,9 @@ public class World extends DisplayObjectContainer {
     private Room currentRoom;
     private boolean playing;
     private boolean switchingRoomsNow;
-    private ISyncManager syncManager;
+    private ISyncDataAggregator syncManager;
 
-    public World(@NotNull ISyncManager syncManager) {
+    public World(@NotNull ISyncDataAggregator syncManager) {
         this.syncManager = syncManager;
 
         gameObjectMap = new HashMap<>();
@@ -71,14 +71,14 @@ public class World extends DisplayObjectContainer {
     }
 
     public World() {
-        this(new StubSyncManager());
+        this(new StubSyncDataAggregator());
     }
 
-    public void setSyncManager(ISyncManager syncManager) {
+    public void setSyncManager(ISyncDataAggregator syncManager) {
         this.syncManager = syncManager;
     }
 
-    public @NotNull ISyncManager getSyncManager() {
+    public @NotNull ISyncDataAggregator getSyncManager() {
         return syncManager;
     }
 
@@ -203,7 +203,7 @@ public class World extends DisplayObjectContainer {
     }
 
     public List<IGameObject> getSyncGameObjects() {
-        return gameObjects.stream().filter(o->o instanceof ISynchronized).toList();
+        return gameObjects.stream().filter(o -> o instanceof ISynchronized).toList();
     }
 
     public IGameObject getGameObject(int index) {
@@ -300,7 +300,9 @@ public class World extends DisplayObjectContainer {
 
         gameObject.setWorld(this);
 
-        getSyncManager().newGameObject(gameObject);
+        if (gameObject instanceof ISynchronized) {
+            getSyncManager().newGameObject(gameObject);
+        }
 
         if (updateRoom)
             currentRoom.addGameObject(layerIndex, gameObject);

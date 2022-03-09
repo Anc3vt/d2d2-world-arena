@@ -23,6 +23,8 @@ import ru.ancevt.d2d2.display.ScaleMode;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.D2D2World;
+import ru.ancevt.d2d2world.debug.DebugPanel;
+import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 
 import java.io.IOException;
@@ -44,7 +46,7 @@ public class D2D2WorldArenaDesktopMain {
                 String value = split[1];
                 MODULE_CONFIG.setProperty(key, value);
             }
-            if(arg.startsWith("-S")) {
+            if (arg.startsWith("-S")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
@@ -78,7 +80,10 @@ public class D2D2WorldArenaDesktopMain {
         D2D2.getStage().setRoot(introRoot);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
-
+        if (GameRoot.INSTANCE != null) {
+            GameRoot.INSTANCE.exit();
+        }
+        DebugPanel.saveAll();
         System.exit(0);
     }
 

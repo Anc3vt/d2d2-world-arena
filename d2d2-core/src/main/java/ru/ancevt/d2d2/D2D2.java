@@ -23,10 +23,19 @@ import ru.ancevt.d2d2.display.texture.TextureManager;
 
 public class D2D2 {
 
-    private static D2D2Starter starter;
     private static final TextureManager textureManager = new TextureManager();
+    private static D2D2Starter starter;
+    private static ExitListener exitListener;
 
     private D2D2() {
+    }
+
+    public static ExitListener getExitListener() {
+        return exitListener;
+    }
+
+    public static void setExitListener(ExitListener exitListener) {
+        D2D2.exitListener = exitListener;
     }
 
     public static D2D2Starter getStarter() {
@@ -47,6 +56,9 @@ public class D2D2 {
 
     public static void loop() {
         starter.start();
+        if(exitListener != null) {
+            exitListener.engineExit();
+        }
     }
 
     public static TextureManager getTextureManager() {
@@ -55,5 +67,10 @@ public class D2D2 {
 
     public static void exit() {
         starter.stop();
+    }
+
+    @FunctionalInterface
+    public interface ExitListener {
+        void engineExit();
     }
 }

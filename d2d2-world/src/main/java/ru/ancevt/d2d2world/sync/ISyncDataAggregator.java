@@ -5,7 +5,7 @@ import ru.ancevt.d2d2world.gameobject.IDestroyable;
 import ru.ancevt.d2d2world.gameobject.IDirectioned;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 
-public interface ISyncManager {
+public interface ISyncDataAggregator {
 
     void newGameObject(IGameObject gameObject);
 

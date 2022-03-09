@@ -23,13 +23,15 @@ import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.d2d2world.net.dto.ExtraDto;
+import ru.ancevt.d2d2world.net.dto.PlayerActorDto;
 import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
-import ru.ancevt.d2d2world.net.message.SyncDataReceiver;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import ru.ancevt.d2d2world.net.transfer.Headers;
+import ru.ancevt.d2d2world.sync.ISyncDataReceiver;
+import ru.ancevt.d2d2world.sync.SyncDataReceiver;
 import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
 import ru.ancevt.net.tcpb254.connection.ConnectionListener;
@@ -60,16 +62,16 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     private int localPlayerFrags;
     private int localPlayerPing;
     private int localPlayerColor;
-    private final SyncDataReceiver syncDataReceiver;
+    private final ISyncDataReceiver syncDataReceiver;
 
     private Client() {
-        syncDataReceiver = new SyncDataReceiver();
+        this.syncDataReceiver = new SyncDataReceiver();
         clientListeners = new CopyOnWriteArrayList<>();
 
         MODULE_CLIENT_PROTOCOL.addClientProtocolImplListener(this);
     }
 
-    public SyncDataReceiver getSyncDataReceiver() {
+    public ISyncDataReceiver getSyncDataReceiver() {
         return syncDataReceiver;
     }
 
@@ -201,7 +203,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                     }
                 }
             });
+        } else if (extraDto instanceof PlayerActorDto dto) {
+            clientListeners.forEach(l->l.localPlayerActorGameObjectId(dto.getPlayerActorGameObjectId()));
         }
+
     }
 
     /**

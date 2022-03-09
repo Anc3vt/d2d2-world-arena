@@ -17,7 +17,6 @@
  */
 package ru.ancevt.d2d2world.gameobject.weapon;
 
-import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2world.gameobject.Actor;
 import ru.ancevt.d2d2world.gameobject.ICollision;
@@ -26,13 +25,14 @@ import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 abstract public class Bullet extends DisplayObjectContainer implements ICollision, IDirectioned {
 
+    private final MapkitItem mapkitItem;
     private boolean collisionEnabled;
     private float collisionX, collisionY, collisionWidth, collisionHeight;
     private Actor owner;
-    private PlainRect collisionRect;
     private int direction;
 
-    Bullet() {
+    public Bullet(MapkitItem mapkitItem, int gameObjectId) {
+        this.mapkitItem = mapkitItem;
         setCollisionEnabled(true);
         setCollision(-4, -4, 8, 8);
     }

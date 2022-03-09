@@ -46,6 +46,7 @@ abstract public class Actor extends Animated implements ISynchronized,
     private int attackTime;
     private int jumpTime;
     private int damagingTime;
+    private boolean onJump;
 
     private float startX, startY, movingSpeedX, movingSpeedY;
     private float speed;
@@ -373,8 +374,12 @@ abstract public class Actor extends Animated implements ISynchronized,
     }
 
     public void jump() {
-        getMapkitItem().playSound(SoundKey.JUMP, 0);
-        setVelocityY(-getJumpPower());
+        if (floor != null) {
+            onJump = true;
+            getMapkitItem().playSound(SoundKey.JUMP, 0);
+            setVelocityY(-getJumpPower());
+            setFloor(null);
+        }
     }
 
     public void go(final int direction) {
@@ -418,6 +423,7 @@ abstract public class Actor extends Animated implements ISynchronized,
         boolean right = c.isRight();
 
         if (isAlive()) {
+
             if (left || right) {
                 int direction = left ? -1 : 1;
                 go(direction);
@@ -435,10 +441,12 @@ abstract public class Actor extends Animated implements ISynchronized,
                     attack();
             }
 
-            if (c.isA() && getFloor() != null) {
+            if (c.isA() && getFloor() != null && !onJump) {
                 jump();
                 jumpTime = JUMP_TIME;
             }
+
+            if(!c.isA() && getFloor() != null) onJump = false;
         }
 
         if (attackTime > 1) attackTime--;
@@ -447,7 +455,7 @@ abstract public class Actor extends Animated implements ISynchronized,
         if (jumpTime > 0) {
             jumpTime--;
             if (c.isA()) setVelocityY(getVelocityY() - 1f);
-        } else c.setA(false);
+        }
 
         if (getFloor() == null) {
 
@@ -471,6 +479,10 @@ abstract public class Actor extends Animated implements ISynchronized,
 
         movingSpeedX =
                 movingSpeedY = 0.0f;
+    }
+
+    public boolean isOnJump() {
+        return onJump;
     }
 
     @Override

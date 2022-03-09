@@ -75,9 +75,7 @@ public class PlayProcessor {
     }
 
     public final synchronized void process() {
-        if(!enabled) return;
-
-        IGravitied gravitied;
+        if (!enabled) return;
 
         for (int i = 0; i < world.getGameObjectCount(); i++) {
             final IGameObject o1 = world.getGameObject(i);
@@ -86,11 +84,12 @@ public class PlayProcessor {
                 processAction(actioned);
             }
 
-            if (o1 instanceof IGravitied) {
-                gravitied = (IGravitied) o1;
-                gravitied.setFloor(null);
-                processGravity(gravitied);
+
+            if (o1 instanceof IGravitied g) {
+                processGravity(g);
             }
+
+            boolean collideWithFloor = false;
 
             for (int j = 0; j < world.getGameObjectCount(); j++) {
                 final IGameObject o2 = world.getGameObject(j);
@@ -100,9 +99,13 @@ public class PlayProcessor {
                 if (o1 instanceof ICollision collision1 && o2 instanceof ICollision collision2) {
                     if (hitTest(collision1, collision2)) {
                         processCollisionsHits(collision1, collision2);
+                        collideWithFloor = true;
                     }
                 }
+            }
 
+            if(o1 instanceof IGravitied g && !collideWithFloor) {
+                g.setFloor(null);
             }
 
             o1.process();
@@ -179,23 +182,28 @@ public class PlayProcessor {
             o1.setX(x2 + w2 - tx1);
         }
 
-        if (o1 instanceof IGravitied gravitied) {
-            if (cy1 < cy2 && y1 + h1 < y2 + 11) {
+        if (o1 instanceof IGravitied g) {
+            boolean floorUnderObject = cy1 < cy2 && y1 + h1 < y2 + 11;
 
-                if (gravitied.getVelocityY() >= 0) {
+            if (floorUnderObject) {
+
+                if (g.getVelocityY() > 0) {
                     o1.setY(y2 - h1 - ty1);
-                    setFloorTo(gravitied, o2);
+                    setFloorTo(g, o2);
                 }
 
             } else if (checkWalls && cy1 > cy2 && y1 + 8 > y2 + h2 && cx1 > x2 && cx1 < x2 + w2) {
                 o1.setY(y2 + h2 - ty1);
-
-                gravitied.setVelocityY(0);
+                g.setFloor(null);
+                g.setVelocityY(0);
             }
+
+
         }
     }
 
     private static void setFloorTo(IGravitied target, ICollision floor) {
+        if(target.getFloor() == floor) return;
         target.setVelocityY(0);
         target.setFloor(floor);
     }
@@ -204,7 +212,7 @@ public class PlayProcessor {
         float x1 = o1.getX() + o1.getCollisionX();
         float y1 = o1.getY() + o1.getCollisionY();
         float w1 = o1.getCollisionWidth();
-        float h1 = o1.getCollisionHeight();
+        float h1 = o1.getCollisionHeight() + 1;
 
         float x2 = o2.getX() + o2.getCollisionX();
         float y2 = o2.getY() + o2.getCollisionY();
@@ -215,19 +223,18 @@ public class PlayProcessor {
     }
 
     private void processGravity(IGravitied o) {
-        if (o.isGravityEnabled()) {
+        float velX = o.getVelocityX();
+        if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);
+
+        if (o.isGravityEnabled() && o.getFloor() == null) {
             float fallSpeed = o.getWeight() * gravity;
             o.setVelocityY(o.getVelocityY() + fallSpeed);
 
             if (o.getVelocityY() > MAX_VELOCITY_Y) o.setVelocityY(MAX_VELOCITY_Y);
-
-            float velX = o.getVelocityX();
-
-            if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);
-
-            o.setVelocityX(Math.abs(velX) < 0.1f ? 0 : velX * 0.75f);
-            o.move(o.getVelocityX(), o.getVelocityY());
         }
+
+        o.setVelocityX(Math.abs(velX) < 0.1f ? 0 : velX * 0.75f);
+        o.move(o.getVelocityX(), o.getVelocityY());
     }
 
     private void processDoorTeleport(Actor actor, AreaDoorTeleport area) {

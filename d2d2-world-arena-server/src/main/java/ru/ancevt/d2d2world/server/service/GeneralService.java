@@ -25,10 +25,11 @@ import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.commons.regex.PatternMatcher;
 import ru.ancevt.d2d2world.net.dto.ExtraDto;
 import ru.ancevt.d2d2world.net.dto.MapLoadedDto;
+import ru.ancevt.d2d2world.net.dto.PlayerActorDto;
 import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
-import ru.ancevt.d2d2world.net.protocol.SyncManager;
+import ru.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import ru.ancevt.d2d2world.net.transfer.FileSender;
 import ru.ancevt.d2d2world.net.transfer.Headers;
 import ru.ancevt.d2d2world.server.ServerConfig;
@@ -57,6 +58,7 @@ import static ru.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
 import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static ru.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
+import static ru.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
 import static ru.ancevt.d2d2world.server.service.ServerSender.MODULE_SENDER;
 import static ru.ancevt.d2d2world.server.simulation.ServerWorld.MODULE_WORLD;
 
@@ -73,7 +75,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final SyncService syncService = SyncService.MODULE_SYNC;
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
     private final ServerSender serverSender = MODULE_SENDER;
-    private final ServerPlayerManager serverPlayerManager = ServerPlayerManager.MODULE_PLAYER_MANAGER;
+    private final ServerPlayerManager serverPlayerManager = MODULE_PLAYER_MANAGER;
     private final ServerStateInfo serverStateInfo = MODULE_SERVER_STATE_INFO;
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 
@@ -314,7 +316,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void playerController(int playerId, int controllerState) {
-        serverPlayerManager.getPlayerById(playerId).ifPresent(player -> player.setControllerState(controllerState));
+        MODULE_WORLD.playerController(playerId, controllerState);
     }
 
     /**
@@ -373,11 +375,16 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void extraFromPlayer(int connectionId, ExtraDto extraDto) {
+    public void extraFromPlayer(int playerId, ExtraDto extraDto) {
         if (extraDto instanceof MapLoadedDto) {
             MODULE_WORLD.getWorld().getSyncGameObjects().forEach(o -> {
-                MODULE_SENDER.sendToPlayer(connectionId, new SyncManager().createSyncMessage(o));
+                MODULE_SENDER.sendToPlayer(playerId, new SyncDataAggregator().createSyncMessage(o));
             });
+
+            MODULE_SENDER.sendToPlayer(playerId,
+                    createMessageExtra(PlayerActorDto.of(MODULE_WORLD.getPlayerActor(playerId).getGameObjectId()))
+            );
+
         }
     }
 
@@ -429,6 +436,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             MODULE_SERVER_STATE_INFO.setMap(mapName);
             MODULE_WORLD.loadMap(mapName);
+            MODULE_PLAYER_MANAGER.getPlayerList().forEach(MODULE_WORLD::addPlayer);
             sendCurrentMapInfoToAll();
         } else {
             throw new IllegalStateException("no such map '" + mapName + "'");

@@ -22,6 +22,8 @@ import ru.ancevt.d2d2world.mapkit.MapkitItem;
 
 public class PlayerActor extends Actor implements ISynchronized {
 
+    private boolean localPlayerActor;
+
     public PlayerActor(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
 
@@ -30,6 +32,11 @@ public class PlayerActor extends Actor implements ISynchronized {
         add(playerNameBitmapText, 0, -30);
     }
 
-    
+    public void setLocalPlayerActor(boolean localPlayerActor) {
+        this.localPlayerActor = localPlayerActor;
+    }
 
+    public boolean isLocalPlayerActor() {
+        return localPlayerActor;
+    }
 }

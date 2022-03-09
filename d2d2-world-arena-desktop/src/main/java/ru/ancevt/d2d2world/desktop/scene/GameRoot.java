@@ -27,6 +27,7 @@ import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
+import ru.ancevt.d2d2world.debug.DebugPanel;
 import ru.ancevt.d2d2world.desktop.DesktopConfig;
 import ru.ancevt.d2d2world.desktop.ui.TabWindow;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
@@ -39,9 +40,8 @@ import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import ru.ancevt.net.tcpb254.CloseStatus;
 
-import java.util.concurrent.TimeUnit;
-
 import static java.lang.String.format;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static ru.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static ru.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static ru.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
@@ -223,7 +223,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     public void clientConnectionClosed(@NotNull CloseStatus status) {
         worldScene.stop();
         MODULE_CHAT.addMessage(status.getErrorMessage(), Color.RED);
-        new Lock().lock(5, TimeUnit.SECONDS);
+        new Lock().lock(5, SECONDS);
         if(attempts < 10) {
             start(server, MODULE_CLIENT.getLocalPlayerName());
         } else {
@@ -242,9 +242,17 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         MODULE_CLIENT.sendPlayerEnterRequest();
     }
 
+    /**
+     * {@link ClientListener} method
+     */
     @Override
     public void mapContentLoaded(String mapFilename) {
         worldScene.loadMap(mapFilename);
+    }
+
+    @Override
+    public void localPlayerActorGameObjectId(int playerActorGameObjectId) {
+        worldScene.setLocalPlayerActorGameObjectId(playerActorGameObjectId);
     }
 
     /**
@@ -319,7 +327,10 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     public void exit() {
+        MODULE_CLIENT.sendExitRequest();
         MODULE_CHAT.dispose();
+        new Lock().lock(1, SECONDS);
+        DebugPanel.saveAll();
         System.exit(0);
     }
 

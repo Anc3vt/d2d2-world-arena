@@ -74,7 +74,7 @@ public class MapkitManager {
     }
 
     public Mapkit load(String mapkitDirName) throws IOException {
-        log.debug("load mapkit " + mapkitDirName);
+        log.debug("load mapkit directory {}", mapkitDirName);
 
         DataEntry[] dataLines = DataEntryLoader.load(ResourcePath.MAPKITS + mapkitDirName + INDEX);
 
@@ -88,7 +88,7 @@ public class MapkitManager {
         Mapkit mapkit = createExternalMapkit(uid, name);
 
         for (DataEntry dataEntry : dataLines) {
-            log.debug("loaded data line: " + dataEntry.toString());
+            //log.debug("loaded data line: " + dataEntry.toString());
 
             if (dataEntry.containsKey(DataKey.MAPKIT)) {
                 continue;

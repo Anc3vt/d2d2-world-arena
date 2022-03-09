@@ -13,10 +13,10 @@ import ru.ancevt.d2d2world.map.MapIO;
 import ru.ancevt.d2d2world.mapkit.CharacterMapkit;
 import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
-import ru.ancevt.d2d2world.net.protocol.SyncManager;
+import ru.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import ru.ancevt.d2d2world.server.content.ServerContentManager;
 import ru.ancevt.d2d2world.server.player.Player;
-import ru.ancevt.d2d2world.sync.ISyncManager;
+import ru.ancevt.d2d2world.sync.ISyncDataAggregator;
 import ru.ancevt.d2d2world.world.World;
 
 import java.io.IOException;
@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ru.ancevt.d2d2world.data.Properties.setProperties;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
-import static ru.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
 import static ru.ancevt.d2d2world.server.service.ServerSender.MODULE_SENDER;
 
 @Slf4j
@@ -34,18 +33,18 @@ public class ServerWorld {
     public static final ServerWorld MODULE_WORLD = new ServerWorld();
 
     private World world;
-    private final ISyncManager syncManager;
+    private final ISyncDataAggregator syncDataAggregator;
 
     private final Map<Integer, PlayerActor> playerActorMap = new ConcurrentHashMap<>();
 
     private ServerWorld() {
-        syncManager = new SyncManager();
+        syncDataAggregator = new SyncDataAggregator();
     }
 
     public void start() {
         Root root = D2D2.init(new NoRenderStarter(900, 600));
 
-        world = new World(syncManager);
+        world = new World(syncDataAggregator);
         root.add(world);
         Async.run(D2D2::loop);
     }
@@ -77,16 +76,21 @@ public class ServerWorld {
     }
 
     private void this_eachFrame(Event event) {
-        MODULE_PLAYER_MANAGER.getPlayerList().forEach(player -> {
-            PlayerActor playerActor = playerActorMap.get(player.getId());
-            if (playerActor != null) {
-                playerActor.getController().applyState(player.getControllerState());
-            }
-        });
-
-        if(syncManager.hasData()) {
-            MODULE_SENDER.sendToAll(syncManager.createSyncMessage());
+        if (syncDataAggregator.hasData()) {
+            MODULE_SENDER.sendToAll(syncDataAggregator.createSyncMessage());
         }
+    }
+
+    public void playerController(int playerId, int controllerState) {
+        System.out.println("playerController " + playerId + " " + controllerState);
+        PlayerActor playerActor = playerActorMap.get(playerId);
+        if (playerActor != null) {
+            playerActor.getController().applyState(controllerState);
+        }
+    }
+
+    public PlayerActor getPlayerActor(int playerId) {
+        return playerActorMap.get(playerId);
     }
 
     public void addPlayer(@NotNull Player player) {
@@ -97,6 +101,8 @@ public class ServerWorld {
         playerActor.setXY(64, 64);
         world.addGameObject(playerActor, 5, false);
         playerActorMap.put(player.getId(), playerActor);
+
+        log.info("Add player actor {}", playerActor);
     }
 
     public void removePlayer(@NotNull Player player) {
@@ -104,8 +110,9 @@ public class ServerWorld {
         if (playerActor != null) {
             world.removeGameObject(playerActor, false);
         }
-    }
 
+        log.info("Remove player actor {}", playerActor);
+    }
 }
 
 

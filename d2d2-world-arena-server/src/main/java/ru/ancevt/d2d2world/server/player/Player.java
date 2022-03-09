@@ -29,7 +29,6 @@ public class Player {
     private final int color;
     private final String clientProtocolVersion;
     private String ip;
-    private int controllerState;
 
     private int lastSeenChatMessageId;
     private int ping;
@@ -81,14 +80,6 @@ public class Player {
         return clientProtocolVersion;
     }
 
-    public void setControllerState(int controllerState) {
-        this.controllerState = controllerState;
-    }
-
-    public int getControllerState() {
-        return controllerState;
-    }
-
     public int getColor() {
         return color;
     }
@@ -121,7 +112,6 @@ public class Player {
                 ", address='" + address + '\'' +
                 ", color=" + color +
                 ", clientProtocolVersion='" + clientProtocolVersion + '\'' +
-                ", controllerState=" + controllerState +
                 ", lastSeenChatMessageId=" + lastSeenChatMessageId +
                 ", ping=" + ping +
                 ", rconLoggedIn=" + rconLoggedIn +
