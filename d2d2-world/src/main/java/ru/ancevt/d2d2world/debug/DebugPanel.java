@@ -1,7 +1,9 @@
 package ru.ancevt.d2d2world.debug;
 
+import ru.ancevt.commons.concurrent.Async;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.common.PlainRect;
+import ru.ancevt.d2d2.debug.DebugBorder;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.Root;
@@ -15,28 +17,30 @@ import ru.ancevt.d2d2.touch.TouchButton;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.file.StandardOpenOption.*;
 import static ru.ancevt.d2d2.input.KeyCode.isShift;
 
 public class DebugPanel extends DisplayObjectContainer {
 
-    private static final Set<DebugPanel> debugPanels = new HashSet<>();
+    private static final Map<String, DebugPanel> debugPanels = new HashMap<>();
     private static boolean enabled;
 
     private final BitmapText text;
     private final String systemPropertyName;
     private final PlainRect bg;
+    private final TouchButton touchButton;
     private int oldX;
     private int oldY;
     private Root root;
     private boolean shiftDown;
 
     private DebugPanel(String systemPropertyName) {
-        debugPanels.add(this);
+        debugPanels.put(systemPropertyName, this);
 
         final int width = 300;
         final int height = 300;
@@ -53,12 +57,11 @@ public class DebugPanel extends DisplayObjectContainer {
         text.setBounds(width, height);
         add(text);
 
-        TouchButton touchButton = new TouchButton(width, height, true);
+        touchButton = new TouchButton(width, height, true);
         touchButton.addEventListener(TouchEvent.TOUCH_DOWN, this::touchButton_touchDown);
         touchButton.addEventListener(TouchEvent.TOUCH_DRAG, this::touchButton_touchDrag);
 
         addEventListener(DebugPanel.class, Event.ADD_TO_STAGE, this::this_addToStage);
-        addEventListener(DebugPanel.class, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
 
         add(touchButton);
     }
@@ -71,15 +74,12 @@ public class DebugPanel extends DisplayObjectContainer {
         return enabled;
     }
 
-    private void this_removeFromStage(Event event) {
-        root.removeEventListeners(this);
-    }
-
     private void this_addToStage(Event event) {
         load();
-        root = getRoot();
-        root.addEventListener(this, InputEvent.KEY_DOWN, this::root_keyDown);
-        root.addEventListener(this, InputEvent.KEY_UP, this::root_keyUp);
+        root = D2D2.getStage().getRoot();
+        root.addEventListener(InputEvent.KEY_DOWN, this::root_keyDown);
+        root.addEventListener(InputEvent.KEY_UP, this::root_keyUp);
+        removeEventListeners(DebugPanel.class);
     }
 
     private void root_keyDown(Event event) {
@@ -108,6 +108,7 @@ public class DebugPanel extends DisplayObjectContainer {
         if (shiftDown) {
             bg.setSize(e.getX() + 1, e.getY() + 1);
             text.setBounds(e.getX() + 1, e.getY() + 1);
+            touchButton.setSize(e.getX() + 1, e.getY() + 1);
             return;
         }
 
@@ -122,7 +123,7 @@ public class DebugPanel extends DisplayObjectContainer {
 
     private void this_eachFrame(Event event) {
         if (System.getProperty(systemPropertyName) != null) {
-            text.setText(System.getProperty(systemPropertyName));
+            text.setText("[" + systemPropertyName + "]\n" + System.getProperty(systemPropertyName));
         }
 
         if (bg.getWidth() < 10) bg.setWidth(10);
@@ -154,7 +155,7 @@ public class DebugPanel extends DisplayObjectContainer {
 
                 bg.setSize(w, h);
                 text.setBounds(w, h);
-
+                touchButton.setSize(w, h);
                 text.setText(data);
             }
         } catch (IOException e) {
@@ -163,12 +164,28 @@ public class DebugPanel extends DisplayObjectContainer {
     }
 
     public static void saveAll() {
-        debugPanels.forEach(DebugPanel::save);
+        debugPanels.values().forEach(DebugPanel::save);
     }
 
     public static Optional<DebugPanel> createIfEnabled(String propertyName) {
+        return createIfEnabled(propertyName, null);
+    }
+
+    public static Optional<DebugPanel> createIfEnabled(String propertyName, Object value) {
         if (enabled) {
-            DebugPanel debugPanel = new DebugPanel(propertyName);
+            DebugPanel debugPanel = debugPanels.get(propertyName);
+            if(debugPanel == null) {
+                 debugPanel = new DebugPanel(propertyName);
+            }
+
+
+            D2D2.getStage().getRoot().add(debugPanel);
+            DebugBorder debugBorder = new DebugBorder(debugPanel);
+            Async.runLater(1, TimeUnit.SECONDS, debugBorder::removeFromParent);
+            D2D2.getStage().getRoot().add(debugBorder);
+            if(propertyName != null) {
+                System.setProperty(propertyName, String.valueOf(value));
+            }
             return Optional.of(debugPanel);
         }
         return Optional.empty();

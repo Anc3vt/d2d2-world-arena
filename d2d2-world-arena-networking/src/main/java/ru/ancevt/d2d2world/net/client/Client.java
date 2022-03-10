@@ -173,6 +173,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             setLocalPlayerId(playerDto.getId());
             setLocalPlayerColor(playerDto.getColor());
             setServerProtocolVersion(d.getProtocolVersion());
+            sendPingRequest();
             clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion));
         }
 
@@ -219,6 +220,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         long pingResponseTime = System.currentTimeMillis();
         localPlayerPing = (int) (pingResponseTime - pingRequestTime);
         sender.send(PlayerPingReportDto.builder().ping(localPlayerPing).build());
+        PLAYER_MANAGER.getPlayer(localPlayerId).ifPresent(player -> player.setPing(localPlayerPing));
     }
 
     /**

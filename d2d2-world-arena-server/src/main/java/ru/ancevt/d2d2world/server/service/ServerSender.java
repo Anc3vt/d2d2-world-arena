@@ -46,10 +46,16 @@ public class ServerSender {
     }
 
     public void sendToPlayer(int playerId, Dto dto) {
+        if (log.isTraceEnabled()) {
+            log.debug("sendToPlayer " + playerId + " " + dto);
+        }
         sendToPlayer(playerId, ProtocolImpl.createDtoMessage(dto));
     }
 
     public void sendToAllExcluding(Dto dto, int excludingPlayerId) {
+        if (log.isTraceEnabled()) {
+            log.debug("sendToAllExcluding " + excludingPlayerId + " " + dto);
+        }
         sendToAllExcluding(ProtocolImpl.createDtoMessage(dto), excludingPlayerId);
     }
 
@@ -65,6 +71,7 @@ public class ServerSender {
     }
 
     public void sendToAll(Dto dto) {
+        log.debug("sendToAll " + dto);
         sendToAll(ProtocolImpl.createDtoMessage(dto));
     }
 

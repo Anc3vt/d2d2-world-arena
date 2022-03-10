@@ -103,6 +103,8 @@ public class WorldScene extends DisplayObjectContainer {
                 });
             }
         });
+
+
     }
 
     private void this_addToStage(Event event) {
@@ -126,7 +128,7 @@ public class WorldScene extends DisplayObjectContainer {
         overlay.startIn();
         Lock lock = new Lock();
         overlay.addEventListener(Event.CHANGE, Event.CHANGE, event -> {
-            if(overlay.getState() == Overlay.STATE_BLACK) {
+            if (overlay.getState() == Overlay.STATE_BLACK) {
                 lock.unlockIfLocked();
                 overlay.removeEventListeners(Event.CHANGE);
             }

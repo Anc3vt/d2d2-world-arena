@@ -82,8 +82,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             }
         });
 
-        addEventListener(InputEvent.KEY_DOWN, event -> {
+        addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
+
+            System.out.println(e.getKeyCode());
+
             switch (e.getKeyCode()) {
                 case KeyCode.PAGE_UP -> MODULE_CHAT.setScroll(MODULE_CHAT.getScroll() - 10);
                 case KeyCode.PAGE_DOWN -> MODULE_CHAT.setScroll(MODULE_CHAT.getScroll() + 10);
@@ -102,8 +105,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             }
         });
 
-        addEventListener(InputEvent.KEY_UP, event -> {
+        addEventListener(this, InputEvent.KEY_UP, event -> {
             var e = (InputEvent) event;
+
+            System.out.println("UP " + e.getKeyCode());
+
             switch (e.getKeyCode()) {
                 case KeyCode.TAB -> {
                     MODULE_CHAT.setVisible(true);
@@ -144,8 +150,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void serverInfo(@NotNull ServerInfoDto result) {
-        tabWindow.setServerName(result.getName(), result.getPlayers().size(), result.getMaxPlayers());
+    public void serverInfo(@NotNull ServerInfoDto dto) {
+        tabWindow.setServerInfo(dto.getName(), dto.getPlayers().size(), dto.getMaxPlayers());
     }
 
     /**
@@ -282,12 +288,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         tabWindow.removeFromParent();
 
         if (value) {
-            tabWindow.setServerName(serverName, 0, 0);
-            tabWindow.setPlayers(
-                    MODULE_CLIENT.getLocalPlayerId(),
-                    PlayerManager.PLAYER_MANAGER.getPlayerList()
-            );
-
+            tabWindow.setPlayers(PlayerManager.PLAYER_MANAGER.getPlayerList());
             add(tabWindow);
         }
     }

@@ -73,7 +73,7 @@ public class TabWindow extends DisplayObjectContainer {
         drawTitle();
     }
 
-    public void setPlayers(int localPlayerId, List<Player> remotePlayers) {
+    public void setPlayers(List<Player> remotePlayers) {
         this.remotePlayers = remotePlayers;
 
         clear();
@@ -115,7 +115,7 @@ public class TabWindow extends DisplayObjectContainer {
         }
     }
 
-    public void setServerName(String serverName, int players, int maxPlayers) {
+    public void setServerInfo(String serverName, int players, int maxPlayers) {
         uiServerName.setText(format("%s (%d/%d)", serverName, players, maxPlayers));
     }
 
@@ -145,7 +145,7 @@ public class TabWindow extends DisplayObjectContainer {
 
         TabWindow tabWindow = new TabWindow();
 
-        tabWindow.setServerName("D2D2 World Server", 50, 100);
+        tabWindow.setServerInfo("D2D2 World Server", 50, 100);
 
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
@@ -155,7 +155,7 @@ public class TabWindow extends DisplayObjectContainer {
             players.add(player);
         }
 
-        tabWindow.setPlayers(99, players);
+        tabWindow.setPlayers(players);
 
         root.add(tabWindow);
 

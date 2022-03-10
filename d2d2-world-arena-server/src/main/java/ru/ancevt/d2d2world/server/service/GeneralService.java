@@ -236,44 +236,31 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         }
 
         if (dto instanceof ServerInfoRequestDto) {
-            var s = MODULE_SERVER_STATE_INFO;
-
-            Set<PlayerDto> players = new HashSet<>();
-
-            MODULE_PLAYER_MANAGER.getPlayerList().forEach(
-                    player -> players.add(PlayerDto.builder()
-                            .id(player.getId())
-                            .color(player.getColor())
-                            .frags(0)
-                            .name((player.getName()))
-                            .playerActorGameObjectId(MODULE_WORLD.getPlayerActorGameObjectId(player.getId()))
-                            .ping(player.getPingValue())
-                            .build()));
-
-            serverSender.sendToPlayer(playerId, createDtoMessage(ServerInfoDto.builder()
-                    .currentMap(s.getMap())
-                    .maxPlayers(s.getMaxPlayers())
-                    .modName(s.getMod())
-                    .protocolVersion(ServerProtocolImpl.PROTOCOL_VERSION)
-                    .serverVersion(s.getVersion())
-                    .players(players)
-                    .build()
-            ));
+            serverSender.sendToPlayer(playerId, getServerInfoDto());
         }
 
         if (dto instanceof RconLoginRequestDto d) {
-            if (MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD)).equals(d.getPasswordHash())) {
+            String serverRconPasswordHash = MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD));
+            if (serverRconPasswordHash.equals(d.getPasswordHash())) {
                 serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
-                    p.setRconLoggedIn(true);
-                    if (log.isInfoEnabled()) {
-                        log.info("rcon logged in {}({}), address: {}", p.getName(), playerId, p.getAddress());
+                    if(!p.isRconLoggedIn()) {
+                        if (log.isInfoEnabled()) {
+                            log.info("rcon logged in {}({}), address: {}", p.getName(), playerId, p.getAddress());
+                        }
+                        serverSender.sendToPlayer(playerId,
+                                ServerTextDto.builder()
+                                        .text("Rcon: You are logged in as rcon admin")
+                                        .color(0xFFFFFF)
+                                        .build());
+
+                        p.setRconLoggedIn(true);
+                    } else {
+                        serverSender.sendToPlayer(playerId,
+                                ServerTextDto.builder()
+                                        .text("Rcon: You are already logged in as rcon admin")
+                                        .color(0xFFFFFF)
+                                        .build());
                     }
-                    serverSender.sendToPlayer(playerId,
-                            ServerTextDto.builder()
-                                    .text("You are logged in as rcon admin")
-                                    .color(0xFFFFFF)
-                                    .build()
-                    );
                 });
             } else {
                 if (log.isInfoEnabled()) {
@@ -284,8 +271,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
                 serverSender.sendToPlayer(playerId,
                         ServerTextDto.builder()
-                                .text("You are logged in as rcon admin")
-                                .color(0xFFFFFF)
+                                .text("Rcon: Wrong rcon password")
+                                .color(0xFF0000)
                                 .build());
             }
         }
@@ -385,12 +372,12 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     public ServerInfoDto getServerInfoDto() {
         return ServerInfoDto.builder()
-                .name(serverStateInfo.getName())
-                .serverVersion(serverStateInfo.getVersion())
+                .name(MODULE_SERVER_STATE_INFO.getName())
+                .serverVersion(MODULE_SERVER_STATE_INFO.getVersion())
                 .protocolVersion(ServerProtocolImpl.PROTOCOL_VERSION)
-                .currentMap(serverStateInfo.getMap())
-                .modName(serverStateInfo.getMod())
-                .maxPlayers(serverStateInfo.getMaxPlayers())
+                .currentMap(MODULE_SERVER_STATE_INFO.getMap())
+                .modName(MODULE_SERVER_STATE_INFO.getMod())
+                .maxPlayers(MODULE_SERVER_STATE_INFO.getMaxPlayers())
                 .players(getPlayerDtos())
                 .build();
     }
