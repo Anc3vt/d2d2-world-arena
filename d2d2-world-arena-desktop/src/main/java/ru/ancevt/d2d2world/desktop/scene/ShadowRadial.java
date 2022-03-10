@@ -22,7 +22,7 @@ public class ShadowRadial extends DisplayObjectContainer {
         sprites = new ArrayList<>();
 
         addEventListener(Event.ADD_TO_STAGE, this::this_addToStage);
-        setDarknessValue(40);
+        setDarknessValue(3);
     }
 
     private void this_addToStage(Event event) {

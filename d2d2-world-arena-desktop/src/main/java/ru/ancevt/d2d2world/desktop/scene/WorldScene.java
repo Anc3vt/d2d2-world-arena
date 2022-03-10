@@ -23,6 +23,7 @@ import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
+import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
 import ru.ancevt.d2d2world.debug.DebugPanel;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
@@ -47,7 +48,7 @@ public class WorldScene extends DisplayObjectContainer {
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
     private final BitmapText debug;
-    //private final ShadowRadial shadowRadial;
+    private ShadowRadial shadowRadial;
     private boolean eventsAdded;
 
     private long frameCounter;
@@ -56,7 +57,7 @@ public class WorldScene extends DisplayObjectContainer {
         world = new World();
         world.getPlayProcessor().setEnabled(false);
 
-        ((SyncDataReceiver)MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
+        ((SyncDataReceiver) MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
 
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
@@ -66,15 +67,6 @@ public class WorldScene extends DisplayObjectContainer {
         add(world);
 
         localPlayerController.setEnabled(true);
-
-        /*shadowRadial = new ShadowRadial() {
-            @Override
-            public void onEachFrame() {
-                setXY(localPlayerActor.getX() + 35, localPlayerActor.getY());
-            }
-        };
-        shadowRadial.setScale(2f,2f);*/
-        //world.add(shadowRadial);
 
         debug = new BitmapText();
         debug.setText("debug");
@@ -143,12 +135,12 @@ public class WorldScene extends DisplayObjectContainer {
                 if (oldState != localPlayerController.getState()) {
                     MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
                 }
-                /*if (e.getKeyCode() == KeyCode.F11) {
+                if (e.getKeyCode() == KeyCode.F11) {
                     if(shadowRadial.getDarknessValue() == 0) return;
                     shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() - 1);
                 } else if (e.getKeyCode() == KeyCode.F12) {
                     shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() + 1);
-                }*/
+                }
             });
             getRoot().addEventListener(InputEvent.KEY_UP, event -> {
                 var e = (InputEvent) event;
@@ -171,6 +163,19 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.setLocalPlayerActor(true);
         world.getCamera().setAttachedTo(localPlayerActor);
         world.getCamera().setBoundsLock(true);
+
+        if(shadowRadial != null) {
+            shadowRadial.removeFromParent();
+        }
+
+        shadowRadial = new ShadowRadial() {
+            @Override
+            public void onEachFrame() {
+                setXY(localPlayerActor.getX() + 35, localPlayerActor.getY());
+            }
+        };
+        shadowRadial.setScale(2f, 2f);
+        world.add(shadowRadial);
     }
 
     @Override

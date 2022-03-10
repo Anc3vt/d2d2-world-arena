@@ -17,7 +17,8 @@
  */
 package ru.ancevt.d2d2.starter.lwjgl;
 
-import de.matthiasmann.twl.utils.PNGDecoder;
+import com.filters.GaussianFilter;
+import com.filters.LensBlurFilter;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 import ru.ancevt.d2d2.D2D2;
@@ -40,23 +41,12 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glPixelStorei;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class LWJGLTextureEngine implements ITextureEngine {
 
+    private static final boolean TEXTURE_PREPROCESSING_ENABLED = true;
     private final TextureLoadQueue loadQueue;
     private final Queue<TextureAtlas> unloadQueue;
     private final TextureMapping mapping;
@@ -102,7 +92,9 @@ public class LWJGLTextureEngine implements ITextureEngine {
     public TextureAtlas createTextureAtlas(String assetPath) {
         try {
             InputStream pngInputStream = Assets.getAssetAsStream(assetPath);
+            return createTextureAtlasFromBufferedImage(ImageIO.read(pngInputStream));
 
+            /*
             PNGDecoder decoder = new PNGDecoder(pngInputStream);
 
             int width = decoder.getWidth();
@@ -117,6 +109,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
             TextureAtlas textureAtlas = createTextureAtlasFromByteBuffer(byteBuffer, width, height);
             mapping.images().put(textureAtlas.getId(), ImageIO.read(Assets.getAssetAsStream(assetPath)));
             return textureAtlas;
+            */
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -170,6 +163,22 @@ public class LWJGLTextureEngine implements ITextureEngine {
         int width = image.getWidth();
         int height = image.getHeight();
 
+        if(TEXTURE_PREPROCESSING_ENABLED) {
+            var f = new GaussianFilter(1.5f);
+            image = f.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
+//            var f2 = new GlowFilter();
+//            f2.setAmount(0.05f);
+//            image = f2.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
+            var f3 = new LensBlurFilter();
+            f3.setBloom(1.25f);
+            f3.setRadius(0.75f);
+            f3.setSides(5);
+            f3.setBloomThreshold(2f);
+            try {
+                image = f3.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
+            } catch (Exception c) {c .printStackTrace();}
+        }
+
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
@@ -187,7 +196,9 @@ public class LWJGLTextureEngine implements ITextureEngine {
 
         byteBuffer.flip();
 
-        return createTextureAtlasFromByteBuffer(byteBuffer, width, height);
+        TextureAtlas textureAtlas = createTextureAtlasFromByteBuffer(byteBuffer, width, height);
+        mapping.images().put(textureAtlas.getId(), image);
+        return textureAtlas;
     }
 
     private TextureAtlas createTextureAtlasFromByteBuffer(ByteBuffer byteBuffer, int width, int height) {

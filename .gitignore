@@ -45,3 +45,4 @@ d2d2-world-arena-desktop/data/
 d2d2-world-arena-server/data/
 ban.list
 *.tmp
+buildtmp/

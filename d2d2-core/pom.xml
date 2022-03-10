@@ -99,6 +99,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>jar</groupId>
+            <artifactId>blooming-jar</artifactId>
+            <version>1</version>
+        </dependency>
+
+        <dependency>
             <groupId>ru.ancevt.commons</groupId>
             <artifactId>ancevt-commons</artifactId>
             <version>${ancevt-commons.version}</version>
