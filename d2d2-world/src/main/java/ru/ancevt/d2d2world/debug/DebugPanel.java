@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.nio.file.StandardOpenOption.*;
@@ -24,6 +25,7 @@ import static ru.ancevt.d2d2.input.KeyCode.isShift;
 public class DebugPanel extends DisplayObjectContainer {
 
     private static final Set<DebugPanel> debugPanels = new HashSet<>();
+    private static boolean enabled;
 
     private final BitmapText text;
     private final String systemPropertyName;
@@ -33,7 +35,7 @@ public class DebugPanel extends DisplayObjectContainer {
     private Root root;
     private boolean shiftDown;
 
-    public DebugPanel(String systemPropertyName) {
+    private DebugPanel(String systemPropertyName) {
         debugPanels.add(this);
 
         final int width = 300;
@@ -59,6 +61,14 @@ public class DebugPanel extends DisplayObjectContainer {
         addEventListener(DebugPanel.class, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
 
         add(touchButton);
+    }
+
+    public static void setEnabled(boolean enabled) {
+        DebugPanel.enabled = enabled;
+    }
+
+    public static boolean isEnabled() {
+        return enabled;
     }
 
     private void this_removeFromStage(Event event) {
@@ -154,6 +164,18 @@ public class DebugPanel extends DisplayObjectContainer {
 
     public static void saveAll() {
         debugPanels.forEach(DebugPanel::save);
+    }
+
+    public static Optional<DebugPanel> createIfEnabled(String propertyName) {
+        if (enabled) {
+            DebugPanel debugPanel = new DebugPanel(propertyName);
+            return Optional.of(debugPanel);
+        }
+        return Optional.empty();
+    }
+
+    public static void setProperty(String key, Object value) {
+        System.setProperty(key, String.valueOf(value));
     }
 
     public static void main(String[] args) {

@@ -20,9 +20,8 @@ package ru.ancevt.d2d2world.net.client;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.io.ByteInputReader;
-import ru.ancevt.d2d2world.net.dto.Dto;
-import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
+import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.d2d2world.net.message.MessageType;
 import ru.ancevt.d2d2world.net.protocol.ProtocolImpl;
 import ru.ancevt.net.tcpb254.CloseStatus;
@@ -65,8 +64,9 @@ public class ServerInfoRetriever {
                     String extraDataFromServer = in.readUtf(int.class);
                     log.info("received DTO " + className + "\n" + extraDataFromServer);
                     try {
-                        Dto dto = (Dto) gson().fromJson(extraDataFromServer, Class.forName(className));
-                        resultFunction.onResult((ServerInfoDto) dto);
+                        if (gson().fromJson(extraDataFromServer, Class.forName(className)) instanceof ServerInfoDto dto) {
+                            resultFunction.onResult(dto);
+                        }
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);
                     }

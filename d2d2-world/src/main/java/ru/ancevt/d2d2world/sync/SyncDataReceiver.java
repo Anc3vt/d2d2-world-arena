@@ -2,7 +2,6 @@ package ru.ancevt.d2d2world.sync;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.io.ByteInputReader;
-import ru.ancevt.d2d2world.constant.AnimationKey;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.Properties;
 import ru.ancevt.d2d2world.gameobject.*;
@@ -50,37 +49,18 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                 int gameObjectId = in.readInt();
 
                 switch (type) {
-                    case SyncDataType.NEW -> {
-                        int layer = in.readByte();
-                        String mapkitName = in.readUtf(byte.class);
-                        String mapkitItemId = in.readUtf(byte.class);
-                        String dataEntryText = in.readUtf(short.class);
-                        newGameObject(gameObjectId, layer, mapkitName, mapkitItemId, dataEntryText);
-                    }
-
-                    case SyncDataType.REMOVE -> {
-                        removeGameObject(in.readInt());
-                    }
-
-                    case SyncDataType.ANIMATION -> {
-                        setAnimation(gameObjectId, in.readByte(), in.readByte() == 1);
-                    }
-
-                    case SyncDataType.XY -> {
-                        setXY(gameObjectId, in.readFloat(), in.readFloat());
-                    }
-
-                    case SyncDataType.HEALTH -> {
-                        setHealth(gameObjectId, in.readShort());
-                    }
-
-                    case SyncDataType.MAX_HEALTH -> {
-                        setMaxHealth(gameObjectId, in.readShort());
-                    }
-
-                    case SyncDataType.DIRECTION -> {
-                        setDirection(gameObjectId, in.readByte() - 1);
-                    }
+                    case SyncDataType.NEW -> newGameObject(gameObjectId,
+                            in.readByte(),
+                            in.readUtf(byte.class),
+                            in.readUtf(byte.class),
+                            in.readUtf(short.class)
+                    );
+                    case SyncDataType.REMOVE -> removeGameObject(in.readInt());
+                    case SyncDataType.ANIMATION -> setAnimation(gameObjectId, in.readByte(), in.readByte() == 1);
+                    case SyncDataType.XY -> setXY(gameObjectId, in.readFloat(), in.readFloat());
+                    case SyncDataType.HEALTH -> setHealth(gameObjectId, in.readShort());
+                    case SyncDataType.MAX_HEALTH -> setMaxHealth(gameObjectId, in.readShort());
+                    case SyncDataType.DIRECTION -> setDirection(gameObjectId, in.readByte() - 1);
 
                     default -> throw new IllegalStateException("no such SyncDataType " + type);
                 }
@@ -88,6 +68,29 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                 log.error(e.getMessage(), e);
             }
         }
+    }
+
+    private void newGameObject(int gameObjectId, int layer, String mapkitName, String mapkitItemId, String dataEntry) {
+        Mapkit mapkit = MapkitManager.getInstance().getByName(mapkitName);
+        MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
+        IGameObject gameObject = mapkitItem.createGameObject(gameObjectId);
+        Properties.setProperties(gameObject, DataEntry.newInstance(dataEntry));
+
+        if (gameObject instanceof IGravitied g) {
+            // g.setGravityEnabled(false);
+        }
+
+        world.addGameObject(gameObject, layer, false);
+
+        if (gameObject instanceof Actor a) {
+            a.jump();
+        }
+
+    }
+
+    private void removeGameObject(int gameObjectId) {
+        IGameObject o = world.getGameObjectById(gameObjectId);
+        if (o != null) world.removeGameObject(o, false);
     }
 
     private void setDirection(int gameObjectId, int direction) {
@@ -121,31 +124,5 @@ public class SyncDataReceiver implements ISyncDataReceiver {
         if (world.getGameObjectById(gameObjectId) instanceof IAnimated a) {
             a.setAnimation(animKey, loop);
         }
-    }
-
-    private void removeGameObject(int gameObjectId) {
-        IGameObject o = world.getGameObjectById(gameObjectId);
-        if (o != null) world.removeGameObject(o, false);
-    }
-
-    private void newGameObject(int gameObjectId, int layer, String mapkitName, String mapkitItemId, String dataEntry) {
-
-        System.out.println(">>> ngo " + gameObjectId);
-
-        Mapkit mapkit = MapkitManager.getInstance().getByName(mapkitName);
-        MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
-        IGameObject gameObject = mapkitItem.createGameObject(gameObjectId);
-        Properties.setProperties(gameObject, DataEntry.newInstance(dataEntry));
-
-        if (gameObject instanceof IGravitied g) {
-            // g.setGravityEnabled(false);
-        }
-
-        if (gameObject instanceof IAnimated a) {
-            a.setAnimation(AnimationKey.IDLE);
-        }
-
-        world.addGameObject(gameObject, layer, false);
-
     }
 }

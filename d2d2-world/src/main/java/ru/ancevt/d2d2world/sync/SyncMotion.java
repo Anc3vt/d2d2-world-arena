@@ -9,14 +9,14 @@ import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SyncMotion {
 
-    private static final Map<IDisplayObject, Pair<Float, Float>> map = new HashMap<>();
+    private static final Map<IDisplayObject, Pair<Float, Float>> map = new ConcurrentHashMap<>();
 
     public static void syncMove(IDisplayObject o, float x, float y) {
         //var targetXY = map.get(o);
@@ -49,9 +49,6 @@ public class SyncMotion {
             float speedY = (tY - oY);
 
             displayObject.move(speedX, speedY);
-
-            String text = displayObject.getX() + ", " + displayObject.getY() + "\n" + tX + ", " + tY + "\n" + Math.random();
-            System.setProperty(SyncMotion.class.getSimpleName(), text);
 
             if (Math.abs(tX - oX) < 1f && Math.abs(tY - oY) < 1f) {
                 toRemove.add(displayObject);

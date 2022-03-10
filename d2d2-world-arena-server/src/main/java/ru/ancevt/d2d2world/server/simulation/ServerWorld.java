@@ -82,7 +82,6 @@ public class ServerWorld {
     }
 
     public void playerController(int playerId, int controllerState) {
-        System.out.println("playerController " + playerId + " " + controllerState);
         PlayerActor playerActor = playerActorMap.get(playerId);
         if (playerActor != null) {
             playerActor.getController().applyState(controllerState);
@@ -95,7 +94,7 @@ public class ServerWorld {
 
     public void addPlayer(@NotNull Player player) {
         MapkitItem mapkitItem = MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("character_blake");
-        PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(world.getMap().getNextFreeGameObjectId());
+        PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(world.getNextFreeGameObjectId());
         setProperties(playerActor, mapkitItem.getDataEntry());
         playerActor.getController().setEnabled(true);
         playerActor.setXY(64, 64);
@@ -112,6 +111,14 @@ public class ServerWorld {
         }
 
         log.info("Remove player actor {}", playerActor);
+    }
+
+    public int getPlayerActorGameObjectId(int playerId) {
+        PlayerActor playerActor = getPlayerActor(playerId);
+        if(playerActor != null) {
+            return playerActor.getGameObjectId();
+        }
+        return 0;
     }
 }
 

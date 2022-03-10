@@ -45,13 +45,16 @@ public class D2D2WorldArenaDesktopMain {
                 String key = split[0];
                 String value = split[1];
                 MODULE_CONFIG.setProperty(key, value);
-            }
+            } else
             if (arg.startsWith("-S")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
                 System.setProperty(key, value);
+            } else
+            if (arg.equals("--debug")) {
+                DebugPanel.setEnabled(true);
             }
         }
 

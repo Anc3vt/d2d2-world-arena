@@ -24,6 +24,7 @@ import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.exception.NotImplementedException;
+import ru.ancevt.d2d2world.exception.GameException;
 import ru.ancevt.d2d2world.gameobject.*;
 import ru.ancevt.d2d2world.gameobject.area.Area;
 import ru.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -68,6 +69,15 @@ public class World extends DisplayObjectContainer {
 
         playProcessor = new PlayProcessor(this);
         camera = new Camera(this);
+    }
+
+    public int getNextFreeGameObjectId() {
+        for (int i = 1; i < Integer.MAX_VALUE; i++) {
+            final IGameObject gameObject = getGameObjectById(i);
+            final IGameObject gameObjectFromMap = currentMap.getGameObjectById(i);
+            if (gameObject == null && gameObjectFromMap == null) return i;
+        }
+        throw new GameException("Integer.MAX_VALUE is reached");
     }
 
     public World() {
@@ -294,6 +304,10 @@ public class World extends DisplayObjectContainer {
     }
 
     public void addGameObject(IGameObject gameObject, int layerIndex, boolean updateRoom) {
+        if(gameObjects.stream().anyMatch(o->o.getGameObjectId() == gameObject.getGameObjectId())) {
+            throw new IllegalStateException("duplicate game object id " + gameObject.getGameObjectId() + " " + gameObject);
+        }
+
         gameObjects.add(gameObject);
         gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
         getLayer(layerIndex).add(gameObject);
@@ -307,6 +321,8 @@ public class World extends DisplayObjectContainer {
         if (updateRoom)
             currentRoom.addGameObject(layerIndex, gameObject);
     }
+
+
 
     public void removeGameObject(IGameObject gameObject, boolean updateRoom) {
         gameObjects.remove(gameObject);

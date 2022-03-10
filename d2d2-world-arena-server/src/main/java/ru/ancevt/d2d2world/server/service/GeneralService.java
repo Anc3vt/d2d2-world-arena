@@ -171,6 +171,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             // send to new player info about new player (id, color)
             serverSender.sendToPlayer(playerId,
                     PlayerEnterResponseDto.builder()
+                            .player(PlayerDto.builder()
+                                    .id(playerId)
+                                    .color(newPlayer.getColor())
+                                    .name(newPlayer.getName())
+                                    .build())
                             .color(newPlayer.getColor())
                             .protocolVersion(PROTOCOL_VERSION)
                             .build()
@@ -183,6 +188,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                     .id(playerId)
                                     .name(newPlayer.getName())
                                     .color(newPlayer.getColor())
+                                    .playerActorGameObjectId(MODULE_WORLD.getPlayerActorGameObjectId(playerId))
                                     .build())
                             .build(),
                     playerId);
@@ -224,7 +230,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
             MODULE_SENDER.sendToPlayer(playerId,
                     PlayerActorDto.builder()
-                            .playerActorGameObjectId(MODULE_WORLD.getPlayerActor(playerId).getGameObjectId())
+                            .playerActorGameObjectId(MODULE_WORLD.getPlayerActorGameObjectId(playerId))
                             .build()
             );
         }
@@ -240,6 +246,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                             .color(player.getColor())
                             .frags(0)
                             .name((player.getName()))
+                            .playerActorGameObjectId(MODULE_WORLD.getPlayerActorGameObjectId(player.getId()))
                             .ping(player.getPingValue())
                             .build()));
 
@@ -397,6 +404,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                         .name(player.getName())
                         .color(player.getColor())
                         .ping(player.getPingValue())
+                        .playerActorGameObjectId(MODULE_WORLD.getPlayerActorGameObjectId(player.getId()))
                         .build()
                 ));
         return players;

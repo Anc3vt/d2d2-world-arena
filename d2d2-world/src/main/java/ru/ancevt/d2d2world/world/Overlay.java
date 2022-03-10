@@ -20,7 +20,6 @@ package ru.ancevt.d2d2world.world;
 import ru.ancevt.d2d2.common.PlainRect;
 import ru.ancevt.d2d2.display.Color;
 import ru.ancevt.d2d2.event.Event;
-import ru.ancevt.d2d2.event.EventPool;
 
 public class Overlay extends PlainRect {
 
@@ -30,29 +29,29 @@ public class Overlay extends PlainRect {
     public static final int STATE_OUT = 2;
     public static final int STATE_DONE = 3;
 
-    private static final float ALPHA_SPEED = 0.1f;
+    private static final float ALPHA_SPEED = 0.025f;
 
     private int state;
     private float alpha;
 
-    public Overlay(int width, int height) {
+    public Overlay(float width, float height) {
         setColor(COLOR);
         setSize(width, height);
         setAlpha(0f);
     }
 
     public void startIn() {
+        if(state == STATE_BLACK) return;
         state = STATE_IN;
-        alpha = 0.0f;
-        removeEventListener(Event.EACH_FRAME, this::eachFrame);
-        addEventListener(Event.EACH_FRAME, this::eachFrame);
+        removeEventListeners(getClass());
+        addEventListener(getClass(), Event.EACH_FRAME, this::eachFrame);
     }
 
     public void startOut() {
+        if(state == STATE_DONE) return;
         state = STATE_OUT;
-        alpha = 1.0f;
-        removeEventListener(Event.EACH_FRAME, this::eachFrame);
-        addEventListener(Event.EACH_FRAME, this::eachFrame);
+        removeEventListeners(getClass());
+        addEventListener(getClass(), Event.EACH_FRAME, this::eachFrame);
     }
 
     private void eachFrame(Event event) {
@@ -62,7 +61,7 @@ public class Overlay extends PlainRect {
                 setAlpha(Math.min(alpha, 1.0f));
                 if (alpha >= 1.2f) {
                     setState(STATE_BLACK);
-                    removeEventListener(Event.EACH_FRAME, this::eachFrame);
+                    removeEventListeners(getClass());
                 }
             }
             case STATE_OUT -> {
@@ -70,7 +69,7 @@ public class Overlay extends PlainRect {
                 setAlpha(Math.max(alpha, 0.0f));
                 if (alpha <= -0.2f) {
                     setState(STATE_DONE);
-                    removeEventListener(Event.EACH_FRAME, this::eachFrame);
+                    removeEventListeners(getClass());
                 }
             }
         }
@@ -86,6 +85,6 @@ public class Overlay extends PlainRect {
     }
 
     public void onStateChanged(int state) {
-        dispatchEvent(EventPool.simpleEventSingleton(Event.CHANGE, this));
+        dispatchEvent(new Event(Event.CHANGE, this));
     }
 }

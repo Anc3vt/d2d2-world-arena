@@ -18,8 +18,8 @@
 package ru.ancevt.d2d2world.editor.swing;
 
 import ru.ancevt.d2d2.display.Color;
-import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.data.DataEntry;
+import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.map.GameMap;
 import ru.ancevt.d2d2world.map.Room;
@@ -31,7 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static ru.ancevt.d2d2world.data.Properties.getProperties;
@@ -175,7 +174,7 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
 
             GameMap map = world.getMap();
 
-            Arrays.stream(map.getAllGameObjectsFromAllRooms()).forEach(current -> {
+            map.getAllGameObjectsFromAllRooms().forEach(current -> {
                 if (Objects.equals(current.getName(), dataEntry.getString(DataKey.NAME)) && gameObject != current) {
                     JOptionPane.showMessageDialog(null, "Error: duplicate game object name " + current.getName());
                     throw new IllegalStateException("duplicate game object name " + current.getName());

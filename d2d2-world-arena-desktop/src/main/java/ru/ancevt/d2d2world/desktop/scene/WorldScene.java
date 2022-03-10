@@ -18,21 +18,25 @@
 package ru.ancevt.d2d2world.desktop.scene;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.concurrent.Async;
+import ru.ancevt.commons.concurrent.Lock;
 import ru.ancevt.d2d2.display.DisplayObjectContainer;
-import ru.ancevt.d2d2.display.text.BitmapText;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.event.InputEvent;
 import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.control.LocalPlayerController;
-import ru.ancevt.d2d2world.debug.DebugPanel;
+import ru.ancevt.d2d2world.desktop.ui.UiText;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.map.MapIO;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
+import ru.ancevt.d2d2world.net.client.ClientListenerAdapter;
 import ru.ancevt.d2d2world.net.dto.client.MapLoadedReport;
+import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.d2d2world.sync.SyncDataReceiver;
 import ru.ancevt.d2d2world.sync.SyncMotion;
+import ru.ancevt.d2d2world.world.Overlay;
 import ru.ancevt.d2d2world.world.World;
 
 import java.io.IOException;
@@ -47,39 +51,70 @@ public class WorldScene extends DisplayObjectContainer {
 
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
-    private final BitmapText debug;
-    private ShadowRadial shadowRadial;
+    private Overlay overlay;
+    private final ShadowRadial shadowRadial;
     private boolean eventsAdded;
 
     private long frameCounter;
+    private PlayerActor localPlayerActor;
 
     public WorldScene() {
         world = new World();
         world.getPlayProcessor().setEnabled(false);
+        world.getCamera().setBoundsLock(true);
+        world.setVisible(false);
+        world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
+        add(world);
+
+        shadowRadial = new ShadowRadial() {
+            @Override
+            public void onEachFrame() {
+                if (localPlayerActor != null) {
+                    setXY(localPlayerActor.getX() + 35, localPlayerActor.getY());
+
+                    if (world.getRoom() != null) {
+                        if (getY() > world.getRoom().getHeight() + world.getRoom().getHeight() / 2f) {
+                            setY(world.getRoom().getHeight() + world.getRoom().getHeight() / 2f);
+                        }
+                    }
+                }
+
+            }
+        };
+        shadowRadial.setScale(2f, 2f);
+        //world.add(shadowRadial);
 
         ((SyncDataReceiver) MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
 
-        world.getCamera().setBoundsLock(true);
-        world.setVisible(false);
-
         setScale(2f, 2f);
-
-        add(world);
 
         localPlayerController.setEnabled(true);
 
-        debug = new BitmapText();
-        debug.setText("debug");
+        addEventListener(getClass(), Event.ADD_TO_STAGE, this::this_addToStage);
 
-        world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
+        MODULE_CLIENT.addClientListener(new ClientListenerAdapter() {
 
-        addEventListener(WorldScene.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            @Override
+            public void serverInfo(@NotNull ServerInfoDto result) {
+                result.getPlayers().forEach(p -> {
+                    if (world.getGameObjectById(p.getPlayerActorGameObjectId()) instanceof PlayerActor playerActor) {
+                        playerActorUiText(playerActor, p.getId(), p.getName());
+                    }
+                });
+            }
+        });
     }
 
     private void this_addToStage(Event event) {
-        removeEventListeners(WorldScene.class);
+        removeEventListeners(getClass());
 
-        getRoot().add(new DebugPanel(SyncMotion.class.getSimpleName()));
+        final float w = getStage().getStageWidth();
+        final float h = getStage().getStageHeight();
+        overlay = new Overlay(w, h);
+        setXY(w / 2, h / 2);
+        add(overlay, -w / 2, -h / 2);
+        world.getCamera().setViewportSize(w, h);
+        world.getCamera().setBoundsLock(true);
     }
 
     public void init() {
@@ -87,6 +122,17 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void loadMap(String mapFilename) {
+        world.clear();
+        overlay.startIn();
+        Lock lock = new Lock();
+        overlay.addEventListener(Event.CHANGE, Event.CHANGE, event -> {
+            if(overlay.getState() == Overlay.STATE_BLACK) {
+                lock.unlockIfLocked();
+                overlay.removeEventListeners(Event.CHANGE);
+            }
+        });
+        lock.lock();
+
         MODULE_CLIENT.getSyncDataReceiver().setEnabled(false);
 
         MapkitManager.getInstance().disposeExternalMapkits();
@@ -109,12 +155,6 @@ public class WorldScene extends DisplayObjectContainer {
     private void mapLoaded() {
         world.setSceneryPacked(true);
 
-        world.getCamera().setViewportSize(getStage().getStageWidth(), getStage().getStageHeight());
-
-        setXY(getStage().getStageWidth() / 2, getStage().getStageHeight() / 2);
-
-        //getRoot().add(debug, 10, 250);
-
         addRootAndChatEventsIfNotYet();
 
         start();
@@ -123,6 +163,8 @@ public class WorldScene extends DisplayObjectContainer {
 
         MODULE_CLIENT.sendExtra(MapLoadedReport.INSANCE);
         MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
+
+        overlay.startOut();
     }
 
     private void addRootAndChatEventsIfNotYet() {
@@ -141,6 +183,13 @@ public class WorldScene extends DisplayObjectContainer {
                 } else if (e.getKeyCode() == KeyCode.F12) {
                     shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() + 1);
                 }
+                if (e.getKeyCode() == KeyCode.F9) {
+                    overlay.startIn();
+                }
+                if (e.getKeyCode() == KeyCode.F10) {
+                    overlay.startOut();
+                }
+
             });
             getRoot().addEventListener(InputEvent.KEY_UP, event -> {
                 var e = (InputEvent) event;
@@ -157,32 +206,23 @@ public class WorldScene extends DisplayObjectContainer {
         }
     }
 
+    public void playerActorUiText(PlayerActor playerActor, int playerId, String playerName) {
+        UiText uiText = new UiText(playerName + "(" + playerId + ")");
+        uiText.setScale(0.5f, 0.5f);
+        playerActor.add(uiText, -20, -30);
+    }
+
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
-        PlayerActor localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+        localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         world.getCamera().setAttachedTo(localPlayerActor);
-        world.getCamera().setBoundsLock(true);
+
+        playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
 
         if (shadowRadial != null) {
             shadowRadial.removeFromParent();
         }
-
-        shadowRadial = new ShadowRadial() {
-            @Override
-            public void onEachFrame() {
-                setXY(localPlayerActor.getX() + 35, localPlayerActor.getY());
-
-                if (world.getRoom() != null) {
-                    if (getY() > world.getRoom().getHeight() + world.getRoom().getHeight() / 2f) {
-                        setY(world.getRoom().getHeight() + world.getRoom().getHeight() / 2f);
-                    }
-                }
-
-            }
-        };
-        shadowRadial.setScale(2f, 2f);
-        world.add(shadowRadial);
     }
 
     @Override

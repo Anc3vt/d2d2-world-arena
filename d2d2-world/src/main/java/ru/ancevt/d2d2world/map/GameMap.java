@@ -95,10 +95,10 @@ public class GameMap {
         this.gravity = gravity;
     }
 
-    public IGameObject[] getAllGameObjectsFromAllRooms() {
+    public List<IGameObject> getAllGameObjectsFromAllRooms() {
         List<IGameObject> result = new ArrayList<>();
         rooms.forEach((key, room) -> result.addAll(Arrays.stream(room.getGameObjects()).toList()));
-        return result.toArray(new IGameObject[0]);
+        return result;
     }
 
     public void setMusic(Music music) {

@@ -13,4 +13,5 @@ public class PlayerDto implements Dto {
     private final int color;
     private final int ping;
     private final int frags;
+    private final int playerActorGameObjectId;
 }
