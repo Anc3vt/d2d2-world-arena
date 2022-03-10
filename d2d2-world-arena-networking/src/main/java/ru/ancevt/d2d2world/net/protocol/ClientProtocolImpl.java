@@ -67,6 +67,11 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                     clientProtocolImplListeners.forEach(l -> l.serverInfoResponse(result));
                 }
 
+                case MessageType.PING -> {
+                    log("received PING");
+                    clientProtocolImplListeners.forEach(l -> l.playerPingResponse());
+                }
+
                 case MessageType.SERVER_SYNC_DATA -> {
                     int length = in.readShort();
                     byte[] syncData = in.readBytes(length);
@@ -219,7 +224,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
     }
 
     public static byte[] createMessageServerInfoRequest() {
-        return new byte[]{MessageType.CLIENT_SERVER_INFO_REQUEST};
+        return new byte[]{(byte) MessageType.CLIENT_SERVER_INFO_REQUEST};
     }
 
     public static byte[] createMessageRconLogin(@NotNull String passwordHash) {
@@ -249,7 +254,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
     }
 
     public static byte[] createMessagePlayerExitRequest() {
-        return new byte[]{MessageType.CLIENT_PLAYER_EXIT_REQUEST};
+        return new byte[]{(byte) MessageType.CLIENT_PLAYER_EXIT_REQUEST};
     }
 
     public static byte[] createMessagePlayerController(int controllerState) {

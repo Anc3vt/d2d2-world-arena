@@ -363,6 +363,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         throw new NotImplementedException();
     }
 
+    @Override
+    public void ping(int playerId) {
+        MODULE_SENDER.sendToPlayer(playerId, createMessagePing());
+    }
+
     /**
      * {@link ServerProtocolImplListener} method
      */

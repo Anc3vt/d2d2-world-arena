@@ -28,6 +28,10 @@ public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProt
 
     public static final String PROTOCOL_VERSION = "1.0";
 
+    public static byte[] createMessagePing() {
+        return new byte[]{(byte) MessageType.PING};
+    }
+
     public static byte[] createMessageFileData(@NotNull String headers, byte @NotNull [] fileData) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.FILE_DATA)

@@ -25,7 +25,6 @@ import ru.ancevt.d2d2world.data.file.FileDataUtils;
 import ru.ancevt.d2d2world.net.dto.ExtraDto;
 import ru.ancevt.d2d2world.net.dto.PlayerActorDto;
 import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
-import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
@@ -265,9 +264,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void serverInfoResponse(@NotNull ServerInfo result) {
-        localPlayerPing = (int) (System.currentTimeMillis() - pingRequestTime);
         clientListeners.forEach(l -> l.serverInfo(result));
-        sender.send(ClientProtocolImpl.createMessagePlayerPingReport(localPlayerPing));
     }
 
     /**
@@ -304,8 +301,12 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     public void sendServerInfoRequest() {
-        pingRequestTime = System.currentTimeMillis();
         sender.send(createMessageServerInfoRequest());
+    }
+
+    public void sendPingRequest() {
+        pingRequestTime = System.currentTimeMillis();
+        sender.send(createMessagePing());
     }
 
     public String sendFileRequest(@NotNull String path) {

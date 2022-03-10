@@ -47,7 +47,12 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     }
 
     @Override
-    public void extraFromPlayer(int connectionId, ExtraDto extraDto) {
+    public void extraFromPlayer(int playerId, ExtraDto extraDto) {
+
+    }
+
+    @Override
+    public void ping(int playerId) {
 
     }
 
@@ -67,12 +72,12 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     }
 
     @Override
-    public void serverInfoRequest(int connectionId) {
+    public void serverInfoRequest(int playerId) {
 
     }
 
     @Override
-    public void requestFile(int connectionId, @NotNull String headers) {
+    public void requestFile(int playerId, @NotNull String headers) {
 
     }
 

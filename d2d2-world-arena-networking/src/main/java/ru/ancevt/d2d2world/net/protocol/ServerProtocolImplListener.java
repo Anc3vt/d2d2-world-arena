@@ -38,9 +38,11 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
 
     void errorFromPlayer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails);
 
-    void serverInfoRequest(int connectionId);
+    void serverInfoRequest(int playerId);
 
-    void requestFile(int connectionId, @NotNull String headers);
+    void requestFile(int playerId, @NotNull String headers);
 
-    void extraFromPlayer(int connectionId, ExtraDto extraDto);
+    void extraFromPlayer(int playerId, ExtraDto extraDto);
+
+    void ping(int playerId);
 }

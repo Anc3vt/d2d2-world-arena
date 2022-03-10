@@ -164,6 +164,11 @@ public class MessageType {
     //                                           CLIENT <==> SERVER
 
     /**
+     * b)t
+     */
+    public static final int PING = 197;
+
+    /**
      * File or part of file
      * b)t s)S)headers i)contentLength L)data
      */

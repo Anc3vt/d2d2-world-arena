@@ -182,6 +182,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         if (frameCounter % 1000 == 0) {
             MODULE_CLIENT.sendServerInfoRequest();
+            MODULE_CLIENT.sendPingRequest();
         }
 
         frameCounter++;

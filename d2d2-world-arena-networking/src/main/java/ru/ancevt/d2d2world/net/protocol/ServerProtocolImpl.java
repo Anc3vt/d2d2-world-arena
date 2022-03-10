@@ -65,6 +65,11 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     serverProtocolImplListeners.forEach(l -> l.serverInfoRequest(connectionId));
                 }
 
+                case MessageType.PING -> {
+                    log("received PING");
+                    serverProtocolImplListeners.forEach(l ->l.ping(connectionId));
+                }
+
                 case MessageType.CLIENT_PLAYER_ENTER_REQUEST -> {
                     log("received CLIENT_PLAYER_ENTER_REQUEST");
                     String name = in.readUtf(byte.class);

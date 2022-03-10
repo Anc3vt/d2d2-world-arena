@@ -46,6 +46,7 @@ public class CharacterMapkit extends Mapkit {
                 collisionY = -12 |
                 collisionWidth = 12 |
                 collisionHeight = 28 |
+                
                 atlas=blake-and-ava-tileset.png |
                 idle = 0,0,48,48; 48,0,48,48 |
                 attack = 96,0,48,48; 144,0,48,48 |
@@ -79,8 +80,8 @@ public class CharacterMapkit extends Mapkit {
                 collisionY = -12 |
                 collisionWidth = 12 |
                 collisionHeight = 28 |
+                
                 atlas=blake-and-ava-tileset.png |
-                                
                 idle = 0,192,48,48; 48,192,48,48 |
                 attack = 96,192,48,48; 144,192,48,48 |
                 walk = 192,192,48,48; 240,192,48,48; 288,192,48,48; 336,192,48,48 |
