@@ -30,7 +30,7 @@ import ru.ancevt.d2d2world.desktop.ui.Font;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInput;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
-import ru.ancevt.d2d2world.net.client.RemotePlayer;
+import ru.ancevt.d2d2world.net.client.Player;
 import ru.ancevt.util.repl.ReplInterpreter;
 
 import java.nio.charset.StandardCharsets;
@@ -162,7 +162,7 @@ public class Chat extends DisplayObjectContainer {
         redraw();
     }*/
 
-    public void addPlayerMessage(int id, @NotNull RemotePlayer remotePlayer, @NotNull String messageText,
+    public void addPlayerMessage(int id, @NotNull Player remotePlayer, @NotNull String messageText,
                                  Color textColor) {
         addPlayerMessage(
                 id,

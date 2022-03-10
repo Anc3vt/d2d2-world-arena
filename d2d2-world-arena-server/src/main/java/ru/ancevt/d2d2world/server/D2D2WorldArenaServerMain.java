@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.Holder;
 import ru.ancevt.commons.concurrent.Async;
 import ru.ancevt.d2d2world.D2D2World;
+import ru.ancevt.d2d2world.net.dto.Dto;
+import ru.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListenerAdapter;
 import ru.ancevt.net.tcpb254.CloseStatus;
@@ -95,7 +97,6 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
                 2,
                 SECONDS
         );
-        ServerTimer.MODULE_TIMER.start();
     }
 
     public static String getServerVersion() {
@@ -133,14 +134,14 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         Holder<Boolean> playerEntered = new Holder<>(false);
 
         ServerProtocolImplListener serverProtocolImplListener = new ServerProtocolImplListenerAdapter() {
+
             @Override
-            public void playerEnterRequest(int playerId,
-                                           @NotNull String playerName,
-                                           @NotNull String clientProtocolVersion,
-                                           @NotNull String extraData) {
-                if (connection.getId() == playerId) {
-                    playerEntered.setValue(true);
-                    MODULE_SERVER_PROTOCOL.removeServerProtocolImplListener(this);
+            public void dtoFromPlayer(int playerId, Dto dto) {
+                if(dto instanceof ServerInfoRequestDto) {
+                    if (connection.getId() == playerId) {
+                        playerEntered.setValue(true);
+                        MODULE_SERVER_PROTOCOL.removeServerProtocolImplListener(this);
+                    }
                 }
             }
 

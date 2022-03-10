@@ -17,7 +17,7 @@
  */
 package ru.ancevt.d2d2world.net.client;
 
-public class RemotePlayer {
+public class Player {
 
     private final int id;
     private String name;
@@ -26,7 +26,7 @@ public class RemotePlayer {
     private int ping;
     private int frags;
 
-    public RemotePlayer(int id, String name, int color) {
+    public Player(int id, String name, int color) {
         this.id = id;
         this.name = name;
         this.color = color;

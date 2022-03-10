@@ -18,31 +18,15 @@
 package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.d2d2world.net.dto.ExtraDto;
+import ru.ancevt.d2d2world.net.dto.Dto;
 
 public non-sealed interface ServerProtocolImplListener extends ProtocolImplListener {
 
-    void playerEnterRequest(int playerId, @NotNull String playerName, @NotNull String clientProtocolVersion, @NotNull String extraData);
-
-    void playerExitRequest(int playerId);
-
     void playerController(int playerId, int controllerState);
-
-    void playerTextToChat(int playerId, @NotNull String text);
-
-    void playerPingReport(int playerId, int ping);
-
-    void rconLogin(int playerId, @NotNull String passwordHash);
-
-    void rconCommand(int playerId, @NotNull String commandText, @NotNull String extraData);
-
-    void errorFromPlayer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails);
-
-    void serverInfoRequest(int playerId);
 
     void requestFile(int playerId, @NotNull String headers);
 
-    void extraFromPlayer(int playerId, ExtraDto extraDto);
+    void dtoFromPlayer(int playerId, Dto extraDto);
 
     void ping(int playerId);
 }

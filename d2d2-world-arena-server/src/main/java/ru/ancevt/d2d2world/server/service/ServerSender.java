@@ -18,6 +18,8 @@
 package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.ancevt.d2d2world.net.dto.Dto;
+import ru.ancevt.d2d2world.net.protocol.ProtocolImpl;
 import ru.ancevt.net.tcpb254.server.IServer;
 
 
@@ -43,6 +45,14 @@ public class ServerSender {
         }
     }
 
+    public void sendToPlayer(int playerId, Dto dto) {
+        sendToPlayer(playerId, ProtocolImpl.createDtoMessage(dto));
+    }
+
+    public void sendToAllExcluding(Dto dto, int excludingPlayerId) {
+        sendToAllExcluding(ProtocolImpl.createDtoMessage(dto), excludingPlayerId);
+    }
+
     public void sendToAllExcluding(byte[] bytes, int excludingPlayerId) {
         try {
             serverUnit.getConnections()
@@ -52,6 +62,10 @@ public class ServerSender {
         } catch (Exception e) { // Exception here for failsafe purposes
             log.error(e.getMessage(), e);
         }
+    }
+
+    public void sendToAll(Dto dto) {
+        sendToAll(ProtocolImpl.createDtoMessage(dto));
     }
 
     public void sendToAll(byte[] bytes) {

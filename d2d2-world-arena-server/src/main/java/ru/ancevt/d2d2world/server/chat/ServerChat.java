@@ -33,7 +33,7 @@ public class ServerChat {
 
     private static int idCounter;
 
-    private final List<ServerChatMessage> messages;
+    private final List<ChatMessage> messages;
 
     private final List<ServerChatListener> serverChatListeners;
 
@@ -62,7 +62,7 @@ public class ServerChat {
     }
 
     public void text(@NotNull String text, int textColor) {
-        ServerChatMessage serverChatMessage = new ServerChatMessage(getNewChatMessageId(), text, textColor);
+        ChatMessage serverChatMessage = new ChatMessage(getNewChatMessageId(), text, textColor);
         messages.add(serverChatMessage);
         serverChatListeners.forEach(l -> l.chatMessage(serverChatMessage));
         checkAndFixMessageListSize();
@@ -74,7 +74,7 @@ public class ServerChat {
 
     public void playerText(@NotNull String text, int playerId, String playerName, int playerColor, int textColor) {
 
-        ServerChatMessage serverChatMessage = new ServerChatMessage(
+        ChatMessage serverChatMessage = new ChatMessage(
                 getNewChatMessageId(), text, playerId, playerName, playerColor, textColor);
 
         messages.add(serverChatMessage);
@@ -91,7 +91,7 @@ public class ServerChat {
         }
     }
 
-    public List<ServerChatMessage> getMessages(int count) {
+    public List<ChatMessage> getMessages(int count) {
         if(messages.size() > count) {
             return messages.subList(messages.size() - 1 - count, messages.size());
         }

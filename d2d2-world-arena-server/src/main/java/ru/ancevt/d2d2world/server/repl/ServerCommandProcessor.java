@@ -27,7 +27,6 @@ import ru.ancevt.util.args.Args;
 import ru.ancevt.util.repl.ReplInterpreter;
 import ru.ancevt.util.texttable.TextTable;
 
-import static ru.ancevt.d2d2world.server.ServerTimer.MODULE_TIMER;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static ru.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
 import static ru.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
@@ -54,7 +53,6 @@ public class ServerCommandProcessor {
         repl.addCommand("help", this::cmd_help);
         repl.addCommand("players", this::cmd_players);
         repl.addCommand("exit", this::cmd_exit);
-        repl.addCommand("loopdelay", this::cmd_loopdelay);
         repl.addCommand("syncdir", this::cmd_syncdir);
         repl.addCommand("syncmap", this::cmd_syncmap);
         repl.addCommand("syncmapkit", this::cmd_syncmapkit);
@@ -169,11 +167,6 @@ public class ServerCommandProcessor {
         } catch (Exception e) {
             return e.getMessage();
         }
-    }
-
-    private @NotNull @Unmodifiable Object cmd_loopdelay(@NotNull Args args) {
-        MODULE_TIMER.setInterval(args.get(int.class, 0, 1));
-        return String.valueOf(MODULE_TIMER.getInterval());
     }
 
     private @Nullable Object cmd_exit(Args args) {

@@ -19,12 +19,18 @@ package ru.ancevt.d2d2world.net.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.commons.io.ByteInputReader;
+import ru.ancevt.d2d2world.net.dto.Dto;
+import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
+import ru.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
 import ru.ancevt.d2d2world.net.message.MessageType;
-import ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
+import ru.ancevt.d2d2world.net.protocol.ProtocolImpl;
 import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
 import ru.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import ru.ancevt.net.tcpb254.connection.IConnection;
+
+import static ru.ancevt.d2d2world.net.JsonEngine.gson;
 
 @Slf4j
 public class ServerInfoRetriever {
@@ -43,7 +49,7 @@ public class ServerInfoRetriever {
 
             @Override
             public void connectionEstablished() {
-                connection.send(ClientProtocolImpl.createMessageServerInfoRequest());
+                connection.send(ProtocolImpl.createDtoMessage(ServerInfoRequestDto.INSTANCE));
                 log.info("Connection established");
             }
 
@@ -52,15 +58,25 @@ public class ServerInfoRetriever {
                 errorFunction.onError(status);
                 connection.removeConnectionListener(this);
                 log.info("Connection closed");
-                if(bytes != null) {
-                    resultFunction.onResult(ClientProtocolImpl.readServerInfoResponseBytes(bytes));
+                if (bytes != null) {
+                    ByteInputReader in = ByteInputReader.newInstance(bytes);
+                    in.readByte();
+                    String className = in.readUtf(short.class);
+                    String extraDataFromServer = in.readUtf(int.class);
+                    log.info("received DTO " + className + "\n" + extraDataFromServer);
+                    try {
+                        Dto dto = (Dto) gson().fromJson(extraDataFromServer, Class.forName(className));
+                        resultFunction.onResult((ServerInfoDto) dto);
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
                 }
             }
 
             @Override
             public void connectionBytesReceived(byte[] bytes) {
-                if (bytes[0] == MessageType.SERVER_INFO_RESPONSE) {
-                    log.info("SERVER_INFO_RESPONSE bytes received, closing connection");
+                if ((bytes[0] & 0xFF) == MessageType.DTO) {
+                    log.info("EXTRA bytes received, closing connection");
                     this.bytes = bytes;
                     connection.close();
                 } // else ignoring
@@ -71,7 +87,7 @@ public class ServerInfoRetriever {
 
     @FunctionalInterface
     public interface ResultFunction {
-        void onResult(ServerInfo result);
+        void onResult(ServerInfoDto result);
     }
 
     @FunctionalInterface

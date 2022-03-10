@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.server.chat;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ServerChatMessage {
+public class ChatMessage {
 
     public static final int DEFAULT_COLOR = 0xFFFFFF;
 
@@ -31,7 +31,7 @@ public class ServerChatMessage {
     private final int textColor;
 
 
-    public ServerChatMessage(int id, @NotNull String text, int textColor) {
+    public ChatMessage(int id, @NotNull String text, int textColor) {
         this.id = id;
         this.text = text;
         this.playerId = 0;
@@ -40,12 +40,12 @@ public class ServerChatMessage {
         this.textColor = textColor;
     }
 
-    public ServerChatMessage(int id,
-                             @NotNull String text,
-                             int playerId,
-                             @NotNull String playerName,
-                             int playerColor,
-                             int textColor) {
+    public ChatMessage(int id,
+                       @NotNull String text,
+                       int playerId,
+                       @NotNull String playerName,
+                       int playerColor,
+                       int textColor) {
 
         this.id = id;
         this.text = text;

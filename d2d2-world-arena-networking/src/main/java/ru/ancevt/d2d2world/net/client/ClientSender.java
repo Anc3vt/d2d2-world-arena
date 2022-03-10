@@ -18,6 +18,8 @@
 package ru.ancevt.d2d2world.net.client;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.ancevt.d2d2world.net.dto.Dto;
+import ru.ancevt.d2d2world.net.protocol.ProtocolImpl;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 
 @Slf4j
@@ -34,5 +36,9 @@ public class ClientSender {
         } catch(Exception e) { // failsafe purposes
             log.error(e.getMessage(), e);
         }
+    }
+
+    public void send(Dto dto) {
+        send(ProtocolImpl.createDtoMessage(dto));
     }
 }

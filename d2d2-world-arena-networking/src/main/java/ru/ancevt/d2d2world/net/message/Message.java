@@ -42,19 +42,6 @@ public class Message {
         return bytes;
     }
 
-    public boolean isError() {
-        return (bytes[0] & 0xff) == MessageType.ERROR;
-    }
-
-    public ErrorInfo getErrorInfo() {
-        return isError() && error == null ?
-                error = new ErrorInfo(
-                        inputReader().readShort(),
-                        inputReader().readUtf(byte.class),
-                        inputReader().hasNextData() ? inputReader().readUtf(int.class) : null
-                ) : error;
-    }
-
 
     public int getType() {
         return bytes[0] & 0xff;

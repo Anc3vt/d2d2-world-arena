@@ -55,7 +55,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         String mapkitName = in.readUtf(byte.class);
                         String mapkitItemId = in.readUtf(byte.class);
                         String dataEntryText = in.readUtf(short.class);
-                        createGameObject(gameObjectId, layer, mapkitName, mapkitItemId, dataEntryText);
+                        newGameObject(gameObjectId, layer, mapkitName, mapkitItemId, dataEntryText);
                     }
 
                     case SyncDataType.REMOVE -> {
@@ -128,7 +128,10 @@ public class SyncDataReceiver implements ISyncDataReceiver {
         if (o != null) world.removeGameObject(o, false);
     }
 
-    private void createGameObject(int gameObjectId, int layer, String mapkitName, String mapkitItemId, String dataEntry) {
+    private void newGameObject(int gameObjectId, int layer, String mapkitName, String mapkitItemId, String dataEntry) {
+
+        System.out.println(">>> ngo " + gameObjectId);
+
         Mapkit mapkit = MapkitManager.getInstance().getByName(mapkitName);
         MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
         IGameObject gameObject = mapkitItem.createGameObject(gameObjectId);

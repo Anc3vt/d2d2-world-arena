@@ -30,7 +30,7 @@ import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.gameobject.PlayerActor;
 import ru.ancevt.d2d2world.map.MapIO;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
-import ru.ancevt.d2d2world.net.dto.MapLoadedDto;
+import ru.ancevt.d2d2world.net.dto.client.MapLoadedReport;
 import ru.ancevt.d2d2world.sync.SyncDataReceiver;
 import ru.ancevt.d2d2world.sync.SyncMotion;
 import ru.ancevt.d2d2world.world.World;
@@ -121,7 +121,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         dispatchEvent(new SceneEvent(SceneEvent.MAP_LOADED, this));
 
-        MODULE_CLIENT.sendExtra(MapLoadedDto.EMPTY);
+        MODULE_CLIENT.sendExtra(MapLoadedReport.INSANCE);
         MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
     }
 
@@ -136,7 +136,7 @@ public class WorldScene extends DisplayObjectContainer {
                     MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
                 }
                 if (e.getKeyCode() == KeyCode.F11) {
-                    if(shadowRadial.getDarknessValue() == 0) return;
+                    if (shadowRadial.getDarknessValue() == 0) return;
                     shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() - 1);
                 } else if (e.getKeyCode() == KeyCode.F12) {
                     shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() + 1);
@@ -164,7 +164,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setAttachedTo(localPlayerActor);
         world.getCamera().setBoundsLock(true);
 
-        if(shadowRadial != null) {
+        if (shadowRadial != null) {
             shadowRadial.removeFromParent();
         }
 
@@ -172,6 +172,13 @@ public class WorldScene extends DisplayObjectContainer {
             @Override
             public void onEachFrame() {
                 setXY(localPlayerActor.getX() + 35, localPlayerActor.getY());
+
+                if (world.getRoom() != null) {
+                    if (getY() > world.getRoom().getHeight() + world.getRoom().getHeight() / 2f) {
+                        setY(world.getRoom().getHeight() + world.getRoom().getHeight() / 2f);
+                    }
+                }
+
             }
         };
         shadowRadial.setScale(2f, 2f);

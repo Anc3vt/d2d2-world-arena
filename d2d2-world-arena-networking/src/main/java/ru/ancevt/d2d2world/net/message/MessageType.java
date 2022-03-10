@@ -19,73 +19,7 @@ package ru.ancevt.d2d2world.net.message;
 
 public class MessageType {
 
-    /*
-     Protocol message order:
-
-    1. At first, when new player entering server:
-
-        1.1 new player client  ---  connection established ---  server
-        1.2 new player client  ==>  PLAYER_ENTER_REQUEST(name)  ==>  server
-        1.3 new player client  <==  PLAYER_ENTER_RESPONSE(id)   <==  server
-
-    2. Than new player need to know about all other players, and all other players need to know about new player
-
-        2.1 Server sends all player data of each other players to new player (ids, colors, names)
-
-        2.2. all players {
-            new player client <== PLAYER_INTRODUCE (other player info) <== server
-        }
-
-        2.3 Send info about new player to all others
-
-        2.4  all players {
-            other players clients <== PLAYER_INTRODUCE (new player info) <== server
-        }
-
-    3. Client start to send its state to server as reports on each render frame in
-
-        3.1 infinity loop {
-            new player client ==> PLAYER_CONTROLLER_AND_XY_REPORT ==> server
-        }
-
-    4. Server sending to player state off all others players (excluding new player, of course)
-
-        4.1 all players infinite loop {
-            new player client <== PLAYER_CONTROLLER_AND_XY <== server
-        }
-
-    5. Chat
-
-
-
-    */
-
     //                                        CLIENT ===> SERVER
-
-    /**
-     * b)t
-     */
-    public static final int CLIENT_SERVER_INFO_REQUEST = 0;
-
-    /**
-     * b)t b)S)passHash
-     */
-    public static final int CLIENT_RCON_LOGIN = 254;
-
-    /**
-     * b)t b)S)commandText i)S)extraData
-     */
-    public static final int CLIENT_RCON_COMMAND = 255;
-
-    /**
-     * b)t b)L S)name  b)S)clientProtocolVersion i)S)extraData
-     */
-    public static final int CLIENT_PLAYER_ENTER_REQUEST = 1;
-
-    /**
-     * b) t
-     */
-    public static final int CLIENT_PLAYER_EXIT_REQUEST = 2;
 
     /**
      * b)t b)controllerState
@@ -93,68 +27,11 @@ public class MessageType {
     public static final int CLIENT_PLAYER_CONTROLLER = 3;
 
     /**
-     * b)t b)S)chat msg text
-     */
-    public static final int CLIENT_PLAYER_TEXT_TO_CHAT = 4;
-
-    /**
-     * b)t s)ping
-     */
-    public static final int CLIENT_PLAYER_PING_REPORT = 6;
-
-    /**
      * b)t s)S)headers
      */
     public static final int CLIENT_REQUEST_FILE = 7;
 
     //                                           CLIENT <=== SERVER
-
-    /**
-     * b)t i)S)responseData
-     */
-    public static final int SERVER_RCON_RESPONSE = 253;
-
-
-    /**
-     * b)t b)S)serverName b)S)serverVersion b)S)serverProtocolVersion b)S)mapName b)S)mapkitName b)S)modeName s)maxPlayers
-     * ( s)playerId b)S)playerName )...
-     */
-    public static final int SERVER_INFO_RESPONSE = 100;
-
-    /**
-     * b)t s) playerId b) playerName i)playerColor
-     */
-    public static final int SERVER_REMOTE_PLAYER_ENTER = 101;
-
-    /**
-     * b)t s)playerId i)color b)S)serverProtocolVersion
-     */
-    public static final int SERVER_PLAYER_ENTER_RESPONSE = 102;
-
-    /**
-     * b)t s)playerId b)S)name i)color i)S)extraData
-     */
-    public static final int SERVER_REMOTE_PLAYER_INTRODUCE = 103;
-
-    /**
-     * b)t i)chatMessageId b)S)text i)textColor [ s) playerIdFrom b)S)playerName i)playerColor ]
-     */
-    public static final int SERVER_CHAT = 104;
-
-    /**
-     * b)t i)textColor b)S)text
-     */
-    public static final int SERVER_TEXT_TO_PLAYER = 109;
-
-    /**
-     * b)t s)playerId b)exitCause
-     */
-    public static final int SERVER_REMOTE_PLAYER_EXIT = 106;
-
-    /**
-     * b)t s)playerId s)pingValue
-     */
-    public static final int SERVER_REMOTE_PLAYER_PING_VALUE = 108;
 
     /**
      * b)t B)DATA
@@ -175,14 +52,9 @@ public class MessageType {
     public static final int FILE_DATA = 198;
 
     /**
-     * b)t s)error code b)S)errorMessage i)S)errorDetailText
+     * b)t i)S)json
      */
-    public static final int ERROR = 199;
-
-    /**
-     * b)t i)S)extraData
-     */
-    public static final int EXTRA = 200;
+    public static final int DTO = 200;
 
 
 }

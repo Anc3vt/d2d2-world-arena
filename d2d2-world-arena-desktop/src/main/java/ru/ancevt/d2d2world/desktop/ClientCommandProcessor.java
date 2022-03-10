@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.desktop;
 
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
-import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
+import ru.ancevt.d2d2world.net.client.PlayerManager;
 import ru.ancevt.util.args.Args;
 import ru.ancevt.util.texttable.TextTable;
 
@@ -56,20 +56,13 @@ public class ClientCommandProcessor {
             }
 
             case "//players" -> {
-                var pm = RemotePlayerManager.PLAYER_MANAGER;
+                var pm = PlayerManager.PLAYER_MANAGER;
                 TextTable tt = new TextTable();
                 tt.setDecorEnabled(false);
 
                 tt.setColumnNames(new String[]{"id", "name", "ping"});
 
-                tt.addRow(
-                        MODULE_CLIENT.getLocalPlayerId(),
-                        MODULE_CLIENT.getLocalPlayerName(),
-                        MODULE_CLIENT.getLocalPlayerPing(),
-                        Integer.toString(MODULE_CLIENT.getLocalPlayerColor(), 16)
-                );
-
-                pm.getRemotePlayerList().forEach(
+                pm.getPlayerList().forEach(
                         p -> tt.addRow(p.getId(), p.getName(), p.getPing()));
 
                 MODULE_CHAT.addMessage(tt.render());

@@ -41,8 +41,7 @@ public class ServerPlayerManager {
     public Player createPlayer(int playerId,
                                String playerName,
                                String clientProtocolVersion,
-                               String address,
-                               String extraData) {
+                               String address) {
 
         return createPlayer(
                 new Player(

@@ -18,44 +18,13 @@
 package ru.ancevt.d2d2world.net.protocol;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.d2d2world.net.client.ServerInfo;
-import ru.ancevt.d2d2world.net.dto.ExtraDto;
+import ru.ancevt.d2d2world.net.dto.Dto;
 
 public non-sealed interface ClientProtocolImplListener extends ProtocolImplListener {
 
-    void rconResponse(@NotNull String rconResponseData);
-
-    void playerEnterResponse(int playerId, int color, @NotNull String serverProtocolVersion);
-
-    void remotePlayerEnter(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
-
-    void remotePlayerIntroduce(int remotePlayerId,
-                               @NotNull String remotePlayerName,
-                               int remotePlayerColor,
-                               @NotNull String remotePlayerExtraData);
-
-
-    void remotePlayerExit(int remotePlayerId, int remotePlayerExitCause);
-
-    void extraFromServer(@NotNull ExtraDto extraDto);
-
-    void errorFromServer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails);
+    void dtoFromServer(@NotNull Dto extraDto);
 
     void playerPingResponse();
-
-    void remotePlayerPing(int remotePlayerId, int remotePlayerPing);
-
-    void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor);
-
-    void playerChat(int chatMessageId,
-                    int playerId,
-                    @NotNull String playerName,
-                    int playerColor,
-                    @NotNull String chatMessageText, int chatMessageTextColor);
-
-    void serverInfoResponse(@NotNull ServerInfo result);
-
-    void serverTextToPlayer(@NotNull String text, int textColor);
 
     void fileData(@NotNull String headers, byte[] fileData);
 

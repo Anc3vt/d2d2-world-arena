@@ -36,8 +36,8 @@ import ru.ancevt.d2d2.panels.Button;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.ui.*;
 import ru.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
-import ru.ancevt.d2d2world.net.client.ServerInfo;
 import ru.ancevt.d2d2world.net.client.ServerInfoRetriever;
+import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -181,7 +181,7 @@ public class IntroRoot extends Root {
             uiTextInputServer.setText(server);
         }
 
-        ServerInfo result = retrieveServerInfo(server);
+        ServerInfoDto result = retrieveServerInfo(server);
 
         if (result != null) {
             result.getPlayers()
@@ -210,12 +210,12 @@ public class IntroRoot extends Root {
         add(dialogWarning);
     }
 
-    private @Nullable ServerInfo retrieveServerInfo(@NotNull String server) {
+    private @Nullable ServerInfoDto retrieveServerInfo(@NotNull String server) {
         String host = server.split(":")[0];
         int port = parseInt(server.split(":")[1]);
 
         Lock lock = new Lock();
-        Holder<ServerInfo> resultHolder = new Holder<>();
+        Holder<ServerInfoDto> resultHolder = new Holder<>();
         ServerInfoRetriever.retrieve(host, port, result -> {
             resultHolder.setValue(result);
             lock.unlockIfLocked();

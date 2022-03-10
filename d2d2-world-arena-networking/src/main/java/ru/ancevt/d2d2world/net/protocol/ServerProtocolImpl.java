@@ -19,10 +19,8 @@ package ru.ancevt.d2d2world.net.protocol;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.Pair;
 import ru.ancevt.commons.io.ByteInputReader;
-import ru.ancevt.commons.io.ByteOutputWriter;
-import ru.ancevt.d2d2world.net.dto.ExtraDto;
+import ru.ancevt.d2d2world.net.dto.Dto;
 import ru.ancevt.d2d2world.net.message.Message;
 import ru.ancevt.d2d2world.net.message.MessageType;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
@@ -60,66 +58,21 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
             switch (message.getType()) {
 
-                case MessageType.CLIENT_SERVER_INFO_REQUEST -> {
-                    log("received CLIENT_SERVER_INFO_REQUEST");
-                    serverProtocolImplListeners.forEach(l -> l.serverInfoRequest(connectionId));
-                }
-
                 case MessageType.PING -> {
                     log("received PING");
                     serverProtocolImplListeners.forEach(l ->l.ping(connectionId));
                 }
 
-                case MessageType.CLIENT_PLAYER_ENTER_REQUEST -> {
-                    log("received CLIENT_PLAYER_ENTER_REQUEST");
-                    String name = in.readUtf(byte.class);
-                    String clientProtocolVersion = in.readUtf(byte.class);
-                    String extraData = in.hasNextData() ? in.readUtf(int.class) : null;
-
-                    serverProtocolImplListeners.forEach(l ->
-                            l.playerEnterRequest(connectionId, name, clientProtocolVersion, extraData));
-                }
-
-                case MessageType.CLIENT_PLAYER_EXIT_REQUEST -> {
-                    log("received CLIENT_PLAYER_EXIT_REQUEST");
-                    serverProtocolImplListeners.forEach(l -> l.playerExitRequest(connectionId));
-                }
-
                 case MessageType.CLIENT_PLAYER_CONTROLLER -> {
-                    log("received CLIENT_PLAYER_CONTROLLER");
+                    ////log("received CLIENT_PLAYER_CONTROLLER");
                     int controlState = in.readByte();
                     serverProtocolImplListeners.forEach(l -> l.playerController(connectionId, controlState));
-                }
-
-                case MessageType.CLIENT_PLAYER_TEXT_TO_CHAT -> {
-                    log("received CLIENT_PLAYER_TEXT_TO_CHAT");
-                    String text = in.readUtf(byte.class);
-                    serverProtocolImplListeners.forEach(l -> l.playerTextToChat(connectionId, text));
                 }
 
                 case MessageType.CLIENT_REQUEST_FILE -> {
                     log("received CLIENT_REQUEST_FILE");
                     String headers = in.readUtf(short.class);
                     serverProtocolImplListeners.forEach(l -> l.requestFile(connectionId, headers));
-                }
-
-                case MessageType.CLIENT_RCON_LOGIN -> {
-                    log("received CLIENT_RCON_LOGIN");
-                    String passwordHash = in.readUtf(byte.class);
-                    serverProtocolImplListeners.forEach(l -> l.rconLogin(connectionId, passwordHash));
-                }
-
-                case MessageType.CLIENT_RCON_COMMAND -> {
-                    log("received CLIENT_RCON_COMMAND");
-                    String commandText = in.readUtf(byte.class);
-                    String extraData = in.hasNextData() ? in.readUtf(int.class) : "";
-                    serverProtocolImplListeners.forEach(l -> l.rconCommand(connectionId, commandText, extraData));
-                }
-
-                case MessageType.CLIENT_PLAYER_PING_REPORT -> {
-                    log("received CLIENT_PLAYER_PING_REPORT");
-                    int ping = in.readShort();
-                    serverProtocolImplListeners.forEach(l -> l.playerPingReport(connectionId, ping));
                 }
 
                 case MessageType.FILE_DATA -> {
@@ -130,23 +83,14 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     FileReceiverManager.INSTANCE.fileData(headers, fileData);
                 }
 
-                case MessageType.EXTRA -> {
+                case MessageType.DTO -> {
                     String className = in.readUtf(short.class);
-                    String extraDataFromPlayer = in.readUtf(int.class);
-                    log("received EXTRA " + className + "\n" + extraDataFromPlayer);
-
-                    ExtraDto extraDto = (ExtraDto) gson().fromJson(extraDataFromPlayer, Class.forName(className));
-
-                    serverProtocolImplListeners.forEach(l -> l.extraFromPlayer(connectionId, extraDto));
+                    String json = in.readUtf(int.class);
+                    log("received DTO " + className + ": " + json);
+                    Dto extraDto = (Dto) gson().fromJson(json, Class.forName(className));
+                    serverProtocolImplListeners.forEach(l -> l.dtoFromPlayer(connectionId, extraDto));
                 }
 
-                case MessageType.ERROR -> {
-                    log("received ERROR");
-                    int errorCode = in.readShort();
-                    String errorMessage = in.readUtf(byte.class);
-                    String errorDetails = in.readUtf(int.class);
-                    serverProtocolImplListeners.forEach(l -> l.errorFromPlayer(errorCode, errorMessage, errorDetails));
-                }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -155,122 +99,5 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
     private static void log(Object o) {
         log.trace(String.valueOf(o));
-    }
-
-    public static byte[] createMessageServerInfoResponse(@NotNull String serverName,
-                                                         @NotNull String serverVersion,
-                                                         @NotNull String mapName,
-                                                         @NotNull String mapkitName,
-                                                         @NotNull String modName,
-                                                         int maxPlayers,
-                                                         @NotNull List<Pair<Integer, String>> players) {
-
-        ByteOutputWriter bow = ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_INFO_RESPONSE)
-                .writeUtf(byte.class, serverName)
-                .writeUtf(byte.class, serverVersion)
-                .writeUtf(byte.class, PROTOCOL_VERSION)
-                .writeUtf(byte.class, mapName)
-                .writeUtf(byte.class, mapkitName)
-                .writeUtf(byte.class, modName)
-                .writeShort(maxPlayers);
-
-        players.forEach(p -> bow.writeShort(p.getFirst()).writeUtf(byte.class, p.getSecond()));
-
-        return bow.toByteArray();
-    }
-
-    public static byte[] createMessageRconResponse(String responseData) {
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_RCON_RESPONSE)
-                .writeUtf(int.class, responseData)
-                .toByteArray();
-    }
-
-    public static byte[] createMessageRemotePlayerEnter(int playerId,
-                                                        @NotNull String playerName,
-                                                        int playerColor) {
-
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_REMOTE_PLAYER_ENTER)
-                .writeShort(playerId)
-                .writeUtf(byte.class, playerName)
-                .writeInt(playerColor)
-                .toByteArray();
-    }
-
-    public static byte[] createMessagePlayerEnterResponse(int playerId, int color) {
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_PLAYER_ENTER_RESPONSE)
-                .writeShort(playerId)
-                .writeInt(color)
-                .writeUtf(byte.class, PROTOCOL_VERSION)
-                .toByteArray();
-    }
-
-    public static byte[] createMessageRemotePlayerIntroduce(int playerId,
-                                                            @NotNull String playerName,
-                                                            int color,
-                                                            @NotNull String extraData) {
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_REMOTE_PLAYER_INTRODUCE)
-                .writeShort(playerId)
-                .writeUtf(byte.class, playerName)
-                .writeInt(color)
-                .writeUtf(int.class, extraData)
-                .toByteArray();
-    }
-
-    public static byte[] createMessageChat(int chatMessageId, @NotNull String text, int textColor) {
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_CHAT)
-                .writeInt(chatMessageId)
-                .writeUtf(byte.class, text)
-                .writeInt(textColor)
-                .toByteArray();
-
-    }
-
-    public static byte[] createMessageChat(int chatMessageId,
-                                           @NotNull String text,
-                                           int textColor,
-                                           int playerId,
-                                           @NotNull String playerName,
-                                           int playerColor) {
-
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_CHAT)
-                .writeInt(chatMessageId)
-                .writeUtf(byte.class, text)
-                .writeInt(textColor)
-                .writeShort(playerId)
-                .writeUtf(byte.class, playerName)
-                .writeInt(playerColor)
-                .toByteArray();
-
-    }
-
-    public static byte[] createMessageTextToPlayer(@NotNull String text, int textColor) {
-        return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_TEXT_TO_PLAYER)
-                .writeInt(textColor)
-                .writeUtf(byte.class, text)
-                .toByteArray();
-    }
-
-    public static byte[] createMessageRemotePlayerExit(int playerId, @NotNull ExitCause exitReason) {
-        return ByteOutputWriter.newInstance(4)
-                .writeByte(MessageType.SERVER_REMOTE_PLAYER_EXIT)
-                .writeShort(playerId)
-                .writeByte(exitReason.getValue())
-                .toByteArray();
-    }
-
-    public static byte[] createMessageRemotePlayerPingValue(int playerId, int pingValue) {
-        return ByteOutputWriter.newInstance(5)
-                .writeByte(MessageType.SERVER_REMOTE_PLAYER_PING_VALUE)
-                .writeShort(playerId)
-                .writeShort(pingValue)
-                .toByteArray();
     }
 }

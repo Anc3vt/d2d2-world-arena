@@ -24,38 +24,43 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class RemotePlayerManager {
-    public static final RemotePlayerManager PLAYER_MANAGER = new RemotePlayerManager();
+public class PlayerManager {
+    public static final PlayerManager PLAYER_MANAGER = new PlayerManager();
 
-    private final Map<Integer, RemotePlayer> remotePlayerMap;
+    private final Map<Integer, Player> playerMap;
 
-    private RemotePlayerManager() {
-        remotePlayerMap = new HashMap<>();
+    private PlayerManager() {
+        playerMap = new HashMap<>();
     }
 
-    public @NotNull RemotePlayer createRemotePlayer(int id, @NotNull String name, int color) {
-        RemotePlayer remotePlayer = new RemotePlayer(id, name, color);
-        remotePlayerMap.put(id, remotePlayer);
-        return remotePlayer;
+    public @NotNull Player registerPlayer(int id, @NotNull String name, int color) {
+        Player player = playerMap.get(id);
+        if (player == null) {
+            player = new Player(id, name, color);
+            playerMap.put(id, player);
+        }
+        player.setColor(color);
+        player.setName(name);
+        return player;
     }
 
     public boolean hasRemotePlayer(int remotePlayerId) {
-        return remotePlayerMap.containsKey(remotePlayerId);
+        return playerMap.containsKey(remotePlayerId);
     }
 
-    public @NotNull Optional<RemotePlayer> getRemotePlayer(int remotePlayerId) {
-        return Optional.ofNullable(remotePlayerMap.get(remotePlayerId));
+    public @NotNull Optional<Player> getPlayer(int playerId) {
+        return Optional.ofNullable(playerMap.get(playerId));
     }
 
-    public @NotNull Optional<RemotePlayer> removeRemotePlayer(int remotePlayerId) {
-        return Optional.ofNullable(remotePlayerMap.remove(remotePlayerId));
+    public @NotNull Optional<Player> removePlayer(int remotePlayerId) {
+        return Optional.ofNullable(playerMap.remove(remotePlayerId));
     }
 
-    public @NotNull List<RemotePlayer> getRemotePlayerList() {
-        return List.copyOf(remotePlayerMap.values());
+    public @NotNull List<Player> getPlayerList() {
+        return List.copyOf(playerMap.values());
     }
 
     public void clear() {
-        remotePlayerMap.clear();
+        playerMap.clear();
     }
 }

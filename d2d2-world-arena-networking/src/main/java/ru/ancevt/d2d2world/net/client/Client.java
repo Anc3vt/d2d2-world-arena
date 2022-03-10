@@ -19,12 +19,12 @@ package ru.ancevt.d2d2world.net.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.d2d2world.data.file.FileDataUtils;
-import ru.ancevt.d2d2world.net.dto.ExtraDto;
-import ru.ancevt.d2d2world.net.dto.PlayerActorDto;
-import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
+import ru.ancevt.d2d2world.net.dto.Dto;
+import ru.ancevt.d2d2world.net.dto.PlayerDto;
+import ru.ancevt.d2d2world.net.dto.client.*;
+import ru.ancevt.d2d2world.net.dto.server.*;
 import ru.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
@@ -38,10 +38,11 @@ import ru.ancevt.net.tcpb254.connection.IConnection;
 
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static ru.ancevt.d2d2world.net.client.RemotePlayerManager.PLAYER_MANAGER;
+import static ru.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static ru.ancevt.d2d2world.net.protocol.ClientProtocolImpl.*;
 import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;
 import static ru.ancevt.d2d2world.net.transfer.Headers.*;
@@ -101,87 +102,20 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     // CLIENT PROTOCOL LISTENERS:
-
     /**
      * {@link ClientProtocolImplListener} method
      */
     @Override
-    public void remotePlayerEnter(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
-        clientListeners.forEach(l -> l.remotePlayerEnterServer(remotePlayerId, remotePlayerName, remotePlayerColor));
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void rconResponse(@NotNull String rconResponseData) {
-        clientListeners.forEach(l -> l.rconResponse(rconResponseData));
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void playerEnterResponse(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion) {
-        setLocalPlayerId(localPlayerId);
-        setLocalPlayerColor(localPlayerColor);
-        setServerProtocolVersion(serverProtocolVersion);
-        clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion));
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void remotePlayerIntroduce(int remotePlayerId,
-                                      @NotNull String remotePlayerName,
-                                      int remotePlayerColor,
-                                      @NotNull String remotePlayerExtraData) {
-
-        PLAYER_MANAGER.getRemotePlayer(remotePlayerId).ifPresentOrElse(
-                // if present
-                remotePlayer -> {
-                    remotePlayer.update(remotePlayerName, remotePlayerColor);
-                    clientListeners.forEach(l -> l.remotePlayerIntroduce(remotePlayer));
-                },
-
-                // or else
-                () -> {
-                    RemotePlayer remotePlayer = PLAYER_MANAGER.createRemotePlayer(
-                            remotePlayerId,
-                            remotePlayerName,
-                            remotePlayerColor
-                    );
-
-                    clientListeners.forEach(l -> l.remotePlayerIntroduce(remotePlayer));
-                });
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void remotePlayerExit(int remotePlayerId, int remotePlayerExitCause) {
-        PLAYER_MANAGER.removeRemotePlayer(remotePlayerId).ifPresent(
-                remotePlayer -> clientListeners.forEach(l -> l.remotePlayerExit(remotePlayer))
-        );
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void extraFromServer(@NotNull ExtraDto extraDto) {
-        log.info("extraFromServer: {}", extraDto);
-
+    public void dtoFromServer(@NotNull Dto dto) {
+        log.info("extraFromServer: {}", dto);
 
         // TODO: extract to separate handler, maybe it should be a class
-        if (extraDto instanceof ServerMapInfoDto dto) {
+        if (dto instanceof ServerContentInfoDto d) {
 
             Queue<String> queue = new ConcurrentLinkedDeque<>();
 
-            queue.add(sendFileRequest("data/maps/" + dto.getFilename()));
-            dto.getMapkits().forEach(
+            queue.add(sendFileRequest("data/maps/" + d.getFilename()));
+            d.getMapkits().forEach(
                     mk -> mk.getFiles()
                             .forEach(
                                     filename -> queue.add(sendFileRequest("data/mapkits/" + mk.getUid() + "/" + filename))
@@ -197,23 +131,84 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                 public void complete(FileReceiver fileReceiver) {
                     queue.remove(fileReceiver.getPath());
                     if (queue.isEmpty()) {
-                        clientListeners.forEach(l -> l.mapContentLoaded(dto.getFilename()));
+                        clientListeners.forEach(l -> l.mapContentLoaded(d.getFilename()));
                         FileReceiverManager.INSTANCE.removeFileReceiverManagerListener(this);
                     }
                 }
             });
-        } else if (extraDto instanceof PlayerActorDto dto) {
-            clientListeners.forEach(l->l.localPlayerActorGameObjectId(dto.getPlayerActorGameObjectId()));
         }
 
-    }
+        if (dto instanceof PlayerActorDto d) {
+            clientListeners.forEach(l -> l.localPlayerActorGameObjectId(d.getPlayerActorGameObjectId()));
+        }
 
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void errorFromServer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails) {
-        throw new NotImplementedException();
+        if (dto instanceof PlayerEnterDto d) {
+            PlayerDto playerDto = d.getPlayer();
+            PLAYER_MANAGER.getPlayer(playerDto.getId()).ifPresentOrElse(
+                    // if present
+                    remotePlayer -> {
+                        remotePlayer.update(playerDto.getName(), playerDto.getColor());
+                        clientListeners.forEach(l -> l.remotePlayerIntroduce(remotePlayer));
+                    },
+
+                    // or else
+                    () -> {
+                        Player remotePlayer = PLAYER_MANAGER.registerPlayer(
+                                playerDto.getId(),
+                                playerDto.getName(),
+                                playerDto.getColor()
+                        );
+
+                        clientListeners.forEach(l -> l.remotePlayerIntroduce(remotePlayer));
+                    });
+            clientListeners.forEach(l -> l.remotePlayerEnterServer(playerDto.getId(), playerDto.getName(), playerDto.getColor()));
+        }
+
+        if (dto instanceof RconResponseDto d) {
+            clientListeners.forEach(l -> l.rconResponse(d.getText()));
+        }
+
+        if (dto instanceof PlayerEnterResponseDto d) {
+            PlayerDto playerDto = d.getPlayer();
+            setLocalPlayerId(playerDto.getId());
+            setLocalPlayerColor(playerDto.getColor());
+            setServerProtocolVersion(d.getProtocolVersion());
+            clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion));
+        }
+
+        if (dto instanceof PlayerExitDto d) {
+            PLAYER_MANAGER.removePlayer(d.getPlayer().getId()).ifPresent(
+                    remotePlayer -> clientListeners.forEach(l -> l.remotePlayerExit(remotePlayer))
+            );
+        }
+
+        if (dto instanceof ChatDto d) {
+            d.getMessages().forEach(m -> {
+                if (m.getPlayer() != null && m.getPlayer().getName() != null) {
+                    PlayerDto p = m.getPlayer();
+                    clientListeners.forEach(l -> l.playerChat(m.getId(), p.getId(), p.getName(), p.getColor(), m.getText(), m.getTextColor()));
+                } else {
+                    clientListeners.forEach(l -> l.serverChat(m.getId(), m.getText(), m.getTextColor()));
+                }
+            });
+        }
+
+        if (dto instanceof ServerInfoDto d) {
+            Set<PlayerDto> playerDtoSet = d.getPlayers();
+            playerDtoSet.forEach(p -> {
+                Player player = PLAYER_MANAGER.registerPlayer(p.getId(), p.getName(), p.getColor());
+                player.setPing(p.getPing());
+                player.setFrags(p.getFrags());
+            });
+
+            clientListeners.forEach(l -> l.serverInfo(d));
+        }
+
+        if (dto instanceof ServerTextDto d) {
+            clientListeners.forEach(l -> l.serverTextToPlayer(d.getText(), d.getColor()));
+        }
+
+
     }
 
     /**
@@ -223,56 +218,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public void playerPingResponse() {
         long pingResponseTime = System.currentTimeMillis();
         localPlayerPing = (int) (pingResponseTime - pingRequestTime);
-        sender.send(createMessagePlayerPingReport(localPlayerPing));
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void remotePlayerPing(int remotePlayerId, int remotePlayerPing) {
-        PLAYER_MANAGER.getRemotePlayer(remotePlayerId).ifPresent(
-                remotePlayer -> remotePlayer.setPing(remotePlayerPing)
-        );
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor) {
-        clientListeners.forEach(l -> l.serverChat(chatMessageId, chatMessageText, chatMessageTextColor));
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void playerChat(int chatMessageId,
-                           int playerId,
-                           @NotNull String playerName,
-                           int playerColor,
-                           @NotNull String chatMessageText,
-                           int chatMessageTextColor) {
-
-        clientListeners.forEach(l -> l.playerChat(
-                chatMessageId, playerId, playerName, playerColor, chatMessageText, chatMessageTextColor));
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void serverInfoResponse(@NotNull ServerInfo result) {
-        clientListeners.forEach(l -> l.serverInfo(result));
-    }
-
-    /**
-     * {@link ClientProtocolImplListener} method
-     */
-    @Override
-    public void serverTextToPlayer(@NotNull String text, int textColor) {
-        clientListeners.forEach(l -> l.serverTextToPlayer(text, textColor));
+        sender.send(PlayerPingReportDto.builder().ping(localPlayerPing).build());
     }
 
     /**
@@ -293,7 +239,11 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     // SENDERS:
     public void sendPlayerEnterRequest() {
-        sender.send(createMessagePlayerEnterRequest(localPlayerName, PROTOCOL_VERSION, ""));
+        sender.send(PlayerEnterRequestDto.builder()
+                .name(localPlayerName)
+                .protocolVersion(PROTOCOL_VERSION)
+                .build()
+        );
     }
 
     public void sendLocalPlayerController(int controllerState) {
@@ -301,7 +251,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     public void sendServerInfoRequest() {
-        sender.send(createMessageServerInfoRequest());
+        sender.send(ServerInfoRequestDto.INSTANCE);
     }
 
     public void sendPingRequest() {
@@ -324,8 +274,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         return headers.get(PATH);
     }
 
-    public void sendExtra(ExtraDto dto) {
-        sender.send(createMessageExtra(dto));
+    public void sendExtra(Dto dto) {
+        sender.send(createDtoMessage(dto));
     }
 
     ///
@@ -408,19 +358,28 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     public void sendChatMessage(String text) {
-        sender.send(createMessagePlayerTextToChat(text));
+        sender.send(PlayerTextToChatDto.builder()
+                .text(text)
+                .build()
+        );
     }
 
     public void sendExitRequest() {
-        sender.send(createMessagePlayerExitRequest());
+        sender.send(PlayerExitRequestDto.INSTANCE);
     }
 
     public void sendRconLoginRequest(String passwordHash) {
-        sender.send(createMessageRconLogin(passwordHash));
+        sender.send(RconLoginRequestDto.builder()
+                .passwordHash(passwordHash)
+                .build()
+        );
     }
 
     public void sendRconCommand(String rconCommandText) {
-        sender.send(createMessageRconCommand(rconCommandText, ""));
+        sender.send(RconCommandDto.builder()
+                .commandText(rconCommandText)
+                .build()
+        );
     }
 
     public IConnection getConnection() {

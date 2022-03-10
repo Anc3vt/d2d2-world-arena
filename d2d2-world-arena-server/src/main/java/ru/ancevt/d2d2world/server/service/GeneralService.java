@@ -19,26 +19,24 @@ package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import ru.ancevt.commons.Pair;
-import ru.ancevt.commons.exception.NotImplementedException;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.commons.regex.PatternMatcher;
-import ru.ancevt.d2d2world.net.dto.ExtraDto;
-import ru.ancevt.d2d2world.net.dto.MapLoadedDto;
-import ru.ancevt.d2d2world.net.dto.PlayerActorDto;
-import ru.ancevt.d2d2world.net.dto.ServerMapInfoDto;
+import ru.ancevt.d2d2world.net.dto.ChatMessageDto;
+import ru.ancevt.d2d2world.net.dto.Dto;
+import ru.ancevt.d2d2world.net.dto.PlayerDto;
+import ru.ancevt.d2d2world.net.dto.client.*;
+import ru.ancevt.d2d2world.net.dto.server.*;
 import ru.ancevt.d2d2world.net.protocol.ExitCause;
+import ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import ru.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import ru.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import ru.ancevt.d2d2world.net.transfer.FileSender;
 import ru.ancevt.d2d2world.net.transfer.Headers;
 import ru.ancevt.d2d2world.server.ServerConfig;
 import ru.ancevt.d2d2world.server.ServerStateInfo;
-import ru.ancevt.d2d2world.server.ServerTimer;
-import ru.ancevt.d2d2world.server.ServerTimerListener;
+import ru.ancevt.d2d2world.server.chat.ChatMessage;
 import ru.ancevt.d2d2world.server.chat.ServerChat;
 import ru.ancevt.d2d2world.server.chat.ServerChatListener;
-import ru.ancevt.d2d2world.server.chat.ServerChatMessage;
 import ru.ancevt.d2d2world.server.content.ServerContentManager;
 import ru.ancevt.d2d2world.server.player.Player;
 import ru.ancevt.d2d2world.server.player.ServerPlayerManager;
@@ -47,10 +45,7 @@ import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 import ru.ancevt.net.tcpb254.server.IServer;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
 import static ru.ancevt.d2d2world.net.transfer.Headers.*;
@@ -63,7 +58,7 @@ import static ru.ancevt.d2d2world.server.service.ServerSender.MODULE_SENDER;
 import static ru.ancevt.d2d2world.server.simulation.ServerWorld.MODULE_WORLD;
 
 @Slf4j
-public class GeneralService implements ServerProtocolImplListener, ServerChatListener, ServerTimerListener {
+public class GeneralService implements ServerProtocolImplListener, ServerChatListener {
 
     public static final GeneralService MODULE_GENERAL = new GeneralService();
 
@@ -71,8 +66,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     private final ServerConfig serverConfig = ServerConfig.MODULE_SERVER_CONFIG;
     private final IServer serverUnit = ServerUnit.MODULE_SERVER_UNIT.server;
-    private final ServerTimer serverTimer = ServerTimer.MODULE_TIMER;
-    private final SyncService syncService = SyncService.MODULE_SYNC;
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
     private final ServerSender serverSender = MODULE_SENDER;
     private final ServerPlayerManager serverPlayerManager = MODULE_PLAYER_MANAGER;
@@ -81,46 +74,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     private GeneralService() {
         serverChat.addServerChatListener(this);
-        serverTimer.setTimerListener(this);
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void serverInfoRequest(int playerId) {
-        if (log.isInfoEnabled()) {
-            Optional<IConnection> oConnection = getConnection(playerId);
-            String address = oConnection.isPresent() ? oConnection.get().getRemoteAddress() : "unknown";
-            log.trace("Server info request from connection id {}, address {}", playerId, address);
-        }
-
-        if (MODULE_BANLIST.ifBannedCloseConnection(getConnection(playerId).orElseThrow())) {
-            log.info("Banned ip connection attempt: {}", playerId);
-            return;
-        }
-
-        List<Pair<Integer, String>> players =
-                serverPlayerManager.getPlayerList()
-                        .stream()
-                        .map(player -> Pair.of(player.getId(), player.getName()))
-                        .toList();
-
-        serverSender.sendToPlayer(playerId,
-                createMessageServerInfoResponse(
-                        serverStateInfo.getName(),
-                        serverStateInfo.getVersion(),
-                        serverStateInfo.getMap(),
-                        serverStateInfo.getMapKit(),
-                        serverStateInfo.getMod(),
-                        serverStateInfo.getMaxPlayers(),
-                        players
-                )
-        );
-
-        if (!serverPlayerManager.containsPlayer(playerId)) {
-            getConnection(playerId).ifPresent(IConnection::closeIfOpen);
-        }
     }
 
     /**
@@ -142,173 +95,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             FileSender fileSender = new FileSender(path, serverConfig.getBoolean(CONTENT_COMPRESSION), true);
             getConnection(connectionId).ifPresent(fileSender::send);
         }
-
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void rconLogin(int playerId, @NotNull String passwordHash) {
-        if (MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD)).equals(passwordHash)) {
-            serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
-                p.setRconLoggedIn(true);
-                if (log.isInfoEnabled()) {
-                    log.info("rcon logged in {}({}), address: {}", p.getName(), playerId, p.getAddress());
-                }
-                serverSender.sendToPlayer(playerId, createMessageTextToPlayer("You are logged in as rcon admin", 0xFFFFFF));
-            });
-        } else {
-            if (log.isInfoEnabled()) {
-                serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
-                    log.info("rcon wrong password {}({}), address: {}", p.getName(), playerId, p.getAddress());
-                });
-            }
-
-            serverSender.sendToPlayer(playerId, createMessageTextToPlayer("Wrong password", 0xFF0000));
-        }
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void rconCommand(int playerId, @NotNull String commandText, @NotNull String extraData) {
-        serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
-            if (p.isRconLoggedIn()) {
-                String rconResponse = commandProcessor.execute(commandText);
-                if (log.isInfoEnabled()) {
-                    log.info("rcon: {}({}): {}", p.getName(), playerId, commandText);
-                    log.info("rcon response: {}({}): {}", p.getName(), playerId, rconResponse);
-                }
-                serverSender.sendToPlayer(playerId, createMessageRconResponse(rconResponse));
-            }
-        });
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void playerEnterRequest(int connectionId,
-                                   @NotNull String playerName,
-                                   @NotNull String clientProtocolVersion,
-                                   @NotNull String extraData) {
-
-        if (MODULE_BANLIST.ifBannedCloseConnection(getConnection(connectionId).orElseThrow())) {
-            log.info("Banned ip enter attempt: {}", connectionId);
-            return;
-        }
-
-
-        log.trace("Player enter request {}({}), client protocol version: {}, extra data: {}",
-                playerName, connectionId, clientProtocolVersion, extraData
-        );
-
-        // validate player name
-        if (!PatternMatcher.check(playerName, NAME_PATTERN)) {
-            // if invalid close connection and return
-            log.info("Invalid player name '{}', connection id:{}", playerName, connectionId);
-            getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
-            return;
-        }
-
-        // save player list before new player actually added to server player list
-        List<Player> oldPlayerList = serverPlayerManager.getPlayerList();
-
-        // check if the same name is already exists
-        Optional<Player> player = oldPlayerList.stream()
-                .filter(p -> p.getName().equals(playerName))
-                .findAny();
-        if (player.isPresent()) {
-            // if the same name is present close the connection and return
-            log.info("Invalid player name '{}' is already taken, connection id:{}", playerName, connectionId);
-            getConnection(connectionId).ifPresent(IConnection::closeIfOpen);
-            return;
-        }
-
-        // create new player in player manager
-        Player newPlayer = serverPlayerManager.createPlayer(
-                connectionId,
-                playerName,
-                clientProtocolVersion,
-                getConnection(connectionId).orElseThrow().getRemoteAddress(),
-                extraData
-        );
-
-        MODULE_WORLD.addPlayer(newPlayer);
-
-        log.info("Player enter {}({})", playerName, connectionId);
-
-        // now the connection id is new player id
-        // send to new player info about all others
-        serverPlayerManager.getPlayerList().forEach(p -> serverSender.sendToPlayer(
-                        connectionId,
-                        createMessageRemotePlayerIntroduce(
-                                p.getId(),
-                                p.getName(),
-                                p.getColor(),
-                                p.getAddress()
-                        )
-                )
-        );
-
-        // send to all other player info of new player
-        serverSender.sendToAllExcluding(
-                createMessageRemotePlayerIntroduce(
-                        connectionId,
-                        playerName,
-                        newPlayer.getColor(),
-                        newPlayer.getAddress()
-                ),
-                connectionId
-        );
-
-        // send to new player info about new player (id, color)
-        serverSender.sendToPlayer(connectionId,
-                createMessagePlayerEnterResponse(
-                        connectionId,
-                        newPlayer.getColor()
-                )
-        );
-
-        // send everyone else information about the entrance of a new player
-        serverSender.sendToAllExcluding(
-                createMessageRemotePlayerEnter(connectionId, playerName, newPlayer.getColor()),
-                connectionId
-        );
-
-        // send to new player current map and mapkit info
-        sendCurrentMapInfoToPlayer(connectionId);
-
-        // send chat history to new player
-        serverChat.getMessages(10).forEach(serverChatMessage -> {
-            if (serverChatMessage.isFromPlayer()) {
-                serverSender.sendToPlayer(
-                        connectionId,
-                        createMessageChat(
-                                serverChatMessage.getId(),
-                                serverChatMessage.getText(),
-                                serverChatMessage.getTextColor(),
-                                serverChatMessage.getPlayerId(),
-                                serverChatMessage.getPlayerName(),
-                                serverChatMessage.getPlayerColor())
-                );
-            } else {
-                serverSender.sendToPlayer(
-                        connectionId,
-                        createMessageChat(
-                                serverChatMessage.getId(),
-                                serverChatMessage.getText(),
-                                serverChatMessage.getTextColor())
-                );
-            }
-
-            newPlayer.setLastSeenChatMessageId(serverChatMessage.getId());
-        });
-
-        // send enter message to all players including new player
-        serverChat.text("Player " + playerName + "(" + connectionId + ") connected", 0xFFFF00);
     }
 
     /**
@@ -317,50 +103,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     @Override
     public void playerController(int playerId, int controllerState) {
         MODULE_WORLD.playerController(playerId, controllerState);
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void playerTextToChat(int playerId, @NotNull String text) {
-        serverPlayerManager.getPlayerById(playerId).ifPresent(
-                player -> {
-                    if (text.startsWith("/")) {
-                        playerTextCommand(playerId, text);
-                    } else {
-                        serverChat.playerText(text, playerId, player.getName(), player.getColor());
-                    }
-                }
-        );
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void playerExitRequest(int playerId) {
-        serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
-            serverChat.text("Player " + player.getName() + "(" + playerId + ") exit", 0x999999);
-            serverPlayerManager.removePlayer(player);
-            serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.NORMAL_EXIT));
-
-            MODULE_WORLD.removePlayer(player);
-
-            if (log.isInfoEnabled()) {
-                log.info("Exit: {}({}), address: {}", player.getName(), playerId, player.getAddress());
-            }
-        });
-
-        getConnection(playerId).ifPresent(IConnection::close);
-    }
-
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void errorFromPlayer(int errorCode, @NotNull String errorMessage, @NotNull String errorDetails) {
-        throw new NotImplementedException();
     }
 
     @Override
@@ -372,59 +114,256 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void playerPingReport(int playerId, int ping) {
-        serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setPingValue(ping));
-    }
+    public void dtoFromPlayer(int playerId, Dto dto) {
 
-    /**
-     * {@link ServerProtocolImplListener} method
-     */
-    @Override
-    public void extraFromPlayer(int playerId, ExtraDto extraDto) {
-        if (extraDto instanceof MapLoadedDto) {
-            MODULE_WORLD.getWorld().getSyncGameObjects().forEach(o -> {
-                MODULE_SENDER.sendToPlayer(playerId, new SyncDataAggregator().createSyncMessage(o));
-            });
+        if (dto instanceof PlayerEnterRequestDto d) {
+            String playerName = d.getName();
+            String clientProtocolVersion = d.getProtocolVersion();
 
-            MODULE_SENDER.sendToPlayer(playerId,
-                    createMessageExtra(PlayerActorDto.of(MODULE_WORLD.getPlayerActor(playerId).getGameObjectId()))
+            if (MODULE_BANLIST.ifBannedCloseConnection(getConnection(playerId).orElseThrow())) {
+                log.info("Banned ip enter attempt: {}", playerId);
+                return;
+            }
+
+
+            log.trace("Player enter request {}({}), client protocol version: {}",
+                    playerName, playerId, clientProtocolVersion
             );
 
-        }
-    }
+            // validate player name
+            if (!PatternMatcher.check(playerName, NAME_PATTERN)) {
+                // if invalid close connection and return
+                log.info("Invalid player name '{}', connection id:{}", playerName, playerId);
+                getConnection(playerId).ifPresent(IConnection::closeIfOpen);
+                return;
+            }
 
-    /**
-     * {@link ServerTimerListener} method
-     */
-    @Override
-    public void globalTimerTick(long count) {
-        syncService.syncFirstLevel();
-        if (count % 1000 == 0) syncService.syncSecondLevel();
-        if (count % 10000 == 0) syncService.syncThirdLevel();
+            // save player list before new player actually added to server player list
+            List<Player> oldPlayerList = serverPlayerManager.getPlayerList();
+
+            // check if the same name is already exists
+            Optional<Player> player = oldPlayerList.stream()
+                    .filter(p -> p.getName().equals(playerName))
+                    .findAny();
+            if (player.isPresent()) {
+                // if the same name is present close the connection and return
+                log.info("Invalid player name '{}' is already taken, connection id:{}", playerName, playerId);
+                getConnection(playerId).ifPresent(IConnection::closeIfOpen);
+                return;
+            }
+
+            // create new player in player manager
+            Player newPlayer = serverPlayerManager.createPlayer(
+                    playerId,
+                    playerName,
+                    clientProtocolVersion,
+                    getConnection(playerId).orElseThrow().getRemoteAddress()
+            );
+
+            MODULE_WORLD.addPlayer(newPlayer);
+
+            log.info("Player enter {}({})", playerName, playerId);
+
+            // now the connection id is new player id
+            // send to new player current state info about server
+            serverSender.sendToPlayer(playerId, getServerInfoDto());
+
+            // send to new player info about new player (id, color)
+            serverSender.sendToPlayer(playerId,
+                    PlayerEnterResponseDto.builder()
+                            .color(newPlayer.getColor())
+                            .protocolVersion(PROTOCOL_VERSION)
+                            .build()
+            );
+
+            // send everyone else information about the entrance of a new player
+            serverSender.sendToAllExcluding(
+                    PlayerEnterDto.builder()
+                            .player(PlayerDto.builder()
+                                    .id(playerId)
+                                    .name(newPlayer.getName())
+                                    .color(newPlayer.getColor())
+                                    .build())
+                            .build(),
+                    playerId);
+
+            // send to new player current map and mapkit info
+            sendCurrentMapInfoToPlayer(playerId);
+
+            // send chat history to new player
+
+            List<ChatMessageDto> chatMessageDtos = new ArrayList<>();
+            new ArrayList<>(serverChat.getMessages(10)).forEach(
+                    c -> chatMessageDtos.add(
+                            ChatMessageDto.builder()
+                                    .id(c.getId())
+                                    .player(PlayerDto.builder()
+                                            .name(c.getPlayerName())
+                                            .id(c.getPlayerId())
+                                            .color(c.getPlayerColor())
+                                            .build())
+                                    .textColor(c.getTextColor())
+                                    .text(c.getText())
+                                    .build())
+            );
+            serverSender.sendToPlayer(playerId,
+                    ChatDto.builder()
+                            .messages(chatMessageDtos)
+                            .build()
+            );
+
+            // send enter message to all players including new player
+            serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
+        }
+
+
+        if (dto instanceof MapLoadedReport) {
+            MODULE_WORLD.getWorld().getSyncGameObjects().forEach(
+                    o -> MODULE_SENDER.sendToPlayer(playerId, new SyncDataAggregator().createSyncMessage(o))
+            );
+
+            MODULE_SENDER.sendToPlayer(playerId,
+                    PlayerActorDto.builder()
+                            .playerActorGameObjectId(MODULE_WORLD.getPlayerActor(playerId).getGameObjectId())
+                            .build()
+            );
+        }
+
+        if (dto instanceof ServerInfoRequestDto) {
+            var s = MODULE_SERVER_STATE_INFO;
+
+            Set<PlayerDto> players = new HashSet<>();
+
+            MODULE_PLAYER_MANAGER.getPlayerList().forEach(
+                    player -> players.add(PlayerDto.builder()
+                            .id(player.getId())
+                            .color(player.getColor())
+                            .frags(0)
+                            .name((player.getName()))
+                            .ping(player.getPingValue())
+                            .build()));
+
+            serverSender.sendToPlayer(playerId, createDtoMessage(ServerInfoDto.builder()
+                    .currentMap(s.getMap())
+                    .maxPlayers(s.getMaxPlayers())
+                    .modName(s.getMod())
+                    .protocolVersion(ServerProtocolImpl.PROTOCOL_VERSION)
+                    .serverVersion(s.getVersion())
+                    .players(players)
+                    .build()
+            ));
+        }
+
+        if (dto instanceof RconLoginRequestDto d) {
+            if (MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD)).equals(d.getPasswordHash())) {
+                serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+                    p.setRconLoggedIn(true);
+                    if (log.isInfoEnabled()) {
+                        log.info("rcon logged in {}({}), address: {}", p.getName(), playerId, p.getAddress());
+                    }
+                    serverSender.sendToPlayer(playerId,
+                            ServerTextDto.builder()
+                                    .text("You are logged in as rcon admin")
+                                    .color(0xFFFFFF)
+                                    .build()
+                    );
+                });
+            } else {
+                if (log.isInfoEnabled()) {
+                    serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+                        log.info("rcon wrong password {}({}), address: {}", p.getName(), playerId, p.getAddress());
+                    });
+                }
+
+                serverSender.sendToPlayer(playerId,
+                        ServerTextDto.builder()
+                                .text("You are logged in as rcon admin")
+                                .color(0xFFFFFF)
+                                .build());
+            }
+        }
+
+        if (dto instanceof RconCommandDto d) {
+            serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
+                if (p.isRconLoggedIn()) {
+                    String commandText = d.getCommandText();
+                    String rconResponse = commandProcessor.execute(commandText);
+                    if (log.isInfoEnabled()) {
+                        log.info("rcon: {}({}): {}", p.getName(), playerId, commandText);
+                        log.info("rcon response: {}({}): {}", p.getName(), playerId, rconResponse);
+                    }
+                    serverSender.sendToPlayer(playerId,
+                            RconResponseDto.builder()
+                                    .text(rconResponse)
+                                    .build()
+                    );
+                }
+            });
+        }
+
+        if (dto instanceof PlayerTextToChatDto d) {
+            String text = d.getText();
+            serverPlayerManager.getPlayerById(playerId).ifPresent(
+                    player -> {
+                        if (text.startsWith("/")) {
+                            playerTextCommand(playerId, text);
+                        } else {
+                            serverChat.playerText(text, playerId, player.getName(), player.getColor());
+                        }
+                    }
+            );
+        }
+
+        if (dto instanceof PlayerExitRequestDto) {
+            serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
+                MODULE_WORLD.removePlayer(player);
+
+                serverChat.text("Player " + player.getName() + "(" + playerId + ") exit", 0x999999);
+                serverPlayerManager.removePlayer(player);
+                serverSender.sendToAll(PlayerExitDto.builder()
+                        .player(PlayerDto.builder()
+                                .id(playerId)
+                                .name(player.getName())
+                                .build()
+                        )
+                        .exitCause(ExitCause.NORMAL_EXIT)
+                        .build()
+                );
+
+
+                if (log.isInfoEnabled()) {
+                    log.info("Exit: {}({}), address: {}", player.getName(), playerId, player.getAddress());
+                }
+            });
+
+            getConnection(playerId).ifPresent(IConnection::close);
+        }
+
+        if (dto instanceof PlayerPingReportDto d) {
+            serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setPingValue(d.getPing()));
+        }
+
+
     }
 
     /**
      * {@link ServerChatListener} method
      */
     @Override
-    public void chatMessage(@NotNull ServerChatMessage serverChatMessage) {
-        if (serverChatMessage.isFromPlayer())
-            serverSender.sendToAll(
-                    createMessageChat(
-                            serverChatMessage.getId(),
-                            serverChatMessage.getText(),
-                            serverChatMessage.getTextColor(),
-                            serverChatMessage.getPlayerId(),
-                            serverChatMessage.getPlayerName(),
-                            serverChatMessage.getPlayerColor())
-            );
-        else
-            serverSender.sendToAll(
-                    createMessageChat(
-                            serverChatMessage.getId(),
-                            serverChatMessage.getText(),
-                            serverChatMessage.getTextColor())
-            );
+    public void chatMessage(@NotNull ChatMessage serverChatMessage) {
+        serverSender.sendToAll(ChatDto.builder()
+                .messages(List.of(
+                        ChatMessageDto.builder()
+                                .id(serverChatMessage.getId())
+                                .text(serverChatMessage.getText())
+                                .textColor(serverChatMessage.getTextColor())
+                                .player(PlayerDto.builder()
+                                        .id(serverChatMessage.getPlayerId())
+                                        .name(serverChatMessage.getPlayerName())
+                                        .color(serverChatMessage.getPlayerColor())
+                                        .build())
+                                .build()))
+                .build());
 
         serverPlayerManager.getPlayerList().forEach(p -> p.setLastSeenChatMessageId(serverChatMessage.getId()));
 
@@ -435,6 +374,32 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     serverChatMessage.getText()
             );
         }
+    }
+
+    public ServerInfoDto getServerInfoDto() {
+        return ServerInfoDto.builder()
+                .name(serverStateInfo.getName())
+                .serverVersion(serverStateInfo.getVersion())
+                .protocolVersion(ServerProtocolImpl.PROTOCOL_VERSION)
+                .currentMap(serverStateInfo.getMap())
+                .modName(serverStateInfo.getMod())
+                .maxPlayers(serverStateInfo.getMaxPlayers())
+                .players(getPlayerDtos())
+                .build();
+    }
+
+    public Set<PlayerDto> getPlayerDtos() {
+        Set<PlayerDto> players = new HashSet<>();
+
+        serverPlayerManager.getPlayerList().forEach(
+                player -> players.add(PlayerDto.builder()
+                        .id(player.getId())
+                        .name(player.getName())
+                        .color(player.getColor())
+                        .ping(player.getPingValue())
+                        .build()
+                ));
+        return players;
     }
 
     public void setMap(String mapName) {
@@ -448,7 +413,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         }
     }
 
-    private ServerMapInfoDto createServerMapInfoDto(String mapName) {
+    private ServerContentInfoDto createServerContentDto(String mapName) {
         ServerContentManager.Map map = MODULE_CONTENT_MANAGER.getMaps()
                 .stream()
                 .filter(m -> m.name().equals(mapName))
@@ -456,14 +421,14 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 .orElseThrow(() -> new IllegalStateException("no such map on disk: " + mapName));
 
         var builder =
-                ServerMapInfoDto.builder()
+                ServerContentInfoDto.builder()
                         .name(map.name())
                         .filename(map.filename());
 
-        Set<ServerMapInfoDto.Mapkit> mapkits = new HashSet<>();
+        Set<ServerContentInfoDto.Mapkit> mapkits = new HashSet<>();
 
         map.mapkits().forEach(
-                mk -> mapkits.add(ServerMapInfoDto.Mapkit.builder()
+                mk -> mapkits.add(ServerContentInfoDto.Mapkit.builder()
                         .uid(mk.uid())
                         .name(mk.name())
                         .files(Set.copyOf(mk.files()))
@@ -477,12 +442,12 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     private void sendCurrentMapInfoToAll() {
         String mapName = MODULE_SERVER_STATE_INFO.getMap();
-        serverSender.sendToAll(createMessageExtra(createServerMapInfoDto(mapName)));
+        serverSender.sendToAll(createDtoMessage(createServerContentDto(mapName)));
     }
 
     private void sendCurrentMapInfoToPlayer(int playerId) {
         String mapName = MODULE_SERVER_STATE_INFO.getMap();
-        serverSender.sendToPlayer(playerId, createMessageExtra(createServerMapInfoDto(mapName)));
+        serverSender.sendToPlayer(playerId, createDtoMessage(createServerContentDto(mapName)));
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {
@@ -492,16 +457,28 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             });
         }
 
-        serverSender.sendToPlayer(playerId, createMessageTextToPlayer("unknown command: " + commandText, 0xFFFFFF));
+        serverSender.sendToPlayer(playerId, ServerTextDto.builder()
+                .text("unknown command: " + commandText)
+                .color(0xFFFFFF)
+                .build()
+        );
     }
 
     public void connectionClosed(int playerId, CloseStatus status) {
         // if the player exists in the player manager and has not been deleted yet, it will be CONNECTION_LOST exit cause
         serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
-                    serverPlayerManager.removePlayer(player);
-                    serverSender.sendToAll(createMessageRemotePlayerExit(playerId, ExitCause.LOST_CONNECTION));
-                    serverChat.text("Player " + player.getName() + "(" + playerId + ") lost connection");
                     MODULE_WORLD.removePlayer(player);
+                    serverPlayerManager.removePlayer(player);
+                    serverSender.sendToAll(PlayerExitDto.builder()
+                            .player(PlayerDto.builder()
+                                    .id(playerId)
+                                    .name(player.getName())
+                                    .build()
+                            )
+                            .exitCause(ExitCause.LOST_CONNECTION)
+                            .build()
+                    );
+                    serverChat.text("Player " + player.getName() + "(" + playerId + ") lost connection");
                 }
         );
     }
@@ -514,7 +491,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     }
 
     public void exit() {
-        serverTimer.stop();
         serverUnit.close();
         log.info("Server exit");
         System.exit(0);

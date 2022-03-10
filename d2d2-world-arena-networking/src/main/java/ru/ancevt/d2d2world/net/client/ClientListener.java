@@ -18,13 +18,14 @@
 package ru.ancevt.d2d2world.net.client;
 
 import org.jetbrains.annotations.NotNull;
+import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.net.tcpb254.CloseStatus;
 
 public interface ClientListener {
 
-    void remotePlayerIntroduce(@NotNull RemotePlayer remotePlayer);
+    void remotePlayerIntroduce(@NotNull Player remotePlayer);
 
-    void remotePlayerExit(@NotNull RemotePlayer remotePlayer);
+    void remotePlayerExit(@NotNull Player remotePlayer);
 
     void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion);
 
@@ -43,7 +44,7 @@ public interface ClientListener {
 
     void remotePlayerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
 
-    void serverInfo(@NotNull ServerInfo result);
+    void serverInfo(@NotNull ServerInfoDto result);
 
     void serverTextToPlayer(@NotNull String text, int textColor);
 

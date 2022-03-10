@@ -33,9 +33,9 @@ import ru.ancevt.d2d2world.desktop.ui.TabWindow;
 import ru.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import ru.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import ru.ancevt.d2d2world.net.client.ClientListener;
-import ru.ancevt.d2d2world.net.client.RemotePlayer;
-import ru.ancevt.d2d2world.net.client.RemotePlayerManager;
-import ru.ancevt.d2d2world.net.client.ServerInfo;
+import ru.ancevt.d2d2world.net.client.Player;
+import ru.ancevt.d2d2world.net.client.PlayerManager;
+import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import ru.ancevt.net.tcpb254.CloseStatus;
@@ -128,7 +128,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void remotePlayerIntroduce(@NotNull RemotePlayer remotePlayer) {
+    public void remotePlayerIntroduce(@NotNull Player remotePlayer) {
 
     }
 
@@ -144,7 +144,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void serverInfo(@NotNull ServerInfo result) {
+    public void serverInfo(@NotNull ServerInfoDto result) {
         tabWindow.setServerName(result.getName(), result.getPlayers().size(), result.getMaxPlayers());
     }
 
@@ -176,7 +176,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void remotePlayerExit(@NotNull RemotePlayer remotePlayer) {
+    public void remotePlayerExit(@NotNull Player remotePlayer) {
 
     }
 
@@ -224,7 +224,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         worldScene.stop();
         MODULE_CHAT.addMessage(status.getErrorMessage(), Color.RED);
         new Lock().lock(5, SECONDS);
-        if(attempts < 10) {
+        if (attempts < 10) {
             start(server, MODULE_CLIENT.getLocalPlayerName());
         } else {
             MODULE_CHAT.addMessage("Can't establish connection. Please try again later");
@@ -285,11 +285,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             tabWindow.setServerName(serverName, 0, 0);
             tabWindow.setPlayers(
                     MODULE_CLIENT.getLocalPlayerId(),
-                    MODULE_CLIENT.getLocalPlayerName(),
-                    MODULE_CLIENT.getLocalPlayerFrags(),
-                    MODULE_CLIENT.getLocalPlayerPing(),
-                    Color.of(MODULE_CLIENT.getLocalPlayerColor()),
-                    RemotePlayerManager.PLAYER_MANAGER.getRemotePlayerList()
+                    PlayerManager.PLAYER_MANAGER.getPlayerList()
             );
 
             add(tabWindow);

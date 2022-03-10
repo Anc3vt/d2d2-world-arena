@@ -25,7 +25,7 @@ import ru.ancevt.d2d2.display.IDisplayObject;
 import ru.ancevt.d2d2.display.Root;
 import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
-import ru.ancevt.d2d2world.net.client.RemotePlayer;
+import ru.ancevt.d2d2world.net.client.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class TabWindow extends DisplayObjectContainer {
     private final PlainRect plainRect;
     private final UiText uiServerName;
     private final List<IDisplayObject> texts;
-    private List<RemotePlayer> remotePlayers;
+    private List<Player> remotePlayers;
 
     public TabWindow() {
         plainRect = new PlainRect(Color.BLACK);
@@ -73,32 +73,16 @@ public class TabWindow extends DisplayObjectContainer {
         drawTitle();
     }
 
-    public void setPlayers(int localPlayerId,
-                           String localPlayerName,
-                           int localPlayerFrags,
-                           int localPlayerPing,
-                           Color color,
-                           List<RemotePlayer> remotePlayers) {
+    public void setPlayers(int localPlayerId, List<Player> remotePlayers) {
         this.remotePlayers = remotePlayers;
 
         clear();
         redraw();
-        drawLocalPlayerInfo(localPlayerId, localPlayerName, localPlayerFrags, localPlayerPing, color);
-
-    }
-
-    private void drawLocalPlayerInfo(int localPlayerId,
-                                     String localPlayerName,
-                                     int localPlayerFrags,
-                                     int localPlayerPing,
-                                     Color color) {
-
-        addPlayerTexts(50, localPlayerId, localPlayerName, localPlayerFrags, localPlayerPing, color);
     }
 
     private void redraw() {
         int y = 70;
-        for (RemotePlayer player : remotePlayers) {
+        for (Player player : remotePlayers) {
             Color color = Color.of(player.getColor());
             addPlayerTexts(y, player.getId(), player.getName(), player.getFrags(), player.getPing(), color);
             y += 20;
@@ -163,15 +147,15 @@ public class TabWindow extends DisplayObjectContainer {
 
         tabWindow.setServerName("D2D2 World Server", 50, 100);
 
-        List<RemotePlayer> players = new ArrayList<>();
+        List<Player> players = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            RemotePlayer player = new RemotePlayer(i + 1, "Remote_Player_" + i, Color.createRandomColor().getValue());
+            Player player = new Player(i + 1, "Remote_Player_" + i, Color.createRandomColor().getValue());
             player.setPing((int) (Math.random() * 100) + 10);
             player.setFrags((int) (Math.random() * 100) + 10);
             players.add(player);
         }
 
-        tabWindow.setPlayers(99, "Ancevt", 50, 49, Color.GREEN, players);
+        tabWindow.setPlayers(99, players);
 
         root.add(tabWindow);
 

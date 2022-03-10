@@ -176,7 +176,9 @@ public class LWJGLTextureEngine implements ITextureEngine {
             f3.setBloomThreshold(2f);
             try {
                 image = f3.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
-            } catch (Exception c) {c .printStackTrace();}
+            } catch (Exception c) {
+                System.err.println(c.getMessage());
+            }
         }
 
         int[] pixels = new int[image.getWidth() * image.getHeight()];
