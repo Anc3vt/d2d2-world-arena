@@ -45,10 +45,12 @@ public class DesktopConfig {
     public static final String PLAYER = "player";
     public static final String RCON_PASSWORD = "rcon-password";
     public static final String DEBUG_WORLD_ALPHA = "debug.world-alpha";
+    public static final String AUTO_ENTER = "auto-enter";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "ancevt.ru:2245");
         put(DEBUG_WORLD_ALPHA, "1.0");
+        put(AUTO_ENTER, "false");
     }};
 
     private final Properties properties;
@@ -86,6 +88,10 @@ public class DesktopConfig {
         } catch (NumberFormatException ex) {
             return 0;
         }
+    }
+
+    public boolean getBoolean(@NotNull String key) {
+        return "true".equals(getString(key));
     }
 
     public float getFloat(@NotNull String key) {

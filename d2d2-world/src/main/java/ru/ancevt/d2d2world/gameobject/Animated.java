@@ -28,7 +28,7 @@ import ru.ancevt.d2d2world.mapkit.MapkitItem;
 abstract public class Animated extends DisplayObjectContainer implements IAnimated {
 
     private int direction;
-    private int currentAnimationKey;
+    private int currentAnimationKey = -1;
     private IFramedDisplayObject[] animations;
     private final MapkitItem mapkitItem;
     private final int id;
@@ -36,7 +36,6 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     public Animated(MapkitItem mapKitItem, int gameObjectId) {
         this.mapkitItem = mapKitItem;
         this.id = gameObjectId;
-
         prepareAnimations();
     }
 
@@ -61,8 +60,8 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             animations[animKey] = framedDisplayObject;
         }
 
-        setAnimation(0, true);
         fixXY();
+        setAnimation(AnimationKey.IDLE);
     }
 
     @Override
@@ -92,6 +91,8 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setAnimation(final int animationKey, final boolean loop) {
+        if(animationKey == getAnimation()) return;
+
         this.currentAnimationKey = animationKey;
 
         for (int i = 0; i < animations.length; i++) {

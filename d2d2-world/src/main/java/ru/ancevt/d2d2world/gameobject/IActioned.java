@@ -17,11 +17,12 @@
  */
 package ru.ancevt.d2d2world.gameobject;
 
-import ru.ancevt.d2d2world.process.action.ActionProgram;
+import org.jetbrains.annotations.NotNull;
+import ru.ancevt.d2d2world.gameobject.script.ActionProgram;
 
 public interface IActioned extends IGameObject {
 
-    void setActionProgram(ActionProgram actionProgram);
+    void setActionProgram(@NotNull ActionProgram actionProgram);
 
-    ActionProgram getActionProgram();
+    @NotNull ActionProgram getActionProgram();
 }

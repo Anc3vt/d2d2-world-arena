@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import ru.ancevt.d2d2world.net.dto.Dto;
 import ru.ancevt.d2d2world.net.dto.PlayerDto;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -20,9 +21,8 @@ public class ServerInfoDto implements Dto {
     private final String protocolVersion;
     private final String currentMap;
     private final String modName;
+    private final LocalDateTime startTime;
 
     @Builder.Default
     private final Set<PlayerDto> players = Set.of();
-
-
 }

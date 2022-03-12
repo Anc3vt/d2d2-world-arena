@@ -20,12 +20,12 @@ package ru.ancevt.d2d2world.desktop;
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.ScaleMode;
-import ru.ancevt.d2d2.event.Event;
 import ru.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import ru.ancevt.d2d2world.D2D2World;
 import ru.ancevt.d2d2world.debug.DebugPanel;
 import ru.ancevt.d2d2world.desktop.scene.GameRoot;
 import ru.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
+import ru.ancevt.util.system.UnixDisplay;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -56,6 +56,9 @@ public class D2D2WorldArenaDesktopMain {
             if (arg.equals("--debug")) {
                 DebugPanel.setEnabled(true);
             }
+            if (arg.equals("--colorize-logs")) {
+                UnixDisplay.setEnabled(true);
+            }
         }
 
         // Load project properties
@@ -74,11 +77,6 @@ public class D2D2WorldArenaDesktopMain {
         D2D2World.init();
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version);
-
-        if (!autoEnterPlayerName.isEmpty()) {
-            introRoot.addEventListener(Event.ADD_TO_STAGE,
-                    e -> introRoot.enter(MODULE_CONFIG.getString(DesktopConfig.SERVER), autoEnterPlayerName));
-        }
 
         D2D2.getStage().setRoot(introRoot);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);

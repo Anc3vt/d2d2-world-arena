@@ -59,6 +59,9 @@ public class WorldScene extends DisplayObjectContainer {
     private PlayerActor localPlayerActor;
 
     public WorldScene() {
+        MapIO.mapsDirectory = "data/maps/";
+        MapIO.mapkitsDirectory = "data/mapkits/";
+
         world = new World();
         world.getPlayProcessor().setEnabled(false);
         world.getCamera().setBoundsLock(true);
@@ -82,7 +85,7 @@ public class WorldScene extends DisplayObjectContainer {
             }
         };
         shadowRadial.setScale(2f, 2f);
-        //world.add(shadowRadial);
+        world.add(shadowRadial);
 
         ((SyncDataReceiver) MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
 
@@ -163,7 +166,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         dispatchEvent(new SceneEvent(SceneEvent.MAP_LOADED, this));
 
-        MODULE_CLIENT.sendExtra(MapLoadedReport.INSANCE);
+        MODULE_CLIENT.sendDto(MapLoadedReport.INSANCE);
         MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
 
         overlay.startOut();
@@ -221,10 +224,6 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setAttachedTo(localPlayerActor);
 
         playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
-
-        if (shadowRadial != null) {
-            shadowRadial.removeFromParent();
-        }
     }
 
     @Override

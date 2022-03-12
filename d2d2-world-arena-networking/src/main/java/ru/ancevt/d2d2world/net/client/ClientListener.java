@@ -21,13 +21,15 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.net.tcpb254.CloseStatus;
 
+import java.time.LocalDateTime;
+
 public interface ClientListener {
 
     void remotePlayerIntroduce(@NotNull Player remotePlayer);
 
     void remotePlayerExit(@NotNull Player remotePlayer);
 
-    void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion);
+    void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion, @NotNull LocalDateTime serverStartTime);
 
     void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor);
 

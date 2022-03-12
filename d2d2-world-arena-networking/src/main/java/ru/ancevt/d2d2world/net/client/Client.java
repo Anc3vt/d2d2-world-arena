@@ -174,7 +174,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             setLocalPlayerColor(playerDto.getColor());
             setServerProtocolVersion(d.getProtocolVersion());
             sendPingRequest();
-            clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion));
+            clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion, d.getServerStartTime()));
         }
 
         if (dto instanceof PlayerExitDto d) {
@@ -276,8 +276,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         return headers.get(PATH);
     }
 
-    public void sendExtra(Dto dto) {
-        sender.send(createDtoMessage(dto));
+    public void sendDto(Dto dto) {
+        sender.send(dto);
     }
 
     ///

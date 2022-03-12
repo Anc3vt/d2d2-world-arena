@@ -29,7 +29,7 @@ import ru.ancevt.d2d2world.net.transfer.Headers;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static ru.ancevt.d2d2world.net.JsonEngine.gson;
+import static ru.ancevt.d2d2world.net.serialization.JsonEngine.gson;
 
 @Slf4j
 public final class ServerProtocolImpl extends ProtocolImpl {
@@ -59,34 +59,43 @@ public final class ServerProtocolImpl extends ProtocolImpl {
             switch (message.getType()) {
 
                 case MessageType.PING -> {
-                    log("received PING");
-                    serverProtocolImplListeners.forEach(l ->l.ping(connectionId));
+                    log.debug("received <b>PING<> {}", connectionId);
+                    serverProtocolImplListeners.forEach(l -> l.ping(connectionId));
                 }
 
                 case MessageType.CLIENT_PLAYER_CONTROLLER -> {
-                    ////log("received CLIENT_PLAYER_CONTROLLER");
                     int controlState = in.readByte();
+                    log.trace("received <b>CLIENT_PLAYER_CONTROLLER<> from {}", connectionId);
                     serverProtocolImplListeners.forEach(l -> l.playerController(connectionId, controlState));
                 }
 
                 case MessageType.CLIENT_REQUEST_FILE -> {
-                    log("received CLIENT_REQUEST_FILE");
                     String headers = in.readUtf(short.class);
+                    if (log.isDebugEnabled()) {
+                        log.debug("received <b>CLIENT_REQUEST_FILE<> from {}\n<g>{}<>", connectionId, headers);
+                    }
                     serverProtocolImplListeners.forEach(l -> l.requestFile(connectionId, headers));
                 }
 
                 case MessageType.FILE_DATA -> {
-                    log("received FILE_DATA");
                     Headers headers = Headers.of(in.readUtf(short.class));
                     int contentLength = in.readInt();
                     byte[] fileData = in.readBytes(contentLength);
+                    if (log.isDebugEnabled()) {
+                        log.debug("received <b>FILE_DATA<> from {}\n<g>{}\n<contentLength={}<>",
+                                connectionId,
+                                headers,
+                                contentLength);
+                    }
                     FileReceiverManager.INSTANCE.fileData(headers, fileData);
                 }
 
                 case MessageType.DTO -> {
                     String className = in.readUtf(short.class);
                     String json = in.readUtf(int.class);
-                    log("received DTO " + className + ": " + json);
+                    if (log.isDebugEnabled()) {
+                        log.debug("received <b>DTO<> from {} <g>{}\n{}<>", connectionId, className, json);
+                    }
                     Dto extraDto = (Dto) gson().fromJson(json, Class.forName(className));
                     serverProtocolImplListeners.forEach(l -> l.dtoFromPlayer(connectionId, extraDto));
                 }
@@ -95,9 +104,5 @@ public final class ServerProtocolImpl extends ProtocolImpl {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-    }
-
-    private static void log(Object o) {
-        log.trace(String.valueOf(o));
     }
 }

@@ -23,13 +23,13 @@ import ru.ancevt.commons.io.ByteInputReader;
 import ru.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
 import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.d2d2world.net.message.MessageType;
-import ru.ancevt.d2d2world.net.protocol.ProtocolImpl;
 import ru.ancevt.net.tcpb254.CloseStatus;
 import ru.ancevt.net.tcpb254.connection.ConnectionFactory;
 import ru.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 
-import static ru.ancevt.d2d2world.net.JsonEngine.gson;
+import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.createDtoMessage;
+import static ru.ancevt.d2d2world.net.serialization.JsonEngine.gson;
 
 @Slf4j
 public class ServerInfoRetriever {
@@ -48,7 +48,9 @@ public class ServerInfoRetriever {
 
             @Override
             public void connectionEstablished() {
-                connection.send(ProtocolImpl.createDtoMessage(ServerInfoRequestDto.INSTANCE));
+                String className = ServerInfoRequestDto.INSTANCE.getClass().getName();
+                String json = gson().toJson(ServerInfoRequestDto.INSTANCE);
+                connection.send(createDtoMessage(className, json));
                 log.info("Connection established");
             }
 

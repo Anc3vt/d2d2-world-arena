@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.hash.MD5;
 import ru.ancevt.commons.regex.PatternMatcher;
+import ru.ancevt.d2d2world.mapkit.CharacterMapkit;
 import ru.ancevt.d2d2world.net.dto.ChatMessageDto;
 import ru.ancevt.d2d2world.net.dto.Dto;
 import ru.ancevt.d2d2world.net.dto.PlayerDto;
@@ -33,7 +34,7 @@ import ru.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import ru.ancevt.d2d2world.net.transfer.FileSender;
 import ru.ancevt.d2d2world.net.transfer.Headers;
 import ru.ancevt.d2d2world.server.ServerConfig;
-import ru.ancevt.d2d2world.server.ServerStateInfo;
+import ru.ancevt.d2d2world.server.ServerState;
 import ru.ancevt.d2d2world.server.chat.ChatMessage;
 import ru.ancevt.d2d2world.server.chat.ServerChat;
 import ru.ancevt.d2d2world.server.chat.ServerChatListener;
@@ -50,7 +51,7 @@ import java.util.*;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
 import static ru.ancevt.d2d2world.net.transfer.Headers.*;
 import static ru.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
-import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
+import static ru.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static ru.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static ru.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
 import static ru.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
@@ -69,7 +70,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
     private final ServerSender serverSender = MODULE_SENDER;
     private final ServerPlayerManager serverPlayerManager = MODULE_PLAYER_MANAGER;
-    private final ServerStateInfo serverStateInfo = MODULE_SERVER_STATE_INFO;
+    private final ServerState serverStateInfo = MODULE_SERVER_STATE;
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 
     private GeneralService() {
@@ -178,6 +179,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                     .build())
                             .color(newPlayer.getColor())
                             .protocolVersion(PROTOCOL_VERSION)
+                            .serverStartTime(MODULE_SERVER_STATE.getStartTime())
                             .build()
             );
 
@@ -194,7 +196,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     playerId);
 
             // send to new player current map and mapkit info
-            sendCurrentMapInfoToPlayer(playerId);
+            sendCurrentMapContentInfoToPlayer(playerId);
 
             // send chat history to new player
 
@@ -243,7 +245,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             String serverRconPasswordHash = MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD));
             if (serverRconPasswordHash.equals(d.getPasswordHash())) {
                 serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
-                    if(!p.isRconLoggedIn()) {
+                    if (!p.isRconLoggedIn()) {
                         if (log.isInfoEnabled()) {
                             log.info("rcon logged in {}({}), address: {}", p.getName(), playerId, p.getAddress());
                         }
@@ -372,12 +374,12 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     public ServerInfoDto getServerInfoDto() {
         return ServerInfoDto.builder()
-                .name(MODULE_SERVER_STATE_INFO.getName())
-                .serverVersion(MODULE_SERVER_STATE_INFO.getVersion())
+                .name(MODULE_SERVER_STATE.getName())
+                .serverVersion(MODULE_SERVER_STATE.getVersion())
                 .protocolVersion(ServerProtocolImpl.PROTOCOL_VERSION)
-                .currentMap(MODULE_SERVER_STATE_INFO.getMap())
-                .modName(MODULE_SERVER_STATE_INFO.getMod())
-                .maxPlayers(MODULE_SERVER_STATE_INFO.getMaxPlayers())
+                .currentMap(MODULE_SERVER_STATE.getMap())
+                .modName(MODULE_SERVER_STATE.getMod())
+                .maxPlayers(MODULE_SERVER_STATE.getMaxPlayers())
                 .players(getPlayerDtos())
                 .build();
     }
@@ -399,10 +401,10 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     public void setMap(String mapName) {
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
-            MODULE_SERVER_STATE_INFO.setMap(mapName);
+            MODULE_SERVER_STATE.setMap(mapName);
             MODULE_WORLD.loadMap(mapName);
             MODULE_PLAYER_MANAGER.getPlayerList().forEach(MODULE_WORLD::addPlayer);
-            sendCurrentMapInfoToAll();
+            sendCurrentMapContentInfoToAll();
         } else {
             throw new IllegalStateException("no such map '" + mapName + "'");
         }
@@ -430,19 +432,33 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                         .build())
         );
 
+        var characterMapkitDto = ServerContentInfoDto.Mapkit.builder()
+                .name(CharacterMapkit.NAME)
+                .uid(CharacterMapkit.UID)
+                .files(MODULE_CONTENT_MANAGER.getMapkits()
+                        .stream()
+                        .filter(m -> m.uid().equals(CharacterMapkit.UID))
+                        .findAny()
+                        .orElseThrow()
+                        .files()
+                )
+                .build();
+
+        mapkits.add(characterMapkitDto);
+
         builder.mapkits(mapkits);
 
         return builder.build();
     }
 
-    private void sendCurrentMapInfoToAll() {
-        String mapName = MODULE_SERVER_STATE_INFO.getMap();
-        serverSender.sendToAll(createDtoMessage(createServerContentDto(mapName)));
+    private void sendCurrentMapContentInfoToAll() {
+        String mapName = MODULE_SERVER_STATE.getMap();
+        serverSender.sendToAll(createServerContentDto(mapName));
     }
 
-    private void sendCurrentMapInfoToPlayer(int playerId) {
-        String mapName = MODULE_SERVER_STATE_INFO.getMap();
-        serverSender.sendToPlayer(playerId, createDtoMessage(createServerContentDto(mapName)));
+    private void sendCurrentMapContentInfoToPlayer(int playerId) {
+        String mapName = MODULE_SERVER_STATE.getMap();
+        serverSender.sendToPlayer(playerId, createServerContentDto(mapName));
     }
 
     private void playerTextCommand(int playerId, @NotNull String commandText) {

@@ -19,7 +19,7 @@ package ru.ancevt.d2d2world.gameobject;
 
 import ru.ancevt.d2d2world.data.Property;
 
-public interface IMovable extends IGameObject {
+public interface IMovable extends IResettable {
 
     @Property
     void setStartX(float x);

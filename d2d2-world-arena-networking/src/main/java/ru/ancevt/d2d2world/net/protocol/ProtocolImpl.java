@@ -17,18 +17,19 @@
  */
 package ru.ancevt.d2d2world.net.protocol;
 
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ru.ancevt.commons.io.ByteOutputWriter;
-import ru.ancevt.d2d2world.net.dto.Dto;
 import ru.ancevt.d2d2world.net.message.MessageType;
 
-import static ru.ancevt.d2d2world.net.JsonEngine.gson;
-
+@Slf4j
 public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProtocolImpl {
 
     public static final String PROTOCOL_VERSION = "1.0";
 
-    public static byte[] createMessagePing() {
+    @Contract(value = " -> new", pure = true)
+    public static byte @NotNull [] createMessagePing() {
         return new byte[]{(byte) MessageType.PING};
     }
 
@@ -41,11 +42,11 @@ public abstract sealed class ProtocolImpl permits ClientProtocolImpl, ServerProt
                 .toByteArray();
     }
 
-    public static byte[] createDtoMessage(@NotNull Dto object) {
+    public static byte[] createDtoMessage(@NotNull String className, @NotNull String json) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.DTO)
-                .writeUtf(short.class, object.getClass().getName())
-                .writeUtf(int.class, gson().toJson(object))
+                .writeUtf(short.class, className)
+                .writeUtf(int.class, json)
                 .toByteArray();
     }
 

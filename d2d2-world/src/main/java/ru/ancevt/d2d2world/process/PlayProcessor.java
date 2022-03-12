@@ -17,19 +17,9 @@
  */
 package ru.ancevt.d2d2world.process;
 
-import ru.ancevt.d2d2world.gameobject.Actor;
-import ru.ancevt.d2d2world.gameobject.IActioned;
-import ru.ancevt.d2d2world.gameobject.ICollision;
-import ru.ancevt.d2d2world.gameobject.IDamaging;
-import ru.ancevt.d2d2world.gameobject.IDestroyable;
-import ru.ancevt.d2d2world.gameobject.IGameObject;
-import ru.ancevt.d2d2world.gameobject.IGravitied;
-import ru.ancevt.d2d2world.gameobject.IHookable;
-import ru.ancevt.d2d2world.gameobject.IMovable;
-import ru.ancevt.d2d2world.gameobject.ITight;
+import ru.ancevt.d2d2world.gameobject.*;
 import ru.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import ru.ancevt.d2d2world.gameobject.area.AreaHook;
-import ru.ancevt.d2d2world.process.action.ActionProcessor;
 import ru.ancevt.d2d2world.world.World;
 
 public class PlayProcessor {
@@ -81,9 +71,8 @@ public class PlayProcessor {
             final IGameObject o1 = world.getGameObject(i);
 
             if (o1 instanceof IActioned actioned) {
-                processAction(actioned);
+                actioned.getActionProgram().process();
             }
-
 
             if (o1 instanceof IGravitied g) {
                 processGravity(g);
@@ -104,7 +93,7 @@ public class PlayProcessor {
                 }
             }
 
-            if(o1 instanceof IGravitied g && !collideWithFloor) {
+            if (o1 instanceof IGravitied g && !collideWithFloor) {
                 g.setFloor(null);
             }
 
@@ -203,7 +192,7 @@ public class PlayProcessor {
     }
 
     private static void setFloorTo(IGravitied target, ICollision floor) {
-        if(target.getFloor() == floor) return;
+        if (target.getFloor() == floor) return;
         target.setVelocityY(0);
         target.setFloor(floor);
     }
@@ -245,10 +234,6 @@ public class PlayProcessor {
         float targetY = area.getTargetY();
 
         getWorld().switchRoom(targetRoomId, targetX, targetY);
-    }
-
-    private void processAction(final IActioned o) {
-        ActionProcessor.process(o);
     }
 
     public final void setSpeed(int value) {

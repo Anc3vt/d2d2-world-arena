@@ -178,7 +178,6 @@ public class DebugPanel extends DisplayObjectContainer {
                  debugPanel = new DebugPanel(propertyName);
             }
 
-
             D2D2.getStage().getRoot().add(debugPanel);
             DebugBorder debugBorder = new DebugBorder(debugPanel);
             Async.runLater(1, TimeUnit.SECONDS, debugBorder::removeFromParent);

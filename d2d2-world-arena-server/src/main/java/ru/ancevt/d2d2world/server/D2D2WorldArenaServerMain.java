@@ -32,6 +32,7 @@ import ru.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import ru.ancevt.net.tcpb254.connection.IConnection;
 import ru.ancevt.net.tcpb254.server.ServerListener;
 import ru.ancevt.util.args.Args;
+import ru.ancevt.util.system.UnixDisplay;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -40,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static ru.ancevt.d2d2world.net.protocol.ServerProtocolImpl.MODULE_SERVER_PROTOCOL;
 import static ru.ancevt.d2d2world.server.ServerConfig.*;
-import static ru.ancevt.d2d2world.server.ServerStateInfo.MODULE_SERVER_STATE_INFO;
+import static ru.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static ru.ancevt.d2d2world.server.repl.ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static ru.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static ru.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
@@ -60,6 +61,9 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
                 String value = split[1];
                 MODULE_SERVER_CONFIG.setProperty(key, value);
             }
+            if (arg.equals("--colorize-logs")) {
+                UnixDisplay.setEnabled(true);
+            }
         }
 
         Args a = new Args(args);
@@ -78,10 +82,10 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     public D2D2WorldArenaServerMain() {
         MODULE_SERVER_PROTOCOL.addServerProtocolImplListener(MODULE_GENERAL);
 
-        MODULE_SERVER_STATE_INFO.setName(MODULE_SERVER_CONFIG.getString(SERVER_NAME));
-        MODULE_SERVER_STATE_INFO.setVersion(getServerVersion());
-        MODULE_SERVER_STATE_INFO.setMaxPlayers(MODULE_SERVER_CONFIG.getInt(SERVER_MAX_PLAYERS));
-        MODULE_SERVER_STATE_INFO.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
+        MODULE_SERVER_STATE.setName(MODULE_SERVER_CONFIG.getString(SERVER_NAME));
+        MODULE_SERVER_STATE.setVersion(getServerVersion());
+        MODULE_SERVER_STATE.setMaxPlayers(MODULE_SERVER_CONFIG.getInt(SERVER_MAX_PLAYERS));
+        MODULE_SERVER_STATE.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
 
         MODULE_SERVER_UNIT.server.addServerListener(this);
 
@@ -115,7 +119,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
      */
     @Override
     public void serverStarted() {
-        log.info("Version: " + getServerVersion());
+        log.info("<y>Version: <g>{}<>", getServerVersion());
         log.info("Server started at {}:{}", MODULE_SERVER_CONFIG.getString(SERVER_HOST), MODULE_SERVER_CONFIG.getInt(SERVER_PORT));
 
         MODULE_WORLD.start();
@@ -128,7 +132,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
      */
     @Override
     public void connectionAccepted(@NotNull IConnection connection) {
-        log.info("Connection accepted {}", connection.toString());
+        log.info("<g>Connection accepted {}<>", connection.toString());
 
         // Provide timeout closing connection:
         Holder<Boolean> playerEntered = new Holder<>(false);

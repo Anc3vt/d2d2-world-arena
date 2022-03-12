@@ -20,10 +20,7 @@ package ru.ancevt.d2d2world.data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +28,10 @@ public final class DataEntryLoader {
 
     private static final Logger log = LoggerFactory.getLogger(DataEntryLoader.class);
 
-    public static DataEntry[] load(String assetPath) throws IOException {
-        log.debug("load DataEntry asset" + assetPath);
+    public static DataEntry[] load(String path) throws IOException {
+        log.debug("load DataEntry" + path);
 
-        final InputStream inputStream = DataEntryLoader.class.getClassLoader().getResourceAsStream("assets/" + assetPath);
+        final InputStream inputStream = new FileInputStream(path);
         final List<DataEntry> result = new ArrayList<>();
 
         try (final BufferedReader bufferedReader = new BufferedReader(
@@ -70,7 +67,7 @@ public final class DataEntryLoader {
             }
         }
 
-        log.debug("Data entry asset {} loaded", assetPath);
+        log.debug("Data entry asset {} loaded", path);
 
         return result.toArray(new DataEntry[0]);
     }

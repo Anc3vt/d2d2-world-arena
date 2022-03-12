@@ -40,6 +40,8 @@ import ru.ancevt.d2d2world.net.transfer.FileReceiver;
 import ru.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import ru.ancevt.net.tcpb254.CloseStatus;
 
+import java.time.LocalDateTime;
+
 import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static ru.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
@@ -84,9 +86,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
-
-            System.out.println(e.getKeyCode());
-
             switch (e.getKeyCode()) {
                 case KeyCode.PAGE_UP -> MODULE_CHAT.setScroll(MODULE_CHAT.getScroll() - 10);
                 case KeyCode.PAGE_DOWN -> MODULE_CHAT.setScroll(MODULE_CHAT.getScroll() + 10);
@@ -107,9 +106,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         addEventListener(this, InputEvent.KEY_UP, event -> {
             var e = (InputEvent) event;
-
-            System.out.println("UP " + e.getKeyCode());
-
             switch (e.getKeyCode()) {
                 case KeyCode.TAB -> {
                     MODULE_CHAT.setVisible(true);
@@ -190,8 +186,12 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion) {
-        MODULE_CHAT.addMessage("Your id is " + localPlayerId + ", server protocol version is " + serverProtocolVersion
+    public void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion, @NotNull LocalDateTime serverStartTime) {
+        MODULE_CHAT.addMessage("Your id is " +
+                        localPlayerId +
+                        ", server protocol version is "
+                        + serverProtocolVersion +
+                        ". Server started at " + serverStartTime
                 , Color.WHITE);
         worldScene.start();
 
@@ -218,8 +218,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                            @NotNull String chatMessageText,
                            int textColor) {
 
-        MODULE_CHAT.addPlayerMessage(
-                chatMessageId, playerId, playerName, playerColor, chatMessageText, Color.of(textColor));
+        MODULE_CHAT.addPlayerMessage(chatMessageId, playerId, playerName, playerColor, chatMessageText, Color.of(textColor));
     }
 
     /**
@@ -332,30 +331,4 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

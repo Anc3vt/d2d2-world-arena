@@ -56,8 +56,7 @@ public class FramedSprite extends Sprite implements IFramedDisplayObject {
 
     @Override
     public void processFrame() {
-        if (!playing)
-            return;
+        if (!playing) return;
 
         slowingCounter++;
         if (slowingCounter >= slowing) {

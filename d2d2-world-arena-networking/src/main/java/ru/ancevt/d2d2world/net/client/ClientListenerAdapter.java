@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import ru.ancevt.net.tcpb254.CloseStatus;
 
+import java.time.LocalDateTime;
+
 public class ClientListenerAdapter implements ClientListener{
     @Override
     public void remotePlayerIntroduce(@NotNull Player remotePlayer) {
@@ -16,7 +18,10 @@ public class ClientListenerAdapter implements ClientListener{
     }
 
     @Override
-    public void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion) {
+    public void playerEnterServer(int localPlayerId,
+                                  int localPlayerColor,
+                                  @NotNull String serverProtocolVersion,
+                                  @NotNull LocalDateTime serverStartTime) {
 
     }
 
@@ -26,7 +31,12 @@ public class ClientListenerAdapter implements ClientListener{
     }
 
     @Override
-    public void playerChat(int chatMessageId, int playerId, @NotNull String playerName, int playerColor, @NotNull String chatMessageText, int textColor) {
+    public void playerChat(int chatMessageId,
+                           int playerId,
+                           @NotNull String playerName,
+                           int playerColor,
+                           @NotNull String chatMessageText,
+                           int textColor) {
 
     }
 

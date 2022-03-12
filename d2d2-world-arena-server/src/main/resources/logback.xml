@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <turboFilter class="ru.ancevt.d2d2world.logback.LogInterceptor" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
@@ -34,7 +35,7 @@
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 
-    <root level="trace" additivity="false">
+    <root level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </root>

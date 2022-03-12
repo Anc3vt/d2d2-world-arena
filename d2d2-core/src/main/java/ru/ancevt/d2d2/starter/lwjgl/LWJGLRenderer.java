@@ -110,9 +110,7 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT);
     }
 
-    float _a = 0;
-
-    private void renderDisplayObject(IDisplayObject displayObject,
+    private synchronized void renderDisplayObject(IDisplayObject displayObject,
                                      int level,
                                      float toX,
                                      float toY,

@@ -7,11 +7,11 @@
             <pattern>%-5level [%logger{0}] %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="DESKTOP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>log/d2d2-world-arena-server.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>log/d2d2-world-arena-server.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>log/d2d2-world-editor_%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
 
@@ -20,22 +20,8 @@
         </encoder>
     </appender>
 
-    <logger name="ru.ancevt.d2d2world.desktop" level="trace" additivity="false">
+    <root level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="DESKTOP_FILE"/>
-    </logger>
-
-    <logger name="ru.ancevt.d2d2world.net" level="trace" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="DESKTOP_FILE"/>
-    </logger>
-
-    <logger name="ru.ancevt.net.tcpb254" level="trace" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="DESKTOP_FILE"/>
-    </logger>
-
-    <root level="info" additivity="false">
-        <appender-ref ref="DESKTOP_FILE"/>
+        <appender-ref ref="FILE"/>
     </root>
 </configuration>

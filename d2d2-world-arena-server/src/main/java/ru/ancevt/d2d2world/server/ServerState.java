@@ -17,9 +17,11 @@
  */
 package ru.ancevt.d2d2world.server;
 
-public class ServerStateInfo {
+import java.time.LocalDateTime;
 
-    public static final ServerStateInfo MODULE_SERVER_STATE_INFO = new ServerStateInfo();
+public class ServerState {
+
+    public static final ServerState MODULE_SERVER_STATE = new ServerState();
 
     private String name;
     private String version;
@@ -27,13 +29,19 @@ public class ServerStateInfo {
     private String map;
     private String mod;
     private int maxPlayers;
+    private LocalDateTime startTime;
 
-    private ServerStateInfo() {
+    private ServerState() {
+        startTime = LocalDateTime.now();
         name = "";
         version = "";
         mapKit = "";
         map = "";
         mod = "";
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public void setName(String name) {

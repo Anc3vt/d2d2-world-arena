@@ -19,8 +19,10 @@ package ru.ancevt.d2d2world.server.service;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.d2d2world.net.dto.Dto;
-import ru.ancevt.d2d2world.net.protocol.ProtocolImpl;
 import ru.ancevt.net.tcpb254.server.IServer;
+
+import static ru.ancevt.d2d2world.net.protocol.ProtocolImpl.createDtoMessage;
+import static ru.ancevt.d2d2world.net.serialization.JsonEngine.gson;
 
 
 @Slf4j
@@ -46,17 +48,17 @@ public class ServerSender {
     }
 
     public void sendToPlayer(int playerId, Dto dto) {
-        if (log.isTraceEnabled()) {
-            log.debug("sendToPlayer " + playerId + " " + dto);
-        }
-        sendToPlayer(playerId, ProtocolImpl.createDtoMessage(dto));
+        String className = dto.getClass().getName();
+        String json = gson().toJson(dto);
+        log.debug("sendToPlayer {} <y>{}\n{}<>", playerId, className, json);
+        sendToPlayer(playerId, createDtoMessage(className, json));
     }
 
     public void sendToAllExcluding(Dto dto, int excludingPlayerId) {
-        if (log.isTraceEnabled()) {
-            log.debug("sendToAllExcluding " + excludingPlayerId + " " + dto);
-        }
-        sendToAllExcluding(ProtocolImpl.createDtoMessage(dto), excludingPlayerId);
+        String className = dto.getClass().getName();
+        String json = gson().toJson(dto);
+        log.debug("sendToAllExcluding !{} <y>{}\n{}<>", excludingPlayerId, className, json);
+        sendToAllExcluding(createDtoMessage(className, json), excludingPlayerId);
     }
 
     public void sendToAllExcluding(byte[] bytes, int excludingPlayerId) {
@@ -71,8 +73,10 @@ public class ServerSender {
     }
 
     public void sendToAll(Dto dto) {
-        log.debug("sendToAll " + dto);
-        sendToAll(ProtocolImpl.createDtoMessage(dto));
+        String className = dto.getClass().getName();
+        String json = gson().toJson(dto);
+        log.debug("sendToAll <y>{}\n{}<>", className, json);
+        sendToAll(createDtoMessage(className, json));
     }
 
     public void sendToAll(byte[] bytes) {

@@ -25,6 +25,7 @@ import ru.ancevt.d2d2.input.KeyCode;
 import ru.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import ru.ancevt.d2d2world.gameobject.ICollision;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
+import ru.ancevt.d2d2world.map.MapIO;
 import ru.ancevt.d2d2world.map.Room;
 import ru.ancevt.d2d2world.world.World;
 
@@ -90,7 +91,7 @@ public class Editor {
 
             case 'S' -> {
                 if (down && isControlDown()) {
-                    getEditorDisplayObject().setInfoText("Saved to " + MapSaver.save(getWorld().getMap(), MapSaver.mapFileName));
+                    getEditorDisplayObject().setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.mapFileName));
                 }
             }
 

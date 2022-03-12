@@ -18,7 +18,7 @@ public class SyncMotion {
 
     private static final Map<IDisplayObject, Pair<Float, Float>> map = new ConcurrentHashMap<>();
 
-    public static void syncMove(IDisplayObject o, float x, float y) {
+    public static void moveMotion(IDisplayObject o, float x, float y) {
         //var targetXY = map.get(o);
         map.put(o, Pair.of(x, y));
 
@@ -67,7 +67,7 @@ public class SyncMotion {
 
         root.addEventListener(InputEvent.MOUSE_DOWN, event -> {
             if (event instanceof InputEvent e) {
-                SyncMotion.syncMove(sprite, e.getX(), e.getY());
+                SyncMotion.moveMotion(sprite, e.getX(), e.getY());
             }
         });
 

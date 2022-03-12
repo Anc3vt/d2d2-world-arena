@@ -39,6 +39,8 @@ public class ServerWorld {
 
     private ServerWorld() {
         syncDataAggregator = new SyncDataAggregator();
+        MapIO.mapkitsDirectory = "data/mapkits/";
+        MapIO.mapsDirectory = "data/maps/";
     }
 
     public void start() {

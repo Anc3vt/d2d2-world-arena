@@ -87,6 +87,10 @@ public class ServerPlayerManager {
         return List.copyOf(playerList);
     }
 
+    public boolean isEmpty() {
+        return playerList.isEmpty();
+    }
+
     public int getPlayerCount() {
         return playerList.size();
     }

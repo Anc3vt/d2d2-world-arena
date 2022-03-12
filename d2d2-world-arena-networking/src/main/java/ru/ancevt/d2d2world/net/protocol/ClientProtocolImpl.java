@@ -30,7 +30,7 @@ import ru.ancevt.d2d2world.net.transfer.Headers;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static ru.ancevt.d2d2world.net.JsonEngine.gson;
+import static ru.ancevt.d2d2world.net.serialization.JsonEngine.gson;
 
 @Slf4j
 public final class ClientProtocolImpl extends ProtocolImpl {
@@ -59,7 +59,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
             switch (message.getType()) {
 
                 case MessageType.PING -> {
-                    log("received PING");
+                    log.debug("received <b>PING<>");
                     clientProtocolImplListeners.forEach(ClientProtocolImplListener::playerPingResponse);
                 }
 
@@ -70,20 +70,22 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 }
 
                 case MessageType.FILE_DATA -> {
-                    log("received FILE_DATA");
                     Headers headers = Headers.of(in.readUtf(short.class));
                     int contentLength = in.readInt();
+                    if (log.isDebugEnabled()) {
+                        log.debug("received <b>FILE_DATA<>\n<g>{}<><contentLength={}><>", headers, contentLength);
+                    }
                     byte[] fileData = in.readBytes(contentLength);
                     FileReceiverManager.INSTANCE.fileData(headers, fileData);
                 }
 
                 case MessageType.DTO -> {
                     String className = in.readUtf(short.class);
-                    String extraDataFromServer = in.readUtf(int.class);
-                    log("received DTO " + className + "\n" + extraDataFromServer);
-
-                    Dto extraDto = (Dto) gson().fromJson(extraDataFromServer, Class.forName(className));
-
+                    String json = in.readUtf(int.class);
+                    if (log.isDebugEnabled()) {
+                        log.debug("received <b>DTO<><g> {}\n{}<>", className, json);
+                    }
+                    Dto extraDto = (Dto) gson().fromJson(json, Class.forName(className));
                     clientProtocolImplListeners.forEach(l -> l.dtoFromServer(extraDto));
                 }
 
@@ -92,10 +94,6 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         } catch (Exception e) {
             log.error("message" + message.getBytes().length, e);
         }
-    }
-
-    private void log(Object o) {
-        log.trace(String.valueOf(o));
     }
 
     public static byte[] createMessagePlayerController(int controllerState) {
@@ -112,30 +110,6 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 .toByteArray();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

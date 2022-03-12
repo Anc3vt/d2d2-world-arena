@@ -469,6 +469,10 @@ public class GameObjectEditor {
         while (y % GRID_SIZE != 0) y--;
 
         displayObject.setXY(x, y);
+        if(displayObject instanceof IMovable m) {
+            m.setStartXY(x, y);
+            m.reset();
+        }
     }
 
     public boolean isSomethingSelected() {

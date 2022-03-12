@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import ru.ancevt.commons.io.ByteInputReader;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.Properties;
-import ru.ancevt.d2d2world.gameobject.*;
+import ru.ancevt.d2d2world.gameobject.IAnimated;
+import ru.ancevt.d2d2world.gameobject.IDestroyable;
+import ru.ancevt.d2d2world.gameobject.IDirectioned;
+import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.mapkit.Mapkit;
 import ru.ancevt.d2d2world.mapkit.MapkitItem;
 import ru.ancevt.d2d2world.mapkit.MapkitManager;
@@ -76,16 +79,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
         IGameObject gameObject = mapkitItem.createGameObject(gameObjectId);
         Properties.setProperties(gameObject, DataEntry.newInstance(dataEntry));
 
-        if (gameObject instanceof IGravitied g) {
-            // g.setGravityEnabled(false);
-        }
-
         world.addGameObject(gameObject, layer, false);
-
-        if (gameObject instanceof Actor a) {
-            a.jump();
-        }
-
     }
 
     private void removeGameObject(int gameObjectId) {
@@ -115,7 +109,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     private void setXY(int gameObjectId, float x, float y) {
         IGameObject o = world.getGameObjectById(gameObjectId);
         if (o != null) {
-            SyncMotion.syncMove(o, x, y);
+            SyncMotion.moveMotion(o, x, y);
             //o.setXY(x, y);
         }
     }

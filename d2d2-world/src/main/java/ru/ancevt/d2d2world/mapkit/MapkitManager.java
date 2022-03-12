@@ -19,10 +19,10 @@ package ru.ancevt.d2d2world.mapkit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.DataEntryLoader;
 import ru.ancevt.d2d2world.data.DataKey;
+import ru.ancevt.d2d2world.map.MapIO;
 
 import java.io.IOException;
 import java.util.*;
@@ -76,7 +76,8 @@ public class MapkitManager {
     public Mapkit load(String mapkitDirName) throws IOException {
         log.debug("load mapkit directory {}", mapkitDirName);
 
-        DataEntry[] dataLines = DataEntryLoader.load(ResourcePath.MAPKITS + mapkitDirName + INDEX);
+        DataEntry[] dataLines = DataEntryLoader.load(MapIO.mapkitsDirectory + mapkitDirName + INDEX);
+
 
         String uid = dataLines[0].getString(DataKey.UID);
         if (!uid.equals(mapkitDirName)) {

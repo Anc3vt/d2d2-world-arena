@@ -555,8 +555,7 @@ abstract public class Actor extends Animated implements ISynchronized,
 
     @Override
     public void setAnimation(int animationKey, boolean loop) {
-        if (damagingTime > 0 || animationKey == getAnimation()) return;
-
+        if (damagingTime > 0) return;
         super.setAnimation(animationKey, loop);
     }
 

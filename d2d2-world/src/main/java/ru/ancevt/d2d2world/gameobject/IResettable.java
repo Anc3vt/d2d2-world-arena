@@ -17,6 +17,6 @@
  */
 package ru.ancevt.d2d2world.gameobject;
 
-public interface IResettable {
+public interface IResettable extends IGameObject {
 	void reset();
 }

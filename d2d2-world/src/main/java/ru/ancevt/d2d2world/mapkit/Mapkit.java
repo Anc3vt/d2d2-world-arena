@@ -17,15 +17,21 @@
  */
 package ru.ancevt.d2d2world.mapkit;
 
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import ru.ancevt.d2d2.D2D2;
 import ru.ancevt.d2d2.display.texture.TextureAtlas;
-import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
+import ru.ancevt.d2d2world.map.MapIO;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 public abstract class Mapkit {
 
     private final String name;
@@ -52,24 +58,28 @@ public abstract class Mapkit {
         return items.size();
     }
 
-    public TextureAtlas getTextureAtlas(String imageFileName) {
-        if (textureAtlases.containsKey(imageFileName)) {
-            return textureAtlases.get(imageFileName);
+    public TextureAtlas getTextureAtlas(String tilesetPngFilename) {
+        if (textureAtlases.containsKey(tilesetPngFilename)) {
+            return textureAtlases.get(tilesetPngFilename);
         }
 
-        TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas(
-                ResourcePath.MAPKITS + uid +'/' + imageFileName
-        );
+        try {
+            InputStream inputStream = new FileInputStream(MapIO.mapkitsDirectory + uid + "/" + tilesetPngFilename);
+            TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas(inputStream);
+            inputStream.close();
 
-        textureAtlases.put(imageFileName, textureAtlas);
-        return textureAtlas;
+            textureAtlases.put(tilesetPngFilename, textureAtlas);
+            return textureAtlas;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public MapkitItem createItem(DataEntry dataEntry) {
         return putItem(new MapkitItem(this, dataEntry));
     }
 
-    public MapkitItem putItem(MapkitItem item) {
+    public MapkitItem putItem(@NotNull MapkitItem item) {
         if (items.containsKey(item.getId())) {
             throw new IllegalStateException("duplicate mapkit item id: " + item.getId());
         }
@@ -77,7 +87,7 @@ public abstract class Mapkit {
         return item;
     }
 
-    public void removeItem(MapkitItem item) {
+    public void removeItem(@NotNull MapkitItem item) {
         items.remove(item.getId());
     }
 

@@ -216,8 +216,8 @@ public class TcpB254Connection implements IConnection {
         try {
             socket.close();
             dataOutputStream = null;
-            dispatchConnectionClosed(new CloseStatus());
             log.debug("Close connection {}", this);
+            dispatchConnectionClosed(new CloseStatus());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

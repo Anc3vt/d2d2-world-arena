@@ -20,10 +20,9 @@ package ru.ancevt.d2d2world.map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ancevt.d2d2.display.Color;
-import ru.ancevt.d2d2world.data.DataKey;
-import ru.ancevt.d2d2world.constant.ResourcePath;
 import ru.ancevt.d2d2world.data.DataEntry;
 import ru.ancevt.d2d2world.data.DataEntryLoader;
+import ru.ancevt.d2d2world.data.DataKey;
 import ru.ancevt.d2d2world.gameobject.IGameObject;
 import ru.ancevt.d2d2world.mapkit.AreaMapkit;
 import ru.ancevt.d2d2world.mapkit.Mapkit;
@@ -31,6 +30,9 @@ import ru.ancevt.d2d2world.mapkit.MapkitManager;
 import ru.ancevt.d2d2world.world.Layer;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +48,9 @@ public class MapIO {
     public static GameMap load(String mapFileName) throws IOException {
         log.debug("load map: {}", mapFileName);
 
-        DataEntry[] dataEntries = DataEntryLoader.load(ResourcePath.MAPS + mapFileName);
+        DataEntry[] dataEntries = DataEntryLoader.load(MapIO.mapsDirectory + mapFileName);
 
-        log.debug("loaded {} data entries", dataEntries.length);
+        log.debug("loaded <g>{}<> data entries", dataEntries.length);
 
         GameMap map = new GameMap();
 
@@ -73,10 +75,8 @@ public class MapIO {
                 }
                 for (int i = 0; i < splitNames.length; i++) {
                     mapkitNamesVsUids.put(splitNames[i], splitUids[i]);
-
                     MapkitManager.getInstance().load(splitUids[i]);
                 }
-
                 continue;
             }
 
@@ -153,5 +153,33 @@ public class MapIO {
         });
 
         return stringBuilder.toString();
+    }
+
+    public static String mapsDirectory;
+    public static String mapFileName;
+    public static String mapkitsDirectory;
+
+    public static String save(GameMap map, String mapFileName) {
+        try {
+            log.debug("Saving map " + mapFileName);
+            Path path = Path.of(mapsDirectory + mapFileName);
+
+            String mapString = MapIO.toString(map);
+
+            Files.writeString(
+                    path,
+                    mapString,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            );
+            log.debug("Saved map " + mapFileName);
+
+            log.debug(mapString);
+
+            return path.toString();
+        } catch (IOException e) {
+            log.error("Save fault", e);
+            throw new IllegalStateException(e);
+        }
+
     }
 }

@@ -45,8 +45,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Integer.parseInt;
-import static ru.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
-import static ru.ancevt.d2d2world.desktop.DesktopConfig.SERVER;
+import static ru.ancevt.d2d2world.desktop.DesktopConfig.*;
 
 @Slf4j
 public class IntroRoot extends Root {
@@ -159,6 +158,10 @@ public class IntroRoot extends Root {
             int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
 
             add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
+
+            if(MODULE_CONFIG.getBoolean(AUTO_ENTER)) {
+                enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+            }
         });
     }
 
