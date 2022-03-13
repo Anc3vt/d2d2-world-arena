@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <turboFilter class="ru.ancevt.d2d2world.logback.LogInterceptor" />
+    <turboFilter class="com.ancevt.d2d2world.logback.LogInterceptor" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>
@@ -20,17 +20,17 @@
         </encoder>
     </appender>
 
-    <logger name="ru.ancevt.d2d2world.server" level="trace" additivity="false">
+    <logger name="com.ancevt.d2d2world.server" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 
-    <logger name="ru.ancevt.d2d2world.net.protocol" level="trace" additivity="false">
+    <logger name="com.ancevt.d2d2world.net.protocol" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 
-    <logger name="ru.ancevt.net.tcpb254" level="trace" additivity="false">
+    <logger name="com.ancevt.net.tcpb254" level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </logger>

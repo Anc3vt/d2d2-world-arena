@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <turboFilter class="ru.ancevt.d2d2world.logback.LogInterceptor"/>
+    <turboFilter class="com.ancevt.d2d2world.logback.LogInterceptor"/>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
         <encoder>

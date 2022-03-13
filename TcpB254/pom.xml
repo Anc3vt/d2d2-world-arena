@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.ancevt.net</groupId>
+    <groupId>com.ancevt.net</groupId>
     <artifactId>tcpb254</artifactId>
     <version>1.0.0.3-SNAPSHOT</version>
 
@@ -29,22 +29,22 @@
     <distributionManagement>
         <repository>
             <id>ancevt</id>
-            <url>https://packages.ancevt.ru/releases</url>
+            <url>https://packages.ancevt.com/releases</url>
         </repository>
         <snapshotRepository>
             <id>ancevt-snapshots</id>
-            <url>https://packages.ancevt.ru/snapshots</url>
+            <url>https://packages.ancevt.com/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
     <repositories>
         <repository>
             <id>ancevt</id>
-            <url>https://packages.ancevt.ru/releases</url>
+            <url>https://packages.ancevt.com/releases</url>
         </repository>
         <repository>
             <id>ancevt-snapshots</id>
-            <url>https://packages.ancevt.ru/snapshots</url>
+            <url>https://packages.ancevt.com/snapshots</url>
         </repository>
     </repositories>
 
@@ -63,7 +63,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>ru.ancevt.commons</groupId>
+            <groupId>com.ancevt.commons</groupId>
             <artifactId>ancevt-commons</artifactId>
             <version>1.0.0.2</version>
         </dependency>

@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>d2d2</artifactId>
-        <groupId>ru.ancevt.d2d2</groupId>
+        <groupId>com.ancevt.d2d2</groupId>
         <version>1.0.0.3-SNAPSHOT</version>
     </parent>
 
@@ -34,22 +34,22 @@
     <distributionManagement>
         <repository>
             <id>ancevt</id>
-            <url>https://packages.ancevt.ru/releases</url>
+            <url>https://packages.ancevt.com/releases</url>
         </repository>
         <snapshotRepository>
             <id>ancevt-snapshots</id>
-            <url>https://packages.ancevt.ru/snapshots</url>
+            <url>https://packages.ancevt.com/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
     <repositories>
         <repository>
             <id>ancevt</id>
-            <url>https://packages.ancevt.ru/releases</url>
+            <url>https://packages.ancevt.com/releases</url>
         </repository>
         <repository>
             <id>ancevt-snapshots</id>
-            <url>https://packages.ancevt.ru/snapshots</url>
+            <url>https://packages.ancevt.com/snapshots</url>
         </repository>
     </repositories>
 
@@ -67,24 +67,28 @@
 
     <dependencies>
         <dependency>
-            <groupId>ru.ancevt.d2d2</groupId>
+            <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.ancevt.d2d2</groupId>
+            <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-world</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.ancevt.d2d2</groupId>
+            <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-panels</artifactId>
         </dependency>
         <dependency>
-            <groupId>ru.ancevt.util</groupId>
+            <groupId>com.ancevt.util</groupId>
             <artifactId>args</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.nashorn</groupId>
+            <artifactId>nashorn-core</artifactId>
         </dependency>
     </dependencies>
 
@@ -140,7 +144,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>ru.ancevt.d2d2world.editor.D2D2WorldEditorMain</mainClass>
+                                    <mainClass>com.ancevt.d2d2world.editor.D2D2WorldEditorMain</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
