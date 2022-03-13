@@ -17,8 +17,6 @@
  */
 package com.ancevt.d2d2world.net.client;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2world.data.file.FileDataUtils;
 import com.ancevt.d2d2world.net.dto.Dto;
@@ -35,6 +33,8 @@ import com.ancevt.net.tcpb254.CloseStatus;
 import com.ancevt.net.tcpb254.connection.ConnectionFactory;
 import com.ancevt.net.tcpb254.connection.ConnectionListener;
 import com.ancevt.net.tcpb254.connection.IConnection;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Queue;
@@ -102,6 +102,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     // CLIENT PROTOCOL LISTENERS:
+
     /**
      * {@link ClientProtocolImplListener} method
      */
@@ -280,6 +281,31 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         sender.send(dto);
     }
 
+    public void sendChatMessage(String text) {
+        sender.send(PlayerTextToChatDto.builder()
+                .text(text)
+                .build()
+        );
+    }
+
+    public void sendExitRequest() {
+        sender.send(PlayerExitRequestDto.INSTANCE);
+    }
+
+    public void sendRconLoginRequest(String passwordHash) {
+        sender.send(RconLoginRequestDto.builder()
+                .passwordHash(passwordHash)
+                .build()
+        );
+    }
+
+    public void sendRconCommand(String rconCommandText) {
+        sender.send(RconCommandDto.builder()
+                .commandText(rconCommandText)
+                .build()
+        );
+    }
+
     ///
 
     public boolean isEnteredServer() {
@@ -357,31 +383,6 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     public boolean isConnected() {
         return connection != null && connection.isOpen();
-    }
-
-    public void sendChatMessage(String text) {
-        sender.send(PlayerTextToChatDto.builder()
-                .text(text)
-                .build()
-        );
-    }
-
-    public void sendExitRequest() {
-        sender.send(PlayerExitRequestDto.INSTANCE);
-    }
-
-    public void sendRconLoginRequest(String passwordHash) {
-        sender.send(RconLoginRequestDto.builder()
-                .passwordHash(passwordHash)
-                .build()
-        );
-    }
-
-    public void sendRconCommand(String rconCommandText) {
-        sender.send(RconCommandDto.builder()
-                .commandText(rconCommandText)
-                .build()
-        );
     }
 
     public IConnection getConnection() {

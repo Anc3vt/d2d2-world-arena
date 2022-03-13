@@ -196,7 +196,9 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         worldScene.start();
 
         String rconPassword = MODULE_CONFIG.getString(DesktopConfig.RCON_PASSWORD);
-        MODULE_CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
+        if (!rconPassword.isEmpty()) {
+            MODULE_CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
+        }
     }
 
     /**

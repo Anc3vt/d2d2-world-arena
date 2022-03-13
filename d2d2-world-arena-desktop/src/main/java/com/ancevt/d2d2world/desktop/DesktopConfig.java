@@ -48,7 +48,7 @@ public class DesktopConfig {
     public static final String AUTO_ENTER = "auto-enter";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
-        put(SERVER, "ancevt.com:2245");
+        put(SERVER, "test.ancevt.com:2245");
         put(DEBUG_WORLD_ALPHA, "1.0");
         put(AUTO_ENTER, "false");
     }};
