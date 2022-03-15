@@ -17,8 +17,6 @@
  */
 package com.ancevt.d2d2world.desktop.scene;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -38,6 +36,8 @@ import com.ancevt.d2d2world.sync.SyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncMotion;
 import com.ancevt.d2d2world.world.Overlay;
 import com.ancevt.d2d2world.world.World;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -106,8 +106,6 @@ public class WorldScene extends DisplayObjectContainer {
                 });
             }
         });
-
-
     }
 
     private void this_addToStage(Event event) {
@@ -142,6 +140,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         MapkitManager.getInstance().disposeExternalMapkits();
 
+        world.getPlayProcessor().setEnabled(false);
         world.setSceneryPacked(false);
         world.clear();
 
@@ -159,7 +158,7 @@ public class WorldScene extends DisplayObjectContainer {
 
     private void mapLoaded() {
         world.setSceneryPacked(true);
-
+        world.getPlayProcessor().setEnabled(true);
         addRootAndChatEventsIfNotYet();
 
         start();
@@ -194,7 +193,6 @@ public class WorldScene extends DisplayObjectContainer {
                 if (e.getKeyCode() == KeyCode.F10) {
                     overlay.startOut();
                 }
-
             });
             getRoot().addEventListener(InputEvent.KEY_UP, event -> {
                 var e = (InputEvent) event;

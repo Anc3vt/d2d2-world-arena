@@ -51,4 +51,13 @@ public interface IGameObject extends IDisplayObject, IProcessable {
     void setWorld(World world);
 
     World getWorld();
+
+    default boolean isOnWorld() {
+        return getWorld() != null;
+    }
+
+
+    default void onAddToWorld(World world) {
+        setWorld(world);
+    }
 }

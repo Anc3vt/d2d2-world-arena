@@ -28,6 +28,7 @@ public class Player {
     private final String address;
     private final int color;
     private final String clientProtocolVersion;
+    private int frags;
     private String ip;
 
     private int lastSeenChatMessageId;
@@ -104,6 +105,14 @@ public class Player {
         this.ping = ping;
     }
 
+    public int getFrags() {
+        return frags;
+    }
+
+    public void setFrags(int frags) {
+        this.frags = frags;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
@@ -116,5 +125,13 @@ public class Player {
                 ", ping=" + ping +
                 ", rconLoggedIn=" + rconLoggedIn +
                 '}';
+    }
+
+    public void incrementFrags() {
+        setFrags(getFrags() + 1);
+    }
+
+    public void decrementFrags() {
+        setFrags(getFrags() - 1);
     }
 }

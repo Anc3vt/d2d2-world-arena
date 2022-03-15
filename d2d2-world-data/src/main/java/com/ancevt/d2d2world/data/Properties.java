@@ -34,8 +34,8 @@ public class Properties {
 
                 if (method == null) continue;
 
-                Class<?>[] types = method.getParameterTypes();
-                Class<?> type = types[0];
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                Class<?> type = parameterTypes[0];
 
                 if (type == int.class) {
                     method.invoke(object, dataEntry.getInt(key));

@@ -17,7 +17,7 @@
  */
 package com.ancevt.d2d2world.desktop;
 
-import lombok.extern.slf4j.Slf4j;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
@@ -25,7 +25,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
-import com.ancevt.util.system.UnixDisplay;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -74,7 +74,7 @@ public class D2D2WorldArenaDesktopMain {
 
         //D2D2.init(new NoRenderStarter(900, 600));
         D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
-        D2D2World.init();
+        D2D2World.init(false);
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version);
 

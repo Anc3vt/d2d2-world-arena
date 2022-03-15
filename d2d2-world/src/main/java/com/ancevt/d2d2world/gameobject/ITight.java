@@ -32,5 +32,4 @@ public interface ITight extends ICollision {
 
     @Property
     boolean isPushable();
-
 }

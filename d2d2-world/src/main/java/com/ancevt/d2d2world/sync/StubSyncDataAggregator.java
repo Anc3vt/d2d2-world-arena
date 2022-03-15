@@ -1,15 +1,18 @@
 package com.ancevt.d2d2world.sync;
 
 import com.ancevt.commons.exception.NotImplementedException;
-import com.ancevt.d2d2world.gameobject.IAnimated;
-import com.ancevt.d2d2world.gameobject.IDestroyable;
-import com.ancevt.d2d2world.gameobject.IDirectioned;
-import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.*;
+import org.jetbrains.annotations.NotNull;
 
 public class StubSyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public void newGameObject(IGameObject gameObject) {
+
+    }
+
+    @Override
+    public void repair(@NotNull IDestroyable destroyable) {
 
     }
 
@@ -24,7 +27,7 @@ public class StubSyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public void health(IDestroyable destroyable) {
+    public void health(IDestroyable destroyable, IDamaging damaging) {
 
     }
 
@@ -56,5 +59,10 @@ public class StubSyncDataAggregator implements ISyncDataAggregator {
     @Override
     public boolean hasData() {
         return false;
+    }
+
+    @Override
+    public void visibility(@NotNull IGameObject gameObject, boolean value) {
+
     }
 }

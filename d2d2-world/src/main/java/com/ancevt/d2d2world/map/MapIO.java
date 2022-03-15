@@ -103,10 +103,7 @@ public class MapIO {
 
             if (room == null) throw new IllegalStateException("room undefined");
 
-            room.addGameObject(
-                    layer,
-                    (IGameObject) setProperties(mapkit.getItem(mapkitItemId).createGameObject(gameObjectId), dataEntry)
-            );
+            room.addGameObject(layer, (IGameObject) setProperties(mapkit.getItem(mapkitItemId).createGameObject(gameObjectId), dataEntry));
         }
 
         return map;
@@ -172,8 +169,6 @@ public class MapIO {
                     StandardOpenOption.TRUNCATE_EXISTING
             );
             log.debug("Saved map " + mapFileName);
-
-            log.debug(mapString);
 
             return path.toString();
         } catch (IOException e) {

@@ -293,7 +293,6 @@ public class TcpB254Connection implements IConnection {
                     dataOutputStream.writeByte(fin ? bytes.length : 0);
                     dataOutputStream.write(bytes);
                     bytesSent += 1 + bytes.length;
-
                 }
             }
 

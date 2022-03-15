@@ -17,9 +17,6 @@
  */
 package com.ancevt.d2d2world.desktop.scene.intro;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.regex.PatternMatcher;
@@ -30,22 +27,23 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
-import com.ancevt.d2d2.event.InputEvent;
-import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.ui.*;
 import com.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
 import com.ancevt.d2d2world.net.client.ServerInfoRetriever;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.Integer.parseInt;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
+import static java.lang.Integer.parseInt;
 
 @Slf4j
 public class IntroRoot extends Root {
@@ -139,18 +137,6 @@ public class IntroRoot extends Root {
             labelVersion = new UiText();
             labelVersion.setText(version);
             labelVersion.setWidth(1000);
-
-            this.addEventListener(InputEvent.KEY_DOWN, evnt -> {
-                var e = (InputEvent) evnt;
-                switch (e.getKeyCode()) {
-                    case KeyCode.F1 -> {
-                        String host = uiTextInputServer.getText().split(":")[0];
-                        int port = parseInt(uiTextInputServer.getText().split(":")[1]);
-
-                        ServerInfoRetriever.retrieve(host, port, System.out::println, System.out::println);
-                    }
-                }
-            });
 
             add(panel, (getStage().getStageWidth() - panelRect.getWidth()) / 2, (getStage().getStageHeight() - panelRect.getHeight()) / 4);
             UiTextInputProcessor.enableRoot(this);

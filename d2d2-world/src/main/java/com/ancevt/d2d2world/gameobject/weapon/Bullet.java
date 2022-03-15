@@ -17,33 +17,69 @@
  */
 package com.ancevt.d2d2world.gameobject.weapon;
 
-import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2world.gameobject.Actor;
-import com.ancevt.d2d2world.gameobject.ICollision;
-import com.ancevt.d2d2world.gameobject.IDirectioned;
+import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.data.Property;
+import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.world.World;
+import org.jetbrains.annotations.NotNull;
 
-abstract public class Bullet extends DisplayObjectContainer implements ICollision, IDirectioned {
+abstract public class Bullet extends Animated implements ICollision, IDirectioned, ISpeedable, IDamaging, ISynchronized {
 
-    private final MapkitItem mapkitItem;
+    private final int gameObjectId;
     private boolean collisionEnabled;
     private float collisionX, collisionY, collisionWidth, collisionHeight;
     private Actor owner;
     private int direction;
+    private World world;
+    private int damagingPower;
+    private float speed;
+    private int toRemoveCounter = 10;
 
-    public Bullet(MapkitItem mapkitItem, int gameObjectId) {
-        this.mapkitItem = mapkitItem;
+    public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
+        super(mapkitItem, gameObjectId);
+        this.gameObjectId = gameObjectId;
         setCollisionEnabled(true);
-        setCollision(-4, -4, 8, 8);
     }
 
+    @Override
+    public void process() {
+        if (isOnWorld()) {
+            if (getX() < 0 || getX() > getWorld().getRoom().getWidth() ||
+                    getY() < 0 || getY() > getWorld().getRoom().getHeight()) {
+                destroy();
+            }
+        }
+    }
+
+    @Property
+    public int getOwnerGameObjectId() {
+        return owner.getGameObjectId();
+    }
+
+    @Override
     public void setDamagingPower(int damagingPower) {
-        throw new RuntimeException("can't assign random damaging power to bullet");
+        this.damagingPower = damagingPower;
+    }
+
+    @Override
+    public int getDamagingPower() {
+        return damagingPower;
     }
 
     abstract public void prepare();
 
     abstract public void destroy();
+
+    @Override
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    @Override
+    public float getSpeed() {
+        return speed;
+    }
 
     @Override
     public boolean isSavable() {
@@ -52,12 +88,17 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
 
     @Override
     public int getGameObjectId() {
-        return 0;
+        return gameObjectId;
     }
 
     @Override
-    public MapkitItem getMapkitItem() {
-        return null;
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 
     @Override
@@ -79,8 +120,18 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
     }
 
     @Override
+    public void setCollisionWidth(float collisionWidth) {
+        this.collisionWidth = collisionWidth;
+    }
+
+    @Override
     public float getCollisionX() {
         return collisionX;
+    }
+
+    @Override
+    public void setCollisionY(float collisionY) {
+        this.collisionY = collisionY;
     }
 
     @Override
@@ -89,13 +140,32 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
     }
 
     @Override
+    public void onCollide(@NotNull ICollision collideWith) {
+        if (D2D2World.isServer()) {
+            if (collideWith.isCollisionEnabled() && collideWith instanceof ITight && collideWith != getDamagingOwnerActor()) {
+                destroy();
+            }
+        }
+    }
+
+    @Override
     public float getCollisionWidth() {
         return collisionWidth;
     }
 
     @Override
+    public void setCollisionHeight(float collisionHeight) {
+        this.collisionHeight = collisionHeight;
+    }
+
+    @Override
     public float getCollisionHeight() {
         return collisionHeight;
+    }
+
+    @Override
+    public void setCollisionX(float collisionX) {
+        this.collisionX = collisionX;
     }
 
     public void setDamagingOwnerActor(Actor actor) {

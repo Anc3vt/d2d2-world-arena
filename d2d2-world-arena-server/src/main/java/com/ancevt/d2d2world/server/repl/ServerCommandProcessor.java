@@ -17,21 +17,22 @@
  */
 package com.ancevt.d2d2world.server.repl;
 
+import com.ancevt.net.tcpb254.connection.IConnection;
+import com.ancevt.util.args.Args;
+import com.ancevt.util.repl.ReplInterpreter;
+import com.ancevt.util.texttable.TextTable;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import com.ancevt.net.tcpb254.connection.IConnection;
-import com.ancevt.util.args.Args;
-import com.ancevt.util.repl.ReplInterpreter;
-import com.ancevt.util.texttable.TextTable;
 
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
+import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.MODULE_WORLD_SCENE;
 
 @Slf4j
 public class ServerCommandProcessor {
@@ -62,6 +63,28 @@ public class ServerCommandProcessor {
         repl.addCommand("banlist", this::cmd_banlist);
         repl.addCommand("ban", this::cmd_ban);
         repl.addCommand("unban", this::cmd_unban);
+        repl.addCommand("fps", this::cmd_fps);
+        repl.addCommand("world", this::cmd_world);
+    }
+
+    private Object cmd_world(Args args) {
+        try {
+            String result = MODULE_WORLD_SCENE.getWorld().toString();
+            System.out.println(result);
+            return result;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    private Object cmd_fps(Args args) {
+        try {
+            int fps = MODULE_WORLD_SCENE.getFps();
+            System.out.println(fps);
+            return fps;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     private Object cmd_unban(Args args) {

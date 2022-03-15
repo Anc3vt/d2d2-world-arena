@@ -36,6 +36,14 @@ public class Player {
         return frags;
     }
 
+    public void incrementFrags() {
+        setFrags(getFrags() + 1);
+    }
+
+    public void decrementFrags() {
+        setFrags(getFrags() - 1);
+    }
+
     public void setFrags(int frags) {
         this.frags = frags;
     }

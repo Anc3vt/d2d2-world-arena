@@ -18,7 +18,11 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2.display.text.BitmapText;
+import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
+import com.ancevt.d2d2world.mapkit.CharacterMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.mapkit.MapkitManager;
+import com.ancevt.d2d2world.world.World;
 
 public class PlayerActor extends Actor implements ISynchronized {
 
@@ -30,6 +34,12 @@ public class PlayerActor extends Actor implements ISynchronized {
         BitmapText playerNameBitmapText = new BitmapText();
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
+    }
+
+    @Override
+    public void onAddToWorld(World world) {
+        super.onAddToWorld(world);
+        setWeapon(new StandardWeapon(MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("standard_bullet"), this));
     }
 
     public void setLocalPlayerActor(boolean localPlayerActor) {

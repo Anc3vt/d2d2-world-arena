@@ -57,5 +57,4 @@ public class AreaCollision extends Area implements ITight {
     public boolean isPushable() {
         return pushable;
     }
-
 }

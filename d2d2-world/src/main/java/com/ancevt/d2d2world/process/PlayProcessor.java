@@ -17,10 +17,15 @@
  */
 package com.ancevt.d2d2world.process;
 
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.world.World;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayProcessor {
 
@@ -36,6 +41,8 @@ public class PlayProcessor {
 
     private int delay;
     private boolean enabled;
+
+    private int tact;
 
     public PlayProcessor(World world) {
         this.world = world;
@@ -67,8 +74,14 @@ public class PlayProcessor {
     public final synchronized void process() {
         if (!enabled) return;
 
+        tact++;
+
+        if (tact % 10 == 0) pushStates.clear();
+
         for (int i = 0; i < world.getGameObjectCount(); i++) {
             final IGameObject o1 = world.getGameObject(i);
+
+            o1.process();
 
             if (o1 instanceof IActioned actioned) {
                 actioned.getActionProgram().process();
@@ -97,42 +110,49 @@ public class PlayProcessor {
                 g.setFloor(null);
             }
 
-            o1.process();
+            if (o1 instanceof Actor actor) {
+                if(D2D2World.isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
+                    actor.setHealthBy(0, null);
+                }
+            }
+        }
+
+        if (D2D2World.isServer()) {
+            pushStates.values().forEach(PushState::process);
         }
     }
 
-    private void processCollisionsHits(ICollision o1, ICollision o2) {
+    private void processCollisionsHits(@NotNull ICollision o1, ICollision o2) {
         if (!o1.isCollisionEnabled() || !o2.isCollisionEnabled()) return;
-
-        o1.onCollide(o2);
-        o2.onCollide(o1);
-
-        if (o1 instanceof ITight tight1 && o2 instanceof ITight tight2)
-            processTight(tight1, tight2);
-
-
-        if (o1 instanceof Actor actor && o2 instanceof AreaDoorTeleport areaDoorTeleport)
-            processDoorTeleport(actor, areaDoorTeleport);
-
-
-        if (o1 instanceof IHookable hookable && o2 instanceof AreaHook areaHook)
-            processHook(hookable, areaHook);
-
 
         if (o1 instanceof IDestroyable destroyable && o2 instanceof IDamaging damaging)
             processDamage(destroyable, damaging);
 
+        if (o1 instanceof ITight tight1 && o2 instanceof ITight tight2) {
+            processTight(tight1, tight2);
+        }
+
+        if (o1 instanceof Actor actor && o2 instanceof AreaDoorTeleport areaDoorTeleport) {
+            processDoorTeleport(actor, areaDoorTeleport);
+        }
+
+        if (o1 instanceof IHookable hookable && o2 instanceof AreaHook areaHook) {
+            processHook(hookable, areaHook);
+        }
+
+        o1.onCollide(o2);
+        o2.onCollide(o1);
     }
 
-    private void processDamage(IDestroyable o, IDamaging damaging) {
+    private void processDamage(@NotNull IDestroyable o, @NotNull IDamaging damaging) {
+        if(!D2D2World.isServer()) return;
+
         if (damaging.getDamagingOwnerActor() == o) return;
-
         int damagingPower = damaging.getDamagingPower();
-
-        o.addHealth(-damagingPower);
+        o.changeHealth(-damagingPower, damaging);
     }
 
-    private void processHook(IHookable o, AreaHook hook) {
+    private void processHook(@NotNull IHookable o, AreaHook hook) {
         if (o.getHook() != null &&
                 o.getY() + o.getCollisionY() > hook.getY() + hook.getCollisionY() / 2 &&
                 o.getVelocityY() > 0) {
@@ -165,39 +185,47 @@ public class PlayProcessor {
 
         final boolean checkWalls = !o2.isFloorOnly();
 
+        boolean wallHitTest = false;
+
         if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
-            o1.setX(x2 - w1 - tx1);
+            o1.setX(x2 - w1 - tx1 - 1);
+            getPushState(o1).pushFromRight();
+            wallHitTest = true;
         } else if (checkWalls && cx1 > x2 + w2 && y1 + h1 > y2 + 8) {
-            o1.setX(x2 + w2 - tx1);
+            o1.setX(x2 + w2 - tx1 + 1);
+            getPushState(o1).pushFromLeft();
+            wallHitTest = true;
         }
 
         if (o1 instanceof IGravitied g) {
-            boolean floorUnderObject = cy1 < cy2 && y1 + h1 < y2 + 11;
+            if (wallHitTest) {
+                g.setMovingSpeedX(0);
+            }
+
+            boolean floorUnderObject = cy1 < cy2 && y1 + h1 < y2 + 11; // 11
 
             if (floorUnderObject) {
-
                 if (g.getVelocityY() > 0) {
                     o1.setY(y2 - h1 - ty1);
                     setFloorTo(g, o2);
                 }
-
+                getPushState(o1).pushFromBottom();
             } else if (checkWalls && cy1 > cy2 && y1 + 8 > y2 + h2 && cx1 > x2 && cx1 < x2 + w2) {
                 o1.setY(y2 + h2 - ty1);
                 g.setFloor(null);
-                g.setVelocityY(0);
+                g.setVelocityY(2);
+                getPushState(o1, o2).pushFromTop();
             }
-
-
         }
     }
 
-    private static void setFloorTo(IGravitied target, ICollision floor) {
+    private static void setFloorTo(@NotNull IGravitied target, ICollision floor) {
         if (target.getFloor() == floor) return;
         target.setVelocityY(0);
         target.setFloor(floor);
     }
 
-    private static boolean hitTest(ICollision o1, ICollision o2) {
+    private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {
         float x1 = o1.getX() + o1.getCollisionX();
         float y1 = o1.getY() + o1.getCollisionY();
         float w1 = o1.getCollisionWidth();
@@ -212,6 +240,8 @@ public class PlayProcessor {
     }
 
     private void processGravity(IGravitied o) {
+        if (!D2D2World.isServer()) return;
+
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);
 
@@ -227,13 +257,13 @@ public class PlayProcessor {
     }
 
     private void processDoorTeleport(Actor actor, AreaDoorTeleport area) {
-        if (getWorld().isSwitchingRoomsNow()) return;
+        if (world.isSwitchingRoomsNow()) return;
 
         String targetRoomId = area.getTargetRoomId();
         float targetX = area.getTargetX();
         float targetY = area.getTargetY();
 
-        getWorld().switchRoom(targetRoomId, targetX, targetY);
+        world.switchRoom(targetRoomId, targetX, targetY);
     }
 
     public final void setSpeed(int value) {
@@ -244,6 +274,72 @@ public class PlayProcessor {
         return 1000 / delay;
     }
 
+    private Map<ITight, PushState> pushStates = new HashMap<>();
+
+    private PushState getPushState(ITight tight, ITight tigthAbove) {
+        var ps = getPushState(tight);
+        ps.tightAbove = tigthAbove;
+        return ps;
+    }
+
+    private PushState getPushState(ITight tight) {
+        var ps = pushStates.get(tight);
+        if (ps == null) {
+            ps = new PushState();
+            ps.tight = tight;
+            pushStates.put(tight, ps);
+        }
+        return ps;
+    }
+
+    public void reset() {
+        pushStates.clear();
+    }
+
+    private static class PushState {
+
+        ITight tight;
+        ITight tightAbove;
+        int pushFromLeft;
+        int pushFromRight;
+        int pushFromTop;
+        int pushFromBottom;
+
+        void pushFromLeft() {
+            pushFromLeft = 2;
+        }
+
+        void pushFromRight() {
+            pushFromRight = 2;
+        }
+
+        void pushFromBottom() {
+            pushFromBottom = 1;
+        }
+
+        void pushFromTop() {
+            pushFromTop = 1;
+        }
+
+        void process() {
+            if (tightAbove != null) {
+                if (pushFromBottom > 0 && pushFromTop > 0) {
+                    if (tight instanceof IDestroyable destroyable) {
+                        destroyable.setHealthBy(0, null);
+                    }
+                } else if (pushFromLeft > 0 && pushFromRight > 0) {
+                    if (tight instanceof IDestroyable destroyable) {
+                        destroyable.setHealthBy(0, null);
+                    }
+                }
+            }
+
+            if (pushFromBottom > 0) pushFromBottom--;
+            if (pushFromTop > 0) pushFromTop--;
+            if (pushFromLeft > 0) pushFromLeft--;
+            if (pushFromRight > 0) pushFromRight--;
+        }
+    }
 }
 
 

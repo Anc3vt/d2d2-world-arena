@@ -17,11 +17,9 @@
  */
 package com.ancevt.d2d2world.server;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
@@ -32,20 +30,22 @@ import com.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import com.ancevt.net.tcpb254.connection.IConnection;
 import com.ancevt.net.tcpb254.server.ServerListener;
 import com.ancevt.util.args.Args;
-import com.ancevt.util.system.UnixDisplay;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.MODULE_SERVER_PROTOCOL;
 import static com.ancevt.d2d2world.server.ServerConfig.*;
 import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static com.ancevt.d2d2world.server.repl.ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
-import static com.ancevt.d2d2world.server.simulation.ServerWorld.MODULE_WORLD;
+import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.MODULE_WORLD_SCENE;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
 public class D2D2WorldArenaServerMain implements ServerListener, Thread.UncaughtExceptionHandler {
@@ -122,8 +122,8 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         log.info("<y>Version: <g>{}<>", getServerVersion());
         log.info("Server started at {}:{}", MODULE_SERVER_CONFIG.getString(SERVER_HOST), MODULE_SERVER_CONFIG.getInt(SERVER_PORT));
 
-        MODULE_WORLD.start();
-        D2D2World.init();
+        MODULE_WORLD_SCENE.start();
+        D2D2World.init(true);
         MODULE_GENERAL.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
     }
 

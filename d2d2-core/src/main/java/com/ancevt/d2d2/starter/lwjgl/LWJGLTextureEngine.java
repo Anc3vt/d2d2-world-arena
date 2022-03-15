@@ -177,7 +177,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
             try {
                 image = f3.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
             } catch (Exception c) {
-                System.err.println(c.getMessage());
+                System.out.println(c.getMessage());
             }
         }
 

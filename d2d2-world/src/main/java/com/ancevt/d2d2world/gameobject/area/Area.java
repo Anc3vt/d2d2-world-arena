@@ -207,4 +207,6 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
         return bitmapText.hasParent();
     }
 
+
+
 }

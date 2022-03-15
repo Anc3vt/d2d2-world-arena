@@ -137,54 +137,28 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                     }
                 }
             });
-        }
-
-        if (dto instanceof PlayerActorDto d) {
+        } else if (dto instanceof PlayerActorDto d) {
             clientListeners.forEach(l -> l.localPlayerActorGameObjectId(d.getPlayerActorGameObjectId()));
-        }
-
-        if (dto instanceof PlayerEnterDto d) {
+        } else if (dto instanceof PlayerEnterDto d) {
             PlayerDto playerDto = d.getPlayer();
-            PLAYER_MANAGER.getPlayer(playerDto.getId()).ifPresentOrElse(
-                    // if present
-                    remotePlayer -> {
-                        remotePlayer.update(playerDto.getName(), playerDto.getColor());
-                        clientListeners.forEach(l -> l.remotePlayerIntroduce(remotePlayer));
-                    },
-
-                    // or else
-                    () -> {
-                        Player remotePlayer = PLAYER_MANAGER.registerPlayer(
-                                playerDto.getId(),
-                                playerDto.getName(),
-                                playerDto.getColor()
-                        );
-
-                        clientListeners.forEach(l -> l.remotePlayerIntroduce(remotePlayer));
-                    });
-            clientListeners.forEach(l -> l.remotePlayerEnterServer(playerDto.getId(), playerDto.getName(), playerDto.getColor()));
-        }
-
-        if (dto instanceof RconResponseDto d) {
+            PLAYER_MANAGER.getPlayer(playerDto.getId()).ifPresent(
+                    remotePlayer -> remotePlayer.update(playerDto.getName(), playerDto.getColor())
+            );
+            clientListeners.forEach(l -> l.playerEnterServer(playerDto.getId(), playerDto.getName(), playerDto.getColor()));
+        } else if (dto instanceof RconResponseDto d) {
             clientListeners.forEach(l -> l.rconResponse(d.getText()));
-        }
-
-        if (dto instanceof PlayerEnterResponseDto d) {
+        } else if (dto instanceof PlayerEnterResponseDto d) {
             PlayerDto playerDto = d.getPlayer();
             setLocalPlayerId(playerDto.getId());
             setLocalPlayerColor(playerDto.getColor());
             setServerProtocolVersion(d.getProtocolVersion());
             sendPingRequest();
             clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion, d.getServerStartTime()));
-        }
-
-        if (dto instanceof PlayerExitDto d) {
+        } else if (dto instanceof PlayerExitDto d) {
             PLAYER_MANAGER.removePlayer(d.getPlayer().getId()).ifPresent(
-                    remotePlayer -> clientListeners.forEach(l -> l.remotePlayerExit(remotePlayer))
+                    remotePlayer -> clientListeners.forEach(l -> l.playerExit(remotePlayer))
             );
-        }
-
-        if (dto instanceof ChatDto d) {
+        } else if (dto instanceof ChatDto d) {
             d.getMessages().forEach(m -> {
                 if (m.getPlayer() != null && m.getPlayer().getName() != null) {
                     PlayerDto p = m.getPlayer();
@@ -193,9 +167,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                     clientListeners.forEach(l -> l.serverChat(m.getId(), m.getText(), m.getTextColor()));
                 }
             });
-        }
-
-        if (dto instanceof ServerInfoDto d) {
+        } else if (dto instanceof ServerInfoDto d) {
             Set<PlayerDto> playerDtoSet = d.getPlayers();
             playerDtoSet.forEach(p -> {
                 Player player = PLAYER_MANAGER.registerPlayer(p.getId(), p.getName(), p.getColor());
@@ -204,10 +176,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             });
 
             clientListeners.forEach(l -> l.serverInfo(d));
-        }
-
-        if (dto instanceof ServerTextDto d) {
+        } else if (dto instanceof ServerTextDto d) {
             clientListeners.forEach(l -> l.serverTextToPlayer(d.getText(), d.getColor()));
+        } else if (dto instanceof DeathDto d) {
+            clientListeners.forEach(l -> l.playerDeath(d.getDeadPlayerId(), d.getKillerPlayerId()));
         }
 
 

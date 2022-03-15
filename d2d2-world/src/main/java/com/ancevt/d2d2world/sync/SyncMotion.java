@@ -19,7 +19,6 @@ public class SyncMotion {
     private static final Map<IDisplayObject, Pair<Float, Float>> map = new ConcurrentHashMap<>();
 
     public static void moveMotion(IDisplayObject o, float x, float y) {
-        //var targetXY = map.get(o);
         map.put(o, Pair.of(x, y));
 
         o.removeEventListeners(SyncMotion.class);
@@ -43,10 +42,10 @@ public class SyncMotion {
             float tX = targetXY.getFirst();
             float tY = targetXY.getSecond();
 
-            final float factor = 5f;
+            final float factor = 3f;
 
             float speedX = (tX - oX) / factor;
-            float speedY = (tY - oY);
+            float speedY = (tY - oY) / 2;
 
             displayObject.move(speedX, speedY);
 

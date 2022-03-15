@@ -35,7 +35,7 @@
         <appender-ref ref="SERVER_FILE"/>
     </logger>
 
-    <root level="debug" additivity="false">
+    <root level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </root>

@@ -27,9 +27,15 @@ public interface IDestroyable extends ICollision, IResettable {
     @Property
     int getMaxHealth();
 
+    @Property
     void setHealth(int health);
 
+    @Property
     int getHealth();
 
-    void addHealth(int toHealth);
+    void repair();
+
+    void setHealthBy(int health, IDamaging damaging);
+
+    void changeHealth(int toHealth, IDamaging damaging);
 }

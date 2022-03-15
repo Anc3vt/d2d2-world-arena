@@ -38,4 +38,6 @@ public interface IMovable extends IResettable {
     float getMovingSpeedX();
 
     float getMovingSpeedY();
+
+    void setMovingSpeedX(float value);
 }

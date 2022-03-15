@@ -17,8 +17,6 @@
  */
 package com.ancevt.d2d2world.desktop.scene;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2.debug.FpsMeter;
@@ -34,23 +32,25 @@ import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.net.client.ClientListener;
 import com.ancevt.d2d2world.net.client.Player;
-import com.ancevt.d2d2world.net.client.PlayerManager;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import com.ancevt.net.tcpb254.CloseStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
-import static java.lang.String.format;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
+import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
+import static java.lang.String.format;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
-public class GameRoot extends Root implements ClientListener, FileReceiverManager.FileReceiverManagerListener {
+public class GameRoot extends Root implements ClientListener, FileReceiverManager. FileReceiverManagerListener {
 
     public static final int DEFAULT_PORT = 2245;
 
@@ -130,22 +130,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void remotePlayerIntroduce(@NotNull Player remotePlayer) {
-
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void remotePlayerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
-
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
     public void serverInfo(@NotNull ServerInfoDto dto) {
         tabWindow.setServerInfo(dto.getName(), dto.getPlayers().size(), dto.getMaxPlayers());
     }
@@ -178,7 +162,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void remotePlayerExit(@NotNull Player remotePlayer) {
+    public void playerExit(@NotNull Player remotePlayer) {
 
     }
 
@@ -253,13 +237,47 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
+    public void playerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
+
+    }
+
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
     public void mapContentLoaded(String mapFilename) {
         worldScene.loadMap(mapFilename);
     }
 
+    /**
+     * {@link ClientListener} method
+     */
     @Override
     public void localPlayerActorGameObjectId(int playerActorGameObjectId) {
         worldScene.setLocalPlayerActorGameObjectId(playerActorGameObjectId);
+    }
+
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void playerDeath(int deadPlayerId, int killerPlayerId) {
+        Player deadPlayer = PLAYER_MANAGER.getPlayer(deadPlayerId).orElseThrow();
+
+        PLAYER_MANAGER.getPlayer(killerPlayerId).ifPresentOrElse(killerPlayer -> {
+                    MODULE_CHAT.addMessage(
+                            killerPlayer.getName() + "(" + killerPlayer.getId() + ") killed " +
+                                    deadPlayer.getName() + "(" + deadPlayer.getId() + ")");
+
+                    PLAYER_MANAGER.getPlayer(killerPlayerId).orElseThrow().incrementFrags();
+                },
+
+                () -> {
+                    MODULE_CHAT.addMessage(
+                            deadPlayer.getName() + "(" + deadPlayer.getId() + ") dead");
+
+                    PLAYER_MANAGER.getPlayer(deadPlayerId).orElseThrow().decrementFrags();
+                });
     }
 
     /**
@@ -289,7 +307,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         tabWindow.removeFromParent();
 
         if (value) {
-            tabWindow.setPlayers(PlayerManager.PLAYER_MANAGER.getPlayerList());
+            tabWindow.setPlayers(PLAYER_MANAGER.getPlayerList());
             add(tabWindow);
         }
     }

@@ -22,14 +22,19 @@ import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.sound.Sound;
 import com.ancevt.d2d2world.constant.AnimationKey;
-import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.data.DataEntry;
+import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.IntRectangle;
 import com.ancevt.d2d2world.gameobject.IGameObject;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 
+import static com.ancevt.d2d2world.data.Properties.setProperties;
+
+@Slf4j
 public class MapkitItem {
 
     private static final int MAX_TEXTURE_TYPES = 16;
@@ -39,7 +44,6 @@ public class MapkitItem {
 
     private final Texture[][] textures;
     private final Sound[][] sounds;
-
 
 
     private Class<?> gameObjectClass;
@@ -64,17 +68,16 @@ public class MapkitItem {
         }
     }
 
-    public IGameObject createGameObject(int gameObjectId) {
+    public @NotNull IGameObject createGameObject(int gameObjectId) {
         try {
-            return (IGameObject)
-                    getGameObjectClass().getDeclaredConstructor(MapkitItem.class, int.class).newInstance(
-                            this,
-                            gameObjectId
-                    );
+            var gameObject = getGameObjectClass()
+                    .getDeclaredConstructor(MapkitItem.class, int.class)
+                    .newInstance(this, gameObjectId);
+            setProperties(gameObject, dataEntry);
 
-        } catch (InstantiationException |
-                NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new IllegalStateException(e + " " + this.dataEntry, e);
+            return (IGameObject) gameObject;
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new IllegalStateException(dataEntry + " ---" + this, e);
         }
     }
 

@@ -5,7 +5,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
 import org.slf4j.Marker;
-import com.ancevt.util.system.UnixDisplay;
+import com.ancevt.commons.unix.UnixDisplay;
 
 public class LogInterceptor extends TurboFilter {
 

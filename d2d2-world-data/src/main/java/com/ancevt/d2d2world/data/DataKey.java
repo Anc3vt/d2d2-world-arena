@@ -56,7 +56,9 @@ public class DataKey {
             SOUND_EXTRA = "snd-extra",
             SOUND_DEATH = "snd-death";
 
-    ;
+    public static final String OWNER_GAME_OBJECT_ID = "ownerGameObjectId";
+    public static final String MAX_HEALTH = "maxHealth";
+    public static final String HEALTH = "health";
 }
 
 /* ...: idle, walk, attack, jump, jumpAttack, walkAttack, damage, defense, hook,

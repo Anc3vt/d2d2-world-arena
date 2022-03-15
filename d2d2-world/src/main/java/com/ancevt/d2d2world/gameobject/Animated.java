@@ -65,6 +65,14 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     }
 
     @Override
+    public void setVisible(boolean value) {
+        super.setVisible(value);
+        if(getWorld() != null) {
+            getWorld().getSyncDataAggregator().visibility(this, value);
+        }
+    }
+
+    @Override
     public int getGameObjectId() {
         return id;
     }
@@ -110,7 +118,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             }
         }
 
-        if(getWorld() != null) getWorld().getSyncManager().animation(this, loop);
+        if(getWorld() != null) getWorld().getSyncDataAggregator().animation(this, loop);
     }
 
     private void fixXY() {
@@ -120,6 +128,47 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
                 fs.setXY(-fs.getWidth() / 2 + leftOffset, -fs.getHeight() / 2);
             }
         }
+    }
+
+    @Override
+    public void setX(float value) {
+        if (value == getX()) return;
+        super.setX(value);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+    }
+
+    @Override
+    public void setY(float value) {
+        if (value == getY()) return;
+        super.setY(value);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+    }
+
+    @Override
+    public void setXY(float x, float y) {
+        if (x == getX() && y == getY()) return;
+        super.setX(x);
+        super.setY(y);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+    }
+
+    @Override
+    public void move(float toX, float toY) {
+        super.moveX(toX);
+        super.moveY(toY);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+    }
+
+    @Override
+    public void moveY(float value) {
+        super.moveY(value);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+    }
+
+    @Override
+    public void moveX(float value) {
+        super.moveX(value);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
@@ -137,7 +186,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
         }
 
         fixXY();
-        if(getWorld() != null) getWorld().getSyncManager().direction(this);
+        if(getWorld() != null) getWorld().getSyncDataAggregator().direction(this);
     }
 
     @Override

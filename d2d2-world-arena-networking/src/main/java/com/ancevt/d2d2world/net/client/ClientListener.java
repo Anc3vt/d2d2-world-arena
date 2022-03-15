@@ -25,9 +25,7 @@ import java.time.LocalDateTime;
 
 public interface ClientListener {
 
-    void remotePlayerIntroduce(@NotNull Player remotePlayer);
-
-    void remotePlayerExit(@NotNull Player remotePlayer);
+    void playerExit(@NotNull Player remotePlayer);
 
     void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion, @NotNull LocalDateTime serverStartTime);
 
@@ -44,7 +42,7 @@ public interface ClientListener {
 
     void clientConnectionEstablished();
 
-    void remotePlayerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
+    void playerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
 
     void serverInfo(@NotNull ServerInfoDto result);
 
@@ -57,4 +55,6 @@ public interface ClientListener {
     void mapContentLoaded(String mapFilename);
 
     void localPlayerActorGameObjectId(int playerActorGameObjectId);
+
+    void playerDeath(int deadPlayerId, int killerPlayerId);
 }

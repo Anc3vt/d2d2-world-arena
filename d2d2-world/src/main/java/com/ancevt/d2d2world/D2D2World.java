@@ -21,10 +21,17 @@ import com.ancevt.d2d2.D2D2;
 
 public class D2D2World {
 
+    private static boolean server;
+
     private D2D2World() {
     }
 
-    public static void init() {
+    public static void init(boolean server) {
+        D2D2World.server = server;
         D2D2.getTextureManager().loadTextureDataInfo("d2d2-world-common-texture-data.inf");
+    }
+
+    public static boolean isServer() {
+        return server;
     }
 }

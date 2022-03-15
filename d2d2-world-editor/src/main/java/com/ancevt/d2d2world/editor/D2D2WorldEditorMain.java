@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.editor;
 
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -28,27 +29,30 @@ import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
+import com.ancevt.d2d2world.gameobject.DebugPlayerActorCreator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.util.args.Args;
 
 import java.io.IOException;
 
-import static com.ancevt.d2d2world.data.Properties.setProperties;
-
 public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
+
+        UnixDisplay.setEnabled(a.contains("--colorize-logs"));
+
         MapIO.mapkitsDirectory = a.get("--mapkits-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
         MapIO.mapsDirectory = a.get("--maps-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/maps/");
         MapIO.mapFileName = a.get("--map-filename", "map0.wam");
 
         D2D2.init(new LWJGLStarter(1000, 700, "D2D2 World (floating)"));
-        D2D2World.init();
+        D2D2World.init(true);
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");
         Root root = D2D2.getStage().getRoot();
@@ -108,8 +112,12 @@ public class D2D2WorldEditorMain {
 
         /* Player */
 
-        PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("character_blake").createGameObject(0);
-        setProperties(playerActor, playerActor.getMapkitItem().getDataEntry());
+        MapkitItem playerActorMapkitItem = MapkitManager.getInstance()
+                .getByName(CharacterMapkit.NAME)
+                .getItem("character_blake");
+
+        var playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
+        playerActor.setXY(300, 300);
         world.addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);
@@ -126,6 +134,8 @@ public class D2D2WorldEditorMain {
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
         });
 
+
+        DebugPlayerActorCreator.createTestPlayerActor(world);
 
         /**/
 

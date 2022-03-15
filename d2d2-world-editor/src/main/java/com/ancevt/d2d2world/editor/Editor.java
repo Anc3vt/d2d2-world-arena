@@ -70,8 +70,6 @@ public class Editor {
             return;
         }
 
-        if (!isEnabled()) return;
-
         gameObjectEditor.key(keyCode, keyChar, down);
 
         switch (keyChar) {
@@ -82,6 +80,7 @@ public class Editor {
             case 'P' -> {
                 if (down) {
                     setEnabled(false);
+                    gameObjectEditor.unselect();
                     world.setPlaying(true);
                     world.getCamera().setBoundsLock(true);
                     world.setSceneryPacked(true);
@@ -116,6 +115,8 @@ public class Editor {
                 spaceDown = down;
             }
         }
+
+        if (!isEnabled()) return;
 
         switch (keyCode) {
             case KeyCode.LEFT_SHIFT, KeyCode.RIGHT_SHIFT -> shiftDown = down;

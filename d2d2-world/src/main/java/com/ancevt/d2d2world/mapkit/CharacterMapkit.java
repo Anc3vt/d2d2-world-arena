@@ -19,6 +19,7 @@ package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.weapon.StandardBullet;
 
 public class CharacterMapkit extends Mapkit {
 
@@ -29,6 +30,23 @@ public class CharacterMapkit extends Mapkit {
         super(UID, NAME);
         blakeMapkitItem();
         avaMapkitItem();
+        bulletMapkitItem();
+    }
+
+    private void bulletMapkitItem() {
+        String mapkitData = """
+                id = standard_bullet |
+                class =""" + StandardBullet.class.getName() + """
+                |
+                damagingPower = 50 |
+                speed = 5 |
+                collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4 |
+                atlas = bullets.png |
+                idle = 0,0,16,16; 16,0,16,16; 0,0,16,16; 32,0,16,16 |
+                """;
+
+        DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));
+        createItem(mapkitDataEntry);
     }
 
     private void blakeMapkitItem() {

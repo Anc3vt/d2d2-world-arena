@@ -9,4 +9,6 @@ public class SyncDataType {
     public static final int HEALTH = 5;
     public static final int MAX_HEALTH = 6;
     public static final int DIRECTION = 7;
+    public static final int VISIBILITY = 8;
+    public static final int REPAIR = 9;
 }

@@ -19,10 +19,10 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-public interface ICollision extends IGameObject{
+public interface ICollision extends IGameObject {
 
     @Property
-	void setCollisionEnabled(boolean value);
+    void setCollisionEnabled(boolean value);
 
     @Property
     boolean isCollisionEnabled();

@@ -7,13 +7,9 @@ import com.ancevt.net.tcpb254.CloseStatus;
 import java.time.LocalDateTime;
 
 public class ClientListenerAdapter implements ClientListener{
-    @Override
-    public void remotePlayerIntroduce(@NotNull Player remotePlayer) {
-
-    }
 
     @Override
-    public void remotePlayerExit(@NotNull Player remotePlayer) {
+    public void playerExit(@NotNull Player remotePlayer) {
 
     }
 
@@ -46,12 +42,12 @@ public class ClientListenerAdapter implements ClientListener{
     }
 
     @Override
-    public void clientConnectionEstablished() {
+    public void playerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
 
     }
 
     @Override
-    public void remotePlayerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
+    public void clientConnectionEstablished() {
 
     }
 
@@ -82,6 +78,11 @@ public class ClientListenerAdapter implements ClientListener{
 
     @Override
     public void localPlayerActorGameObjectId(int playerActorGameObjectId) {
+
+    }
+
+    @Override
+    public void playerDeath(int deadPlayerId, int killerPlayerId) {
 
     }
 }

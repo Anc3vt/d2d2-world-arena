@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2.display.text.BitmapText;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.constant.SoundKey;
@@ -26,6 +27,7 @@ import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
+import com.ancevt.d2d2world.world.WorldEvent;
 
 abstract public class Actor extends Animated implements ISynchronized,
         IProcessable,
@@ -110,6 +112,15 @@ abstract public class Actor extends Animated implements ISynchronized,
         bitmapTextDebug.setScale(0.30f, 0.30f);
     }
 
+    @Override
+    public void onEachFrame() {
+        super.onEachFrame();
+        if (damagingTime > 0) {
+            damagingTime--;
+            setAlpha((damagingTime / 2) % 2 == 0 ? 1.0f : 0.0f);
+        }
+    }
+
     public final void debug(
             final Object o,
             final float offsetX,
@@ -118,28 +129,6 @@ abstract public class Actor extends Animated implements ISynchronized,
         debug(o);
         if (bitmapTextDebug != null && bitmapTextDebug.hasParent())
             bitmapTextDebug.setXY(offsetX, offsetY);
-    }
-
-    @Override
-    public void setX(float value) {
-        if (value == getX()) return;
-        super.setX(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
-    }
-
-    @Override
-    public void setY(float value) {
-        if (value == getY()) return;
-        super.setY(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
-    }
-
-    @Override
-    public void setXY(float x, float y) {
-        if (x == getX() && y == getY()) return;
-        super.setX(x);
-        super.setY(y);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override
@@ -185,8 +174,8 @@ abstract public class Actor extends Animated implements ISynchronized,
 
     @Override
     public void setMaxHealth(int health) {
-        this.maxHealth = health;
-        if (getWorld() != null) getWorld().getSyncManager().maxHealth(this);
+        this.maxHealth = this.health = health;
+        if (isOnWorld()) getWorld().getSyncDataAggregator().maxHealth(this);
     }
 
     @Override
@@ -200,9 +189,23 @@ abstract public class Actor extends Animated implements ISynchronized,
         else if (health > maxHealth) health = maxHealth;
         this.health = health;
 
-        if (health <= 0 && isAlive()) death();
+        if (health <= 0 && isAlive()) death(null);
 
-        if (getWorld() != null) getWorld().getSyncManager().health(this);
+        if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, null);
+    }
+
+    @Override
+    public void setHealthBy(int health, IDamaging damaging) {
+        int oldHealth = this.health;
+        if (health < 0) health = 0;
+        else if (health > maxHealth && isOnWorld()) health = maxHealth;
+        this.health = health;
+
+        if(health < oldHealth) damagingTime = DAMAGING_TIME;
+
+        if (health <= 0 && isAlive()) death(damaging);
+
+        if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, damaging);
     }
 
     @Override
@@ -211,7 +214,15 @@ abstract public class Actor extends Animated implements ISynchronized,
     }
 
     @Override
-    public void addHealth(int toHealth) {
+    public void repair() {
+        setHealth(getMaxHealth());
+        setAlive(true);
+
+        if (isOnWorld()) getWorld().getSyncDataAggregator().repair(this);
+    }
+
+    @Override
+    public void changeHealth(int toHealth, IDamaging damaging) {
         if (toHealth < 0) {
             if (getHealth() > -toHealth)
                 getMapkitItem().playSound(SoundKey.DAMAGE, 0);
@@ -220,11 +231,10 @@ abstract public class Actor extends Animated implements ISynchronized,
 
             setAnimation(AnimationKey.DAMAGE);
 
-            damagingTime = DAMAGING_TIME;
             setVelocity((getDirection()) * 5, -5);
         }
 
-        setHealth(getHealth() + toHealth);
+        setHealthBy(getHealth() + toHealth, damaging);
     }
 
     public boolean isAlive() {
@@ -235,15 +245,22 @@ abstract public class Actor extends Animated implements ISynchronized,
         this.alive = alive;
         setScaleY(alive ? 1.0f : -1.0f);
         setCollisionEnabled(alive);
-
-        if (!alive)
-            setVelocityY(-4);
+        if (!alive) setVelocityY(-4);
     }
 
-    public void death() {
+    private void death(IDamaging damaging) {
         getMapkitItem().playSound(SoundKey.DEATH);
         setAlive(false);
-        setHealth(0);
+        health = 0;
+
+        if (D2D2World.isServer()) {
+            world.dispatchEvent(new WorldEvent(WorldEvent.ACTOR_DEATH, world,
+                            null,
+                            getGameObjectId(),
+                            damaging != null ? damaging.getGameObjectId() : 0
+                    )
+            );
+        }
     }
 
     @Override
@@ -307,9 +324,10 @@ abstract public class Actor extends Animated implements ISynchronized,
     @Override
     public void reset() {
         setXY(getStartX(), getStartY());
-        setHealth(getMaxHealth());
+        setHealthBy(getMaxHealth(), null);
         getController().reset();
         setAlive(true);
+        repair();
     }
 
     @Override
@@ -368,6 +386,8 @@ abstract public class Actor extends Animated implements ISynchronized,
     }
 
     public void attack() {
+        if (!D2D2World.isServer()) return;
+
         attackTime = ATTACK_TIME;
         if (getWeapon() != null)
             getWorld().actorAttack(this, getWeapon());
@@ -410,6 +430,8 @@ abstract public class Actor extends Animated implements ISynchronized,
 
     @Override
     public void process() {
+        if (!D2D2World.isServer()) return;
+
         setAnimation(AnimationKey.IDLE);
 
         if (attackTime > 0) {
@@ -477,11 +499,6 @@ abstract public class Actor extends Animated implements ISynchronized,
                 setVelocityX(getVelocityX() + toX / 3);
                 //moveX(toX);
             }
-        }
-
-        if (damagingTime > 0) {
-            damagingTime--;
-            setAlpha((damagingTime / 2) % 2 == 0 ? 1.0f : 0.0f);
         }
 
         movingSpeedX = movingSpeedY = 0.0f;
@@ -586,21 +603,18 @@ abstract public class Actor extends Animated implements ISynchronized,
         movingSpeedY = toY;
         super.moveX(toX);
         super.moveY(toY);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override
     public void moveX(float value) {
         movingSpeedX = value;
         super.moveX(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override
     public void moveY(float value) {
         movingSpeedY = value;
         super.moveY(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
     }
 
     @Override
@@ -611,6 +625,11 @@ abstract public class Actor extends Animated implements ISynchronized,
     @Override
     public float getMovingSpeedY() {
         return movingSpeedY;
+    }
+
+    @Override
+    public void setMovingSpeedX(float movingSpeedX) {
+        this.movingSpeedX = movingSpeedX;
     }
 }
 

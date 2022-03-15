@@ -35,6 +35,10 @@ class DataEntryImpl implements DataEntry {
 
             if (keyValuePairSource.contains(EQUALS)) {
                 String[] kv = keyValuePairSource.split(EQUALS);
+                if (kv.length == 1) {
+                    add(kv[0].trim(), ";");
+                    continue;
+                }
                 add(kv[0].trim(), kv[1].trim());
             } else {
                 add(keyValuePairSource.trim());
@@ -162,14 +166,16 @@ class DataEntryImpl implements DataEntry {
             sb.append(" | ");
         }
 
+        if(sb.length() <= 2) {
+            return sb.toString();
+        }
+
         return sb.substring(0, sb.toString().length() - 2);
     }
 
     @Override
     public String toString() {
-        return "DataEntryImpl{" +
-                stringify() +
-                '}';
+        return "DataEntryImpl{" + stringify() + '}';
     }
 
     private record KV(String key, Object value) {

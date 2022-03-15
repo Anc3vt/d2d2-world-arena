@@ -62,6 +62,7 @@ public class GameObjectEditor {
     private float oldMouseY;
     private boolean selecting;
     private MapkitItem lastPlacingMapkitItem;
+    private float worldMouseX, worldMouseY;
 
     public GameObjectEditor(Editor editor) {
         this.editor = editor;
@@ -91,6 +92,7 @@ public class GameObjectEditor {
                 case KeyCode.UP -> moveSelected(0, -speed);
                 case KeyCode.DOWN -> moveSelected(0, speed);
                 case KeyCode.ESCAPE -> setPlacingMapkitItem(null);
+                case KeyCode.E -> setPlayerXYToCursor();
             }
 
             if (editor.isControlDown()) {
@@ -99,7 +101,6 @@ public class GameObjectEditor {
                     case 'V' -> paste();
                     case 'X' -> cut();
                     case 'L' -> toggleLockCurrentLayer();
-
                 }
             } else {
 
@@ -201,9 +202,7 @@ public class GameObjectEditor {
             snapToGrid(cursor);
         }
 
-        if (repeating != null && selectedGameObjects.size() == 1
-                && selectedGameObjects.contains((IGameObject) repeating)) {
-
+        if (repeating != null && selectedGameObjects.size() == 1 && selectedGameObjects.contains((IGameObject) repeating)) {
             IGameObject gameObject = (IGameObject) repeating;
 
             int repeatX = (int) ((worldX - gameObject.getX()) / repeating.getOriginalWidth());
@@ -230,6 +229,20 @@ public class GameObjectEditor {
 
         oldMouseX = x;
         oldMouseY = y;
+
+        worldMouseX = worldX;
+        worldMouseY = worldY;
+    }
+
+    private void setPlayerXYToCursor() {
+        PlayerActor playerActor = (PlayerActor) getWorld().getGameObjects()
+                .stream()
+                .filter(o -> o instanceof PlayerActor)
+                .findAny()
+                .orElseThrow();
+
+        playerActor.repair();
+        playerActor.setXY(worldMouseX, worldMouseY);
     }
 
     private void toggleLockCurrentLayer() {
@@ -262,16 +275,16 @@ public class GameObjectEditor {
         int currentLayerIndex = editor.getCurrentLayerIndex();
 
         StringBuilder s = new StringBuilder();
-        for(int i =0; i < Layer.LAYER_COUNT; i ++) {
+        for (int i = 0; i < Layer.LAYER_COUNT; i++) {
             Layer layer = getWorld().getLayer(i);
-            if(currentLayerIndex == i) {
+            if (currentLayerIndex == i) {
                 s.append("> ");
             } else {
                 s.append("  ");
             }
             s.append("Layer ").append(i);
 
-            if(lockedLayers.contains(layer)) {
+            if (lockedLayers.contains(layer)) {
                 s.append(" locked");
             }
             s.append('\n');
@@ -317,15 +330,10 @@ public class GameObjectEditor {
 
     private void paste() {
         unselect();
-
         copyBuffer.forEach(gameObject -> {
             IGameObject copy = GameObjectUtils.copy(gameObject, newGameObjectId());
-            copy.move(1f, 1f);
-
-            getWorld().addGameObject(
-                    copy, gameObjectLayersMap.get(gameObject.getGameObjectId()), true
-            );
-
+            copy.setName(copy.getName() + "_" + copy.getGameObjectId());
+            getWorld().addGameObject(copy, gameObjectLayersMap.get(gameObject.getGameObjectId()), true);
             select(copy);
         });
     }
@@ -465,7 +473,7 @@ public class GameObjectEditor {
         while (y % GRID_SIZE != 0) y--;
 
         displayObject.setXY(x, y);
-        if(displayObject instanceof IMovable m) {
+        if (displayObject instanceof IMovable m) {
             m.setStartXY(x, y);
             m.reset();
         }
@@ -560,7 +568,7 @@ public class GameObjectEditor {
     public IGameObject getGameObjectUnderPoint(int layerIndex, float x, float y) {
         for (int i = getWorld().getGameObjectCount() - 1; i >= 0; i--) {
             IGameObject gameObject = getWorld().getGameObject(i);
-            if(isGameObjectInLockedLayer(gameObject)) continue;
+            if (isGameObjectInLockedLayer(gameObject)) continue;
             if (gameObject.isVisible() && gameObject.hasParent() && gameObject.getParent() instanceof Layer layer) {
                 if (editor.isControlDown() || layerIndex == layer.getIndex()) {
                     if (hitTest(x, y, gameObject)) return gameObject;

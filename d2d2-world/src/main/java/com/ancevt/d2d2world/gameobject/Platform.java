@@ -11,7 +11,7 @@ public abstract class Platform extends Sprite implements IPlatform, IActioned {
 
     private final int gameObjectId;
     private World world;
-    private String actionProgramData;
+    private String actionProgramData = ";";
     private ActionProgram actionProgram;
     private boolean floorOnly;
     private float movingSpeedX, movingSpeedY;
@@ -85,35 +85,35 @@ public abstract class Platform extends Sprite implements IPlatform, IActioned {
         movingSpeedY = toY;
         super.moveX(toX);
         super.moveY(toY);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void moveX(float value) {
         movingSpeedX = value;
         super.moveX(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void moveY(float value) {
         movingSpeedY = value;
         super.moveY(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void setX(float value) {
         if (value == getX()) return;
         super.setX(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void setY(float value) {
         if (value == getY()) return;
         super.setY(value);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
@@ -121,7 +121,7 @@ public abstract class Platform extends Sprite implements IPlatform, IActioned {
         if (x == getX() && y == getY()) return;
         super.setX(x);
         super.setY(y);
-        if (getWorld() != null) getWorld().getSyncManager().xy(this);
+        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override

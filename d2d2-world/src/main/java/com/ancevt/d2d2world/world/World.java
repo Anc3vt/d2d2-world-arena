@@ -17,22 +17,22 @@
  */
 package com.ancevt.d2d2world.world;
 
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.exception.NotImplementedException;
 import com.ancevt.d2d2world.exception.GameException;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
+import com.ancevt.d2d2world.gameobject.weapon.Bullet;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.Room;
 import com.ancevt.d2d2world.process.PlayProcessor;
 import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.sync.StubSyncDataAggregator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -53,10 +53,10 @@ public class World extends DisplayObjectContainer {
     private Room currentRoom;
     private boolean playing;
     private boolean switchingRoomsNow;
-    private ISyncDataAggregator syncManager;
+    private ISyncDataAggregator syncDataAggregator;
 
     public World(@NotNull ISyncDataAggregator syncManager) {
-        this.syncManager = syncManager;
+        this.syncDataAggregator = syncManager;
 
         gameObjectMap = new HashMap<>();
 
@@ -84,12 +84,12 @@ public class World extends DisplayObjectContainer {
         this(new StubSyncDataAggregator());
     }
 
-    public void setSyncManager(ISyncDataAggregator syncManager) {
-        this.syncManager = syncManager;
+    public void setSyncDataAggregator(ISyncDataAggregator syncDataAggregator) {
+        this.syncDataAggregator = syncDataAggregator;
     }
 
-    public @NotNull ISyncDataAggregator getSyncManager() {
-        return syncManager;
+    public @NotNull ISyncDataAggregator getSyncDataAggregator() {
+        return syncDataAggregator;
     }
 
     public PlayProcessor getPlayProcessor() {
@@ -160,7 +160,7 @@ public class World extends DisplayObjectContainer {
 
         update();
 
-        dispatchEvent(new WorldEvent(WorldEvent.CHANGE_ROOM, this, room));
+        dispatchEvent(new WorldEvent(WorldEvent.CHANGE_ROOM, this, room, 0, 0));
     }
 
     public void update() {
@@ -210,6 +210,10 @@ public class World extends DisplayObjectContainer {
 
     public boolean isAreasVisible() {
         return areasVisible;
+    }
+
+    public List<IGameObject> getGameObjects() {
+        return List.copyOf(gameObjects);
     }
 
     public List<IGameObject> getSyncGameObjects() {
@@ -304,7 +308,7 @@ public class World extends DisplayObjectContainer {
     }
 
     public void addGameObject(IGameObject gameObject, int layerIndex, boolean updateRoom) {
-        if(gameObjects.stream().anyMatch(o->o.getGameObjectId() == gameObject.getGameObjectId())) {
+        if (gameObjects.stream().anyMatch(o -> o.getGameObjectId() == gameObject.getGameObjectId())) {
             throw new IllegalStateException("duplicate game object id " + gameObject.getGameObjectId() + " " + gameObject);
         }
 
@@ -313,15 +317,15 @@ public class World extends DisplayObjectContainer {
         getLayer(layerIndex).add(gameObject);
 
         gameObject.setWorld(this);
+        gameObject.onAddToWorld(this);
 
         if (gameObject instanceof ISynchronized) {
-            getSyncManager().newGameObject(gameObject);
+            getSyncDataAggregator().newGameObject(gameObject);
         }
 
         if (updateRoom)
             currentRoom.addGameObject(layerIndex, gameObject);
     }
-
 
 
     public void removeGameObject(IGameObject gameObject, boolean updateRoom) {
@@ -332,7 +336,7 @@ public class World extends DisplayObjectContainer {
             if (layer == gameObject.getParent()) {
                 layer.remove(gameObject);
                 gameObject.setWorld(null);
-                getSyncManager().remove(gameObject);
+                getSyncDataAggregator().remove(gameObject);
                 if (updateRoom) currentRoom.removeGameObject(layerIndex, gameObject);
             }
         }
@@ -351,6 +355,7 @@ public class World extends DisplayObjectContainer {
     }
 
     public void reset() {
+        playProcessor.reset();
         gameObjects.forEach(o -> {
             if (!(o instanceof PlayerActor) && o instanceof IResettable r) {
                 r.reset();
@@ -376,8 +381,7 @@ public class World extends DisplayObjectContainer {
     private void removeAllGameObjects() {
         while (!gameObjects.isEmpty()) {
             IGameObject gameObject = gameObjects.remove(0);
-            if (gameObject.hasParent())
-                gameObject.getParent().remove(gameObject);
+            removeGameObject(gameObject, false);
         }
 
         for (Layer layer : layers) {
@@ -386,13 +390,36 @@ public class World extends DisplayObjectContainer {
     }
 
     public void actorAttack(Actor actor, Weapon weapon) {
-        throw new NotImplementedException();
+        Bullet bullet = weapon.getNextBullet();
+        if (getGameObjectById(bullet.getGameObjectId()) == null) {
+            bullet.setDamagingOwnerActor(actor);
+            bullet.setXY(actor.getX() + actor.getWeaponX(), actor.getY() + actor.getWeaponY());
+            bullet.setDirection(actor.getDirection());
+            addGameObject(bullet, 5, false);
+        }
     }
 
     public boolean isSwitchingRoomsNow() {
         return switchingRoomsNow;
     }
 
+    @Override
+    public String toString() {
+        return "World{" +
+                "gameObjects=" + gameObjects.size() +
+                ", gameObjectMap=" + gameObjectMap.size() +
+                ", layers=" + layers.length +
+                ", playProcessor=" + playProcessor.toString() +
+                ", camera=" + camera +
+                ", packedSceneryBack=" + packedSceneryBack +
+                ", packedSceneryFore=" + packedSceneryFore +
+                ", sceneryPacked=" + sceneryPacked +
+                ", areasVisible=" + areasVisible +
+                ", roomRect=" + roomRect +
+                ", playing=" + playing +
+                ", switchingRoomsNow=" + switchingRoomsNow +
+                '}';
+    }
 }
 
 

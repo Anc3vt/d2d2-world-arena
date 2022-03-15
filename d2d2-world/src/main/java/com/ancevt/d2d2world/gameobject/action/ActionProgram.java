@@ -1,14 +1,17 @@
 package com.ancevt.d2d2world.gameobject.action;
 
-import org.jetbrains.annotations.NotNull;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.util.args.Args;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ancevt.d2d2world.script.JavaScriptEngine.calculate;
 
+@Slf4j
 public class ActionProgram {
 
     public static final ActionProgram STUB = new ActionProgram(List.of());
@@ -21,7 +24,7 @@ public class ActionProgram {
     }
 
     public void process() {
-        if (actions.isEmpty()) return;
+        if (!D2D2World.isServer() || actions.isEmpty()) return;
 
         Action currentAction = actions.get(iterator);
 
@@ -41,23 +44,32 @@ public class ActionProgram {
         String[] commands = actionProgramData.split(";");
         for (String command : commands) {
             command = command.trim();
-            String[] split = command.split(" ");
+
+            String[] split = command.split(" ", 3);
 
             int count = (int) calculate(split[0]);
             String word = split[1];
             Args values = new Args(split[2]);
 
             Runnable function = switch (word) {
-                case "moveX" -> () -> gameObject.moveX(calculate(values.get(String.class, 0)));
-                case "moveY" -> () -> gameObject.moveY(calculate(values.get(String.class, 0)));
-                //case "moveXY" -> () -> gameObject.move(calculate(values,));
+                case "moveX" -> {
+                    float val = calculate(values.get(String.class, 0));
+                    yield () -> gameObject.moveX(val);
+                }
+                case "moveY" -> {
+                    float val = calculate(values.get(String.class, 0));
+                    yield () -> gameObject.moveY(val);
+                }
+                case "moveXY" -> {
+                    float toX = calculate(values.get(String.class, 0));
+                    float toY = calculate(values.get(String.class, 1));
+                    yield () -> gameObject.move(toX, toY);
+                }
                 default -> throw new IllegalStateException(command);
             };
 
+
             actions.add(new Action(gameObject, count, function));
-
-
-            //() -> this.moveX(-1)));
         }
         return new ActionProgram(actions);
     }
