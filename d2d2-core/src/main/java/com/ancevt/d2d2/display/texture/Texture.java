@@ -20,7 +20,7 @@ package com.ancevt.d2d2.display.texture;
 public record Texture(TextureAtlas textureAtlas, int x, int y, int width, int height) {
 
     public Texture getSubtexture(int x, int y, int width, int height) {
-        return getTextureAtlas().createTexture(x, y, width, height);
+        return getTextureAtlas().createTexture(x() + x, y() + y, width, height);
     }
 
     public TextureAtlas getTextureAtlas() {

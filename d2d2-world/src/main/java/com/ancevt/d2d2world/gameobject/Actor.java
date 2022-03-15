@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
@@ -26,6 +27,8 @@ import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.scene.Particle;
+import com.ancevt.d2d2world.ui.HealthBar;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 
@@ -68,9 +71,12 @@ abstract public class Actor extends Animated implements ISynchronized,
     private Weapon weapon;
     private boolean pushable;
     private World world;
+    private final HealthBar healthBar;
 
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
+        healthBar = new HealthBar();
+        add(healthBar, -healthBar.getWidth() / 2, -24);
         setPushable(true);
         setGravityEnabled(true);
         setAlive(true);
@@ -175,6 +181,7 @@ abstract public class Actor extends Animated implements ISynchronized,
     @Override
     public void setMaxHealth(int health) {
         this.maxHealth = this.health = health;
+        healthBar.setMaxValue(health);
         if (isOnWorld()) getWorld().getSyncDataAggregator().maxHealth(this);
     }
 
@@ -189,6 +196,8 @@ abstract public class Actor extends Animated implements ISynchronized,
         else if (health > maxHealth) health = maxHealth;
         this.health = health;
 
+        healthBar.setValue(health);
+
         if (health <= 0 && isAlive()) death(null);
 
         if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, null);
@@ -201,11 +210,13 @@ abstract public class Actor extends Animated implements ISynchronized,
         else if (health > maxHealth && isOnWorld()) health = maxHealth;
         this.health = health;
 
-        if(health < oldHealth) damagingTime = DAMAGING_TIME;
+        healthBar.setValue(health);
 
         if (health <= 0 && isAlive()) death(damaging);
 
-        if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, damaging);
+        if (isOnWorld()) {
+            getWorld().getSyncDataAggregator().health(this, damaging);
+        }
     }
 
     @Override
@@ -246,12 +257,20 @@ abstract public class Actor extends Animated implements ISynchronized,
         setScaleY(alive ? 1.0f : -1.0f);
         setCollisionEnabled(alive);
         if (!alive) setVelocityY(-4);
+        healthBar.setVisible(alive);
+
+        if(alive) setVisible(true);
     }
 
     private void death(IDamaging damaging) {
         getMapkitItem().playSound(SoundKey.DEATH);
         setAlive(false);
         health = 0;
+
+        if(damaging == null) {
+            world.add(Particle.create(500, Color.of(0x220000)), getX(), getY());
+            setVisible(false);
+        }
 
         if (D2D2World.isServer()) {
             world.dispatchEvent(new WorldEvent(WorldEvent.ACTOR_DEATH, world,
@@ -386,7 +405,7 @@ abstract public class Actor extends Animated implements ISynchronized,
     }
 
     public void attack() {
-        if (!D2D2World.isServer()) return;
+        if (!D2D2World.isServer() || !isAlive()) return;
 
         attackTime = ATTACK_TIME;
         if (getWeapon() != null)

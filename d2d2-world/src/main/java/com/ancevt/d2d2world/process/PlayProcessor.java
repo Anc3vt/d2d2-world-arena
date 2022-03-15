@@ -17,10 +17,13 @@
  */
 package com.ancevt.d2d2world.process;
 
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
+import com.ancevt.d2d2world.gameobject.weapon.Bullet;
+import com.ancevt.d2d2world.scene.Particle;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -111,7 +114,7 @@ public class PlayProcessor {
             }
 
             if (o1 instanceof Actor actor) {
-                if(D2D2World.isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
+                if (D2D2World.isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
                     actor.setHealthBy(0, null);
                 }
             }
@@ -122,31 +125,33 @@ public class PlayProcessor {
         }
     }
 
-    private void processCollisionsHits(@NotNull ICollision o1, ICollision o2) {
+    private void processCollisionsHits(@NotNull ICollision o1, @NotNull ICollision o2) {
         if (!o1.isCollisionEnabled() || !o2.isCollisionEnabled()) return;
 
-        if (o1 instanceof IDestroyable destroyable && o2 instanceof IDamaging damaging)
+        if (o1 instanceof IDestroyable destroyable && o2 instanceof IDamaging damaging) {
             processDamage(destroyable, damaging);
-
+        }
         if (o1 instanceof ITight tight1 && o2 instanceof ITight tight2) {
             processTight(tight1, tight2);
         }
-
         if (o1 instanceof Actor actor && o2 instanceof AreaDoorTeleport areaDoorTeleport) {
             processDoorTeleport(actor, areaDoorTeleport);
         }
-
         if (o1 instanceof IHookable hookable && o2 instanceof AreaHook areaHook) {
             processHook(hookable, areaHook);
         }
 
         o1.onCollide(o2);
         o2.onCollide(o1);
+
+        if(o2 instanceof Bullet bullet && o1 instanceof ITight && o1 != bullet.getDamagingOwnerActor()) {
+            bullet.destroy();
+            if(o1 instanceof Bullet bullet2) bullet2.destroy();
+        }
     }
 
     private void processDamage(@NotNull IDestroyable o, @NotNull IDamaging damaging) {
-        if(!D2D2World.isServer()) return;
-
+        if (!D2D2World.isServer()) return;
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
         o.changeHealth(-damagingPower, damaging);
@@ -161,10 +166,14 @@ public class PlayProcessor {
         }
     }
 
-    private void processTight(ITight o1, ITight o2) {
+    private void processTight(@NotNull ITight o1, @NotNull ITight o2) {
         if (!(o1 instanceof IMovable)) return;
 
         if (!o1.isPushable()) return;
+
+        if (o2 instanceof Bullet bullet) {
+            if (bullet.getOwnerGameObjectId() == o1.getGameObjectId()) return;
+        }
 
         float tx1 = o1.getCollisionX();
         float ty1 = o1.getCollisionY();
@@ -285,7 +294,7 @@ public class PlayProcessor {
     private PushState getPushState(ITight tight) {
         var ps = pushStates.get(tight);
         if (ps == null) {
-            ps = new PushState();
+            ps = new PushState(world);
             ps.tight = tight;
             pushStates.put(tight, ps);
         }
@@ -298,12 +307,17 @@ public class PlayProcessor {
 
     private static class PushState {
 
+        private final World world;
         ITight tight;
         ITight tightAbove;
         int pushFromLeft;
         int pushFromRight;
         int pushFromTop;
         int pushFromBottom;
+
+        public PushState(World world) {
+            this.world = world;
+        }
 
         void pushFromLeft() {
             pushFromLeft = 2;
@@ -324,12 +338,12 @@ public class PlayProcessor {
         void process() {
             if (tightAbove != null) {
                 if (pushFromBottom > 0 && pushFromTop > 0) {
-                    if (tight instanceof IDestroyable destroyable) {
-                        destroyable.setHealthBy(0, null);
+                    if (tight instanceof Actor actor) {
+                        actor.setHealthBy(0, null);
                     }
                 } else if (pushFromLeft > 0 && pushFromRight > 0) {
-                    if (tight instanceof IDestroyable destroyable) {
-                        destroyable.setHealthBy(0, null);
+                    if (tight instanceof Actor actor) {
+                        actor.setHealthBy(0, null);
                     }
                 }
             }

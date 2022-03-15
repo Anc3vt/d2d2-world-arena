@@ -274,7 +274,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
                 () -> {
                     MODULE_CHAT.addMessage(
-                            deadPlayer.getName() + "(" + deadPlayer.getId() + ") dead");
+                            deadPlayer.getName() + "(" + deadPlayer.getId() + ") knocked out");
 
                     PLAYER_MANAGER.getPlayer(deadPlayerId).orElseThrow().decrementFrags();
                 });

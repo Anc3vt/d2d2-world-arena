@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_WORLD_ALPHA;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
@@ -81,7 +82,6 @@ public class WorldScene extends DisplayObjectContainer {
                         }
                     }
                 }
-
             }
         };
         shadowRadial.setScale(2f, 2f);
@@ -110,7 +110,6 @@ public class WorldScene extends DisplayObjectContainer {
 
     private void this_addToStage(Event event) {
         removeEventListeners(getClass());
-
         final float w = getStage().getStageWidth();
         final float h = getStage().getStageHeight();
         overlay = new Overlay(w, h);
@@ -212,7 +211,11 @@ public class WorldScene extends DisplayObjectContainer {
     public void playerActorUiText(PlayerActor playerActor, int playerId, String playerName) {
         UiText uiText = new UiText(playerName + "(" + playerId + ")");
         uiText.setScale(0.5f, 0.5f);
-        playerActor.add(uiText, -20, -30);
+
+        debug("com.ancevt.d2d2world.desktop.scene.WorldScene.playerActorUiText(WorldScene:214):\n<A>" +
+                uiText.getTextWidth());
+
+        playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
     }
 
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {

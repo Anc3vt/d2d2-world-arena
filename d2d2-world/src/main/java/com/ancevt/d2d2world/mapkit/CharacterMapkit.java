@@ -38,7 +38,7 @@ public class CharacterMapkit extends Mapkit {
                 id = standard_bullet |
                 class =""" + StandardBullet.class.getName() + """
                 |
-                damagingPower = 50 |
+                damagingPower = 25 |
                 speed = 5 |
                 collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4 |
                 atlas = bullets.png |

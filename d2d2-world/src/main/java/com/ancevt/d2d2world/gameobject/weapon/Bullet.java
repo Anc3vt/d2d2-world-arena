@@ -17,7 +17,6 @@
  */
 package com.ancevt.d2d2world.gameobject.weapon;
 
-import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -140,12 +139,8 @@ abstract public class Bullet extends Animated implements ICollision, IDirectione
     }
 
     @Override
-    public void onCollide(@NotNull ICollision collideWith) {
-        if (D2D2World.isServer()) {
-            if (collideWith.isCollisionEnabled() && collideWith instanceof ITight && collideWith != getDamagingOwnerActor()) {
-                destroy();
-            }
-        }
+    public void onCollide(ICollision collideWith) {
+
     }
 
     @Override

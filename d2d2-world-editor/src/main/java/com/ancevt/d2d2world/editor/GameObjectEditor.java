@@ -62,7 +62,7 @@ public class GameObjectEditor {
     private float oldMouseY;
     private boolean selecting;
     private MapkitItem lastPlacingMapkitItem;
-    private float worldMouseX, worldMouseY;
+    private float worldMouseX = 100, worldMouseY = 100;
 
     public GameObjectEditor(Editor editor) {
         this.editor = editor;

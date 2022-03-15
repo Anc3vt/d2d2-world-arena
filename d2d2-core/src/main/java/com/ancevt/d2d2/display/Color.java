@@ -27,6 +27,7 @@ public class Color {
     public static final Color BLUE = new Color(0x0000FF, true);
     public static final Color DARK_BLUE = new Color(0x000080, true);
     public static final Color YELLOW = new Color(0xFFFF00, true);
+    public static final Color DARK_YELLOW = new Color(0x808000, true);
     public static final Color RED = new Color(0xFF0000, true);
     public static final Color DARK_RED = new Color(0x800000, true);
     public static final Color PINK = new Color(0xFF8080, true);

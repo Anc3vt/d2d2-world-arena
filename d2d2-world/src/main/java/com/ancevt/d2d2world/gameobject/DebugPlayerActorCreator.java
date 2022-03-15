@@ -18,14 +18,16 @@ public class DebugPlayerActorCreator {
         playerActor.setXY(800, 304);
         playerActor.setDirection(Direction.LEFT);
 
+
+        playerActor.setMaxHealth(10000);
+        playerActor.setHealth(10000);
+
         world.addGameObject(playerActor, 5, false);
         Async.run(() -> {
             while (true) {
                 try {
-
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     playerActor.attack();
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
