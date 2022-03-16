@@ -36,6 +36,8 @@ import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 public class D2D2WorldArenaDesktopMain {
 
     public static void main(String[] args) throws IOException {
+        //System.setProperty("receive", "true");
+
         // Load desktopConfig properties
         MODULE_CONFIG.load();
         for (String arg : args) {

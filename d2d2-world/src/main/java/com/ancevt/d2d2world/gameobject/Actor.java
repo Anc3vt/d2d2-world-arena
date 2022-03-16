@@ -180,7 +180,7 @@ abstract public class Actor extends Animated implements ISynchronized,
 
     @Override
     public void setMaxHealth(int health) {
-        this.maxHealth = this.health = health;
+        this.maxHealth = health;
         healthBar.setMaxValue(health);
         if (isOnWorld()) getWorld().getSyncDataAggregator().maxHealth(this);
     }
@@ -192,11 +192,14 @@ abstract public class Actor extends Animated implements ISynchronized,
 
     @Override
     public void setHealth(int health) {
+        int oldHealth = this.health;
         if (health < 0) health = 0;
         else if (health > maxHealth) health = maxHealth;
         this.health = health;
 
         healthBar.setValue(health);
+
+        if(health < oldHealth) damagingTime = DAMAGING_TIME;
 
         if (health <= 0 && isAlive()) death(null);
 
@@ -209,6 +212,8 @@ abstract public class Actor extends Animated implements ISynchronized,
         if (health < 0) health = 0;
         else if (health > maxHealth && isOnWorld()) health = maxHealth;
         this.health = health;
+
+        if(health < oldHealth) damagingTime = DAMAGING_TIME;
 
         healthBar.setValue(health);
 

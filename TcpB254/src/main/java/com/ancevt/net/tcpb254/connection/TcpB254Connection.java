@@ -17,9 +17,10 @@
  */
 package com.ancevt.net.tcpb254.connection;
 
-import lombok.extern.slf4j.Slf4j;
 import com.ancevt.commons.io.ByteOutput;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.net.tcpb254.CloseStatus;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -34,8 +35,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
+import static java.lang.Math.min;
+
 @Slf4j
 public class TcpB254Connection implements IConnection {
+
+    static {
+        UnixDisplay.setEnabled(true); // TODO: remove
+    }
 
     private static final int MAX_CHUNK_SIZE = 254;
 
@@ -91,7 +99,7 @@ public class TcpB254Connection implements IConnection {
                     while (left > 0) {
                         final int a = in.available();
                         if (a == 0) continue;
-                        byte[] bytes = new byte[Math.min(a, left)];
+                        byte[] bytes = new byte[min(a, left)];
                         left -= in.read(bytes);
                         byteOutput.write(bytes);
                     }
@@ -110,7 +118,7 @@ public class TcpB254Connection implements IConnection {
                 while (left > 0) {
                     final int a = in.available();
                     if (a == 0) continue;
-                    byte[] bytes = new byte[Math.min(a, left)];
+                    byte[] bytes = new byte[min(a, left)];
                     left -= in.read(bytes);
                     byteOutput.write(bytes);
                     byte[] array = byteOutput.toArray();
@@ -118,8 +126,6 @@ public class TcpB254Connection implements IConnection {
                     dispatchConnectionBytesReceived(array);
                     byteOutput = ByteOutput.newInstance();
                 }
-
-
             }
 
         } catch (IOException e) {
@@ -251,6 +257,12 @@ public class TcpB254Connection implements IConnection {
     }
 
     private synchronized void dispatchConnectionBytesReceived(byte[] bytes) {
+        if(System.getProperty("receive") != null) {
+            debug("com.ancevt.net.tcpb254.connection.TcpB254Connection.dispatchConnectionBytesReceived(TcpB254Connection:257):\n<A>" +
+                    bytes.length);
+        }
+
+
         listeners.forEach(l -> {
             try {
                 l.connectionBytesReceived(bytes);
@@ -274,6 +286,11 @@ public class TcpB254Connection implements IConnection {
 
     @Override
     public synchronized void send(byte[] bytes) {
+
+        if(System.getProperty("send") != null) {
+            debug("com.ancevt.net.tcpb254.connection.TcpB254Connection.send(TcpB254Connection:277):\n<A>" + bytes.length);
+        }
+
         if (!isOpen()) return;
 
         if (bytes.length > MAX_CHUNK_SIZE) {
@@ -309,7 +326,7 @@ public class TcpB254Connection implements IConnection {
         boolean fin = false;
 
         while (!fin) {
-            length = Math.min(bytes.length - pos, MAX_CHUNK_SIZE);
+            length = min(bytes.length - pos, MAX_CHUNK_SIZE);
             byte[] dest = new byte[length];
             System.arraycopy(bytes, pos, dest, 0, length);
             fin = length < MAX_CHUNK_SIZE;

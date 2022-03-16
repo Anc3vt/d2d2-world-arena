@@ -41,7 +41,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_WORLD_ALPHA;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
@@ -211,10 +210,6 @@ public class WorldScene extends DisplayObjectContainer {
     public void playerActorUiText(PlayerActor playerActor, int playerId, String playerName) {
         UiText uiText = new UiText(playerName + "(" + playerId + ")");
         uiText.setScale(0.5f, 0.5f);
-
-        debug("com.ancevt.d2d2world.desktop.scene.WorldScene.playerActorUiText(WorldScene:214):\n<A>" +
-                uiText.getTextWidth());
-
         playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
     }
 

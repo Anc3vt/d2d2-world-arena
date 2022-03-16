@@ -51,6 +51,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class D2D2WorldArenaServerMain implements ServerListener, Thread.UncaughtExceptionHandler {
 
     public static void main(String @NotNull [] args) throws IOException {
+        //System.setProperty("send", "true");
         // Load serverConfig properties
         MODULE_SERVER_CONFIG.load();
         for (String arg : args) {

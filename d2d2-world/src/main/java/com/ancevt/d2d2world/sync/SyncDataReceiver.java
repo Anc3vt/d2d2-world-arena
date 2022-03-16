@@ -119,6 +119,8 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
         ByteInputReader in = ByteInputReader.newInstance(syncData);
 
+        StringBuilder sb = new StringBuilder();
+
         while (in.hasNextData()) {
 
             int type = 0;
@@ -148,8 +150,12 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         setAnimation(gameObjectId, animKey, loop);
                     }
                     case SyncDataType.XY -> {
+                        sb.append("----- xy\n");
+                        sb.append("goid: " + gameObjectId + "\n");
                         float x = in.readFloat();
+                        sb.append("x: " + x + "\n");
                         float y = in.readFloat();
+                        sb.append("y: " + y + "\n");
                         setXY(gameObjectId, x, y);
                     }
                     case SyncDataType.HEALTH -> {
@@ -177,6 +183,10 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                 }
             } catch (Exception e) {
                 log.error("type: " + type, e);
+                System.out.println(sb);
+                sb.setLength(0);
+
+                System.exit(1);
             }
         }
     }

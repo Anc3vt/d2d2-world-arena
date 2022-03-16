@@ -28,6 +28,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.panels.Button;
+import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.ui.*;
 import com.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
@@ -145,9 +146,11 @@ public class IntroRoot extends Root {
 
             add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
 
-            if(MODULE_CONFIG.getBoolean(AUTO_ENTER)) {
+            if (MODULE_CONFIG.getBoolean(AUTO_ENTER)) {
                 enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
             }
+
+            add(new UAFlag());
         });
     }
 
@@ -215,6 +218,22 @@ public class IntroRoot extends Root {
         lock.lock(5, TimeUnit.SECONDS);
 
         return resultHolder.getValue();
+    }
+
+    public static class UAFlag extends DisplayObjectContainer {
+
+        final float factor = 0.25f;
+
+        public UAFlag() {
+            add(new PlainRect(factor * 240, factor * 160f / 2f, Color.of(0x1040FF)), 0, 0);
+            add(new PlainRect(factor * 240, factor * 160f / 2f, Color.YELLOW), 0, factor * 160f / 2f);
+        }
+
+        public static void main(String[] args) {
+            Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+            root.add(new UAFlag());
+            D2D2.loop();
+        }
     }
 
 }
