@@ -11,6 +11,7 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
 @Slf4j
@@ -51,7 +52,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
             while (test.hasNextData()) {
 
-                int type = 0;
+                int type;
 
                 try {
                     type = test.readByte();
@@ -183,12 +184,15 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                 }
             } catch (Exception e) {
                 log.error("type: " + type, e);
-                System.out.println(sb);
                 sb.setLength(0);
-
+                debug("com.ancevt.d2d2world.sync.SyncDataReceiver.bytesReceived(SyncDataReceiver:188): <A>" + sb);
+                e.printStackTrace();
                 System.exit(1);
             }
         }
+
+        debug("com.ancevt.d2d2world.sync.SyncDataReceiver.bytesReceived(SyncDataReceiver:191): <A>" + sb);
+
     }
 
     private void repair(int gameObjectId) {
@@ -243,7 +247,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
         }
     }
 
-    private void setXY(int gameObjectId, float x, float y) {
+    private synchronized void setXY(int gameObjectId, float x, float y) {
         IGameObject o = world.getGameObjectById(gameObjectId);
         if (o != null) {
             if (o instanceof Bullet) return;

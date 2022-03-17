@@ -26,6 +26,7 @@ import com.ancevt.net.tcpb254.connection.IConnection;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.lang.Math.min;
@@ -92,7 +93,7 @@ public class FileSender {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
 
-            filesize = (int) file.length();
+            filesize = (int) Files.size(Path.of(file.getPath()));
 
             int left = filesize;
             while (left > 0) {

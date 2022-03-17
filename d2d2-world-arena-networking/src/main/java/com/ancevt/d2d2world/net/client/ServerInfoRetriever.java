@@ -17,16 +17,16 @@
  */
 package com.ancevt.d2d2world.net.client;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.net.tcpb254.CloseStatus;
-import com.ancevt.net.tcpb254.connection.ConnectionFactory;
 import com.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import com.ancevt.net.tcpb254.connection.IConnection;
+import com.ancevt.net.tcpb254.connection.TcpConnection;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.createDtoMessage;
 import static com.ancevt.d2d2world.net.serialization.JsonEngine.gson;
@@ -40,7 +40,7 @@ public class ServerInfoRetriever {
                                 @NotNull ErrorFunction errorFunction) {
 
         log.info("Retrieve server info {}:{}", host, port);
-        IConnection connection = ConnectionFactory.createTcpB254Connection();
+        IConnection connection = TcpConnection.create();
 
         connection.addConnectionListener(new ConnectionListenerAdapter() {
 

@@ -17,13 +17,15 @@
  */
 package com.ancevt.net.tcpb254.connection;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.TimeUnit;
 
 public interface IConnection {
 
     void connect(String host, int port);
 
-    Thread asyncConnect(String host, int port);
+    void asyncConnect(String host, int port);
 
     boolean asyncConnectAndAwait(String host, int port);
 
@@ -45,7 +47,9 @@ public interface IConnection {
 
     void close();
 
-    void closeIfOpen();
+    default void closeIfOpen() {
+        if(isOpen()) close();
+    }
 
     void addConnectionListener(ConnectionListener listener);
 
@@ -57,7 +61,7 @@ public interface IConnection {
 
     long bytesLoaded();
 
-    static String getIpFromAddress(String address) {
+    static String getIpFromAddress(@NotNull String address) {
         if (address.startsWith("/")) {
             address = address.replaceAll("/", "");
         }

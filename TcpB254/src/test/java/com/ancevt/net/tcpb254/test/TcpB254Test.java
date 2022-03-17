@@ -4,20 +4,14 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.commons.io.ByteOutputWriter;
-import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.net.tcpb254.CloseStatus;
 import com.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import com.ancevt.net.tcpb254.connection.IConnection;
-import com.ancevt.net.tcpb254.connection.TcpConnection;
+import com.ancevt.net.tcpb254.connection.TcpB254Connection;
 import com.ancevt.net.tcpb254.server.IServer;
 import com.ancevt.net.tcpb254.server.ServerListenerAdapter;
-import com.ancevt.net.tcpb254.server.TcpServer;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.ancevt.net.tcpb254.server.TcpB254Server;
+import org.junit.jupiter.api.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -25,12 +19,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TcpTest {
+@Disabled
+public class TcpB254Test {
 
     private static final String SERVER_HOST = "0.0.0.0";
     private static final String HOST = "127.0.0.1";
@@ -40,13 +34,12 @@ public class TcpTest {
 
     @BeforeEach
     void beforeEach() {
-        UnixDisplay.setEnabled(true);
-        server = TcpServer.create();
+        server = TcpB254Server.create();
     }
 
     private void serverStart() {
         boolean serverStartResult = server.asyncListenAndAwait(SERVER_HOST, PORT, 10, TimeUnit.SECONDS);
-        if (!serverStartResult) {
+        if(!serverStartResult) {
             fail();
         }
     }
@@ -66,12 +59,6 @@ public class TcpTest {
         Holder<Integer> lastByte = new Holder<>();
 
         server.addServerListener(new ServerListenerAdapter() {
-
-            @Override
-            public void connectionEstablished(IConnection connectionWithClient) {
-                debug("com.ancevt.net.tcpb254.test.TcpTest.connectionEstablished(TcpTest:67): <A>established");
-            }
-
             @Override
             public void connectionBytesReceived(IConnection connection, byte[] bytes) {
                 ByteInputReader r = ByteInputReader.newInstance(bytes);
@@ -99,10 +86,9 @@ public class TcpTest {
         w.writeByte(0);
         writeBytesTo(w, 10, 1);
         writeBytesTo(w, 1, 2);
+
         connection.send(w.toByteArray());
-
         lock.lock(250, TimeUnit.MILLISECONDS);
-
 
         assertThat(firstByte.getValue(), equalTo(0));
         assertThat(middleByte.getValue(), equalTo(1));
@@ -125,8 +111,8 @@ public class TcpTest {
     }
 
     @Test
-    void test253Bytes_2() {
-        actualTestNBytes(253);
+    void test254Bytes() {
+        actualTestNBytes(254);
     }
 
     @Test
@@ -194,8 +180,9 @@ public class TcpTest {
         List<Boolean> list = new CopyOnWriteArrayList<>();
 
         for (int i = 0; i < clientCount; i++) {
+            final int connectionId = i;
             new Thread(() -> {
-                IConnection connection = TcpConnection.create();
+                IConnection connection = TcpB254Connection.create();
                 connection.addConnectionListener(new ConnectionListenerAdapter() {
                     @Override
                     public void connectionBytesReceived(byte[] bytes) {
@@ -222,7 +209,7 @@ public class TcpTest {
     }
 
     private static IConnection createConnection(int connectionId) {
-        IConnection connection = TcpConnection.create();
+        IConnection connection = TcpB254Connection.create();
         connection.asyncConnectAndAwait(HOST, PORT, 2, TimeUnit.SECONDS);
         return connection;
     }
@@ -304,7 +291,7 @@ public class TcpTest {
 
         Holder<String> stringReceived = new Holder<>();
 
-        IConnection connection = TcpConnection.create();
+        IConnection connection = TcpB254Connection.create();
         connection.addConnectionListener(new ConnectionListenerAdapter() {
 
             @Override
@@ -336,7 +323,7 @@ public class TcpTest {
         connection.asyncConnectAndAwait(HOST, PORT, 1, TimeUnit.SECONDS);
         System.out.println("after asyncConnectAndAwait");
 
-        if (stringReceived.getValue() == null) {
+        if(stringReceived.getValue() == null) {
             System.out.println("lock 10");
             lock.lock(10, TimeUnit.SECONDS);
         }
@@ -346,8 +333,10 @@ public class TcpTest {
         return stringReceived.getValue();
     }
 
-    @Contract("_, _, _, _ -> new")
-    private int @NotNull [] sendFromServerReceiveOnClient(int firstByte, int middleByte, int middleBytesLength, int lastByte) {
+    private int[] sendFromServerReceiveOnClient(int firstByte,
+                                                int middleByte,
+                                                int middleBytesLength,
+                                                int lastByte) {
         System.out.println("sendFromServerReceiveOnClient ints");
 
         Lock lock = new Lock();
@@ -385,7 +374,7 @@ public class TcpTest {
         Holder<Integer> lastByteHolder = new Holder<>();
         Holder<Integer> bytesReceived = new Holder<>();
 
-        IConnection connection = TcpConnection.create();
+        IConnection connection = TcpB254Connection.create();
         connection.addConnectionListener(new ConnectionListenerAdapter() {
 
             @Override
@@ -428,7 +417,7 @@ public class TcpTest {
         System.out.println("before asyncConnectAndAwait");
         connection.asyncConnectAndAwait(HOST, PORT, 2, TimeUnit.SECONDS);
         System.out.println("after asyncConnectAndAwait");
-        if (bytesReceived.getValue() == null) {
+        if(bytesReceived.getValue() == null) {
             System.out.println("lock");
             lock.lock(5, TimeUnit.SECONDS);
         }

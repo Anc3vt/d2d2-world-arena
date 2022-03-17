@@ -273,8 +273,10 @@ abstract public class Actor extends Animated implements ISynchronized,
         health = 0;
 
         if(damaging == null) {
-            world.add(Particle.create(500, Color.of(0x220000)), getX(), getY());
-            setVisible(false);
+            if(isOnWorld()) {
+                world.add(Particle.create(500, Color.of(0x220000)), getX(), getY());
+                setVisible(false);
+            }
         }
 
         if (D2D2World.isServer()) {

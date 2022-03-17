@@ -1,6 +1,5 @@
 package com.ancevt.d2d2world.gameobject;
 
-import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.mapkit.CharacterMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -23,7 +22,7 @@ public class DebugPlayerActorCreator {
         playerActor.setHealth(10000);
 
         world.addGameObject(playerActor, 5, false);
-        Async.run(() -> {
+        /*Async.run(() -> {
             while (true) {
                 try {
                     Thread.sleep(1000);
@@ -33,7 +32,7 @@ public class DebugPlayerActorCreator {
                 }
             }
         });
-
+*/
         return playerActor;
     }
 

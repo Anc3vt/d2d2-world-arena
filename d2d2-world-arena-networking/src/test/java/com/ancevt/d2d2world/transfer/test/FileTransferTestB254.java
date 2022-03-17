@@ -8,10 +8,10 @@ import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import com.ancevt.d2d2world.net.transfer.FileSender;
 import com.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import com.ancevt.net.tcpb254.connection.IConnection;
-import com.ancevt.net.tcpb254.connection.TcpConnection;
+import com.ancevt.net.tcpb254.connection.TcpB254Connection;
 import com.ancevt.net.tcpb254.server.IServer;
 import com.ancevt.net.tcpb254.server.ServerListenerAdapter;
-import com.ancevt.net.tcpb254.server.TcpServer;
+import com.ancevt.net.tcpb254.server.TcpB254Server;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
@@ -30,7 +30,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class FileTransferTest {
+public class FileTransferTestB254 {
 
     @Contract("_, _ -> new")
     private @NotNull File createFile(String path, int filesize) {
@@ -54,7 +54,7 @@ public class FileTransferTest {
 
     @Contract(" -> new")
     private @NotNull IServer createServer() {
-        return TcpServer.create();
+        return TcpB254Server.create();
     }
 
     @Test
@@ -79,7 +79,7 @@ public class FileTransferTest {
 
         Lock lock = new Lock();
 
-        IConnection connection = TcpConnection.create();
+        IConnection connection = TcpB254Connection.create();
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
             public void connectionBytesReceived(byte[] bytes) {
@@ -162,7 +162,7 @@ public class FileTransferTest {
 
         Lock lock = new Lock();
 
-        IConnection connection = TcpConnection.create();
+        IConnection connection = TcpB254Connection.create();
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
             public void connectionBytesReceived(byte[] bytes) {
@@ -225,7 +225,7 @@ public class FileTransferTest {
         deleteDirectory(new File("one/"));
     }
 
-    void deleteDirectory(@NotNull File directoryToBeDeleted) {
+    void deleteDirectory(File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
             for (File file : allContents) {

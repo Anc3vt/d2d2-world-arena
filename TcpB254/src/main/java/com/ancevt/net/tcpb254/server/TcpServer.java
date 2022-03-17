@@ -1,29 +1,13 @@
-/*
- *   TCPB254
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 package com.ancevt.net.tcpb254.server;
 
+import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.net.tcpb254.CloseStatus;
 import com.ancevt.net.tcpb254.connection.ConnectionListener;
 import com.ancevt.net.tcpb254.connection.IConnection;
-import com.ancevt.net.tcpb254.connection.TcpB254Connection;
-import org.jetbrains.annotations.Contract;
+import com.ancevt.net.tcpb254.connection.TcpConnection;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -34,12 +18,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.commons.concurrent.Async.run;
 import static com.ancevt.commons.unix.UnixDisplay.debug;
 
-public class TcpB254Server implements IServer {
+@Slf4j
+public class TcpServer implements IServer {
 
     private static final int MAX_CONNECTIONS = Integer.MAX_VALUE;
 
@@ -48,13 +33,14 @@ public class TcpB254Server implements IServer {
 
     private ServerSocket serverSocket;
 
-    private CountDownLatch countDownLatchForAsync;
+    private final Lock lock;
 
     private boolean alive;
 
-    private TcpB254Server() {
+    private TcpServer() {
         connections = new CopyOnWriteArraySet<>();
         serverListeners = new HashSet<>();
+        lock = new Lock();
     }
 
     @Override
@@ -70,98 +56,45 @@ public class TcpB254Server implements IServer {
 
             serverSocket.bind(new InetSocketAddress(host, port));
 
-            dispatchServerStarted();
+            serverListeners.forEach(ServerListener::serverStarted);
+            lock.unlockIfLocked();
 
             while (alive) {
-                Socket socket = serverSocket.accept();
-                IConnection connectionWithClient = TcpB254Connection.createServerSide(
-                        getNextFreeConnectionId(),
-                        socket
-                );
+                final Socket socket = serverSocket.accept();
+                final IConnection connectionWithClient = TcpConnection.createServerSide(getNextFreeConnectionId(), socket);
                 connectionWithClient.addConnectionListener(new ConnectionListener() {
                     @Override
                     public void connectionEstablished() {
-                        dispatchConnectionEstablished(connectionWithClient);
+                        serverListeners.forEach(l -> l.connectionEstablished(connectionWithClient));
                     }
 
                     @Override
                     public void connectionBytesReceived(byte[] bytes) {
-                        dispatchConnectionBytesReceived(connectionWithClient, bytes);
+                        serverListeners.forEach(l -> l.connectionBytesReceived(connectionWithClient, bytes));
                     }
 
                     @Override
                     public void connectionClosed(CloseStatus status) {
                         connections.remove(connectionWithClient);
-                        dispatchConnectionClosed(connectionWithClient, status);
+                        serverListeners.forEach(l -> l.connectionClosed(connectionWithClient, status));
                     }
                 });
                 connections.add(connectionWithClient);
 
-                dispatchConnectionAccepted(connectionWithClient);
 
-                new Thread(connectionWithClient::readLoop, "tcpB254_servconn" + connectionWithClient.getId()).start();
+                serverListeners.forEach(l -> l.connectionAccepted(connectionWithClient));
+
+                new Thread(connectionWithClient::readLoop, "tcpConnectionThread" + connectionWithClient.getId()).start();
             }
 
-            dispatchServerClosed(new CloseStatus());
+            serverListeners.forEach(l -> l.serverClosed(new CloseStatus()));
+            lock.unlockIfLocked();
         } catch (IOException e) {
-            dispatchServerClosed(new CloseStatus(e));
+            serverListeners.forEach(l -> l.serverClosed(new CloseStatus()));
+            lock.unlockIfLocked();
         }
 
         alive = false;
-    }
-
-    @Override
-    public void asyncListen(String host, int port) {
-        Thread thread = new Thread(() -> listen(host, port), "tcpB254ServListen_" + host + "_" + port);
-        thread.start();
-    }
-
-    @Override
-    public boolean asyncListenAndAwait(String host, int port) {
-        return asyncListenAndAwait(host, port, Long.MAX_VALUE, TimeUnit.DAYS);
-    }
-
-    @Override
-    public synchronized boolean asyncListenAndAwait(String host, int port, long time, TimeUnit timeUnit) {
-        asyncListen(host, port);
-        countDownLatchForAsync = new CountDownLatch(1);
-        try {
-            return countDownLatchForAsync.await(time, timeUnit);
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private void dispatchServerStarted() {
-        serverListeners.forEach(ServerListener::serverStarted);
-        if (countDownLatchForAsync != null) {
-            countDownLatchForAsync.countDown();
-            countDownLatchForAsync = null;
-        }
-    }
-
-    private void dispatchServerClosed(CloseStatus status) {
-        serverListeners.forEach(l -> l.serverClosed(status));
-        if (countDownLatchForAsync != null) {
-            countDownLatchForAsync.countDown();
-            countDownLatchForAsync = null;
-        }
-    }
-
-    private void dispatchConnectionEstablished(IConnection connectionWithClient) {
-        serverListeners.forEach(l -> l.connectionEstablished(connectionWithClient));
-    }
-
-    private void dispatchConnectionClosed(IConnection connectionWithClient, CloseStatus status) {
-        serverListeners.forEach(l -> l.connectionClosed(connectionWithClient, status));
-    }
-
-    private void dispatchConnectionBytesReceived(IConnection connection, byte[] data) {
-        serverListeners.forEach(l -> l.connectionBytesReceived(connection, data));
-    }
-
-    private void dispatchConnectionAccepted(IConnection connectionWithClient) {
-        serverListeners.forEach(l -> l.connectionAccepted(connectionWithClient));
     }
 
     private int getNextFreeConnectionId() {
@@ -173,6 +106,22 @@ public class TcpB254Server implements IServer {
 
     private IConnection getConnectionById(int id) {
         return connections.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
+    }
+
+    @Override
+    public void asyncListen(@NotNull String host, int port) {
+        run(() -> listen(host, port));
+    }
+
+    @Override
+    public boolean asyncListenAndAwait(String host, int port) {
+        return asyncListenAndAwait(host, port, Long.MAX_VALUE, TimeUnit.DAYS);
+    }
+
+    @Override
+    public boolean asyncListenAndAwait(String host, int port, long time, TimeUnit timeUnit) {
+        asyncListen(host, port);
+        return lock.lock(time, timeUnit);
     }
 
     @Override
@@ -189,10 +138,12 @@ public class TcpB254Server implements IServer {
 
             connections.forEach(IConnection::closeIfOpen);
             serverSocket.close();
+
             alive = false;
         } catch (IOException e) {
             alive = false;
-            dispatchServerClosed(new CloseStatus((e)));
+            serverListeners.forEach(l -> l.serverClosed(new CloseStatus(e)));
+            lock.unlockIfLocked();
         }
     }
 
@@ -207,36 +158,37 @@ public class TcpB254Server implements IServer {
     }
 
     @Override
+    public Set<IConnection> getConnections() {
+        return Set.copyOf(connections);
+    }
+
+    @Override
     public void sendToAll(byte[] bytes) {
         connections.forEach(c -> c.send(bytes));
     }
 
-    @Override
-    public Set<IConnection> getConnections() {
-        return new HashSet<>(connections);
-    }
-
-    @Contract(" -> new")
-    public static @NotNull IServer create() {
-        return new TcpB254Server();
+    public static IServer create() {
+        return new TcpServer();
     }
 
     @Override
     public String toString() {
-        return "TcpB254Server{" +
-                "connections=" + connections.size() +
+        return "TcpServer{" +
+                "connections=" + connections +
                 ", serverListeners=" + serverListeners +
                 ", serverSocket=" + serverSocket +
+                ", lock=" + lock +
                 ", alive=" + alive +
                 '}';
     }
+
 
     public static void main(String[] args) {
         UnixDisplay.setEnabled(true);
 
         var lock = new Lock();
 
-        IServer server = TcpB254Server.create();
+        IServer server = TcpServer.create();
         server.addServerListener(new ServerListener() {
             @Override
             public void serverStarted() {
@@ -256,7 +208,7 @@ public class TcpB254Server implements IServer {
 
             @Override
             public void connectionBytesReceived(IConnection connection, byte[] bytes) {
-                debug("com.ancevt.net.tcpb254.server.TcpServer.connectionBytesReceived(TcpServer:203): <A>" + new String(bytes, StandardCharsets.UTF_8));
+                debug("com.ancevt.net.tcpb254.server.TcpServer.connectionBytesReceived(TcpServer:203): <a><Y>" + new String(bytes, StandardCharsets.UTF_8));
                 connection.send("from server".getBytes(StandardCharsets.UTF_8));
             }
 
@@ -274,7 +226,9 @@ public class TcpB254Server implements IServer {
 
         server.asyncListenAndAwait("0.0.0.0", 7777, 2, TimeUnit.SECONDS);
 
-        IConnection connection = TcpB254Connection.create();
+        Holder<Boolean> result = new Holder<>(false);
+
+        IConnection connection = TcpConnection.create();
         connection.addConnectionListener(new ConnectionListener() {
             @Override
             public void connectionEstablished() {
@@ -284,7 +238,8 @@ public class TcpB254Server implements IServer {
 
             @Override
             public void connectionBytesReceived(byte[] bytes) {
-                debug("<g>Connection (TcpServer:230) <A>" + new String(bytes, StandardCharsets.UTF_8));
+                debug("<g>Connection (TcpServer:230) <a><Y>" + new String(bytes, StandardCharsets.UTF_8));
+                result.setValue(true);
                 lock.unlockIfLocked();
                 connection.removeConnectionListener(this);
             }
@@ -297,7 +252,7 @@ public class TcpB254Server implements IServer {
         connection.asyncConnectAndAwait("localhost", 7777, 2, TimeUnit.SECONDS);
 
 
-        lock.lock(10, TimeUnit.SECONDS);
+        lock.lock(2, TimeUnit.SECONDS);
         server.close();
 
         try {
@@ -306,7 +261,13 @@ public class TcpB254Server implements IServer {
             e.printStackTrace();
         }
 
-        System.out.println("done " + times);
+        System.out.println("times: " + times);
+        if (!result.getValue()) {
+            debug("<R>FAIL!");
+        } else {
+            debug("<G>SUCCESS");
+        }
+
         System.out.println("-".repeat(100));
 
 
@@ -314,10 +275,36 @@ public class TcpB254Server implements IServer {
         if (times > 0) {
             main(null);
         }
+
     }
 
-    private static int times = 10;
+    private static int times = 1;
 }
 
 
-// 1718775661
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

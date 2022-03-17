@@ -24,11 +24,11 @@ public interface ServerListener {
 
     void serverStarted();
 
-    void connectionAccepted(IConnection connection);
+    void connectionAccepted(IConnection connectionWithClient);
 
-    void connectionClosed(IConnection connection, CloseStatus status);
+    void connectionClosed(IConnection connectionWithClient, CloseStatus status);
 
-    void connectionBytesReceived(IConnection connection, byte[] bytes);
+    void connectionBytesReceived(IConnection connectionWithClient, byte[] bytes);
 
     void serverClosed(CloseStatus status);
 

@@ -17,13 +17,12 @@
  */
 package com.ancevt.d2d2world.process;
 
-import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.weapon.Bullet;
-import com.ancevt.d2d2world.scene.Particle;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +32,6 @@ import java.util.Map;
 public class PlayProcessor {
 
     private static final float DEFAULT_GRAVITY = 1f;
-    private static final int DEFAULT_SPEED = 60;
 
     public static float MAX_VELOCITY_X = 20f;
     public static float MAX_VELOCITY_Y = 10f;
@@ -50,7 +48,6 @@ public class PlayProcessor {
     public PlayProcessor(World world) {
         this.world = world;
         gravity = DEFAULT_GRAVITY;
-        setSpeed(DEFAULT_SPEED);
         setEnabled(true);
     }
 
@@ -144,9 +141,9 @@ public class PlayProcessor {
         o1.onCollide(o2);
         o2.onCollide(o1);
 
-        if(o2 instanceof Bullet bullet && o1 instanceof ITight && o1 != bullet.getDamagingOwnerActor()) {
+        if (o2 instanceof Bullet bullet && o1 instanceof ITight && o1 != bullet.getDamagingOwnerActor()) {
             bullet.destroy();
-            if(o1 instanceof Bullet bullet2) bullet2.destroy();
+            if (o1 instanceof Bullet bullet2) bullet2.destroy();
         }
     }
 
@@ -198,11 +195,12 @@ public class PlayProcessor {
 
         if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
             o1.setX(x2 - w1 - tx1 - 1);
-            getPushState(o1).pushFromRight();
+            getPushState(o1).pushFromRight().tightFromRight = o2;
             wallHitTest = true;
-        } else if (checkWalls && cx1 > x2 + w2 && y1 + h1 > y2 + 8) {
+        }
+        if (checkWalls && cx1 > x2 + w2 && y1 + h1 > y2 + 8) {
             o1.setX(x2 + w2 - tx1 + 1);
-            getPushState(o1).pushFromLeft();
+            getPushState(o1).pushFromLeft().tightFromLeft = o2;
             wallHitTest = true;
         }
 
@@ -214,16 +212,17 @@ public class PlayProcessor {
             boolean floorUnderObject = cy1 < cy2 && y1 + h1 < y2 + 11; // 11
 
             if (floorUnderObject) {
-                if (g.getVelocityY() > 0) {
+                if ((o2 instanceof IMovable moveable && moveable.getMovingSpeedY() < 5)
+                        || g.getVelocityY() > 0) {
                     o1.setY(y2 - h1 - ty1);
                     setFloorTo(g, o2);
                 }
-                getPushState(o1).pushFromBottom();
+                getPushState(o1).pushFromBottom().tightBelow = o2;
             } else if (checkWalls && cy1 > cy2 && y1 + 8 > y2 + h2 && cx1 > x2 && cx1 < x2 + w2) {
                 o1.setY(y2 + h2 - ty1);
                 g.setFloor(null);
                 g.setVelocityY(2);
-                getPushState(o1, o2).pushFromTop();
+                getPushState(o1).pushFromTop().tightAbove = o2;
             }
         }
     }
@@ -275,21 +274,9 @@ public class PlayProcessor {
         world.switchRoom(targetRoomId, targetX, targetY);
     }
 
-    public final void setSpeed(int value) {
-        delay = 1000 / value;
-    }
-
-    public final int getSpeed() {
-        return 1000 / delay;
-    }
+    // Push states:
 
     private Map<ITight, PushState> pushStates = new HashMap<>();
-
-    private PushState getPushState(ITight tight, ITight tigthAbove) {
-        var ps = getPushState(tight);
-        ps.tightAbove = tigthAbove;
-        return ps;
-    }
 
     private PushState getPushState(ITight tight) {
         var ps = pushStates.get(tight);
@@ -307,44 +294,54 @@ public class PlayProcessor {
 
     private static class PushState {
 
-        private final World world;
         ITight tight;
         ITight tightAbove;
+        ITight tightBelow;
+        ITight tightFromLeft;
+        ITight tightFromRight;
         int pushFromLeft;
         int pushFromRight;
         int pushFromTop;
         int pushFromBottom;
 
         public PushState(World world) {
-            this.world = world;
         }
 
-        void pushFromLeft() {
-            pushFromLeft = 2;
+        PushState pushFromLeft() {
+            pushFromLeft = 5;
+            return this;
         }
 
-        void pushFromRight() {
-            pushFromRight = 2;
+        PushState pushFromRight() {
+            pushFromRight = 5;
+            return this;
         }
 
-        void pushFromBottom() {
-            pushFromBottom = 1;
+        PushState pushFromBottom() {
+            pushFromBottom = 2;
+            return this;
         }
 
-        void pushFromTop() {
-            pushFromTop = 1;
+        PushState pushFromTop() {
+            pushFromTop = 2;
+            return this;
         }
 
         void process() {
-            if (tightAbove != null) {
-                if (pushFromBottom > 0 && pushFromTop > 0) {
-                    if (tight instanceof Actor actor) {
-                        actor.setHealthBy(0, null);
-                    }
-                } else if (pushFromLeft > 0 && pushFromRight > 0) {
-                    if (tight instanceof Actor actor) {
-                        actor.setHealthBy(0, null);
-                    }
+            if (pushFromBottom > 1 && pushFromTop > 1) {
+                if (tight instanceof Actor actor
+                        && (tightAbove instanceof IPlatform || tightAbove instanceof AreaCollision)
+                        && (tightBelow instanceof IPlatform || tightBelow instanceof AreaCollision)
+                ) {
+                    actor.setHealthBy(0, null);
+                }
+            }
+            if (pushFromLeft > 1 && pushFromRight > 1) {
+                if (tight instanceof Actor actor
+                        && (tightFromLeft instanceof IPlatform || tightFromLeft instanceof AreaCollision)
+                        && (tightFromRight instanceof IPlatform || tightFromRight instanceof AreaCollision)
+                ) {
+                    actor.setHealthBy(0, null);
                 }
             }
 

@@ -154,6 +154,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void move(float toX, float toY) {
+        if(toX == 0 && toY == 0) return;
         super.moveX(toX);
         super.moveY(toY);
         if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
@@ -161,12 +162,14 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void moveY(float value) {
+        if(value == 0) return;
         super.moveY(value);
         if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void moveX(float value) {
+        if(value == 0) return;
         super.moveX(value);
         if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
     }

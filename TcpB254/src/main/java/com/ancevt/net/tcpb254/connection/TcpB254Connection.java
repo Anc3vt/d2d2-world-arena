@@ -21,6 +21,8 @@ import com.ancevt.commons.io.ByteOutput;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.net.tcpb254.CloseStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -47,6 +49,9 @@ public class TcpB254Connection implements IConnection {
 
     private static final int MAX_CHUNK_SIZE = 254;
 
+    private final Object sendMonitor = new Object();
+    private final Object receiveMonitor = new Object();
+
     private final int id;
     private final Set<ConnectionListener> listeners;
     private String host;
@@ -68,7 +73,7 @@ public class TcpB254Connection implements IConnection {
         log.debug("New connection {}", this);
     }
 
-    TcpB254Connection(int id, Socket socket) {
+    TcpB254Connection(int id, @NotNull Socket socket) {
         this(id);
         this.socket = socket;
         this.host = socket.getLocalAddress().getHostName();
@@ -106,7 +111,7 @@ public class TcpB254Connection implements IConnection {
                     continue;
                 }
 
-                if (len == 255) {
+                if (len == MAX_CHUNK_SIZE + 1) {
                     byte[] array = byteOutput.toArray();
                     bytesLoaded += array.length;
                     dispatchConnectionBytesReceived(array);
@@ -137,6 +142,23 @@ public class TcpB254Connection implements IConnection {
     }
 
     @Override
+    public void connect(String host, int port) {
+        this.socket = new Socket();
+        log.debug("Connecting to {}:{}, {}", host, port, this);
+        try {
+            socket.connect(new InetSocketAddress(host, port));
+            this.host = socket.getLocalAddress().getHostName();
+            this.port = socket.getLocalPort();
+            this.remoteAddress = socket.getRemoteSocketAddress().toString();
+            this.remotePort = socket.getPort();
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            dispatchConnectionClosed(new CloseStatus(e));
+        }
+        readLoop();
+    }
+
+    @Override
     public long bytesSent() {
         return bytesSent;
     }
@@ -147,33 +169,9 @@ public class TcpB254Connection implements IConnection {
     }
 
     @Override
-    public void connect(String host, int port) {
-        this.socket = new Socket();
-
-        log.debug("Connecting to {}:{}, {}", host, port, this);
-
-        try {
-            socket.connect(new InetSocketAddress(host, port));
-
-            this.host = socket.getLocalAddress().getHostName();
-            this.port = socket.getLocalPort();
-            this.remoteAddress = socket.getRemoteSocketAddress().toString();
-            this.remotePort = socket.getPort();
-
-            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
-        } catch (IOException e) {
-            dispatchConnectionClosed(new CloseStatus(e));
-        }
-
-        readLoop();
-    }
-
-    @Override
-    public Thread asyncConnect(String host, int port) {
+    public void asyncConnect(String host, int port) {
         Thread thread = new Thread(() -> connect(host, port), "tcpB254Conn_" + getId() + "to_" + host + "_" + port);
         thread.start();
-        return thread;
     }
 
     @Override
@@ -230,11 +228,6 @@ public class TcpB254Connection implements IConnection {
     }
 
     @Override
-    public void closeIfOpen() {
-        if (isOpen()) close();
-    }
-
-    @Override
     public boolean isOpen() {
         return dataOutputStream != null;
     }
@@ -256,21 +249,17 @@ public class TcpB254Connection implements IConnection {
         }
     }
 
-    private synchronized void dispatchConnectionBytesReceived(byte[] bytes) {
-        if(System.getProperty("receive") != null) {
-            debug("com.ancevt.net.tcpb254.connection.TcpB254Connection.dispatchConnectionBytesReceived(TcpB254Connection:257):\n<A>" +
-                    bytes.length);
+    private void dispatchConnectionBytesReceived(byte[] bytes) {
+        synchronized (receiveMonitor) {
+            listeners.forEach(l -> {
+                try {
+                    l.connectionBytesReceived(bytes);
+                } catch (Exception e) {
+                    // TODO: improve
+                    log.error(e.getMessage(), e);
+                }
+            });
         }
-
-
-        listeners.forEach(l -> {
-            try {
-                l.connectionBytesReceived(bytes);
-            } catch (Exception e) {
-                // TODO: improve
-                log.error(e.getMessage(), e);
-            }
-        });
     }
 
 
@@ -285,18 +274,17 @@ public class TcpB254Connection implements IConnection {
     }
 
     @Override
-    public synchronized void send(byte[] bytes) {
-
-        if(System.getProperty("send") != null) {
-            debug("com.ancevt.net.tcpb254.connection.TcpB254Connection.send(TcpB254Connection:277):\n<A>" + bytes.length);
-        }
-
+    public void send(byte[] bytes) {
         if (!isOpen()) return;
 
-        if (bytes.length > MAX_CHUNK_SIZE) {
-            sendComposite(bytes);
-        } else {
-            sendChunk(bytes, true);
+        debug("TcpConnection:193: <g>" + bytes.length);
+
+        synchronized (sendMonitor) {
+            if (bytes.length > MAX_CHUNK_SIZE) {
+                sendComposite(bytes);
+            } else {
+                sendChunk(bytes, true);
+            }
         }
     }
 
@@ -368,4 +356,46 @@ public class TcpB254Connection implements IConnection {
                 ", hashcode=" + hashCode() +
                 '}';
     }
+
+    @Contract(" -> new")
+    public static @NotNull IConnection create() {
+        return create(0);
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull IConnection create(int id) {
+        return new TcpB254Connection(id);
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull IConnection createServerSide(int id, Socket socket) {
+        return new TcpB254Connection(id, socket);
+    }
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

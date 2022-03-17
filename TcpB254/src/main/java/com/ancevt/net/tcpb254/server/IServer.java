@@ -26,7 +26,7 @@ public interface IServer {
 
     void listen(String host, int port);
 
-    Thread asyncListen(String host, int port);
+    void asyncListen(String host, int port);
 
     boolean asyncListenAndAwait(String host, int port);
 

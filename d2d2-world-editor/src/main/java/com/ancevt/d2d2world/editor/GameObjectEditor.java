@@ -331,7 +331,7 @@ public class GameObjectEditor {
     private void paste() {
         unselect();
         copyBuffer.forEach(gameObject -> {
-            IGameObject copy = GameObjectUtils.copy(gameObject, newGameObjectId());
+            IGameObject copy = GameObjectUtils.copy(gameObject, getWorld().getNextFreeGameObjectId());
             copy.setName(copy.getName() + "_" + copy.getGameObjectId());
             getWorld().addGameObject(copy, gameObjectLayersMap.get(gameObject.getGameObjectId()), true);
             select(copy);
@@ -369,10 +369,6 @@ public class GameObjectEditor {
 
     private World getWorld() {
         return editor.getWorld();
-    }
-
-    private int newGameObjectId() {
-        return editor.getWorld().getMap().getNextFreeGameObjectId();
     }
 
     private void snapToGridSelected() {

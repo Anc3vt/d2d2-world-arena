@@ -35,6 +35,7 @@ import com.ancevt.d2d2world.sync.StubSyncDataAggregator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World extends DisplayObjectContainer {
 
@@ -60,7 +61,7 @@ public class World extends DisplayObjectContainer {
 
         gameObjectMap = new HashMap<>();
 
-        gameObjects = new ArrayList<>();
+        gameObjects = new CopyOnWriteArrayList<>();
         layers = new Layer[Layer.LAYER_COUNT];
         for (int i = 0; i < layers.length; i++) {
             layers[i] = new Layer(i);

@@ -132,7 +132,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public boolean hasData() {
+    public synchronized boolean hasData() {
         return buffer.hasData();
     }
 }
