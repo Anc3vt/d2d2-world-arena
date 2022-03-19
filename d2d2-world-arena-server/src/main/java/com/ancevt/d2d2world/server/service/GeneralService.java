@@ -226,8 +226,10 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
 
         if (dto instanceof MapLoadedReport) {
-            MODULE_WORLD_SCENE.getWorld().getSyncGameObjects().forEach(
-                    o -> MODULE_SENDER.sendToPlayer(playerId, new SyncDataAggregator().createSyncMessage(o)));
+            MODULE_WORLD_SCENE.getWorld().getSyncGameObjects().forEach(o -> {
+                byte[] bytes = SyncDataAggregator.createSyncMessageOf(o);
+                if(bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
+            });
 
             MODULE_SENDER.sendToPlayer(playerId,
                     PlayerActorDto.builder()

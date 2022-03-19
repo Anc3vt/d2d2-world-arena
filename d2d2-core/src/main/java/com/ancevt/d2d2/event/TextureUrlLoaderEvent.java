@@ -18,7 +18,14 @@
 package com.ancevt.d2d2.event;
 
 import com.ancevt.d2d2.display.texture.TextureAtlas;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
+
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class TextureUrlLoaderEvent extends Event {
 
     public static final String TEXTURE_LOAD_COMPLETE = "textureLoadComplete";
@@ -28,17 +35,4 @@ public class TextureUrlLoaderEvent extends Event {
     private final byte[] bytes;
     private final TextureAtlas textureAtlas;
 
-    public TextureUrlLoaderEvent(String type, IEventDispatcher source, byte[] bytes, TextureAtlas textureAtlas) {
-        super(type, source);
-        this.bytes = bytes;
-        this.textureAtlas = textureAtlas;
-    }
-
-    public TextureAtlas getTextureAtlas() {
-        return textureAtlas;
-    }
-
-    public byte[] getBytes() {
-        return bytes;
-    }
 }

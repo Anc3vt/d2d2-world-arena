@@ -17,8 +17,8 @@
  */
 package com.ancevt.d2d2world.server.service;
 
+import com.ancevt.net.tcpb254.TcpFactory;
 import com.ancevt.net.tcpb254.server.IServer;
-import com.ancevt.net.tcpb254.server.TcpServer;
 
 public class ServerUnit {
 
@@ -27,6 +27,6 @@ public class ServerUnit {
     public final IServer server;
 
     private ServerUnit() {
-        server = TcpServer.create();
+        server = TcpFactory.createServer();
     }
 }

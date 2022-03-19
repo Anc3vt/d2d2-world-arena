@@ -141,7 +141,7 @@ public class FileTransferTestB254 {
         final int filesize = 512 * 1024;
         List<File> files = new ArrayList<>();
 
-        final int count = 3;
+        final int count = 100;
 
         for (int i = 0; i < count; i++) {
             files.add(createFile("one/two/three/test" + i, filesize));

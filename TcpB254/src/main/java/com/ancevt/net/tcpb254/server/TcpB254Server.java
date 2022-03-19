@@ -17,6 +17,7 @@
  */
 package com.ancevt.net.tcpb254.server;
 
+import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.net.tcpb254.CloseStatus;
@@ -236,6 +237,8 @@ public class TcpB254Server implements IServer {
 
         var lock = new Lock();
 
+        Holder<Boolean> result = new Holder<>(false);
+
         IServer server = TcpB254Server.create();
         server.addServerListener(new ServerListener() {
             @Override
@@ -285,6 +288,7 @@ public class TcpB254Server implements IServer {
             @Override
             public void connectionBytesReceived(byte[] bytes) {
                 debug("<g>Connection (TcpServer:230) <A>" + new String(bytes, StandardCharsets.UTF_8));
+                result.setValue(true);
                 lock.unlockIfLocked();
                 connection.removeConnectionListener(this);
             }
@@ -309,6 +313,10 @@ public class TcpB254Server implements IServer {
         System.out.println("done " + times);
         System.out.println("-".repeat(100));
 
+        if(result.getValue()) {
+            debug("TcpB254Server:317: <a><G>SUCCESS");
+        }
+
 
         times--;
         if (times > 0) {
@@ -316,8 +324,5 @@ public class TcpB254Server implements IServer {
         }
     }
 
-    private static int times = 10;
+    private static int times = 0;
 }
-
-
-// 1718775661

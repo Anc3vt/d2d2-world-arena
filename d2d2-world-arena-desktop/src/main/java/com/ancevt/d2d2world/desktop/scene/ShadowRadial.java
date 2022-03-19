@@ -4,7 +4,6 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +17,8 @@ public class ShadowRadial extends DisplayObjectContainer {
         if (texture == null) {
             texture = textureManager().loadTextureAtlas("shadow-radial.png").createTexture();
         }
-
         sprites = new ArrayList<>();
-
-        addEventListener(Event.ADD_TO_STAGE, this::this_addToStage);
-        setDarknessValue(6);
-    }
-
-    private void this_addToStage(Event event) {
-        float sw = getStage().getStageWidth();
-        float sh = getStage().getStageHeight();
-        sprites.forEach(s -> s.setXY(-sw / 2, -sh / 2));
+        setDarknessValue(5);
     }
 
     public void setDarknessValue(int value) {
@@ -39,11 +29,9 @@ public class ShadowRadial extends DisplayObjectContainer {
         for (int i = 0; i < value; i++) {
             Sprite sprite = new Sprite(texture);
             sprite.setColor(Color.BLACK);
-            add(sprite);
+            add(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
             sprites.add(sprite);
         }
-
-        if (getStage() != null) this_addToStage(null);
     }
 
     public int getDarknessValue() {

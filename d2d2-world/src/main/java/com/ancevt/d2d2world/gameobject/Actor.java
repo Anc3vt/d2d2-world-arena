@@ -32,7 +32,7 @@ import com.ancevt.d2d2world.ui.HealthBar;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 
-abstract public class Actor extends Animated implements ISynchronized,
+abstract public class Actor extends Animated implements
         IProcessable,
         IDirectioned,
         IMovable,
@@ -199,7 +199,7 @@ abstract public class Actor extends Animated implements ISynchronized,
 
         healthBar.setValue(health);
 
-        if(health < oldHealth) damagingTime = DAMAGING_TIME;
+        if (health < oldHealth) damagingTime = DAMAGING_TIME;
 
         if (health <= 0 && isAlive()) death(null);
 
@@ -213,7 +213,7 @@ abstract public class Actor extends Animated implements ISynchronized,
         else if (health > maxHealth && isOnWorld()) health = maxHealth;
         this.health = health;
 
-        if(health < oldHealth) damagingTime = DAMAGING_TIME;
+        if (health < oldHealth) damagingTime = DAMAGING_TIME;
 
         healthBar.setValue(health);
 
@@ -244,10 +244,8 @@ abstract public class Actor extends Animated implements ISynchronized,
                 getMapkitItem().playSound(SoundKey.DAMAGE, 0);
 
             if (damagingTime > 0) return;
-
             setAnimation(AnimationKey.DAMAGE);
-
-            setVelocity((getDirection()) * 5, -5);
+            setVelocity(getDirection() * -2, -2);
         }
 
         setHealthBy(getHealth() + toHealth, damaging);
@@ -264,7 +262,7 @@ abstract public class Actor extends Animated implements ISynchronized,
         if (!alive) setVelocityY(-4);
         healthBar.setVisible(alive);
 
-        if(alive) setVisible(true);
+        if (alive) setVisible(true);
     }
 
     private void death(IDamaging damaging) {
@@ -272,20 +270,19 @@ abstract public class Actor extends Animated implements ISynchronized,
         setAlive(false);
         health = 0;
 
-        if(damaging == null) {
-            if(isOnWorld()) {
+        if (damaging == null) {
+            if (isOnWorld()) {
                 world.add(Particle.create(500, Color.of(0x220000)), getX(), getY());
                 setVisible(false);
             }
         }
 
         if (D2D2World.isServer()) {
-            world.dispatchEvent(new WorldEvent(WorldEvent.ACTOR_DEATH, world,
-                            null,
-                            getGameObjectId(),
-                            damaging != null ? damaging.getGameObjectId() : 0
-                    )
-            );
+            world.dispatchEvent(WorldEvent.builder()
+                    .type(WorldEvent.ACTOR_DEATH)
+                    .deadActorGameObjectId(getGameObjectId())
+                    .killerGameObjectId(damaging != null ? damaging.getGameObjectId() : 0)
+                    .build());
         }
     }
 

@@ -17,7 +17,6 @@
  */
 package com.ancevt.d2d2world.desktop.ui;
 
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
@@ -31,6 +30,7 @@ import com.ancevt.d2d2.input.Clipboard;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
 import com.ancevt.d2d2.touch.TouchButton;
+import org.jetbrains.annotations.NotNull;
 
 public class UiTextInput extends DisplayObjectContainer implements EventListener {
 
@@ -151,7 +151,10 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             setCaretPosition(Integer.MAX_VALUE);
         }
 
-        dispatchEvent(new UiTextInputEvent(UiTextInputEvent.TEXT_CHANGE, this, getText(), 0));
+        dispatchEvent(UiTextInputEvent.builder()
+                .type(UiTextInputEvent.TEXT_CHANGE)
+                .text(getText())
+                .build());
     }
 
     public String getText() {
@@ -317,7 +320,11 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             case KeyCode.END -> setCaretPosition(text.length());
 
             case KeyCode.ENTER -> dispatchEvent(
-                    new UiTextInputEvent(UiTextInputEvent.TEXT_ENTER, this, getText(), keyCode));
+                    UiTextInputEvent.builder()
+                            .type(UiTextInputEvent.TEXT_ENTER)
+                            .text(getText())
+                            .keyCode(keyCode)
+                            .build());
         }
 
         if (control) {
@@ -340,7 +347,11 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             }
         }
 
-        dispatchEvent(new UiTextInputEvent(UiTextInputEvent.TEXT_INPUT_KEY_DOWN, this, getText(), keyCode));
+        dispatchEvent(UiTextInputEvent.builder()
+                .type(UiTextInputEvent.TEXT_INPUT_KEY_DOWN)
+                .text(getText())
+                .keyCode(keyCode)
+                .build());
     }
 
     public void keyType(int codepoint, String keyType) {

@@ -47,15 +47,13 @@ public class D2D2WorldArenaDesktopMain {
                 String key = split[0];
                 String value = split[1];
                 MODULE_CONFIG.setProperty(key, value);
-            } else
-            if (arg.startsWith("-S")) {
+            } else if (arg.startsWith("-S")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
                 System.setProperty(key, value);
-            } else
-            if (arg.equals("--debug")) {
+            } else if (arg.equals("--debug")) {
                 DebugPanel.setEnabled(true);
             }
             if (arg.equals("--colorize-logs")) {
@@ -75,7 +73,11 @@ public class D2D2WorldArenaDesktopMain {
         String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYER);
 
         //D2D2.init(new NoRenderStarter(900, 600));
-        D2D2.init(new LWJGLStarter(900, 600, "(floating) D2D2 World Arena " + autoEnterPlayerName));
+        var screenDimension = ScreenUtils.getDimension();
+        D2D2.init(new LWJGLStarter(
+                screenDimension.width() / 2,
+                screenDimension.height() / 2,
+                "(floating) D2D2 World Arena " + autoEnterPlayerName));
         D2D2World.init(false);
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version);

@@ -1,21 +1,40 @@
 package com.ancevt.d2d2world.gameobject;
 
-import org.jetbrains.annotations.NotNull;
-import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2world.gameobject.action.ActionProgram;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class Platform extends Sprite implements IPlatform, IActioned {
+public abstract class Platform extends DisplayObjectContainer implements IPlatform, IActioned {
+
     private final MapkitItem mapkitItem;
-
     private final int gameObjectId;
+
     private World world;
     private String actionProgramData = ";";
     private ActionProgram actionProgram;
     private boolean floorOnly;
     private float movingSpeedX, movingSpeedY;
     private float startX, startY;
+    private boolean permanentSync;
+
+    public Platform(@NotNull MapkitItem mapkitItem, int gameObjectId) {
+        this.mapkitItem = mapkitItem;
+        this.gameObjectId = gameObjectId;
+        actionProgram = ActionProgram.STUB;
+        setPermanentSync(true);
+    }
+
+    @Override
+    public boolean isPermanentSync() {
+        return permanentSync;
+    }
+
+    @Override
+    public void setPermanentSync(boolean permanentSync) {
+        this.permanentSync = permanentSync;
+    }
 
     @Override
     public void reset() {
@@ -43,14 +62,6 @@ public abstract class Platform extends Sprite implements IPlatform, IActioned {
 
     public void setMovingSpeedY(float movingSpeedY) {
         this.movingSpeedY = movingSpeedY;
-    }
-
-    public Platform(@NotNull MapkitItem mapkitItem, int gameObjectId) {
-        super(mapkitItem.getTexture());
-        this.mapkitItem = mapkitItem;
-        this.gameObjectId = gameObjectId;
-
-        actionProgram = ActionProgram.STUB;
     }
 
     @Override
@@ -85,35 +96,35 @@ public abstract class Platform extends Sprite implements IPlatform, IActioned {
         movingSpeedY = toY;
         super.moveX(toX);
         super.moveY(toY);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void moveX(float value) {
         movingSpeedX = value;
         super.moveX(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void moveY(float value) {
         movingSpeedY = value;
         super.moveY(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void setX(float value) {
         if (value == getX()) return;
         super.setX(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void setY(float value) {
         if (value == getY()) return;
         super.setY(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
@@ -121,7 +132,7 @@ public abstract class Platform extends Sprite implements IPlatform, IActioned {
         if (x == getX() && y == getY()) return;
         super.setX(x);
         super.setY(y);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override

@@ -64,7 +64,10 @@ public class ThanksToContainer extends DisplayObjectContainer {
     }
 
     private void loadHtmlResult(HttpResponse<String> response) {
-        dispatchEvent(new Event(Event.COMPLETE, this));
+        dispatchEvent(Event.builder()
+                .type(Event.COMPLETE)
+                .build());
+
         preloader.removeFromParent();
 
         if (response.statusCode() >= 300) {
@@ -113,7 +116,10 @@ public class ThanksToContainer extends DisplayObjectContainer {
     }
 
     private void fallback() {
-        dispatchEvent(new Event(Event.COMPLETE, this));
+        dispatchEvent(Event.builder()
+                .type(Event.COMPLETE)
+                .build());
+
         preloader.removeFromParent();
         add(new ThanksTo(D2D2.getTextureManager().getTexture("thanksto-Qryptojesus"), "Qryptojesus"), 100, 0);
         add(new ThanksTo(D2D2.getTextureManager().getTexture("thanksto-WhiteWorldBridger"), "WhiteWorldBridger"), 280, 0);

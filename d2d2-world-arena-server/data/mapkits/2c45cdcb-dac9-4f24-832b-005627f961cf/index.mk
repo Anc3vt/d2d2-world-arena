@@ -127,5 +127,7 @@ id = _generated_118 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas=ti
 id = _generated_119 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas=tileset.png | idle=144,160,16,16
 id = _generated_120 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas=tileset.png | idle=160,160,16,16
 
-id = platform1 | class = com.ancevt.d2d2world.gameobject.TestPlatform | atlas=tileset.png | idle=176,0,64,16
-id = platform2 | class = com.ancevt.d2d2world.gameobject.TestPlatform | atlas=tileset.png | idle=240,0,272,16
+id = platform1 | class = com.ancevt.d2d2world.gameobject.SingleSpritePlatform | atlas=tileset.png | idle=176,0,64,16
+id = platform2 | class = com.ancevt.d2d2world.gameobject.SingleSpritePlatform | atlas=tileset.png | idle=240,0,272,16
+id = platform3 | class = com.ancevt.d2d2world.gameobject.ThreeSpritesPlatform | atlas=tileset.png | idle=176,0,64,16 | spriteLeft = 176,0,16,16 | spriteCenter = 192,0,16,16 | spriteRight = 224,0,16,16
+

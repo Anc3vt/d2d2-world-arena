@@ -17,11 +17,16 @@
  */
 package com.ancevt.d2d2world.desktop;
 
+import com.ancevt.commons.Holder;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.net.client.PlayerManager;
 import com.ancevt.util.args.Args;
 import com.ancevt.util.texttable.TextTable;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Function;
 
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
@@ -30,7 +35,14 @@ public class ClientCommandProcessor {
 
     public static final ClientCommandProcessor MODULE_COMMAND_PROCESSOR = new ClientCommandProcessor();
 
+    private final Set<Command> commands;
+
     private ClientCommandProcessor() {
+        commands = new HashSet<>();
+    }
+
+    public Set<Command> getCommands() {
+        return commands;
     }
 
     public boolean process(String text) {
@@ -82,6 +94,15 @@ public class ClientCommandProcessor {
             }
         }
 
-        return false;
+        Holder<Boolean> result = new Holder<>(false);
+        commands.stream()
+                .filter(c->c.command.equals(command))
+                .findAny()
+                .ifPresent(c->result.setValue(c.function().apply(tokens)));
+
+        return result.getValue();
+    }
+
+    public record Command(String command, Function<Args, Boolean> function) {
     }
 }

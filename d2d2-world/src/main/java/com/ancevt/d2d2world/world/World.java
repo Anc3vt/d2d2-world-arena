@@ -34,7 +34,10 @@ import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.sync.StubSyncDataAggregator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World extends DisplayObjectContainer {
@@ -161,7 +164,10 @@ public class World extends DisplayObjectContainer {
 
         update();
 
-        dispatchEvent(new WorldEvent(WorldEvent.CHANGE_ROOM, this, room, 0, 0));
+        dispatchEvent(WorldEvent.builder()
+                .type(WorldEvent.CHANGE_ROOM)
+                .room(room)
+                .build());
     }
 
     public void update() {
@@ -309,9 +315,10 @@ public class World extends DisplayObjectContainer {
     }
 
     public void addGameObject(IGameObject gameObject, int layerIndex, boolean updateRoom) {
-        if (gameObjects.stream().anyMatch(o -> o.getGameObjectId() == gameObject.getGameObjectId())) {
-            throw new IllegalStateException("duplicate game object id " + gameObject.getGameObjectId() + " " + gameObject);
-        }
+        gameObjects.forEach(o -> {
+            if (o.getGameObjectId() == gameObject.getGameObjectId())
+                throw new IllegalStateException("duplicate game object id: " + gameObject.getGameObjectId() + " " + gameObject + " and  " + o);
+        });
 
         gameObjects.add(gameObject);
         gameObjectMap.put(gameObject.getGameObjectId(), gameObject);

@@ -17,27 +17,18 @@
  */
 package com.ancevt.d2d2world.editor.panels;
 
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2.panels.Button;
-import com.ancevt.d2d2.panels.DropList;
-import com.ancevt.d2d2.panels.DropListItem;
-import com.ancevt.d2d2.panels.Label;
-import com.ancevt.d2d2.panels.TitledPanel;
+import com.ancevt.d2d2.panels.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
-import com.ancevt.d2d2world.mapkit.AreaMapkit;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
-import com.ancevt.d2d2world.mapkit.Mapkit;
-import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.mapkit.MapkitManager;
+import com.ancevt.d2d2world.mapkit.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SimpleTimeZone;
 
 public class MapkitToolsPanel extends TitledPanel {
 
@@ -288,7 +279,10 @@ public class MapkitToolsPanel extends TitledPanel {
 
     public void onMapkitItemSelected(MapkitItem mapkitItem) {
         setMapkitItem(mapkitItem);
-        dispatchEvent(new MapkitToolsPanelEvent(MapkitToolsPanelEvent.MAPKIT_ITEM_SELECT, this, mapkitItem));
+        dispatchEvent(MapkitToolsPanelEvent.builder()
+                .type(MapkitToolsPanelEvent.MAPKIT_ITEM_SELECT)
+                .mapkitItem(mapkitItem)
+                .build());
     }
 }
 

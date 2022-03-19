@@ -24,7 +24,7 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 
-public class PlayerActor extends Actor implements ISynchronized {
+public class PlayerActor extends Actor {
 
     private boolean localPlayerActor;
 

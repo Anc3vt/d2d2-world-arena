@@ -50,7 +50,21 @@ public class Properties {
 
             return object;
         } catch (InvocationTargetException | IllegalAccessException e) {
+            printStackTrace(e);
+
             throw new IllegalStateException(e);
+        }
+    }
+
+    private static void printStackTrace(Throwable t) {
+        System.out.println(t);
+        for (StackTraceElement ste : t.getStackTrace()) {
+            System.out.println("\tat " + ste);
+        }
+        Throwable cause = t.getCause();
+        if (cause != null) {
+            System.out.print("Caused by ");
+            printStackTrace(cause);
         }
     }
 

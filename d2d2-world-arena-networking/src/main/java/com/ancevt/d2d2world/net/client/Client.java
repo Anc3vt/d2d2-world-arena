@@ -30,9 +30,9 @@ import com.ancevt.d2d2world.net.transfer.Headers;
 import com.ancevt.d2d2world.sync.ISyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
 import com.ancevt.net.tcpb254.CloseStatus;
+import com.ancevt.net.tcpb254.TcpFactory;
 import com.ancevt.net.tcpb254.connection.ConnectionListener;
 import com.ancevt.net.tcpb254.connection.IConnection;
-import com.ancevt.net.tcpb254.connection.TcpConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -290,7 +290,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             connection.removeConnectionListener(this);
         }
 
-        connection = TcpConnection.create();
+        connection = TcpFactory.createConnection(0);
         log.info("connecting... Connection object: {}", connection);
         sender = new ClientSender(connection);
         connection.addConnectionListener(this);

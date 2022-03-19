@@ -6,6 +6,7 @@ import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import com.ancevt.d2d2world.net.transfer.FileSender;
+import com.ancevt.net.tcpb254.TcpFactory;
 import com.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import com.ancevt.net.tcpb254.connection.IConnection;
 import com.ancevt.net.tcpb254.connection.TcpConnection;
@@ -25,6 +26,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static java.nio.file.StandardOpenOption.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -79,7 +81,7 @@ public class FileTransferTest {
 
         Lock lock = new Lock();
 
-        IConnection connection = TcpConnection.create();
+        IConnection connection = TcpFactory.createConnection(0);
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
             public void connectionBytesReceived(byte[] bytes) {
@@ -141,7 +143,7 @@ public class FileTransferTest {
         final int filesize = 512 * 1024;
         List<File> files = new ArrayList<>();
 
-        final int count = 3;
+        final int count = 100;
 
         for (int i = 0; i < count; i++) {
             files.add(createFile("one/two/three/test" + i, filesize));
@@ -154,7 +156,7 @@ public class FileTransferTest {
                 files.forEach(file -> {
                     FileSender fileSender = new FileSender(file.getPath(), true, true);
                     fileSender.send(connectionWithClient);
-                    System.out.println("send fileSender " + fileSender);
+                    debug("<y>send fileSender " + fileSender);
                 });
             }
         });
@@ -184,7 +186,7 @@ public class FileTransferTest {
 
             @Override
             public synchronized void complete(FileReceiver fileReceiver) {
-                System.out.println("Complete: " + fileReceiver);
+                debug("<g>Complete: " + fileReceiver);
                 receivedFiles.add(new File(fileReceiver.getPath()));
 
                 if (receivedFiles.size() == files.size()) {
@@ -225,7 +227,7 @@ public class FileTransferTest {
         deleteDirectory(new File("one/"));
     }
 
-    void deleteDirectory(@NotNull File directoryToBeDeleted) {
+    void deleteDirectory(File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
             for (File file : allContents) {

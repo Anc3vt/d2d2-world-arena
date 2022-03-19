@@ -18,21 +18,26 @@
 package com.ancevt.d2d2world.net.client;
 
 import com.ancevt.commons.io.ByteInputReader;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.net.tcpb254.CloseStatus;
+import com.ancevt.net.tcpb254.TcpFactory;
 import com.ancevt.net.tcpb254.connection.ConnectionListenerAdapter;
 import com.ancevt.net.tcpb254.connection.IConnection;
-import com.ancevt.net.tcpb254.connection.TcpConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.createDtoMessage;
 import static com.ancevt.d2d2world.net.serialization.JsonEngine.gson;
 
 @Slf4j
 public class ServerInfoRetriever {
+
+    private ServerInfoRetriever() {
+    }
 
     public static void retrieve(String host,
                                 int port,
@@ -40,7 +45,7 @@ public class ServerInfoRetriever {
                                 @NotNull ErrorFunction errorFunction) {
 
         log.info("Retrieve server info {}:{}", host, port);
-        IConnection connection = TcpConnection.create();
+        IConnection connection = TcpFactory.createConnection(0);
 
         connection.addConnectionListener(new ConnectionListenerAdapter() {
 
@@ -95,5 +100,15 @@ public class ServerInfoRetriever {
     @FunctionalInterface
     public interface ErrorFunction {
         void onError(CloseStatus closeStatus);
+    }
+
+    public static void main(String[] args) {
+        UnixDisplay.setEnabled(true);
+        ServerInfoRetriever.retrieve(
+                "localhost",
+                2255,
+                System.out::println,
+                System.out::println
+        );
     }
 }

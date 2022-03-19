@@ -21,61 +21,24 @@ import com.ancevt.d2d2.display.IDisplayObjectContainer;
 
 public class EventPool {
 
-    private static final Event SIMPLE_EVENT_SINGLETON = new Event(null, null);
+    private static final Event SIMPLE_EVENT_SINGLETON = Event.builder().build();
 
     public static Event createEvent(String type, IEventDispatcher source, IDisplayObjectContainer parent) {
-        return new Event(type, source, parent);
+        return Event.builder().type(type).source(source).parent(parent).build();
     }
 
     public static Event createEvent(String type, IEventDispatcher source) {
         return createEvent(type, source, null);
     }
 
-    public static InputEvent createInputEvent(String type,
-                                              IEventDispatcher source,
-                                              int x,
-                                              int y,
-                                              int mouseButton,
-                                              int delta,
-                                              boolean drag,
-                                              int pointer,
-                                              int keyCode,
-                                              char keyChar,
-                                              boolean shift,
-                                              boolean control,
-                                              boolean alt) {
-
-        return new InputEvent(type, source, x, y, mouseButton, delta, drag, pointer, keyCode, keyChar, shift, control, alt);
-    }
-
-    public static InputEvent createInputEvent(String type,
-                                              IEventDispatcher source,
-                                              int x,
-                                              int y,
-                                              int mouseButton,
-                                              int delta,
-                                              boolean drag,
-                                              int pointer,
-                                              int keyCode,
-                                              char keyChar,
-                                              boolean shift,
-                                              boolean control,
-                                              boolean alt,
-                                              int codepoint,
-                                              String keyType) {
-
-        return new InputEvent(type, source, x, y, mouseButton, delta, drag, pointer, keyCode, keyChar, shift, control, alt, codepoint, keyType);
-
-
-    }
-
-    public static TouchEvent createTouchEvent(String type,
-                                              IEventDispatcher source,
-                                              int x,
-                                              int y,
-                                              boolean onArea) {
-
-        return new TouchEvent(type, source, x, y, onArea);
+    public static TouchEvent createTouchEvent(String type, IEventDispatcher source, int x, int y, boolean onArea) {
+        return TouchEvent.builder()
+                .type(type)
+                .source(source)
+                .x(x)
+                .y(y)
+                .onArea(onArea)
+                .build();
     }
 
     public static Event simpleEventSingleton(String type, IEventDispatcher source) {

@@ -37,7 +37,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static java.lang.Math.min;
 
 @Slf4j
@@ -276,9 +275,6 @@ public class TcpB254Connection implements IConnection {
     @Override
     public void send(byte[] bytes) {
         if (!isOpen()) return;
-
-        debug("TcpConnection:193: <g>" + bytes.length);
-
         synchronized (sendMonitor) {
             if (bytes.length > MAX_CHUNK_SIZE) {
                 sendComposite(bytes);

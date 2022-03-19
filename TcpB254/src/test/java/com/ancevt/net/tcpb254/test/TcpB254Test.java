@@ -23,7 +23,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@Disabled
 public class TcpB254Test {
 
     private static final String SERVER_HOST = "0.0.0.0";

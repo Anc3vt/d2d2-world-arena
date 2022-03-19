@@ -18,8 +18,13 @@
 package com.ancevt.d2d2world.desktop.ui;
 
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.IEventDispatcher;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class UiTextInputEvent extends Event {
 
     public static final String TEXT_CHANGE = "textChange";
@@ -28,18 +33,4 @@ public class UiTextInputEvent extends Event {
 
     private final String text;
     private final int keyCode;
-
-    public UiTextInputEvent(String type, IEventDispatcher source, String text, int keyCode) {
-        super(type, source);
-        this.text = text;
-        this.keyCode = keyCode;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public int getKeyCode() {
-        return keyCode;
-    }
 }

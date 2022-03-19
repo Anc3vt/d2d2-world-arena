@@ -45,79 +45,6 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     public synchronized void bytesReceived(byte[] syncData) {
         if (!enabled) return;
 
-
-        if (false) {
-
-            ByteInputReader test = ByteInputReader.newInstance(syncData);
-
-            while (test.hasNextData()) {
-
-                int type;
-
-                try {
-                    type = test.readByte();
-
-                    int gameObjectId = test.readInt();
-
-                    switch (type) {
-                        case SyncDataType.NEW -> {
-                            int layer = test.readByte();
-                            float x = test.readFloat();
-                            float y = test.readFloat();
-                            String mapkitName = test.readUtf(byte.class);
-                            String mapkitItemId = test.readUtf(byte.class);
-                            String dataEntryText = test.readUtf(short.class);
-
-                            System.out.println("newGameObject " + gameObjectId + ", " + layer + ", " + x + ", " + y + ", " + mapkitName + ", " + mapkitItemId + ", " + dataEntryText);
-                        }
-                        case SyncDataType.REMOVE -> {
-                            System.out.println("removeGameObject " + gameObjectId);
-                        }
-                        case SyncDataType.ANIMATION -> {
-                            int animKey = test.readByte();
-                            boolean loop = test.readByte() == 1;
-                            System.out.println("setAnimation " + gameObjectId + ", " + animKey + ", " + loop);
-                        }
-                        case SyncDataType.XY -> {
-                            float x = test.readFloat();
-                            float y = test.readFloat();
-                            System.out.println("setXY " + gameObjectId + ", " + x + ", " + y);
-                        }
-                        case SyncDataType.HEALTH -> {
-                            int health = test.readShort();
-                            int damagingGameObjectId = test.readInt();
-                            System.out.println("setHealth " + gameObjectId + ", " + health + ", " + damagingGameObjectId);
-                        }
-                        case SyncDataType.MAX_HEALTH -> {
-                            int maxHealth = test.readShort();
-                            System.out.println("setMaxHealth " + gameObjectId + ", " + maxHealth);
-                        }
-                        case SyncDataType.DIRECTION -> {
-                            int direction = test.readByte() - 1;
-                            setDirection(gameObjectId, direction);
-                            System.out.println("setDirection " + gameObjectId + ", " + direction);
-                        }
-                        case SyncDataType.VISIBILITY -> {
-                            boolean visibility = test.readByte() == 1;
-                            setVisibility(gameObjectId, visibility);
-                            System.out.println("setVisibility " + gameObjectId + ", " + visibility);
-                        }
-                        case SyncDataType.REPAIR -> {
-                            repair(gameObjectId);
-                            System.out.println("repair " + gameObjectId);
-                        }
-
-                    }
-                } catch (Exception e) {
-
-                    //debug("com.ancevt.d2d2world.sync.SyncDataReceiver.bytesReceived(SyncDataReceiver:81):\n<A>" +
-                    //Thread.currentThread().getName());
-                    //log.error("type: " + type, e);
-                }
-            }
-            System.out.println("------------------");
-        }
-
         ByteInputReader in = ByteInputReader.newInstance(syncData);
 
         StringBuilder sb = new StringBuilder();
@@ -141,6 +68,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         String dataEntryText = in.readUtf(short.class);
 
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
+                    }
+                    case SyncDataType.ACTION_INDEX -> {
+                        actionIndex(gameObjectId, in.readShort());
                     }
                     case SyncDataType.REMOVE -> {
                         removeGameObject(gameObjectId);
@@ -187,12 +117,15 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                 sb.setLength(0);
                 debug("com.ancevt.d2d2world.sync.SyncDataReceiver.bytesReceived(SyncDataReceiver:188): <A>" + sb);
                 e.printStackTrace();
-                System.exit(1);
             }
         }
 
-        debug("com.ancevt.d2d2world.sync.SyncDataReceiver.bytesReceived(SyncDataReceiver:191): <A>" + sb);
+    }
 
+    private void actionIndex(int gameObjectId, int actionIndex) {
+        if(world.getGameObjectById(gameObjectId) instanceof IActioned actioned) {
+            actioned.getActionProgram().setCurrentActionIndex(actionIndex);
+        }
     }
 
     private void repair(int gameObjectId) {
@@ -206,9 +139,16 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     }
 
     private void newGameObject(int gameObjectId, int layer, float x, float y, String mapkitName, String mapkitItemId, String dataEntryText) {
-        Mapkit mapkit = MapkitManager.getInstance().getByName(mapkitName);
-        MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
-        IGameObject gameObject = mapkitItem.createGameObject(gameObjectId);
+        IGameObject gameObject = world.getGameObjectById(gameObjectId);
+
+        boolean needAddToWorld = false;
+        if (gameObject == null) {
+            Mapkit mapkit = MapkitManager.getInstance().getByName(mapkitName);
+            MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
+            gameObject = mapkitItem.createGameObject(gameObjectId);
+            needAddToWorld = true;
+        }
+
         gameObject.setXY(x, y);
 
         DataEntry dataEntry = DataEntry.newInstance(dataEntryText);
@@ -219,7 +159,8 @@ public class SyncDataReceiver implements ISyncDataReceiver {
             bullet.setDamagingOwnerActor((Actor) world.getGameObjectById(ownerGameObjectId));
         }
 
-        world.addGameObject(gameObject, layer, false);
+        if (needAddToWorld)
+            world.addGameObject(gameObject, layer, false);
     }
 
     private void removeGameObject(int gameObjectId) {

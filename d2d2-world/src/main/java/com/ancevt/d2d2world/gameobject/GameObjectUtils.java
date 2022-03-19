@@ -18,11 +18,7 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.DataEntry;
-import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.Layer;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
@@ -30,15 +26,8 @@ import static com.ancevt.d2d2world.data.Properties.setProperties;
 public class GameObjectUtils {
 
     public static IGameObject copy(IGameObject of, int newGameObjectId) {
-        try {
-            Constructor<?> constructor = of.getClass().getDeclaredConstructor(MapkitItem.class, int.class);
-            IGameObject result = (IGameObject) constructor.newInstance(of.getMapkitItem(), newGameObjectId);
-
-            return (IGameObject) setProperties(result, getProperties(of, DataEntry.newInstance()));
-        } catch (NoSuchMethodException | InstantiationException |
-                IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException(e);
-        }
+        IGameObject result = of.getMapkitItem().createGameObject(newGameObjectId);
+        return (IGameObject) setProperties(result, getProperties(of, DataEntry.newInstance()));
     }
 
     public static int getLayerIndex(IGameObject gameObject) {

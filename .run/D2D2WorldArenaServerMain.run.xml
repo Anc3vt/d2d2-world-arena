@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="D2D2WorldArenaServerMain" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="com.ancevt.d2d2world.server.D2D2WorldArenaServerMain" />
+    <module name="d2d2-world-arena-server" />
+    <option name="PROGRAM_PARAMETERS" value="--colorize-logs -Pserver.port=2255" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.ancevt.d2d2world.server.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

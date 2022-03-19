@@ -1,7 +1,7 @@
 package com.ancevt.d2d2world.gameobject.action;
 
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2world.gameobject.IGameObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -37,6 +37,9 @@ public class Action {
     public boolean process() {
         step++;
 
+        //if(gameObject.getName().equals("_test_platform_1")) {
+        //    debug("Action:41: <b><A>process");
+        //}
         function.run();
 
         if (step >= count) {

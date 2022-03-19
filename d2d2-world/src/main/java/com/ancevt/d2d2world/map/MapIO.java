@@ -17,8 +17,6 @@
  */
 package com.ancevt.d2d2world.map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataEntryLoader;
@@ -28,6 +26,8 @@ import com.ancevt.d2d2world.mapkit.AreaMapkit;
 import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.Layer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -102,8 +102,8 @@ public class MapIO {
             Mapkit mapkit = MapkitManager.getInstance().get(mapkitUid);
 
             if (room == null) throw new IllegalStateException("room undefined");
-
-            room.addGameObject(layer, (IGameObject) setProperties(mapkit.getItem(mapkitItemId).createGameObject(gameObjectId), dataEntry));
+            IGameObject gameObject = (IGameObject) setProperties(mapkit.getItem(mapkitItemId).createGameObject(gameObjectId), dataEntry);
+            room.addGameObject(layer, gameObject);
         }
 
         return map;

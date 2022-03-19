@@ -74,6 +74,7 @@ public class Particle extends DisplayObjectContainer {
                     move(b, t);
                     toAlpha(0.975f);
                     toScale(1.01f, 1.01f);
+                    rotate(45);
                     t += 0.1f;
                 }
             };

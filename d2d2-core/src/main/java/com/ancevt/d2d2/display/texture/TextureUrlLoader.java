@@ -41,7 +41,9 @@ public class TextureUrlLoader extends EventDispatcher {
 
     public void load() {
         if (url == null) throw new NullPointerException();
-        dispatchEvent(new TextureUrlLoaderEvent(TextureUrlLoaderEvent.TEXTURE_LOAD_START, this, null, null));
+        dispatchEvent(TextureUrlLoaderEvent.builder()
+                .type(TextureUrlLoaderEvent.TEXTURE_LOAD_START)
+                .build());
         loadBytes(url);
     }
 
@@ -63,9 +65,11 @@ public class TextureUrlLoader extends EventDispatcher {
 
     private byte[] createTexture(byte[] bytes) {
         this.lastLoadedTextureAtlas = D2D2.getTextureManager().loadTextureAtlas(new ByteArrayInputStream(bytes));
-        dispatchEvent(
-                new TextureUrlLoaderEvent(TextureUrlLoaderEvent.TEXTURE_LOAD_COMPLETE, this,
-                        bytes, lastLoadedTextureAtlas));
+        dispatchEvent(TextureUrlLoaderEvent.builder()
+                .type(TextureUrlLoaderEvent.TEXTURE_LOAD_COMPLETE)
+                .bytes(bytes)
+                .textureAtlas(lastLoadedTextureAtlas)
+                .build());
         return bytes;
     }
 

@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
+import java.util.*;
 
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
@@ -45,18 +43,31 @@ public class DesktopConfig {
     public static final String PLAYER = "player";
     public static final String RCON_PASSWORD = "rcon-password";
     public static final String DEBUG_WORLD_ALPHA = "debug.world-alpha";
+    public static final String DEBUG_GAME_OBJECT_IDS = "debug.game-object-ids";
     public static final String AUTO_ENTER = "auto-enter";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "test.ancevt.com:2245");
         put(DEBUG_WORLD_ALPHA, "1.0");
+        put(DEBUG_GAME_OBJECT_IDS, "true");
         put(AUTO_ENTER, "false");
     }};
+
+    private final List<ConfigChangeListener> changeListeners;
 
     private final Properties properties;
 
     private DesktopConfig() {
         properties = new Properties();
+        changeListeners = new ArrayList<>();
+    }
+
+    public void addConfigChangeListener(ConfigChangeListener listener) {
+        changeListeners.add(listener);
+    }
+
+    public void removeConfigChangeListener(ConfigChangeListener listener) {
+        changeListeners.remove(listener);
     }
 
     public void load() throws IOException {
@@ -73,6 +84,7 @@ public class DesktopConfig {
 
     public void setProperty(@NotNull String key, @NotNull Object value) {
         properties.setProperty(key, value.toString());
+        changeListeners.forEach(l->l.configPropertyChange(key, value));
     }
 
     /**
@@ -124,5 +136,10 @@ public class DesktopConfig {
         return "DesktopConfig{" +
                 "properties=" + properties +
                 '}';
+    }
+
+    @FunctionalInterface
+    public interface ConfigChangeListener {
+        void configPropertyChange(String key, Object value);
     }
 }

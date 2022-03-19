@@ -74,7 +74,6 @@ public class MapkitItem {
                     .getDeclaredConstructor(MapkitItem.class, int.class)
                     .newInstance(this, gameObjectId);
             setProperties(gameObject, dataEntry);
-
             return (IGameObject) gameObject;
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new IllegalStateException(dataEntry + " ---" + this, e);
@@ -91,6 +90,10 @@ public class MapkitItem {
 
     public Texture getTexture() {
         return textures[AnimationKey.IDLE][0];
+    }
+
+    public TextureAtlas getTextureAtlas() {
+        return getTexture().getTextureAtlas();
     }
 
     public Sprite getIcon() {

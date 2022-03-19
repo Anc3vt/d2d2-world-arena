@@ -25,18 +25,30 @@ import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 
-abstract public class Animated extends DisplayObjectContainer implements IAnimated {
+abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized  {
 
     private int direction;
     private int currentAnimationKey = -1;
     private IFramedDisplayObject[] animations;
     private final MapkitItem mapkitItem;
     private final int id;
+    private boolean permanentSync;
 
     public Animated(MapkitItem mapKitItem, int gameObjectId) {
         this.mapkitItem = mapKitItem;
         this.id = gameObjectId;
         prepareAnimations();
+        setPermanentSync(true);
+    }
+
+    @Override
+    public boolean isPermanentSync() {
+        return permanentSync;
+    }
+
+    @Override
+    public void setPermanentSync(boolean permanentSync) {
+        this.permanentSync = permanentSync;
     }
 
     private void prepareAnimations() {
@@ -67,7 +79,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     @Override
     public void setVisible(boolean value) {
         super.setVisible(value);
-        if(getWorld() != null) {
+        if (isOnWorld() && isPermanentSync()) {
             getWorld().getSyncDataAggregator().visibility(this, value);
         }
     }
@@ -99,7 +111,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setAnimation(final int animationKey, final boolean loop) {
-        if(animationKey == getAnimation()) return;
+        if (animationKey == getAnimation()) return;
 
         this.currentAnimationKey = animationKey;
 
@@ -118,12 +130,12 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             }
         }
 
-        if(getWorld() != null) getWorld().getSyncDataAggregator().animation(this, loop);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().animation(this, loop);
     }
 
     private void fixXY() {
         for (IFramedDisplayObject fs : animations) {
-            if(fs != null) {
+            if (fs != null) {
                 float leftOffset = direction == Direction.LEFT ? fs.getWidth() : 0;
                 fs.setXY(-fs.getWidth() / 2 + leftOffset, -fs.getHeight() / 2);
             }
@@ -134,14 +146,14 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     public void setX(float value) {
         if (value == getX()) return;
         super.setX(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void setY(float value) {
         if (value == getY()) return;
         super.setY(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
@@ -149,29 +161,29 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
         if (x == getX() && y == getY()) return;
         super.setX(x);
         super.setY(y);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void move(float toX, float toY) {
-        if(toX == 0 && toY == 0) return;
+        if (toX == 0 && toY == 0) return;
         super.moveX(toX);
         super.moveY(toY);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void moveY(float value) {
-        if(value == 0) return;
+        if (value == 0) return;
         super.moveY(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
     public void moveX(float value) {
-        if(value == 0) return;
+        if (value == 0) return;
         super.moveX(value);
-        if (getWorld() != null) getWorld().getSyncDataAggregator().xy(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().xy(this);
     }
 
     @Override
@@ -189,7 +201,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
         }
 
         fixXY();
-        if(getWorld() != null) getWorld().getSyncDataAggregator().direction(this);
+        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().direction(this);
     }
 
     @Override

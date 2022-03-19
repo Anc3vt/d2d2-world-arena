@@ -18,7 +18,11 @@
 package com.ancevt.d2d2.event;
 
 import com.ancevt.d2d2.display.IDisplayObjectContainer;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
 public class Event {
 
     public static final String EACH_FRAME = "eachFrame";
@@ -34,26 +38,20 @@ public class Event {
     IEventDispatcher source;
     private IDisplayObjectContainer parent;
 
-    public Event(String type, IEventDispatcher source) {
+    public void setType(String type) {
         this.type = type;
-        this.source = source;
-    }
-
-    public Event(String type, IEventDispatcher source, IDisplayObjectContainer parent) {
-        this(type, source);
-        this.parent = parent;
     }
 
     public String getType() {
         return type;
     }
 
-    public IEventDispatcher getSource() {
-        return source;
+    public void setSource(IEventDispatcher source) {
+        this.source = source;
     }
 
-    public IDisplayObjectContainer getParent() {
-        return parent;
+    public IEventDispatcher getSource() {
+        return source;
     }
 
     @Override

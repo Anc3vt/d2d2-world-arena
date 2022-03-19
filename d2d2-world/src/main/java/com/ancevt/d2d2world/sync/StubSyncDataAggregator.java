@@ -1,10 +1,17 @@
 package com.ancevt.d2d2world.sync;
 
-import com.ancevt.commons.exception.NotImplementedException;
 import com.ancevt.d2d2world.gameobject.*;
 import org.jetbrains.annotations.NotNull;
 
 public class StubSyncDataAggregator implements ISyncDataAggregator {
+
+    private static final byte[] empty = new byte[]{};
+
+
+    @Override
+    public void actionIndex(IActioned actioned) {
+
+    }
 
     @Override
     public void newGameObject(IGameObject gameObject) {
@@ -47,13 +54,8 @@ public class StubSyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public byte[] createSyncMessage(IGameObject gameObject) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public byte[] createSyncMessage() {
-        throw new NotImplementedException();
+    public byte[] pullSyncDataMessage() {
+        return empty;
     }
 
     @Override

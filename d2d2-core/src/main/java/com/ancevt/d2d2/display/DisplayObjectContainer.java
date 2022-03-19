@@ -21,6 +21,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.texture.TextureManager;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventPool;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public void add(IDisplayObject child) {
+    public void add(@NotNull IDisplayObject child) {
         ((DisplayObject) child).setParent(this);
         child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
         children.remove(child);
@@ -47,7 +48,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public void add(IDisplayObject child, int index) {
+    public void add(@NotNull IDisplayObject child, int index) {
         ((DisplayObject) child).setParent(this);
         child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
 
@@ -58,7 +59,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public void add(IDisplayObject child, float x, float y) {
+    public void add(@NotNull IDisplayObject child, float x, float y) {
         child.setXY(x, y);
         ((DisplayObject) child).setParent(this);
         child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
@@ -71,7 +72,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public void add(IDisplayObject child, int index, float x, float y) {
+    public void add(@NotNull IDisplayObject child, int index, float x, float y) {
         child.setXY(x, y);
         ((DisplayObject) child).setParent(this);
         child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
@@ -83,7 +84,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public void remove(IDisplayObject child) {
+    public void remove(@NotNull IDisplayObject child) {
         final boolean removedFromStage = child.getStage() != null;
 
         ((DisplayObject) child).setParent(null);
@@ -95,7 +96,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public int indexOf(IDisplayObject child) {
+    public int indexOf(@NotNull IDisplayObject child) {
         return children.indexOf(child);
     }
 
@@ -115,7 +116,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public boolean contains(IDisplayObject child) {
+    public boolean contains(@NotNull IDisplayObject child) {
         return children.contains(child);
     }
 

@@ -294,7 +294,7 @@ public class GameObjectEditor {
     }
 
     private void createNewGameObject() {
-        int newGameObjectId = getWorld().getMap().getNextFreeGameObjectId();
+        int newGameObjectId = getWorld().getNextFreeGameObjectId();
         IGameObject gameObject = getPlacingMapkitItem().createGameObject(newGameObjectId);
         gameObject.setXY(cursor.getX(), cursor.getY());
         gameObject.setName("_" + newGameObjectId);

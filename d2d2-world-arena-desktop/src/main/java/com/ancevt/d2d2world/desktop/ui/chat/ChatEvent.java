@@ -18,8 +18,13 @@
 package com.ancevt.d2d2world.desktop.ui.chat;
 
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.IEventDispatcher;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class ChatEvent extends Event {
 
     public static final String CHAT_TEXT_ENTER = "chatTextEnter";
@@ -27,14 +32,4 @@ public class ChatEvent extends Event {
     public static String CHAT_INPUT_CLOSE = "chatInputClose";
 
     private final String text;
-
-    public ChatEvent(String type, IEventDispatcher source, String text) {
-        super(type, source);
-
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
 }

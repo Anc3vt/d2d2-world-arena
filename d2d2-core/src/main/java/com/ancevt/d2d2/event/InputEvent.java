@@ -17,6 +17,13 @@
  */
 package com.ancevt.d2d2.event;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
+
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class InputEvent extends Event {
 
     public static final String BACK_PRESS = "backPress";
@@ -41,122 +48,6 @@ public class InputEvent extends Event {
     private final boolean alt;
     private final String keyType;
     private final int codepoint;
-
-    public InputEvent(String type,
-                      IEventDispatcher source,
-                      int x,
-                      int y,
-                      int mouseButton,
-                      int delta,
-                      boolean drag,
-                      int pointer,
-                      int keyCode,
-                      char keyChar,
-                      boolean shift,
-                      boolean control,
-                      boolean alt) {
-
-        super(type, source);
-
-        this.x = x;
-        this.y = y;
-        this.mouseButton = mouseButton;
-        this.delta = delta;
-        this.drag = drag;
-        this.pointer = pointer;
-        this.keyCode = keyCode;
-        this.keyChar = keyChar;
-        this.shift = shift;
-        this.control = control;
-        this.alt = alt;
-        this.codepoint = 0;
-        this.keyType = "";
-    }
-
-    public InputEvent(String type,
-                      IEventDispatcher source,
-                      int x,
-                      int y,
-                      int mouseButton,
-                      int delta,
-                      boolean drag,
-                      int pointer,
-                      int keyCode,
-                      char keyChar,
-                      boolean shift,
-                      boolean control,
-                      boolean alt,
-                      int codepoint,
-                      String keyType) {
-
-        super(type, source);
-
-        this.x = x;
-        this.y = y;
-        this.mouseButton = mouseButton;
-        this.delta = delta;
-        this.drag = drag;
-        this.pointer = pointer;
-        this.keyCode = keyCode;
-        this.keyChar = keyChar;
-        this.shift = shift;
-        this.control = control;
-        this.alt = alt;
-        this.codepoint = codepoint;
-        this.keyType = keyType;
-    }
-
-    public int getCodepoint() {
-        return codepoint;
-    }
-
-    public String getKeyType() {
-        return keyType;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getMouseButton() {
-        return mouseButton;
-    }
-
-    public int getDelta() {
-        return delta;
-    }
-
-    public boolean isDrag() {
-        return drag;
-    }
-
-    public int getPointer() {
-        return pointer;
-    }
-
-    public int getKeyCode() {
-        return keyCode;
-    }
-
-    public char getKeyChar() {
-        return keyChar;
-    }
-
-    public boolean isShift() {
-        return shift;
-    }
-
-    public boolean isControl() {
-        return control;
-    }
-
-    public boolean isAlt() {
-        return alt;
-    }
 
     @Override
     public String toString() {

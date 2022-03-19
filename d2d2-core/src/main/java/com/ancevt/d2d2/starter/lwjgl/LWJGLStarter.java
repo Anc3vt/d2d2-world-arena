@@ -17,23 +17,17 @@
  */
 package com.ancevt.d2d2.starter.lwjgl;
 
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
-import org.lwjgl.opengl.GL;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.D2D2Starter;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapFont;
-import com.ancevt.d2d2.event.EventPool;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.touch.TouchProcessor;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.GL;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -41,37 +35,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_ALT;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_CONTROL;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-import static org.lwjgl.glfw.GLFW.glfwHideWindow;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetCharCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class LWJGLStarter implements D2D2Starter {
@@ -209,21 +173,13 @@ public class LWJGLStarter implements D2D2Starter {
         glfwSetScrollCallback(resultWindowId, new GLFWScrollCallback() {
             @Override
             public void invoke(long win, double dx, double dy) {
-                stage.getRoot().dispatchEvent(EventPool.createInputEvent(
-                        InputEvent.MOUSE_WHEEL,
-                        stage.getRoot(),
-                        Mouse.getX(),
-                        Mouse.getY(),
-                        0,
-                        (int) dy,
-                        isDown,
-                        0,
-                        0,
-                        (char) 0,
-                        false,
-                        false,
-                        false
-                ));
+                stage.getRoot().dispatchEvent(InputEvent.builder()
+                        .type(InputEvent.MOUSE_WHEEL)
+                        .x(Mouse.getX())
+                        .y(Mouse.getY())
+                        .delta((int) dy)
+                        .drag(isDown)
+                        .build());
             }
         });
 
@@ -232,21 +188,13 @@ public class LWJGLStarter implements D2D2Starter {
             public void invoke(long window, int button, int action, int mods) {
                 isDown = action == 1;
 
-                stage.getRoot().dispatchEvent(EventPool.createInputEvent(
-                        action == 1 ? InputEvent.MOUSE_DOWN : InputEvent.MOUSE_UP,
-                        stage.getRoot(),
-                        Mouse.getX(),
-                        Mouse.getY(),
-                        button,
-                        0,
-                        isDown,
-                        0,
-                        0,
-                        (char) 0,
-                        false,
-                        false,
-                        false
-                ));
+                stage.getRoot().dispatchEvent(InputEvent.builder()
+                        .type(action == 1 ? InputEvent.MOUSE_DOWN : InputEvent.MOUSE_UP)
+                        .x(Mouse.getX())
+                        .y(Mouse.getY())
+                        .drag(isDown)
+                        .mouseButton(button)
+                        .build());
 
                 TouchProcessor.instance.screenTouch(mouseX, mouseY, 0, isDown);
             }
@@ -255,86 +203,58 @@ public class LWJGLStarter implements D2D2Starter {
         glfwSetCursorPosCallback(resultWindowId, new GLFWCursorPosCallback() {
             @Override
             public void invoke(long window, double x, double y) {
-
                 mouseX = (int) x;
                 mouseY = (int) y;
 
                 Mouse.setXY(getTransformedX(mouseX), getTransformedY(mouseY));
 
-                stage.getRoot().dispatchEvent(EventPool.createInputEvent(
-                        InputEvent.MOUSE_MOVE,
-                        stage.getRoot(),
-                        Mouse.getX(),
-                        Mouse.getY(),
-                        0,
-                        0,
-                        isDown,
-                        0,
-                        0,
-                        (char) 0,
-                        false,
-                        false,
-                        false
-                ));
+                stage.getRoot().dispatchEvent(InputEvent.builder()
+                        .type(InputEvent.MOUSE_MOVE)
+                        .x(Mouse.getX())
+                        .y(Mouse.getY())
+                        .drag(isDown)
+                        .build());
 
                 TouchProcessor.instance.screenDrag(0, mouseX, mouseY);
             }
         });
 
         glfwSetCharCallback(resultWindowId, (window, codepoint) -> {
-            stage.getRoot().dispatchEvent(EventPool.createInputEvent(
-                    InputEvent.KEY_TYPE,
-                    stage.getRoot(),
-                    0,
-                    0,
-                    0,
-                    0,
-                    false,
-                    0,
-                    0,
-                    (char) 0,
-                    false,
-                    false,
-                    false,
-                    codepoint,
-                    String.valueOf(Character.toChars(codepoint)))
-            );
+            stage.getRoot().dispatchEvent(InputEvent.builder()
+                    .type(InputEvent.KEY_TYPE)
+                    .x(Mouse.getX())
+                    .y(Mouse.getY())
+                    .drag(isDown)
+                    .codepoint(codepoint)
+                    .keyType(String.valueOf(Character.toChars(codepoint)))
+                    .build());
         });
 
         glfwSetKeyCallback(resultWindowId, (window, key, scancode, action, mods) -> {
-
             if (action == GLFW_PRESS) {
-                stage.getRoot().dispatchEvent(EventPool.createInputEvent(
-                        InputEvent.KEY_DOWN,
-                        stage.getRoot(),
-                        0,
-                        0,
-                        0,
-                        0,
-                        false,
-                        0,
-                        key,
-                        (char) key,
-                        (mods & GLFW_MOD_SHIFT) != 0,
-                        (mods & GLFW_MOD_CONTROL) != 0,
-                        (mods & GLFW_MOD_ALT) != 0
-                ));
+                stage.getRoot().dispatchEvent(InputEvent.builder()
+                        .type(InputEvent.KEY_DOWN)
+                        .x(Mouse.getX())
+                        .y(Mouse.getY())
+                        .keyChar((char) key)
+                        .keyCode(key)
+                        .drag(isDown)
+                        .shift((mods & GLFW_MOD_SHIFT) != 0)
+                        .control((mods & GLFW_MOD_CONTROL) != 0)
+                        .alt((mods & GLFW_MOD_ALT) != 0)
+                        .build());
             } else if (action == GLFW_RELEASE) {
-                stage.getRoot().dispatchEvent(EventPool.createInputEvent(
-                        InputEvent.KEY_UP,
-                        stage.getRoot(),
-                        0,
-                        0,
-                        0,
-                        0,
-                        false,
-                        0,
-                        key,
-                        (char) key,
-                        (mods & GLFW_MOD_SHIFT) != 0,
-                        (mods & GLFW_MOD_CONTROL) != 0,
-                        (mods & GLFW_MOD_ALT) != 0
-                ));
+                stage.getRoot().dispatchEvent(InputEvent.builder()
+                        .type(InputEvent.KEY_UP)
+                        .x(Mouse.getX())
+                        .y(Mouse.getY())
+                        .keyCode(key)
+                        .keyChar((char) key)
+                        .drag(isDown)
+                        .shift((mods & GLFW_MOD_SHIFT) != 0)
+                        .control((mods & GLFW_MOD_CONTROL) != 0)
+                        .alt((mods & GLFW_MOD_ALT) != 0)
+                        .build());
             }
         });
 

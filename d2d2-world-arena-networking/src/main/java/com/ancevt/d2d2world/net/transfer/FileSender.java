@@ -17,11 +17,11 @@
  */
 package com.ancevt.d2d2world.net.transfer;
 
-import lombok.extern.slf4j.Slf4j;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2world.data.file.FileDataUtils;
 import com.ancevt.net.tcpb254.connection.IConnection;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,18 +29,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static java.lang.Math.min;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static com.ancevt.d2d2world.data.GZIP.compress;
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.createMessageFileData;
 import static com.ancevt.d2d2world.net.transfer.Headers.*;
+import static java.lang.Math.min;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Slf4j
 public class FileSender {
     public static boolean parentDirectorySecurityEnabled = true;
 
     public static final int CHUNK_SIZE = 65536;
-    public static final int DELAY = 10;
+    public static final int DELAY = 5;
 
     private final String path;
     private final boolean compress;
@@ -85,6 +85,8 @@ public class FileSender {
         }
 
         Async.run(this::run);
+
+        //run();
     }
 
     private void run() {

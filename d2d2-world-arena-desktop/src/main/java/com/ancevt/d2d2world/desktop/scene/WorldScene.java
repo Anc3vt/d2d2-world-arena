@@ -24,6 +24,9 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.control.LocalPlayerController;
+import com.ancevt.d2d2world.debug.GameObjectTexts;
+import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
+import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
@@ -40,9 +43,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Objects;
 
-import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_WORLD_ALPHA;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
 
@@ -57,12 +61,15 @@ public class WorldScene extends DisplayObjectContainer {
 
     private long frameCounter;
     private PlayerActor localPlayerActor;
+    private final GameObjectTexts gameObjectTexts;
 
     public WorldScene() {
         MapIO.mapsDirectory = "data/maps/";
         MapIO.mapkitsDirectory = "data/mapkits/";
 
         world = new World();
+        gameObjectTexts = new GameObjectTexts(world);
+
         world.getPlayProcessor().setEnabled(false);
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
@@ -105,6 +112,46 @@ public class WorldScene extends DisplayObjectContainer {
                 });
             }
         });
+
+        MODULE_CONFIG.addConfigChangeListener(this::config_configChangeListener);
+
+        config_configChangeListener(DEBUG_GAME_OBJECT_IDS, MODULE_CONFIG.getBoolean(DEBUG_GAME_OBJECT_IDS));
+
+        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//gameobjectids",
+                args -> {
+                    StringBuilder sb = new StringBuilder();
+                    world.getGameObjects().forEach(o -> sb.append(o.getGameObjectId()).append(','));
+                    MODULE_CHAT.addMessage(sb.toString());
+                    return true;
+                }
+        ));
+        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//gameobjectnames",
+                args -> {
+                    StringBuilder sb = new StringBuilder();
+                    world.getGameObjects().forEach(o -> sb.append(o.getName()).append(','));
+                    MODULE_CHAT.addMessage(sb.toString());
+                    return true;
+                }
+        ));
+    }
+
+    private void config_configChangeListener(@NotNull String key, Object value) {
+        if (Objects.equals(key, DesktopConfig.DEBUG_GAME_OBJECT_IDS)) {
+            var v = Boolean.parseBoolean(value.toString());
+
+            if (v) {
+                if (!gameObjectTexts.hasParent()) {
+                    gameObjectTexts.setEnabled(true);
+                    world.add(gameObjectTexts);
+                }
+            } else {
+                gameObjectTexts.setEnabled(false);
+                gameObjectTexts.removeFromParent();
+            }
+
+        }
     }
 
     private void this_addToStage(Event event) {
@@ -161,7 +208,9 @@ public class WorldScene extends DisplayObjectContainer {
 
         start();
 
-        dispatchEvent(new SceneEvent(SceneEvent.MAP_LOADED, this));
+        dispatchEvent(SceneEvent.builder()
+                .type(SceneEvent.MAP_LOADED)
+                .build());
 
         MODULE_CLIENT.sendDto(MapLoadedReport.INSANCE);
         MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);

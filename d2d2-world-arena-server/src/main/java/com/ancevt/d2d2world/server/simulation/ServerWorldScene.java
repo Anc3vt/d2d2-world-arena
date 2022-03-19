@@ -98,7 +98,7 @@ public class ServerWorldScene {
 
     private synchronized void this_eachFrame(Event event) {
         if (syncDataAggregator.hasData()) {
-            MODULE_SENDER.sendToAll(syncDataAggregator.createSyncMessage());
+            MODULE_SENDER.sendToAll(syncDataAggregator.pullSyncDataMessage());
         }
     }
 

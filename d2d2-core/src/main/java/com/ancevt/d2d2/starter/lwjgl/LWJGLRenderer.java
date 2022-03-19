@@ -17,18 +17,8 @@
  */
 package com.ancevt.d2d2.starter.lwjgl;
 
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.glu.GLU;
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2.display.IDisplayObjectContainer;
-import com.ancevt.d2d2.display.IFramedDisplayObject;
-import com.ancevt.d2d2.display.IRenderer;
-import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2.display.Stage;
+import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapCharInfo;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.display.text.BitmapText;
@@ -36,10 +26,11 @@ import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventPool;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.util.glu.GLU;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.*;
 
 public class LWJGLRenderer implements IRenderer {
 
@@ -110,7 +101,7 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT);
     }
 
-    private synchronized void renderDisplayObject(IDisplayObject displayObject,
+    private void renderDisplayObject(@NotNull IDisplayObject displayObject,
                                      int level,
                                      float toX,
                                      float toY,
@@ -135,23 +126,9 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glTranslatef(x, y, 0);
         GL30.glRotatef(r, 0, 0, 1);
 
-        if (displayObject instanceof IDisplayObjectContainer) {
-            IDisplayObjectContainer container = (DisplayObjectContainer) displayObject;
-
+        if (displayObject instanceof IDisplayObjectContainer container) {
             for (int i = 0; i < container.getChildCount(); i++) {
-
-                final IDisplayObject currentChild = container.getChild(i);
-
-                renderDisplayObject(
-                        currentChild,
-                        level + 1,
-                        x + toX,
-                        y + toY,
-                        scX,
-                        scY,
-                        0,
-                        a
-                );
+                renderDisplayObject(container.getChild(i), level + 1, x + toX, y + toY, scX, scY, 0, a);
             }
 
         } else if (displayObject instanceof Sprite s) {

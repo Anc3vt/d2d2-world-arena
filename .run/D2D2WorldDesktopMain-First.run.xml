@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="D2D2WorldDesktopMain-First" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopMain" />
+    <module name="d2d2-world-arena-desktop" />
+    <option name="PROGRAM_PARAMETERS" value="--colorize-logs -Pplayer=Ancevt --colorize-logs --debug -Prcon-password=change!me -Pdebug.world-alpha=1 -/Pauto-enter=true -Pserver=localhost:2255" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.ancevt.d2d2world.server.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

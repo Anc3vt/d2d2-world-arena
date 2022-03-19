@@ -1,7 +1,24 @@
+/*
+ *   TCPB254
+ *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.ancevt.net.tcpb254.connection;
 
-import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.io.ByteOutput;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.net.tcpb254.CloseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
@@ -14,12 +31,22 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import static java.lang.Math.min;
 
 @Slf4j
 public class TcpConnection implements IConnection {
+
+    static {
+        UnixDisplay.setEnabled(true); // TODO: remove
+    }
+
+    private static final int MAX_CHUNK_SIZE = 254;
 
     private final Object sendMonitor = new Object();
     private final Object receiveMonitor = new Object();
@@ -34,21 +61,15 @@ public class TcpConnection implements IConnection {
     private Socket socket;
     private volatile DataOutputStream dataOutputStream;
 
+    private volatile CountDownLatch countDownLatchForAsync;
+
     private long bytesLoaded;
     private long bytesSent;
-
-    private final Lock connectLock;
-
-    private boolean serverSide;
 
     TcpConnection(int id) {
         this.id = id;
         listeners = new CopyOnWriteArraySet<>();
-
-        connectLock = new Lock();
-
         log.debug("New connection {}", this);
-        serverSide = false;
     }
 
     TcpConnection(int id, @NotNull Socket socket) {
@@ -63,36 +84,25 @@ public class TcpConnection implements IConnection {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        serverSide = true;
-    }
-
-    private boolean isServerSide() {
-        return serverSide;
     }
 
     @Override
     public void readLoop() {
         try {
             if (isOpen()) {
-                listeners.forEach(ConnectionListener::connectionEstablished);
-                connectLock.unlockIfLocked();
+                dispatchConnectionEstablished();
             }
 
             var in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
             var byteOutput = ByteOutput.newInstance();
 
             while (isOpen()) {
-                while(true) {
-                    final int a = in.available();
-                    if (a >= 4) break;
-                }
                 int len = in.readInt();
                 bytesLoaded += 4;
                 int left = len;
                 while (left > 0) {
                     final int a = in.available();
-                    if (a == 0) continue;
-                    byte[] bytes = new byte[a];
+                    byte[] bytes = new byte[Math.min(a, left)];
                     int read = in.read(bytes);
                     left -= read;
                     byteOutput.write(bytes);
@@ -122,22 +132,36 @@ public class TcpConnection implements IConnection {
             this.remotePort = socket.getPort();
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            listeners.forEach(l -> l.connectionClosed(new CloseStatus(e)));
-            connectLock.unlockIfLocked();
+            dispatchConnectionClosed(new CloseStatus(e));
         }
         readLoop();
     }
 
     @Override
+    public long bytesSent() {
+        return bytesSent;
+    }
+
+    @Override
+    public long bytesLoaded() {
+        return bytesLoaded;
+    }
+
+    @Override
     public void asyncConnect(String host, int port) {
-        Thread thread = new Thread(() -> connect(host, port), "tcpConn_" + getId() + "to_" + host + "_" + port);
+        Thread thread = new Thread(() -> connect(host, port), "tcpB254Conn_" + getId() + "to_" + host + "_" + port);
         thread.start();
     }
 
     @Override
     public boolean asyncConnectAndAwait(String host, int port, long time, TimeUnit timeUnit) {
+        countDownLatchForAsync = new CountDownLatch(1);
         asyncConnect(host, port);
-        return isOpen() || connectLock.lock(time, timeUnit);
+        try {
+            return isOpen() || countDownLatchForAsync.await(time, timeUnit);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override
@@ -171,19 +195,36 @@ public class TcpConnection implements IConnection {
     }
 
     @Override
-    public boolean isOpen() {
-        return dataOutputStream != null;
-    }
-
-    @Override
     public void close() {
         try {
             socket.close();
             dataOutputStream = null;
             log.debug("Close connection {}", this);
-            listeners.forEach(l -> l.connectionClosed(new CloseStatus()));
+            dispatchConnectionClosed(new CloseStatus());
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public boolean isOpen() {
+        return dataOutputStream != null;
+    }
+
+    private synchronized void dispatchConnectionEstablished() {
+        listeners.forEach(ConnectionListener::connectionEstablished);
+        if (countDownLatchForAsync != null) {
+            countDownLatchForAsync.countDown();
+            countDownLatchForAsync = null;
+        }
+    }
+
+    private synchronized void dispatchConnectionClosed(CloseStatus status) {
+        dataOutputStream = null;
+        listeners.forEach(l -> l.connectionClosed(status));
+        if (countDownLatchForAsync != null) {
+            countDownLatchForAsync.countDown();
+            countDownLatchForAsync = null;
         }
     }
 
@@ -200,13 +241,14 @@ public class TcpConnection implements IConnection {
         }
     }
 
+
     @Override
-    public void addConnectionListener(@NotNull ConnectionListener listener) {
+    public void addConnectionListener(ConnectionListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeConnectionListener(@NotNull ConnectionListener listener) {
+    public void removeConnectionListener(ConnectionListener listener) {
         listeners.remove(listener);
     }
 
@@ -227,27 +269,72 @@ public class TcpConnection implements IConnection {
         }
     }
 
-    @Override
-    public long bytesSent() {
-        return bytesSent;
+    private void sendChunk(byte[] bytes, boolean fin) {
+        try {
+            if (socket.isConnected() && dataOutputStream != null) {
+                if (bytes.length == 0) {
+                    dataOutputStream.writeByte(255);
+                    bytesSent++;
+                } else {
+                    dataOutputStream.writeByte(fin ? bytes.length : 0);
+                    dataOutputStream.write(bytes);
+                    bytesSent += 1 + bytes.length;
+                }
+            }
+
+        } catch (SocketException e) {
+            log.debug("Socket closed when send data");
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private void sendComposite(byte[] bytes) {
+        int pos = 0;
+        int length;
+        boolean fin = false;
+
+        while (!fin) {
+            length = min(bytes.length - pos, MAX_CHUNK_SIZE);
+            byte[] dest = new byte[length];
+            System.arraycopy(bytes, pos, dest, 0, length);
+            fin = length < MAX_CHUNK_SIZE;
+            sendChunk(dest, fin);
+            pos += length;
+        }
     }
 
     @Override
-    public long bytesLoaded() {
-        return bytesLoaded;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TcpConnection that = (TcpConnection) o;
+        return id == that.id && port == that.port && remotePort == that.remotePort && bytesLoaded == that.bytesLoaded &&
+                bytesSent == that.bytesSent && Objects.equals(listeners, that.listeners) &&
+                Objects.equals(host, that.host) && Objects.equals(remoteAddress, that.remoteAddress) &&
+                Objects.equals(socket, that.socket) && Objects.equals(dataOutputStream, that.dataOutputStream)
+                && Objects.equals(countDownLatchForAsync, that.countDownLatchForAsync);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                host, port, remoteAddress, remotePort
+        );
     }
 
     @Override
     public String toString() {
-        return "TcpConnection{" +
+        return "TcpB254Connection{" +
                 "id=" + id +
                 ", host='" + host + '\'' +
-                ", remoteAddress='" + remoteAddress + '\'' +
                 ", port=" + port +
+                ", remoteAddress='" + remoteAddress + '\'' +
                 ", remotePort=" + remotePort +
-                ", socket=" + socket +
+                ", isOpen=" + isOpen() +
                 ", bytesLoaded=" + bytesLoaded +
                 ", bytesSent=" + bytesSent +
+                ", hashcode=" + hashCode() +
                 '}';
     }
 
@@ -265,4 +352,31 @@ public class TcpConnection implements IConnection {
     public static @NotNull IConnection createServerSide(int id, Socket socket) {
         return new TcpConnection(id, socket);
     }
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

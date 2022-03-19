@@ -243,12 +243,17 @@ public class Chat extends DisplayObjectContainer {
 
     public void openInput() {
         add(input);
-        dispatchEvent(new ChatEvent(ChatEvent.CHAT_INPUT_OPEN, this, null));
+        dispatchEvent(ChatEvent.builder()
+                .type(ChatEvent.CHAT_INPUT_OPEN)
+                .build());
     }
 
     public void closeInput() {
         remove(input);
-        dispatchEvent(new ChatEvent(ChatEvent.CHAT_INPUT_CLOSE, this, null));
+
+        dispatchEvent(ChatEvent.builder()
+                .type(ChatEvent.CHAT_INPUT_CLOSE)
+                .build());
     }
 
     public boolean isInputOpened() {
@@ -279,7 +284,10 @@ public class Chat extends DisplayObjectContainer {
                 case UiTextInputEvent.TEXT_ENTER -> {
                     String text = uiTextInputEvent.getText();
                     if (!text.isBlank()) {
-                        dispatchEvent(new ChatEvent(ChatEvent.CHAT_TEXT_ENTER, this, text));
+                        dispatchEvent(ChatEvent.builder()
+                                .type(ChatEvent.CHAT_TEXT_ENTER)
+                                .text(text)
+                                .build());
                         history.add(text);
                         historyIndex = history.size();
                     }

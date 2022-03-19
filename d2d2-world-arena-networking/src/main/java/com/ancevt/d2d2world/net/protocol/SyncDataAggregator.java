@@ -8,6 +8,7 @@ import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.sync.SyncDataType;
 import org.jetbrains.annotations.NotNull;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 
 public class SyncDataAggregator implements ISyncDataAggregator {
@@ -20,6 +21,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void newGameObject(@NotNull IGameObject gameObject) {
+        if (!(gameObject instanceof ISynchronized o)) return;
+
         MapkitItem mapkitItem = gameObject.getMapkitItem();
 
         buffer.writeByte(SyncDataType.NEW)
@@ -33,13 +36,26 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
+    public void actionIndex(IActioned actioned) {
+        if (!(actioned instanceof ISynchronized)) return;
+
+        buffer.writeByte(SyncDataType.ACTION_INDEX)
+                .writeInt(actioned.getGameObjectId())
+                .writeShort(actioned.getActionProgram().getCurrentActionIndex());
+    }
+
+    @Override
     public synchronized void repair(@NotNull IDestroyable destroyable) {
+        if (!(destroyable instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.REPAIR)
                 .writeInt(destroyable.getGameObjectId());
     }
 
     @Override
     public synchronized void xy(@NotNull IGameObject gameObject) {
+        if (!(gameObject instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.XY)
                 .writeInt(gameObject.getGameObjectId())
                 .writeFloat(gameObject.getX())
@@ -48,6 +64,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void animation(@NotNull IAnimated animated, boolean loop) {
+        if (!(animated instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.ANIMATION)
                 .writeInt(animated.getGameObjectId())
                 .writeByte(animated.getAnimation())
@@ -56,6 +74,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void health(@NotNull IDestroyable destroyable, IDamaging damaging) {
+        if (damaging != null && !(damaging instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.HEALTH)
                 .writeInt(destroyable.getGameObjectId())
                 .writeShort(destroyable.getHealth())
@@ -64,6 +84,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void maxHealth(@NotNull IDestroyable destroyable) {
+        if (!(destroyable instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.MAX_HEALTH)
                 .writeInt(destroyable.getGameObjectId())
                 .writeShort(destroyable.getMaxHealth());
@@ -71,6 +93,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void direction(@NotNull IDirectioned directioned) {
+        if (!(directioned instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.DIRECTION)
                 .writeInt(directioned.getGameObjectId())
                 .writeByte(directioned.getDirection() + 1);
@@ -78,6 +102,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void visibility(@NotNull IGameObject gameObject, boolean value) {
+        if (!(gameObject instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.VISIBILITY)
                 .writeInt(gameObject.getGameObjectId())
                 .writeByte(value ? 1 : 0);
@@ -85,39 +111,27 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void remove(@NotNull IGameObject gameObject) {
+        if (!(gameObject instanceof ISynchronized)) return;
+
         buffer.writeByte(SyncDataType.REMOVE)
                 .writeInt(gameObject.getGameObjectId());
     }
 
-    @Override
-    public synchronized byte[] createSyncMessage(IGameObject o) {
-        newGameObject(o);
-        if (o instanceof IAnimated a) {
-            animation(a, true);
-        }
-        if (o instanceof IDirectioned d) {
-            direction(d);
-        }
-        if (o instanceof IDestroyable d) {
-            health(d, null);
-            maxHealth(d);
+    public static synchronized byte[] createSyncMessageOf(IGameObject o) {
+        if (!(o instanceof ISynchronized)) return ISyncDataAggregator.EMPTY_ARRAY;
+        ISyncDataAggregator aggregator = new SyncDataAggregator();
+
+        aggregator.createSyncDataOf(o);
+
+        if (o.getName().equals("_test_platform_1")) {
+            debug("SyncDataAggregator:127: <y><A>" + o.getGameObjectId());
         }
 
-        byte[] data = buffer.toByteArray();
-
-        byte[] result = ByteOutputWriter.newInstance()
-                .writeByte(MessageType.SERVER_SYNC_DATA)
-                .writeShort(data.length)
-                .writeBytes(data)
-                .toByteArray();
-
-        buffer = ByteOutputWriter.newInstance();
-
-        return result;
+        return aggregator.pullSyncDataMessage();
     }
 
     @Override
-    public synchronized byte[] createSyncMessage() {
+    public synchronized byte[] pullSyncDataMessage() {
         byte[] data = buffer.toByteArray();
 
         byte[] result = ByteOutputWriter.newInstance()

@@ -85,6 +85,8 @@ public class Overlay extends PlainRect {
     }
 
     public void onStateChanged(int state) {
-        dispatchEvent(new Event(Event.CHANGE, this));
+        dispatchEvent(Event.builder()
+                .type(Event.CHANGE)
+                .build());
     }
 }

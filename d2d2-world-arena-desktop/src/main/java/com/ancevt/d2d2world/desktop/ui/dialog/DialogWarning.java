@@ -24,13 +24,15 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
-import com.ancevt.d2d2.event.IEventDispatcher;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2.panels.TitledPanel;
+import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 public class DialogWarning extends TitledPanel implements EventListener {
 
@@ -80,17 +82,18 @@ public class DialogWarning extends TitledPanel implements EventListener {
     }
 
     private void ok() {
-        dispatchEvent(new DialogWarningEvent(DialogWarningEvent.DIALOG_OK, this));
+        dispatchEvent(DialogWarningEvent.builder()
+                .type(DialogWarningEvent.DIALOG_OK)
+                .build());
         getRoot().removeEventListener(InputEvent.KEY_DOWN, this);
         removeFromParent();
     }
 
+    @Data
+    @SuperBuilder
+    @EqualsAndHashCode(callSuper = true)
     public static class DialogWarningEvent extends Event {
         public static final String DIALOG_OK = "dialogOk";
-
-        public DialogWarningEvent(String type, IEventDispatcher source) {
-            super(type, source);
-        }
     }
 
     public static void main(String[] args) {

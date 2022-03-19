@@ -19,32 +19,21 @@ package com.ancevt.d2d2world.world;
 
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.map.Room;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class WorldEvent extends Event {
 
     public static final String CHANGE_ROOM = "changeRoom";
     public static final String ACTOR_DEATH = "actorDeath";
+
     private final int deadActorGameObjectId;
     private final int killerGameObjectId;
-
     private final Room room;
-
-    public WorldEvent(String type, World source, Room room, int deadActorGameObjectId, int damagingGameObjectId) {
-        super(type, source);
-        this.room = room;
-        this.deadActorGameObjectId = deadActorGameObjectId;
-        this.killerGameObjectId = damagingGameObjectId;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public int getDeadActorGameObjectId() {
-        return deadActorGameObjectId;
-    }
-
-    public int getKillerGameObjectId() {
-        return killerGameObjectId;
-    }
 }
+
+

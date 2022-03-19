@@ -93,7 +93,7 @@ public class EventDispatcher implements IEventDispatcher {
     @Override
     public void dispatchEvent(@NotNull Event event) {
         List<EventListener> listeners = map.get(event.getType());
-
+        event.setSource(this);
         if (listeners != null) {
             listeners.forEach(e -> e.onEvent(event));
         }

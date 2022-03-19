@@ -18,21 +18,17 @@
 package com.ancevt.d2d2world.editor.panels;
 
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.IEventDispatcher;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class MapkitToolsPanelEvent extends Event {
 
     public static final String MAPKIT_ITEM_SELECT = "mapkitItemSelect";
 
     private final MapkitItem mapkitItem;
-
-    public MapkitToolsPanelEvent(String type, IEventDispatcher source, MapkitItem mapkitItem) {
-        super(type, source);
-        this.mapkitItem = mapkitItem;
-    }
-
-    public MapkitItem getMapkitItem() {
-        return mapkitItem;
-    }
 }

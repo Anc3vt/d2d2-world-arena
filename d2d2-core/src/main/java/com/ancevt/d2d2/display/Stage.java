@@ -136,27 +136,27 @@ public class Stage extends DisplayObjectContainer {
     }
 
     @Override
-    public void add(IDisplayObject child) {
+    public void add(@NotNull IDisplayObject child) {
         throw new UnsupportedOperationException(USE_SET_ROOT_INSTEAD_MESSAGE);
     }
 
     @Override
-    public void add(IDisplayObject child, float x, float y) {
+    public void add(@NotNull IDisplayObject child, float x, float y) {
         throw new UnsupportedOperationException(USE_SET_ROOT_INSTEAD_MESSAGE);
     }
 
     @Override
-    public void add(IDisplayObject child, int indexAt) {
+    public void add(@NotNull IDisplayObject child, int indexAt) {
         throw new UnsupportedOperationException(USE_SET_ROOT_INSTEAD_MESSAGE);
     }
 
     @Override
-    public void add(IDisplayObject child, int indexAt, float x, float y) {
+    public void add(@NotNull IDisplayObject child, int indexAt, float x, float y) {
         throw new UnsupportedOperationException(USE_SET_ROOT_INSTEAD_MESSAGE);
     }
 
     @Override
-    public void remove(IDisplayObject child) {
+    public void remove(@NotNull IDisplayObject child) {
         throw new UnsupportedOperationException(USE_SET_ROOT_INSTEAD_MESSAGE);
     }
 
