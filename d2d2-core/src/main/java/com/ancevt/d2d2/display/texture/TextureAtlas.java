@@ -17,6 +17,11 @@
  */
 package com.ancevt.d2d2.display.texture;
 
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+import static java.lang.Integer.parseInt;
+
 public class TextureAtlas {
 
     private final int id;
@@ -48,6 +53,41 @@ public class TextureAtlas {
         return new Texture(this, x, y, width, height);
     }
 
+    /**
+     * 16,16,48,48
+     *
+     * @param textureCoords
+     * @return
+     */
+    public Texture createTexture(String textureCoords) {
+        StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, ",");
+        return new Texture(this,
+                parseInt(stringTokenizer.nextToken().trim()),
+                parseInt(stringTokenizer.nextToken().trim()),
+                parseInt(stringTokenizer.nextToken().trim()),
+                parseInt(stringTokenizer.nextToken().trim())
+        );
+    }
+
+    /**
+     * 16,16,48,48; 16,16,48,48; 16,16,48,48
+     * @param textureCoords
+     * @return
+     */
+    public Texture[] createTextures(String textureCoords) {
+        textureCoords = textureCoords.trim();
+        if(textureCoords.endsWith(";")) {
+            textureCoords = textureCoords.substring(0, textureCoords.length() - 2);
+        }
+        StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, ";");
+        Texture[] textures = new Texture[stringTokenizer.countTokens()];
+        for (int i = 0; i < textures.length; i++) {
+            textures[i] = createTexture(stringTokenizer.nextToken().trim());
+        }
+
+        return textures;
+    }
+
     public int getId() {
         return id;
     }
@@ -77,4 +117,41 @@ public class TextureAtlas {
                 ", disposed=" + disposed +
                 '}';
     }
+
+    public static void main(String[] args) {
+        TextureAtlas textureAtlas = new TextureAtlas(0, 1000, 1000);
+
+        Texture[] textures = textureAtlas.createTextures("0,0,16,16; 16,0,16,16; 0,0,16,16; 32,0,16,16");
+        System.out.println(Arrays.toString(textures));
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

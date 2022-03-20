@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>d2d2</artifactId>
         <groupId>com.ancevt.d2d2</groupId>
+        <artifactId>d2d2</artifactId>
         <version>1.0.0.3-SNAPSHOT</version>
     </parent>
 
@@ -95,6 +95,10 @@
         </dependency>
         <dependency>
             <groupId>com.ancevt.d2d2</groupId>
+            <artifactId>d2d2-tcp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-world</artifactId>
         </dependency>
         <dependency>
@@ -108,10 +112,6 @@
         <dependency>
             <groupId>com.ancevt.util</groupId>
             <artifactId>args</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ancevt.net</groupId>
-            <artifactId>tcpb254</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

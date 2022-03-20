@@ -1,5 +1,5 @@
 /*
- *   D2D2 World Arena Server
+ *   TCPB254
  *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,32 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.server.service;
+package com.ancevt.d2d2.tcp.server;
 
-import com.ancevt.d2d2.tcp.TcpFactory;
-import com.ancevt.d2d2.tcp.server.IServer;
+import com.ancevt.d2d2.tcp.connection.IConnection;
 
-public class ServerUnit {
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-    public static final ServerUnit MODULE_SERVER_UNIT = new ServerUnit();
+public interface IServer {
 
-    public final IServer server;
+    void listen(String host, int port);
 
-    private ServerUnit() {
-        server = TcpFactory.createServer();
-    }
+    void asyncListen(String host, int port);
+
+    boolean asyncListenAndAwait(String host, int port);
+
+    boolean asyncListenAndAwait(String host, int port, long time, TimeUnit timeUnit);
+
+    boolean isListening();
+
+    void close();
+
+    void addServerListener(ServerListener listener);
+
+    void removeServerListener(ServerListener listener);
+
+    Set<IConnection> getConnections();
+
+    void sendToAll(byte[] bytes);
 }

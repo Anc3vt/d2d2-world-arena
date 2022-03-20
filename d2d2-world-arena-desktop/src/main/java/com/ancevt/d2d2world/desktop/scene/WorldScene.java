@@ -77,7 +77,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
         add(world);
 
-        /*
+
         shadowRadial = new ShadowRadial() {
             @Override
             public void onEachFrame() {
@@ -94,7 +94,7 @@ public class WorldScene extends DisplayObjectContainer {
         };
         shadowRadial.setScale(2f, 2f);
         world.add(shadowRadial);
-        */
+
 
         ((SyncDataReceiver) MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
 

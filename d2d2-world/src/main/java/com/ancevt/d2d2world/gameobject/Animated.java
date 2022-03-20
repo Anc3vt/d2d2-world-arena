@@ -21,11 +21,12 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.FramedSprite;
 import com.ancevt.d2d2.display.IFramedDisplayObject;
 import com.ancevt.d2d2.display.texture.Texture;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 
-abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized  {
+abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized {
 
     private int direction;
     private int currentAnimationKey = -1;
@@ -106,7 +107,9 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setAnimation(final int animationKey) {
-        setAnimation(animationKey, true);
+        if (D2D2World.isServer()) {
+            setAnimation(animationKey, true);
+        }
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- *   D2D2 World Arena Server
+ *   TCPB254
  *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,22 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.server.service;
+package com.ancevt.d2d2.tcp.server;
 
-import com.ancevt.d2d2.tcp.TcpFactory;
-import com.ancevt.d2d2.tcp.server.IServer;
+import com.ancevt.d2d2.tcp.CloseStatus;
+import com.ancevt.d2d2.tcp.connection.IConnection;
 
-public class ServerUnit {
+public interface ServerListener {
 
-    public static final ServerUnit MODULE_SERVER_UNIT = new ServerUnit();
+    void serverStarted();
 
-    public final IServer server;
+    void connectionAccepted(IConnection connectionWithClient);
 
-    private ServerUnit() {
-        server = TcpFactory.createServer();
-    }
+    void connectionClosed(IConnection connectionWithClient, CloseStatus status);
+
+    void connectionBytesReceived(IConnection connectionWithClient, byte[] bytes);
+
+    void serverClosed(CloseStatus status);
+
+    void connectionEstablished(IConnection connectionWithClient);
 }

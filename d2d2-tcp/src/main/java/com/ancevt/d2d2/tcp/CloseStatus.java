@@ -1,5 +1,5 @@
 /*
- *   D2D2 World Arena Server
+ *   TCPB254
  *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -15,18 +15,37 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.server.service;
+package com.ancevt.d2d2.tcp;
 
-import com.ancevt.d2d2.tcp.TcpFactory;
-import com.ancevt.d2d2.tcp.server.IServer;
+public class CloseStatus {
 
-public class ServerUnit {
+    private Throwable throwable;
 
-    public static final ServerUnit MODULE_SERVER_UNIT = new ServerUnit();
+    public CloseStatus(Throwable throwable) {
+        this.throwable = throwable;
+    }
 
-    public final IServer server;
+    public CloseStatus() {
 
-    private ServerUnit() {
-        server = TcpFactory.createServer();
+    }
+
+    public boolean isError() {
+        return throwable != null;
+    }
+
+    public String getErrorMessage() {
+        return isError() ? throwable.getMessage() : "";
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    @Override
+    public String toString() {
+        return "CloseStatus{" +
+                "isError=" + isError() +
+                ", throwable=" + throwable +
+                '}';
     }
 }

@@ -42,9 +42,9 @@ import com.ancevt.d2d2world.server.content.ServerContentManager;
 import com.ancevt.d2d2world.server.player.Player;
 import com.ancevt.d2d2world.server.player.ServerPlayerManager;
 import com.ancevt.d2d2world.server.repl.ServerCommandProcessor;
-import com.ancevt.net.tcpb254.CloseStatus;
-import com.ancevt.net.tcpb254.connection.IConnection;
-import com.ancevt.net.tcpb254.server.IServer;
+import com.ancevt.d2d2.tcp.CloseStatus;
+import com.ancevt.d2d2.tcp.connection.IConnection;
+import com.ancevt.d2d2.tcp.server.IServer;
 
 import java.util.*;
 

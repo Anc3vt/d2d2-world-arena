@@ -17,14 +17,16 @@
  */
 package com.ancevt.d2d2world.gameobject.weapon;
 
+import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
-abstract public class Bullet extends Animated implements ICollision, IDirectioned, ISpeedable, IDamaging, ISynchronized {
+abstract public class Bullet extends DisplayObjectContainer implements ICollision, IDirectioned, ISpeedable, IDamaging, ISynchronized {
 
+    private final MapkitItem mapkitItem;
     private final int gameObjectId;
     private boolean collisionEnabled;
     private float collisionX, collisionY, collisionWidth, collisionHeight;
@@ -33,10 +35,10 @@ abstract public class Bullet extends Animated implements ICollision, IDirectione
     private World world;
     private int damagingPower;
     private float speed;
-    private int toRemoveCounter = 10;
+    private final int toRemoveCounter = 10;
 
     public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
-        super(mapkitItem, gameObjectId);
+        this.mapkitItem = mapkitItem;
         this.gameObjectId = gameObjectId;
         setCollisionEnabled(true);
     }
@@ -49,6 +51,11 @@ abstract public class Bullet extends Animated implements ICollision, IDirectione
                 destroy();
             }
         }
+    }
+
+    @Override
+    public MapkitItem getMapkitItem() {
+        return mapkitItem;
     }
 
     @Property
@@ -163,10 +170,12 @@ abstract public class Bullet extends Animated implements ICollision, IDirectione
         this.collisionX = collisionX;
     }
 
+    @Override
     public void setDamagingOwnerActor(Actor actor) {
         owner = actor;
     }
 
+    @Override
     public Actor getDamagingOwnerActor() {
         return owner;
     }

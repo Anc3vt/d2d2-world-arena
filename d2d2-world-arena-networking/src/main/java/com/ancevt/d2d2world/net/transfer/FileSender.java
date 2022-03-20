@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.net.transfer;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2world.data.file.FileDataUtils;
-import com.ancevt.net.tcpb254.connection.IConnection;
+import com.ancevt.d2d2.tcp.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

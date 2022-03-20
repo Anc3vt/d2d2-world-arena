@@ -59,7 +59,7 @@
         <module>d2d2-world-arena-networking</module>
         <module>d2d2-world-arena-server</module>
         <module>d2d2-ttf2bmf</module>
-        <module>TcpB254</module>
+        <module>d2d2-tcp</module>
     </modules>
 
     <properties>
@@ -98,6 +98,11 @@
             </dependency>
             <dependency>
                 <groupId>com.ancevt.d2d2</groupId>
+                <artifactId>d2d2-tcp</artifactId>
+                <version>1.0.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ancevt.d2d2</groupId>
                 <artifactId>d2d2-world</artifactId>
                 <version>1.0.0.3-SNAPSHOT</version>
             </dependency>
@@ -120,11 +125,6 @@
             <dependency>
                 <groupId>com.ancevt.d2d2world</groupId>
                 <artifactId>d2d2-world-arena-networking</artifactId>
-                <version>1.0.0.3-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ancevt.net</groupId>
-                <artifactId>tcpb254</artifactId>
                 <version>1.0.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>

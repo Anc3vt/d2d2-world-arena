@@ -21,7 +21,7 @@ import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import com.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import com.ancevt.d2d2world.sync.ISyncDataReceiver;
-import com.ancevt.net.tcpb254.server.IServer;
+import com.ancevt.d2d2.tcp.server.IServer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 

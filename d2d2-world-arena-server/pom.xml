@@ -79,8 +79,8 @@
             <version>0.0.1</version>
         </dependency>
         <dependency>
-            <groupId>com.ancevt.net</groupId>
-            <artifactId>tcpb254</artifactId>
+            <groupId>com.ancevt.d2d2</groupId>
+            <artifactId>d2d2-tcp</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -89,10 +89,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
         </dependency>
     </dependencies>
 

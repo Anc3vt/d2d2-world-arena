@@ -192,7 +192,6 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void setHealth(int health) {
-        int oldHealth = this.health;
         if (health < 0) health = 0;
         else if (health > maxHealth) health = maxHealth;
 
@@ -212,14 +211,11 @@ abstract public class Actor extends Animated implements
 
         if (health < oldHealth) damageBlink();
 
-        if (fromServer) {
+        if (fromServer || D2D2World.isServer()) {
             this.health = health;
             healthBar.setValue(health);
             if (health <= 0 && isAlive()) death(damaging);
-        } else {
-
         }
-
         if (isOnWorld()) {
             getWorld().getSyncDataAggregator().health(this, damaging);
         }
@@ -353,7 +349,7 @@ abstract public class Actor extends Animated implements
     @Override
     public void reset() {
         setXY(getStartX(), getStartY());
-        setHealthBy(getMaxHealth(), null, true);
+        setHealth(getMaxHealth());
         getController().reset();
         setAlive(true);
         repair();
@@ -459,7 +455,7 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void process() {
-        if (!D2D2World.isServer()) return;
+        //if (!D2D2World.isServer()) return;
 
         setAnimation(AnimationKey.IDLE);
 

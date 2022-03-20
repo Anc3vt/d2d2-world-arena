@@ -112,7 +112,7 @@ public class PlayProcessor {
 
             if (o1 instanceof Actor actor) {
                 if (D2D2World.isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
-                    actor.setHealthBy(0, null, true);
+                    actor.setHealthBy(0, null, false);
                 }
             }
         }
@@ -336,7 +336,7 @@ public class PlayProcessor {
                         && (tightAbove instanceof IPlatform || tightAbove instanceof AreaCollision)
                         && (tightBelow instanceof IPlatform || tightBelow instanceof AreaCollision)
                 ) {
-                    actor.setHealthBy(0, null, true);
+                    actor.setHealthBy(0, null, false);
                 }
             }
             if (pushFromLeft > 1 && pushFromRight > 1) {
@@ -344,7 +344,7 @@ public class PlayProcessor {
                         && (tightFromLeft instanceof IPlatform || tightFromLeft instanceof AreaCollision)
                         && (tightFromRight instanceof IPlatform || tightFromRight instanceof AreaCollision)
                 ) {
-                    actor.setHealthBy(0, null, true);
+                    actor.setHealthBy(0, null, false);
                 }
             }
 

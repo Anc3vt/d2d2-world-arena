@@ -4,17 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>d2d2</artifactId>
-        <groupId>com.ancevt.d2d2</groupId>
-        <version>1.0.0.3-SNAPSHOT</version>
-    </parent>
-
-    <groupId>com.ancevt.d2d2world</groupId>
-    <artifactId>d2d2-world-arena-networking</artifactId>
+    <groupId>com.ancevt.d2d2</groupId>
+    <artifactId>d2d2-tcp</artifactId>
     <version>1.0.0.3-SNAPSHOT</version>
 
-    <name>D2D2 World Arena Networking</name>
+    <name>D2D2 TCP Protocol Tools</name>
     <url>https://github.com/Anc3vt/d2d2</url>
 
     <licenses>
@@ -69,28 +63,37 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.ancevt.d2d2</groupId>
-            <artifactId>d2d2-tcp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ancevt.d2d2</groupId>
-            <artifactId>d2d2-world</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ancevt.d2d2world</groupId>
-            <artifactId>d2d2-world-data</artifactId>
+            <groupId>com.ancevt.commons</groupId>
+            <artifactId>ancevt-commons</artifactId>
+            <version>1.0.0.2</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>23.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -122,6 +125,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>${maven-deploy-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.net.client;
 
 import lombok.extern.slf4j.Slf4j;
 import com.ancevt.d2d2world.net.dto.Dto;
-import com.ancevt.net.tcpb254.connection.IConnection;
+import com.ancevt.d2d2.tcp.connection.IConnection;
 
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.createDtoMessage;
 import static com.ancevt.d2d2world.net.serialization.JsonEngine.gson;

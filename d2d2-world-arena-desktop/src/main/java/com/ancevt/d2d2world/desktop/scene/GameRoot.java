@@ -35,7 +35,7 @@ import com.ancevt.d2d2world.net.client.Player;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
-import com.ancevt.net.tcpb254.CloseStatus;
+import com.ancevt.d2d2.tcp.CloseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
