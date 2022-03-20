@@ -112,7 +112,7 @@ public class PlayProcessor {
 
             if (o1 instanceof Actor actor) {
                 if (D2D2World.isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
-                    actor.setHealthBy(0, null);
+                    actor.setHealthBy(0, null, true);
                 }
             }
         }
@@ -143,15 +143,16 @@ public class PlayProcessor {
 
         if (o2 instanceof Bullet bullet && o1 instanceof ITight && o1 != bullet.getDamagingOwnerActor()) {
             bullet.destroy();
-            if (o1 instanceof Bullet bullet2) bullet2.destroy();
+            if (o1 instanceof Bullet bullet2) {
+                bullet2.destroy();
+            }
         }
     }
 
     private void processDamage(@NotNull IDestroyable o, @NotNull IDamaging damaging) {
-        if (!D2D2World.isServer()) return;
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
-        o.changeHealth(-damagingPower, damaging);
+        o.damage(damagingPower, damaging);
     }
 
     private void processHook(@NotNull IHookable o, AreaHook hook) {
@@ -193,15 +194,17 @@ public class PlayProcessor {
 
         boolean wallHitTest = false;
 
-        if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
-            o1.setX(x2 - w1 - tx1 - 1);
-            getPushState(o1).pushFromRight().tightFromRight = o2;
-            wallHitTest = true;
-        }
-        if (checkWalls && cx1 > x2 + w2 && y1 + h1 > y2 + 8) {
-            o1.setX(x2 + w2 - tx1 + 1);
-            getPushState(o1).pushFromLeft().tightFromLeft = o2;
-            wallHitTest = true;
+        if(!(o2 instanceof Bullet) && !(o2 instanceof PlayerActor)) {
+            if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
+                o1.setX(x2 - w1 - tx1 - 1);
+                getPushState(o1).pushFromRight().tightFromRight = o2;
+                wallHitTest = true;
+            }
+            if (checkWalls && cx1 > x2 + w2 && y1 + h1 > y2 + 8) {
+                o1.setX(x2 + w2 - tx1 + 1);
+                getPushState(o1).pushFromLeft().tightFromLeft = o2;
+                wallHitTest = true;
+            }
         }
 
         if (o1 instanceof IGravitied g) {
@@ -333,7 +336,7 @@ public class PlayProcessor {
                         && (tightAbove instanceof IPlatform || tightAbove instanceof AreaCollision)
                         && (tightBelow instanceof IPlatform || tightBelow instanceof AreaCollision)
                 ) {
-                    actor.setHealthBy(0, null);
+                    actor.setHealthBy(0, null, true);
                 }
             }
             if (pushFromLeft > 1 && pushFromRight > 1) {
@@ -341,7 +344,7 @@ public class PlayProcessor {
                         && (tightFromLeft instanceof IPlatform || tightFromLeft instanceof AreaCollision)
                         && (tightFromRight instanceof IPlatform || tightFromRight instanceof AreaCollision)
                 ) {
-                    actor.setHealthBy(0, null);
+                    actor.setHealthBy(0, null, true);
                 }
             }
 

@@ -19,8 +19,8 @@ public class DebugPlayerActorCreator {
         playerActor.setDirection(Direction.LEFT);
 
 
-        playerActor.setMaxHealth(10000);
-        playerActor.setHealth(10000);
+        playerActor.setMaxHealth(500);
+        playerActor.setHealth(500);
 
         world.addGameObject(playerActor, 5, false);
         Async.run(() -> {

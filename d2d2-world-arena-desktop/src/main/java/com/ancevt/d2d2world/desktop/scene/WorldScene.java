@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
@@ -56,7 +57,7 @@ public class WorldScene extends DisplayObjectContainer {
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
     private Overlay overlay;
-    private final ShadowRadial shadowRadial;
+    private ShadowRadial shadowRadial;
     private boolean eventsAdded;
 
     private long frameCounter;
@@ -76,6 +77,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
         add(world);
 
+        /*
         shadowRadial = new ShadowRadial() {
             @Override
             public void onEachFrame() {
@@ -92,6 +94,7 @@ public class WorldScene extends DisplayObjectContainer {
         };
         shadowRadial.setScale(2f, 2f);
         world.add(shadowRadial);
+        */
 
         ((SyncDataReceiver) MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
 
@@ -216,6 +219,11 @@ public class WorldScene extends DisplayObjectContainer {
         MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
 
         overlay.startOut();
+        gameObjectTexts.clear();
+
+        debug("WorldScene:221: <r><A>" + localPlayerActor);
+
+        world.getCamera().setAttachedTo(localPlayerActor);
     }
 
     private void addRootAndChatEventsIfNotYet() {

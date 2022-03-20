@@ -178,7 +178,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     private void setHealth(int gameObjectId, int health, int damagingGameObjectId) {
         if (world.getGameObjectById(gameObjectId) instanceof IDestroyable d) {
             IDamaging damaging = (IDamaging) world.getGameObjectById(damagingGameObjectId);
-            d.setHealthBy(health, damaging);
+            d.setHealthBy(health, damaging, true);
         }
     }
 

@@ -287,8 +287,8 @@ public class World extends DisplayObjectContainer {
 
     private void addSceneries() {
         for (IGameObject gameObject : getRoom().getGameObjects()) {
-            if (!gameObject.hasParent()) {
-                addGameObject(gameObject, getRoom().getLayerIndexOfGameObject(gameObject), false);
+            if (!gameObject.hasParent() && gameObject instanceof Scenery scenery) {
+                addGameObject(scenery, getRoom().getLayerIndexOfGameObject(gameObject), false);
             }
         }
     }

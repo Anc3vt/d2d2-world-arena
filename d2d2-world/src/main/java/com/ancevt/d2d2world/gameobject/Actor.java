@@ -46,7 +46,7 @@ abstract public class Actor extends Animated implements
 
     private static final int ATTACK_TIME = 20;
     private static final int JUMP_TIME = 4;
-    private static final int DAMAGING_TIME = 30;
+    private static final int DAMAGING_TIME = 14;
 
     private int attackTime;
     private int jumpTime;
@@ -195,11 +195,9 @@ abstract public class Actor extends Animated implements
         int oldHealth = this.health;
         if (health < 0) health = 0;
         else if (health > maxHealth) health = maxHealth;
+
         this.health = health;
-
         healthBar.setValue(health);
-
-        if (health < oldHealth) damagingTime = DAMAGING_TIME;
 
         if (health <= 0 && isAlive()) death(null);
 
@@ -207,21 +205,42 @@ abstract public class Actor extends Animated implements
     }
 
     @Override
-    public void setHealthBy(int health, IDamaging damaging) {
+    public void setHealthBy(int health, IDamaging damaging, boolean fromServer) {
         int oldHealth = this.health;
         if (health < 0) health = 0;
-        else if (health > maxHealth && isOnWorld()) health = maxHealth;
-        this.health = health;
+        else if (health > maxHealth) health = maxHealth;
 
-        if (health < oldHealth) damagingTime = DAMAGING_TIME;
+        if (health < oldHealth) damageBlink();
 
-        healthBar.setValue(health);
+        if (fromServer) {
+            this.health = health;
+            healthBar.setValue(health);
+            if (health <= 0 && isAlive()) death(damaging);
+        } else {
 
-        if (health <= 0 && isAlive()) death(damaging);
+        }
 
         if (isOnWorld()) {
             getWorld().getSyncDataAggregator().health(this, damaging);
         }
+    }
+
+    @Override
+    public void damage(int toHealth, IDamaging damaging) {
+        if (toHealth > 0) {
+            if (getHealth() > toHealth)
+                getMapkitItem().playSound(SoundKey.DAMAGE, 0);
+
+            if (damagingTime > 0) return;
+            setAnimation(AnimationKey.DAMAGE);
+            setVelocity(getDirection() * -2, -2);
+        }
+
+        setHealthBy(getHealth() - toHealth, damaging, false);
+    }
+
+    private void damageBlink() {
+        damagingTime = DAMAGING_TIME;
     }
 
     @Override
@@ -231,24 +250,11 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void repair() {
+        setAnimation(AnimationKey.IDLE);
         setHealth(getMaxHealth());
         setAlive(true);
 
         if (isOnWorld()) getWorld().getSyncDataAggregator().repair(this);
-    }
-
-    @Override
-    public void changeHealth(int toHealth, IDamaging damaging) {
-        if (toHealth < 0) {
-            if (getHealth() > -toHealth)
-                getMapkitItem().playSound(SoundKey.DAMAGE, 0);
-
-            if (damagingTime > 0) return;
-            setAnimation(AnimationKey.DAMAGE);
-            setVelocity(getDirection() * -2, -2);
-        }
-
-        setHealthBy(getHealth() + toHealth, damaging);
     }
 
     public boolean isAlive() {
@@ -347,7 +353,7 @@ abstract public class Actor extends Animated implements
     @Override
     public void reset() {
         setXY(getStartX(), getStartY());
-        setHealthBy(getMaxHealth(), null);
+        setHealthBy(getMaxHealth(), null, true);
         getController().reset();
         setAlive(true);
         repair();

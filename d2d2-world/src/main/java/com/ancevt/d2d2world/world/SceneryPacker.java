@@ -22,31 +22,33 @@ import com.ancevt.d2d2.display.texture.TextureCombiner;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.Scenery;
 import com.ancevt.d2d2world.map.Room;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public class SceneryPacker {
-    public static PackedScenery pack(Room room, int layerFrom, int layerTo) {
+    @Contract("_, _, _ -> new")
+    public static @NotNull PackedScenery pack(@NotNull Room room, int layerFrom, int layerTo) {
 
         TextureCombiner comb = new TextureCombiner(room.getWidth(), room.getHeight());
 
         for (int layer = layerFrom; layer <= layerTo; layer++) {
             for (int i = 0; i < room.getGameObjectsCount(layer); i++) {
                 IGameObject o = room.getGameObject(layer, i);
-                if (o instanceof Scenery s) {
-                    Texture textureRegion = s.getTexture();
-                    int x = (int) s.getX();
-                    int y = (int) s.getY();
-                    float scaleX = s.getScaleX();
-                    float scaleY = s.getScaleY();
-                    float alpha = s.getAlpha();
-                    float rotation = s.getRotation();
-                    int repeatX = s.getRepeatX();
-                    int repeatY = s.getRepeatY();
+                if (o instanceof Scenery scenery) {
+                    Texture textureRegion = scenery.getTexture();
+                    int x = (int) scenery.getX();
+                    int y = (int) scenery.getY();
+                    float scaleX = scenery.getScaleX();
+                    float scaleY = scenery.getScaleY();
+                    float alpha = scenery.getAlpha();
+                    float rotation = scenery.getRotation();
+                    int repeatX = scenery.getRepeatX();
+                    int repeatY = scenery.getRepeatY();
 
                     comb.append(textureRegion, x, y, scaleX, scaleY, alpha, rotation, repeatX, repeatY);
                 }
             }
         }
-
         return new PackedScenery(comb.createTextureAtlas());
     }
 }

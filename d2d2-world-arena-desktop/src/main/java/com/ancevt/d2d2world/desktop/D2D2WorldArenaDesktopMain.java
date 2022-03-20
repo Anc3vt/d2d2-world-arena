@@ -75,8 +75,8 @@ public class D2D2WorldArenaDesktopMain {
         //D2D2.init(new NoRenderStarter(900, 600));
         var screenDimension = ScreenUtils.getDimension();
         D2D2.init(new LWJGLStarter(
-                screenDimension.width() / 2,
-                screenDimension.height() / 2,
+                screenDimension.width() /2 + 100,
+                screenDimension.height() / 2 + 100,
                 "(floating) D2D2 World Arena " + autoEnterPlayerName));
         D2D2World.init(false);
 

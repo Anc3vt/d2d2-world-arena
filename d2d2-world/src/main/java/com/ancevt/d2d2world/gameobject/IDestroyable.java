@@ -35,7 +35,7 @@ public interface IDestroyable extends ICollision, IResettable {
 
     void repair();
 
-    void setHealthBy(int health, IDamaging damaging);
+    void setHealthBy(int health, IDamaging damaging, boolean fromServer);
 
-    void changeHealth(int toHealth, IDamaging damaging);
+    void damage(int toHealth, IDamaging damaging);
 }
