@@ -194,7 +194,7 @@ public class PlayProcessor {
 
         boolean wallHitTest = false;
 
-        if(!(o2 instanceof Bullet) && !(o2 instanceof PlayerActor)) {
+        if(!(o2 instanceof Bullet) /*&& !(o2 instanceof PlayerActor)*/) {
             if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
                 o1.setX(x2 - w1 - tx1 - 1);
                 getPushState(o1).pushFromRight().tightFromRight = o2;
@@ -278,8 +278,7 @@ public class PlayProcessor {
     }
 
     // Push states:
-
-    private Map<ITight, PushState> pushStates = new HashMap<>();
+    private final Map<ITight, PushState> pushStates = new HashMap<>();
 
     private PushState getPushState(ITight tight) {
         var ps = pushStates.get(tight);

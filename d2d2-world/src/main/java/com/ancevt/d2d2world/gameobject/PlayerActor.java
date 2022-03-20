@@ -42,6 +42,11 @@ public class PlayerActor extends Actor {
         setWeapon(new StandardWeapon(MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("standard_bullet"), this));
     }
 
+    @Override
+    public boolean isFloorOnly() {
+        return true;
+    }
+
     public void setLocalPlayerActor(boolean localPlayerActor) {
         this.localPlayerActor = localPlayerActor;
     }

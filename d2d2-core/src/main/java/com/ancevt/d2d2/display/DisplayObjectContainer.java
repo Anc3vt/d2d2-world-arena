@@ -23,8 +23,8 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventPool;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DisplayObjectContainer extends DisplayObject implements IDisplayObjectContainer {
 
@@ -34,7 +34,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     final List<IDisplayObject> children;
 
     public DisplayObjectContainer() {
-        children = new CopyOnWriteArrayList<>();
+        children = new ArrayList<>();
     }
 
     @Override
