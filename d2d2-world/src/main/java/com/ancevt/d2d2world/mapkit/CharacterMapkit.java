@@ -42,7 +42,7 @@ public class CharacterMapkit extends Mapkit {
                 speed = 5 |
                 collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4 |
                 atlas = bullets.png |
-                idle = 0,0,16,16; 16,0,16,16; 0,0,16,16; 32,0,16,16 |
+                idle = 32,0,16,16; 48,0,16,16; 32,0,16,16; 48,0,16,16 |
                 """;
 
         DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));
@@ -65,8 +65,10 @@ public class CharacterMapkit extends Mapkit {
                 collisionWidth = 12 |
                 collisionHeight = 28 |
                 
+                weaponX=15 |
+                weaponY=-3 |
                 atlas=blake-and-ava-tileset.png |
-                idle = 0,0,48,48; 48,0,48,48 |
+                idle = 96,0,48,48; 144,0,48,48 |
                 attack = 96,0,48,48; 144,0,48,48 |
                 walk = 192,0,48,48; 240,0,48,48; 288,0,48,48; 336,0,48,48 |
                 walk-attack = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48 |
@@ -76,7 +78,8 @@ public class CharacterMapkit extends Mapkit {
                 fall-attack = 336,48,48,48 |
                 hook = 288,96,48,48 |
                 hook-attack = 336,96,48,48 |
-                damage = 48,144,48,48
+                damage = 48,144,48,48 |
+                head = 240,144,16,32; 256,144,16,32 |
                 """;
 
         DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));

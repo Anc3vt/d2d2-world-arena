@@ -67,4 +67,9 @@ public class StubSyncDataAggregator implements ISyncDataAggregator {
     public void visibility(@NotNull IGameObject gameObject, boolean value) {
 
     }
+
+    @Override
+    public void armDegree(Actor actor) {
+
+    }
 }

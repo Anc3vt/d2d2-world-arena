@@ -156,6 +156,7 @@ public class Editor {
     }
 
     public void mouseButton(float x, float y, float worldX, float worldY, boolean down) {
+        D2D2WorldEditorMain.playerActor.getController().setB(down);
         if (!isEnabled()) return;
 
         if (!spaceDown) {
@@ -164,6 +165,7 @@ public class Editor {
     }
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
+        D2D2WorldEditorMain.playerActor.mouseMove(worldX, worldY);
         if (!isEnabled()) return;
 
         if (drag && spaceDown) {

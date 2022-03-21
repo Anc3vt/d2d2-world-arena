@@ -44,8 +44,6 @@ public class Chat extends DisplayObjectContainer {
 
     private static final int MAX_MESSAGES = 100;
 
-    private static final float DEFAULT_WIDTH = 900.0f / 2.0f;
-    private static final float DEFAULT_HEIGHT = 600.0f / 3.0f;
     private static final int INPUT_MAX_LENGTH = 100;
 
     private final UiTextInput input;
@@ -66,8 +64,8 @@ public class Chat extends DisplayObjectContainer {
         history = new ArrayList<>();
         shadowEnabled = true;
 
-        width = DEFAULT_WIDTH;
-        height = DEFAULT_HEIGHT;
+        width = D2D2.getStage().getStageWidth() / 2.0f;
+        height = D2D2.getStage().getStageHeight() / 3.0f;
 
         input.setWidth(20);
         input.addEventListener(UiTextInputEvent.TEXT_ENTER, this::textInputEvent);

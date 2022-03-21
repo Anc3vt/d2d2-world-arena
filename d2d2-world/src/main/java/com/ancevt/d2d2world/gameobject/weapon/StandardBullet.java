@@ -5,6 +5,7 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +56,8 @@ public class StandardBullet extends Bullet implements ITight {
             }
         }
 
-        moveX(getSpeed() * getDirection());
+        float[] xy = RotationUtils.xySpeedOfDegree(getDegree());
+        move(getSpeed() * xy[0], getSpeed() * xy[1]);
         super.process();
     }
 

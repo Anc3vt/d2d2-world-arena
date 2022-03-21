@@ -137,9 +137,6 @@ public class ServerSender {
             });
             listenersAdded = true;
         }
-
-
-        ClientProtocolImpl.MODULE_CLIENT_PROTOCOL.bytesReceived(bytes);
     }
 }
 

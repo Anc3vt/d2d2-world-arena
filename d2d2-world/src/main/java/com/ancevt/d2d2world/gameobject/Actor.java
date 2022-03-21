@@ -17,20 +17,25 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
-import com.ancevt.d2d2.display.Color;
+import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.control.Controller;
+import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.scene.Particle;
 import com.ancevt.d2d2world.ui.HealthBar;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
+import org.jetbrains.annotations.NotNull;
+
+import static com.ancevt.d2d2world.constant.AnimationKey.*;
 
 abstract public class Actor extends Animated implements
         IProcessable,
@@ -47,6 +52,7 @@ abstract public class Actor extends Animated implements
     private static final int ATTACK_TIME = 20;
     private static final int JUMP_TIME = 4;
     private static final int DAMAGING_TIME = 14;
+    private final FramedSprite framedDoHead;
 
     private int attackTime;
     private int jumpTime;
@@ -72,18 +78,49 @@ abstract public class Actor extends Animated implements
     private boolean pushable;
     private World world;
     private final HealthBar healthBar;
+    private final DisplayObjectContainer weaponContainer;
+    private float weaponDegree;
+    private int goDirection;
+    private float worldMouseX;
+    private float worldMouseY;
+    private final DisplayObjectContainer headContainer;
 
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
         healthBar = new HealthBar();
+        weaponContainer = new DisplayObjectContainer();
+        add(weaponContainer);
+
+        framedDoHead = new FramedSprite(mapkitItem
+                .getTextureAtlas()
+                .createTextures(mapkitItem.getDataEntry().getString(DataKey.HEAD))
+        );
+        framedDoHead.setSlowing(SLOWING);
+        framedDoHead.setFrame(0);
+        framedDoHead.setLoop(true);
+        framedDoHead.play();
+        headContainer = new DisplayObjectContainer();
+        headContainer.add(framedDoHead, -framedDoHead.getWidth() / 2, -16);
+
+        add(headContainer, 0);
+        headContainer.setXY(0, -3);
+
         add(healthBar, -healthBar.getWidth() / 2, -24);
         setPushable(true);
         setGravityEnabled(true);
         setAlive(true);
         setCollisionEnabled(true);
-        setAnimation(AnimationKey.IDLE);
+        setAnimation(IDLE);
         setDirection(Direction.RIGHT);
         setController(new Controller());
+        getController().setControllerChangeListener(c -> setAnimation(IDLE));
+    }
+
+    @Override
+    public void setDirection(int direction) {
+        super.setDirection(direction);
+        weaponContainer.setScale(direction, direction);
+        headContainer.setScaleY(direction);
     }
 
     @Override
@@ -125,7 +162,34 @@ abstract public class Actor extends Animated implements
             damagingTime--;
             setAlpha((damagingTime / 2) % 2 == 0 ? 1.0f : 0.0f);
         }
+
+        float deg = RotationUtils.getDegreeBetweenPoints(getX(), getY(), worldMouseX, worldMouseY);
+
+
+        if (worldMouseX < getX()) {
+            setDirection(-1);
+        } else {
+            setDirection(1);
+        }
+
+        setBackward(goDirection != getDirection());
+
+        setArmDegree(-deg);
+
+        if (getDirection() == Direction.RIGHT) {
+            if (deg > 35) deg = 35;
+            else if (deg < -30) deg = -30;
+
+            headContainer.setRotation(-deg);
+        } else {
+            deg += 100;
+            if (deg > 0 && deg < 255) deg = 255;
+            else if (deg < 0 && deg >= -45) deg = -45;
+
+            headContainer.setRotation(-deg + 100);
+        }
     }
+
 
     public final void debug(
             final Object o,
@@ -377,6 +441,7 @@ abstract public class Actor extends Animated implements
     @Override
     public void setFloor(ICollision floor) {
         this.floor = floor;
+        if (floor != null) setAnimation(IDLE);
     }
 
     @Override
@@ -428,19 +493,28 @@ abstract public class Actor extends Animated implements
     }
 
     public void go(final int direction) {
-        setDirection(direction);
+        //setDirection(direction);
+
+        goDirection = direction;
 
         if (!isGravityEnabled()) return;
 
-        if (getDirection() == Direction.RIGHT) {
-            setVelocityX(
-                    getVelocityX() + getSpeed()
-            );
-        } else if (getDirection() == Direction.LEFT) {
-            setVelocityX(
-                    getVelocityX() - getSpeed()
-            );
+        if (direction == Direction.RIGHT) {
+            setVelocityX(getVelocityX() + getSpeed());
+        } else if (direction == Direction.LEFT) {
+            setVelocityX(getVelocityX() - getSpeed());
         }
+    }
+
+    public void setArmDegree(float deg) {
+        this.weaponDegree = deg;
+        weaponContainer.setRotation(deg);
+
+        if (isOnWorld()) getWorld().getSyncDataAggregator().armDegree(this);
+    }
+
+    public float getArmDegree() {
+        return weaponDegree;
     }
 
     @Property
@@ -457,11 +531,11 @@ abstract public class Actor extends Animated implements
     public void process() {
         //if (!D2D2World.isServer()) return;
 
-        setAnimation(AnimationKey.IDLE);
+        //setAnimation(AnimationKey.IDLE);
 
         if (attackTime > 0) {
             if (getVelocityY() == 0)
-                setAnimation(AnimationKey.ATTACK);
+                setAnimation(ATTACK);
         }
 
         Controller c = getController();
@@ -480,8 +554,8 @@ abstract public class Actor extends Animated implements
                 } else {
                     setAnimation(AnimationKey.WALK_ATTACK);
                 }
-            } else if (attackTime == 0)
-                setAnimation(AnimationKey.IDLE);
+            }
+            //else if (attackTime == 0) setAnimation(AnimationKey.IDLE);
 
             if (c.isB()) {
                 if (attackTime == 0)
@@ -555,6 +629,9 @@ abstract public class Actor extends Animated implements
     @Override
     public void setController(Controller controller) {
         this.controller = controller;
+        controller.setControllerChangeListener(c -> {
+            if (c.getState() == 0) setAnimation(IDLE);
+        });
     }
 
     @Override
@@ -571,18 +648,22 @@ abstract public class Actor extends Animated implements
         return fallEnabled;
     }
 
+    @Property
     public float getWeaponY() {
         return weaponLocationY;
     }
 
+    @Property
     public void setWeaponY(float weaponLocationY) {
         this.weaponLocationY = weaponLocationY;
     }
 
+    @Property
     public float getWeaponX() {
         return weaponLocationX;
     }
 
+    @Property
     public void setWeaponX(float weaponLocationX) {
         this.weaponLocationX = weaponLocationX;
     }
@@ -596,15 +677,55 @@ abstract public class Actor extends Animated implements
         return weapon;
     }
 
-    public void setWeapon(Weapon weapon) {
+    public void setWeapon(@NotNull Weapon weapon) {
         this.weapon = weapon;
         weapon.setOwner(this);
+        weaponContainer.add(weapon.getDisplayObject());
+        fixXY();
+    }
+
+    @Override
+    protected void fixXY() {
+        if (weapon != null) {
+            switch (getDirection()) {
+                case Direction.LEFT -> {
+                    IDisplayObject d = weapon.getDisplayObject();
+                    float w = d.getWidth();
+                    float h = d.getHeight();
+                    d.setScaleX(-1);
+                    d.setXY(w - getWeaponX() - w / 2, getWeaponY() - h / 2);
+                }
+                case Direction.RIGHT -> {
+                    IDisplayObject d = weapon.getDisplayObject();
+                    float w = d.getWidth();
+                    float h = d.getHeight();
+                    d.setScaleX(1);
+                    d.setXY(getWeaponX() - w / 2, getWeaponY() - h / 2);
+                }
+            }
+        }
+        super.fixXY();
     }
 
     @Override
     public void setAnimation(int animationKey, boolean loop) {
         if (damagingTime > 0) return;
+        if (animationKey == getAnimation()) return;
+
         super.setAnimation(animationKey, loop);
+
+        if (weapon != null) {
+            switch (animationKey) {
+                case ATTACK, IDLE,
+                        FALL_ATTACK,
+                        JUMP_ATTACK,
+                        HOOK_ATTACK,
+                        WALK_ATTACK -> weapon.getDisplayObject().setVisible(true);
+                default -> weapon.getDisplayObject().setVisible(false);
+            }
+        }
+
+
     }
 
     @Override
@@ -655,6 +776,11 @@ abstract public class Actor extends Animated implements
     @Override
     public void setMovingSpeedX(float movingSpeedX) {
         this.movingSpeedX = movingSpeedX;
+    }
+
+    public void mouseMove(float worldX, float worldY) {
+        worldMouseX = worldX;
+        worldMouseY = worldY;
     }
 }
 

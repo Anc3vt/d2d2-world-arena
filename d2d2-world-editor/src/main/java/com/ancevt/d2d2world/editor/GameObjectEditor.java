@@ -24,14 +24,10 @@ import com.ancevt.d2d2world.editor.objects.SelectArea;
 import com.ancevt.d2d2world.editor.objects.SelectRectangle;
 import com.ancevt.d2d2world.editor.objects.Selection;
 import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
-import com.ancevt.d2d2world.gameobject.GameObjectUtils;
-import com.ancevt.d2d2world.gameobject.ICollision;
-import com.ancevt.d2d2world.gameobject.IGameObject;
-import com.ancevt.d2d2world.gameobject.IMovable;
-import com.ancevt.d2d2world.gameobject.IRepeatable;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.world.Layer;
 import com.ancevt.d2d2world.world.World;
 
@@ -39,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.ancevt.d2d2world.editor.D2D2WorldEditorMain.playerActor;
 
 public class GameObjectEditor {
 
@@ -66,7 +64,6 @@ public class GameObjectEditor {
 
     public GameObjectEditor(Editor editor) {
         this.editor = editor;
-
 
         selectRectangle = new SelectRectangle();
         selectArea = new SelectArea();
@@ -189,6 +186,11 @@ public class GameObjectEditor {
     }
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
+
+        float worldScale = getWorld().getAbsoluteScaleX();
+        playerActor.mouseMove(worldX, worldY);
+
+
         if (!moving && drag && selecting) {
             selectRectangle.setX2(worldX);
             selectRectangle.setY2(worldY);
@@ -235,7 +237,7 @@ public class GameObjectEditor {
     }
 
     private void setPlayerXYToCursor() {
-        PlayerActor playerActor = (PlayerActor) getWorld().getGameObjects()
+        playerActor = (PlayerActor) getWorld().getGameObjects()
                 .stream()
                 .filter(o -> o instanceof PlayerActor)
                 .findAny()

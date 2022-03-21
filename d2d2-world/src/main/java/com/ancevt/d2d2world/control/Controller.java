@@ -17,14 +17,27 @@
  */
 package com.ancevt.d2d2world.control;
 
+import java.util.function.Consumer;
+
 public class Controller {
 
     private boolean up, down, left, right, a, b, c, back;
     private boolean enabled;
 
+    private Consumer<Controller> controllerChangeListener;
+
+    public void setControllerChangeListener(Consumer<Controller> controllerChangeListener) {
+        this.controllerChangeListener = controllerChangeListener;
+    }
+
+    public Consumer<Controller> getControllerChangeListener() {
+        return controllerChangeListener;
+    }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         back = up = down = left = right = a = b = c = false;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isEnabled() {
@@ -33,6 +46,7 @@ public class Controller {
 
     public void setBack(boolean back) {
         this.back = back;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isBack() {
@@ -46,6 +60,7 @@ public class Controller {
     public void setC(boolean c) {
         if (!enabled) return;
         this.c = c;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isB() {
@@ -55,6 +70,7 @@ public class Controller {
     public void setB(boolean b) {
         if (!enabled) return;
         this.b = b;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isA() {
@@ -64,6 +80,7 @@ public class Controller {
     public void setA(boolean a) {
         if (!enabled) return;
         this.a = a;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isRight() {
@@ -73,6 +90,7 @@ public class Controller {
     public void setRight(boolean right) {
         if (!enabled) return;
         this.right = right;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isLeft() {
@@ -82,6 +100,7 @@ public class Controller {
     public void setLeft(boolean left) {
         if (!enabled) return;
         this.left = left;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isDown() {
@@ -91,6 +110,7 @@ public class Controller {
     public void setDown(boolean down) {
         if (!enabled) return;
         this.down = down;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public boolean isUp() {
@@ -100,6 +120,7 @@ public class Controller {
     public void setUp(boolean up) {
         if (!enabled) return;
         this.up = up;
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public void reset() {
@@ -128,17 +149,21 @@ public class Controller {
     }
 
     public void applyState(int s) {
+        if (!enabled) return;
+
         final boolean a = (s & 1) != 0;
         final boolean b = (s & 2) != 0;
         final boolean c = (s & 4) != 0;
         final boolean l = (s & 8) != 0;
         final boolean r = (s & 16) != 0;
 
-        if (a != isA()) setA(a);
-        if (b != isB()) setB(b);
-        if (c != isC()) setC(c);
-        if (l != isLeft()) setLeft(l);
-        if (r != isRight()) setRight(r);
+        if (a != isA()) this.a = a;
+        if (b != isB()) this.b = b;
+        if (c != isC()) this.c = c;
+        if (l != isLeft()) this.left = l;
+        if (r != isRight()) this.right = r;
+
+        if (controllerChangeListener != null) controllerChangeListener.accept(this);
     }
 
     public int getState() {

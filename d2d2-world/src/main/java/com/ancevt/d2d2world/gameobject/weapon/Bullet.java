@@ -36,6 +36,7 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
     private int damagingPower;
     private float speed;
     private final int toRemoveCounter = 10;
+    private float degree;
 
     public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
@@ -189,5 +190,13 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
     @Override
     public int getDirection() {
         return direction;
+    }
+
+    public void setDegree(float degree) {
+        this.degree = degree;
+    }
+
+    public float getDegree() {
+        return degree;
     }
 }

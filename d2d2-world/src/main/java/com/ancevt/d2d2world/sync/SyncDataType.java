@@ -12,4 +12,5 @@ public class SyncDataType {
     public static final int VISIBILITY = 8;
     public static final int REPAIR = 9;
     public static final int ACTION_INDEX = 10;
+    public static final int ARM_DEGREE = 11;
 }

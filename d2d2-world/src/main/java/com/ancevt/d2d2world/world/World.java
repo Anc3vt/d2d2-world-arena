@@ -398,10 +398,10 @@ public class World extends DisplayObjectContainer {
     }
 
     public void actorAttack(Actor actor, Weapon weapon) {
-        Bullet bullet = weapon.getNextBullet();
+        Bullet bullet = weapon.getNextBullet(actor.getArmDegree());
         if (getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(actor);
-            bullet.setXY(actor.getX() + actor.getWeaponX(), actor.getY() + actor.getWeaponY());
+            bullet.setXY(actor.getX() + (actor.getWeaponX() * actor.getDirection()), actor.getY() + actor.getWeaponY());
             bullet.setDirection(actor.getDirection());
             addGameObject(bullet, 5, false);
         }

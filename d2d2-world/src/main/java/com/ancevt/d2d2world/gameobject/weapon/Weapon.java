@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.gameobject.weapon;
 
+import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import org.jetbrains.annotations.NotNull;
@@ -24,26 +25,35 @@ import org.jetbrains.annotations.NotNull;
 abstract public class Weapon {
 
 	private final MapkitItem bulletMapkitItem;
-	private Actor owner;
+	private final IDisplayObject displayObject;
 
-	public Weapon(@NotNull MapkitItem bulletMapkitItem, @NotNull Actor owner) {
+	public Weapon(@NotNull MapkitItem bulletMapkitItem, @NotNull Actor owner, @NotNull IDisplayObject displayObject) {
 		this.bulletMapkitItem = bulletMapkitItem;
 		this.owner = owner;
+		this.displayObject = displayObject;
 	}
+
+	private Actor owner;
 
 	protected @NotNull MapkitItem getBulletMapkitItem() {
 		return bulletMapkitItem;
 	}
 
-	public Bullet getNextBullet() {
-		return (Bullet) getBulletMapkitItem().createGameObject(getOwner().getWorld().getNextFreeGameObjectId());
+	public IDisplayObject getDisplayObject() {
+		return displayObject;
+	}
+
+	public Bullet getNextBullet(float degree) {
+		Bullet bullet = (Bullet) getBulletMapkitItem().createGameObject(getOwner().getWorld().getNextFreeGameObjectId());
+		bullet.setDegree(degree);
+		return bullet;
 	}
 	
 	public Actor getOwner() {
 		return owner;
 	}
 
-	public void setOwner(Actor owner) {
+	public void setOwner(@NotNull Actor owner) {
 		this.owner = owner;
 	}
 }

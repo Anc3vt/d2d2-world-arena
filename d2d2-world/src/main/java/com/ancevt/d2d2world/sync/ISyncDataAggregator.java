@@ -9,6 +9,8 @@ public interface ISyncDataAggregator {
 
     void newGameObject(IGameObject gameObject);
 
+    void armDegree(Actor actor);
+
     void actionIndex(IActioned actioned);
 
     void repair(@NotNull IDestroyable destroyable);
@@ -47,4 +49,5 @@ public interface ISyncDataAggregator {
             maxHealth(d);
         }
     }
+
 }

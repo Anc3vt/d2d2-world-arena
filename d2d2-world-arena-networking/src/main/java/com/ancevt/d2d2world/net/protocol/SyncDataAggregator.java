@@ -36,7 +36,13 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public void actionIndex(IActioned actioned) {
+    public void armDegree(@NotNull Actor actor) {
+        buffer.writeByte(SyncDataType.ARM_DEGREE)
+                .writeShort((int) actor.getArmDegree());
+    }
+
+    @Override
+    public synchronized void actionIndex(IActioned actioned) {
         if (!(actioned instanceof ISynchronized)) return;
 
         buffer.writeByte(SyncDataType.ACTION_INDEX)

@@ -31,6 +31,7 @@ public class FramedSprite extends Sprite implements IFramedDisplayObject {
     private int slowing;
     private int slowingCounter;
     private int currentFrameIndex;
+    private boolean backward;
 
     public FramedSprite() {
         frameTextures = new Texture[0];
@@ -56,13 +57,23 @@ public class FramedSprite extends Sprite implements IFramedDisplayObject {
     }
 
     @Override
+    public void setBackward(boolean backward) {
+        this.backward = backward;
+    }
+
+    @Override
+    public boolean isBackward() {
+        return backward;
+    }
+
+    @Override
     public void processFrame() {
         if (!playing) return;
 
         slowingCounter++;
         if (slowingCounter >= slowing) {
             slowingCounter = 0;
-            nextFrame();
+            if(backward) prevFrame(); else nextFrame();
         }
     }
 
@@ -95,7 +106,13 @@ public class FramedSprite extends Sprite implements IFramedDisplayObject {
     @Override
     public void prevFrame() {
         currentFrameIndex--;
-        if (currentFrameIndex < 0) currentFrameIndex = 0;
+        if (currentFrameIndex < 0) {
+            if(loop) {
+                currentFrameIndex = getFrameCount() - 1;
+            } else {
+                currentFrameIndex = 0;
+            }
+        }
         drawCurrentFrame();
     }
 
@@ -146,7 +163,7 @@ public class FramedSprite extends Sprite implements IFramedDisplayObject {
     @Override
     public void setFrameTextures(Texture[] textures) {
         this.frameTextures = textures;
-        if(textures.length > 0) {
+        if (textures.length > 0) {
             setFrame(0);
         }
     }

@@ -42,6 +42,8 @@ import com.ancevt.util.args.Args;
 import java.io.IOException;
 
 public class D2D2WorldEditorMain {
+    public static PlayerActor playerActor;
+
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
 
@@ -116,12 +118,13 @@ public class D2D2WorldEditorMain {
                 .getByName(CharacterMapkit.NAME)
                 .getItem("character_blake");
 
-        var playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
+        playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
         playerActor.setXY(300, 300);
         world.addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);
         playerActor.setController(localPlayerController);
+
         world.getCamera().setAttachedTo(playerActor);
 
         root.addEventListener(InputEvent.KEY_DOWN, event -> {

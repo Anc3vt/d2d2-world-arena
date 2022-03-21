@@ -42,6 +42,10 @@ public interface IFramedDisplayObject extends IDisplayObject {
 
     int getFrameCount();
 
+    void setBackward(boolean value);
+
+    boolean isBackward();
+
     void play();
 
     void stop();

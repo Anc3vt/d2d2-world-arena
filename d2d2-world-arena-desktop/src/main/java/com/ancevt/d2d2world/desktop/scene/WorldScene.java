@@ -19,10 +19,12 @@ package com.ancevt.d2d2world.desktop.scene;
 
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
+import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
@@ -32,6 +34,7 @@ import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
+import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
 import com.ancevt.d2d2world.net.dto.client.MapLoadedReport;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
@@ -57,7 +60,7 @@ public class WorldScene extends DisplayObjectContainer {
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
     private Overlay overlay;
-    private ShadowRadial shadowRadial;
+    private final ShadowRadial shadowRadial;
     private boolean eventsAdded;
 
     private long frameCounter;
@@ -138,6 +141,24 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
+        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//config",
+                args -> {
+                    String key = args.get(String.class, "-k");
+                    String value = args.get(String.class, "-v");
+                    if (key != null) {
+                        MODULE_CHAT.addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GRAY);
+                    }
+                    if (key != null && value != null) {
+                        MODULE_CONFIG.setProperty(key, value);
+                        MODULE_CHAT.addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GREEN);
+                    }
+                    if (key == null && value == null) {
+                        MODULE_CHAT.addMessage(MODULE_CONFIG.passwordSafeToString());
+                    }
+                    return true;
+                }
+        ));
     }
 
     private void config_configChangeListener(@NotNull String key, Object value) {
@@ -166,6 +187,14 @@ public class WorldScene extends DisplayObjectContainer {
         add(overlay, -w / 2, -h / 2);
         world.getCamera().setViewportSize(w, h);
         world.getCamera().setBoundsLock(true);
+
+        getRoot().addEventListener(this, InputEvent.MOUSE_MOVE, this::root_mouseMove);
+    }
+
+    private void root_mouseMove(Event event) {
+        var e = (InputEvent) event;
+        float x = e.getX();
+        float y = e.getY();
     }
 
     public void init() {
@@ -275,6 +304,16 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         world.getCamera().setAttachedTo(localPlayerActor);
+        localPlayerActor.getController().setControllerChangeListener(c -> {
+            float deg = RotationUtils.getDegreeBetweenPoints(
+                    localPlayerActor.getX(),
+                    localPlayerActor.getY(),
+                    Mouse.getX() + world.getX(),
+                    Mouse.getY() + world.getY()
+            );
+
+            localPlayerActor.setArmDegree(deg);
+        });
 
         playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
     }

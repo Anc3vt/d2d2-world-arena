@@ -49,7 +49,7 @@ public class DesktopConfig {
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "test.ancevt.com:2245");
         put(DEBUG_WORLD_ALPHA, "1.0");
-        put(DEBUG_GAME_OBJECT_IDS, "true");
+        put(DEBUG_GAME_OBJECT_IDS, "false");
         put(AUTO_ENTER, "false");
     }};
 

@@ -34,12 +34,21 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     private final MapkitItem mapkitItem;
     private final int id;
     private boolean permanentSync;
+    private boolean backward;
 
     public Animated(MapkitItem mapKitItem, int gameObjectId) {
         this.mapkitItem = mapKitItem;
         this.id = gameObjectId;
         prepareAnimations();
         setPermanentSync(true);
+    }
+
+    public void setBackward(boolean backward) {
+        this.backward = backward;
+    }
+
+    public boolean isBackward() {
+        return backward;
     }
 
     @Override
@@ -67,10 +76,12 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             }
 
             IFramedDisplayObject framedDisplayObject = new FramedSprite(frames);
+            framedDisplayObject.setName("__" + animKey);
             framedDisplayObject.setFrame(0);
             framedDisplayObject.setLoop(true);
             framedDisplayObject.setSlowing(AnimationKey.SLOWING);
             animations[animKey] = framedDisplayObject;
+            add(framedDisplayObject);
         }
 
         fixXY();
@@ -124,19 +135,20 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
             if (fs == null || !getMapkitItem().isAnimationKeyExists(animationKey)) continue;
 
-            if (i != animationKey) currentFrameSet.removeFromParent();
+            if (i != animationKey) currentFrameSet.setVisible(false);
 
             if (i == animationKey) {
+                fs.setBackward(isBackward());
                 fs.setLoop(loop);
                 fs.play();
-                add(fs);
+                fs.setVisible(true);
             }
         }
 
         if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().animation(this, loop);
     }
 
-    private void fixXY() {
+    protected void fixXY() {
         for (IFramedDisplayObject fs : animations) {
             if (fs != null) {
                 float leftOffset = direction == Direction.LEFT ? fs.getWidth() : 0;
@@ -191,6 +203,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setDirection(int direction) {
+        if (direction == this.direction) return;
         this.direction = direction;
 
         for (IFramedDisplayObject fs : animations) {

@@ -31,6 +31,7 @@ public class FramedDisplayObjectContainer extends DisplayObjectContainer impleme
     private int slowingCounter;
     private int currentFrameIndex;
     private ISprite currentSprite;
+    private boolean backward;
 
     public FramedDisplayObjectContainer(ISprite[] frameSprites, boolean cloneEach) {
         this();
@@ -56,6 +57,16 @@ public class FramedDisplayObjectContainer extends DisplayObjectContainer impleme
     }
 
     @Override
+    public void setBackward(boolean backward) {
+        this.backward = backward;
+    }
+
+    @Override
+    public boolean isBackward() {
+        return backward;
+    }
+
+    @Override
     public void processFrame() {
         if (!playing)
             return;
@@ -63,7 +74,8 @@ public class FramedDisplayObjectContainer extends DisplayObjectContainer impleme
         slowingCounter++;
         if (slowingCounter >= slowing) {
             slowingCounter = 0;
-            nextFrame();
+            if (backward) prevFrame();
+            else nextFrame();
         }
 
     }
@@ -97,7 +109,13 @@ public class FramedDisplayObjectContainer extends DisplayObjectContainer impleme
     @Override
     public void prevFrame() {
         currentFrameIndex--;
-        if (currentFrameIndex < 0) currentFrameIndex = 0;
+        if (currentFrameIndex < 0) {
+            if (loop) {
+                currentFrameIndex = getFrameCount() - 1;
+            } else {
+                currentFrameIndex = 0;
+            }
+        }
         drawCurrentFrame();
     }
 
@@ -139,10 +157,10 @@ public class FramedDisplayObjectContainer extends DisplayObjectContainer impleme
     @Override
     public void setFrameTextures(Texture[] textures) {
         frames = new ISprite[textures.length];
-        for(int i = 0; i < textures.length; i ++) {
+        for (int i = 0; i < textures.length; i++) {
             frames[i] = new Sprite(textures[i]);
         }
-        if(frames.length > 0) {
+        if (frames.length > 0) {
             setFrame(0);
         }
     }
@@ -167,7 +185,7 @@ public class FramedDisplayObjectContainer extends DisplayObjectContainer impleme
                 frames[i] = frame;
             }
         }
-        if(sprites.length > 0) {
+        if (sprites.length > 0) {
             setFrame(0);
         }
     }

@@ -123,12 +123,12 @@ public class IntroRoot extends Root {
             );
             add(plainRect);
 
-            add(new CityBgSprite(), 0, 150);
+            add(new CityBgSprite(), 0, 200);
 
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
             labelThanksTo.setText("Special thanks to");
-            add(labelThanksTo, 380, 330 - 80);
+            add(labelThanksTo, D2D2.getStage().getStageWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
 
             ThanksToContainer thanksToContainer = new ThanksToContainer();
             add(thanksToContainer, 0, 300);
