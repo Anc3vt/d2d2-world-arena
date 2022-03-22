@@ -112,6 +112,9 @@ public class LWJGLRenderer implements IRenderer {
 
         if (!displayObject.isVisible()) return;
 
+        displayObject.onEachFrame();
+        displayObject.dispatchEvent(EventPool.simpleEventSingleton(Event.EACH_FRAME, displayObject));
+
         float scX = displayObject.getScaleX() * toScaleX;
         float scY = displayObject.getScaleY() * toScaleY;
         float r = displayObject.getRotation() + toRotation;
@@ -140,9 +143,6 @@ public class LWJGLRenderer implements IRenderer {
         if (displayObject instanceof IFramedDisplayObject f) {
             f.processFrame();
         }
-
-        displayObject.onEachFrame();
-        displayObject.dispatchEvent(EventPool.simpleEventSingleton(Event.EACH_FRAME, displayObject));
 
         GL30.glPopMatrix();
     }

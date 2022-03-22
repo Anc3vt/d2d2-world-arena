@@ -122,7 +122,7 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
     }
 
     private boolean isMouseAtPanels(float mouseX, float mouseY) {
-        return panels.stream().anyMatch(panel ->
+        return panels.stream().filter(p->isOnScreen() && p.isVisible()).anyMatch(panel ->
                 isMouseAtArea(mouseX, mouseY, panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight()));
     }
 

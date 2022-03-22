@@ -85,4 +85,9 @@ public class ClientListenerAdapter implements ClientListener{
     public void playerDeath(int deadPlayerId, int killerPlayerId) {
 
     }
+
+    @Override
+    public void playerChatEvent(int playerId, String action) {
+        
+    }
 }

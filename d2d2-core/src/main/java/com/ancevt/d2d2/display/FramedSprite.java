@@ -124,12 +124,12 @@ public class FramedSprite extends Sprite implements IFramedDisplayObject {
         if (this.currentFrameIndex >= frameTextures.length) {
             if (loop) {
                 this.currentFrameIndex = 0;
-                dispatchEvent(EventPool.createEvent(Event.COMPLETE, this));
+                dispatchEvent(EventPool.createEvent(Event.COMPLETE));
                 play();
             } else {
                 this.currentFrameIndex--;
                 stop();
-                dispatchEvent(EventPool.createEvent(Event.COMPLETE, this));
+                dispatchEvent(EventPool.createEvent(Event.COMPLETE));
             }
         }
 

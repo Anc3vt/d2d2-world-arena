@@ -192,10 +192,12 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
         return direction;
     }
 
+    @Property
     public void setDegree(float degree) {
         this.degree = degree;
     }
 
+    @Property
     public float getDegree() {
         return degree;
     }

@@ -35,6 +35,7 @@ import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
 import com.ancevt.d2d2world.net.dto.client.MapLoadedReport;
+import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncMotion;
@@ -44,13 +45,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
+import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
+import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 
 @Slf4j
 public class WorldScene extends DisplayObjectContainer {
@@ -64,10 +70,13 @@ public class WorldScene extends DisplayObjectContainer {
     private long frameCounter;
     private PlayerActor localPlayerActor;
     private final GameObjectTexts gameObjectTexts;
+    private final Map<Integer, PlayerActor> playerActorMap;
 
     public WorldScene() {
         MapIO.mapsDirectory = "data/maps/";
         MapIO.mapkitsDirectory = "data/mapkits/";
+
+        playerActorMap = new HashMap<>();
 
         world = new World();
         gameObjectTexts = new GameObjectTexts(world);
@@ -77,7 +86,6 @@ public class WorldScene extends DisplayObjectContainer {
         world.setVisible(false);
         world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
         add(world);
-
 
         shadowRadial = new ShadowRadial() {
             @Override
@@ -112,14 +120,31 @@ public class WorldScene extends DisplayObjectContainer {
                 result.getPlayers().forEach(p -> {
                     if (world.getGameObjectById(p.getPlayerActorGameObjectId()) instanceof PlayerActor playerActor) {
                         playerActorUiText(playerActor, p.getId(), p.getName());
+                        playerActorMap.put(p.getId(), playerActor);
                     }
                 });
             }
+
+
         });
 
         MODULE_CONFIG.addConfigChangeListener(this::config_configChangeListener);
 
         config_configChangeListener(DEBUG_GAME_OBJECT_IDS, MODULE_CONFIG.getBoolean(DEBUG_GAME_OBJECT_IDS));
+
+        MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_OPEN, event -> {
+            MODULE_CLIENT.sendDto(PlayerChatEventDto.builder()
+                    .playerId(MODULE_CLIENT.getLocalPlayerId())
+                    .action(OPEN)
+                    .build());
+        });
+
+        MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_CLOSE, event -> {
+            MODULE_CLIENT.sendDto(PlayerChatEventDto.builder()
+                    .playerId(MODULE_CLIENT.getLocalPlayerId())
+                    .action(CLOSE)
+                    .build());
+        });
 
         MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//gameobjectids",
@@ -258,18 +283,22 @@ public class WorldScene extends DisplayObjectContainer {
 
             getRoot().addEventListener(this, InputEvent.MOUSE_MOVE, event -> {
                 var e = (InputEvent) event;
-                float x = e.getX();
-                float y = e.getY();
 
-                float wx = world.getAbsoluteX();
-                float wy = world.getAbsoluteY();
 
-                float scale = world.getAbsoluteScaleX();
+                float scaleX = world.getAbsoluteScaleX();
+                float scaleY = world.getAbsoluteScaleY();
 
-                float worldX = (x - wx) / scale;
-                float worldY = (y - wy) / scale;
+                float wx = world.getAbsoluteX() / scaleX;
+                float wy = world.getAbsoluteY() / scaleY;
 
-                if(localPlayerActor != null) {
+                float x = e.getX() / 2;
+                float y = e.getY() / 2;
+
+                float worldX = (x - wx);
+                float worldY = (y - wy);
+
+                if (localPlayerActor != null) {
+                    //MODULE_CHAT.addMessage("x: " + x + " wx: " + wx + " scaleX: " + scaleX + " worldX: " + worldX + " pX: " + localPlayerActor.getX());
                     localPlayerActor.setAimXY(worldX, worldY);
                     MODULE_CLIENT.sendAimXY(worldX, worldY);
                 }
@@ -277,7 +306,7 @@ public class WorldScene extends DisplayObjectContainer {
 
             getRoot().addEventListener(this, InputEvent.MOUSE_DOWN, event -> {
                 var e = (InputEvent) event;
-                if(localPlayerActor != null) {
+                if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(true);
                     if (oldState != localPlayerController.getState()) {
@@ -288,7 +317,7 @@ public class WorldScene extends DisplayObjectContainer {
 
             getRoot().addEventListener(this, InputEvent.MOUSE_UP, event -> {
                 var e = (InputEvent) event;
-                if(localPlayerActor != null) {
+                if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(false);
                     if (oldState != localPlayerController.getState()) {
@@ -333,29 +362,51 @@ public class WorldScene extends DisplayObjectContainer {
         }
     }
 
-    public void playerActorUiText(PlayerActor playerActor, int playerId, String playerName) {
-        UiText uiText = new UiText(playerName + "(" + playerId + ")");
-        uiText.setScale(0.5f, 0.5f);
-        playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
+    /**
+     * Called from {@link GameRoot}
+     */
+    public void playerChatEvent(int playerId, String action) {
+        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
+
+            ChatHint chatHint = (ChatHint) playerActor.extra().get(ChatHint.class.getName());
+            if (chatHint == null) {
+                chatHint = new ChatHint() {
+                    @Override
+                    public void onEachFrame() {
+                        super.onEachFrame();
+                        setXY(playerActor.getX() - this.getWidth() / 4, playerActor.getY() - 48);
+                    }
+                };
+                chatHint.setScale(0.5f, 0.5f);
+                playerActor.extra().put(ChatHint.class.getName(), chatHint);
+            }
+
+            switch (action) {
+                case OPEN -> world.add(chatHint);
+                case CLOSE -> chatHint.removeFromParent();
+            }
+        });
     }
 
+    /**
+     * Called from {@link GameRoot}
+     */
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         world.getCamera().setAttachedTo(localPlayerActor);
-        /*localPlayerActor.getController().setControllerChangeListener(c -> {
-            float deg = RotationUtils.getDegreeBetweenPoints(
-                    localPlayerActor.getX(),
-                    localPlayerActor.getY(),
-                    Mouse.getX() + world.getX(),
-                    Mouse.getY() + world.getY()
-            );
-
-            localPlayerActor.setArmDegree(deg);
-        });*/
-
         playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
+    }
+
+    public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
+        UiText uiText = new UiText(playerName + "(" + playerId + ")");
+        uiText.setScale(0.5f, 0.5f);
+        playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
+    }
+
+    private Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {
+        return Optional.ofNullable(playerActorMap.get(playerId));
     }
 
     @Override
@@ -382,4 +433,6 @@ public class WorldScene extends DisplayObjectContainer {
         world.clear();
         world.setVisible(false);
     }
+
+
 }

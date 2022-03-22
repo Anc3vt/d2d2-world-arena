@@ -185,8 +185,6 @@ public class GameObjectEditor {
     }
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
-
-        float worldScale = getWorld().getAbsoluteScaleX();
         playerActor.setAimXY(worldX, worldY);
 
 

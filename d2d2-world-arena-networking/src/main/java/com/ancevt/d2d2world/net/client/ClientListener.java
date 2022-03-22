@@ -57,4 +57,6 @@ public interface ClientListener {
     void localPlayerActorGameObjectId(int playerActorGameObjectId);
 
     void playerDeath(int deadPlayerId, int killerPlayerId);
+
+    void playerChatEvent(int playerId, String action);
 }

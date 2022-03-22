@@ -21,7 +21,7 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.touch.TouchButton;
 
 public class Checkbox extends Component {
@@ -64,7 +64,7 @@ public class Checkbox extends Component {
 		add(label);
 		
 		touchButton = new TouchButton();
-		touchButton.addEventListener(TouchEvent.TOUCH_DOWN, e->{
+		touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e->{
 			setChecked(!isChecked());
 
 			Focus.setFocusedComponent(this);

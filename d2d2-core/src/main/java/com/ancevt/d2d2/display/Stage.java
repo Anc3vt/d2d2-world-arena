@@ -194,7 +194,7 @@ public class Stage extends DisplayObjectContainer {
     }
 
     static void dispatchAddToStage(@NotNull IDisplayObject displayObject) {
-        displayObject.dispatchEvent(EventPool.createEvent(Event.ADD_TO_STAGE, displayObject));
+        displayObject.dispatchEvent(EventPool.createEvent(Event.ADD_TO_STAGE));
 
         if (displayObject instanceof IDisplayObjectContainer container) {
             for (int i = 0; i < container.getChildCount(); i++) {
@@ -204,7 +204,7 @@ public class Stage extends DisplayObjectContainer {
     }
 
     static void dispatchRemoveFromStage(@NotNull IDisplayObject displayObject) {
-        displayObject.dispatchEvent(EventPool.createEvent(Event.REMOVE_FROM_STAGE, displayObject));
+        displayObject.dispatchEvent(EventPool.createEvent(Event.REMOVE_FROM_STAGE));
 
         if (displayObject instanceof IDisplayObjectContainer container) {
             for (int i = 0; i < container.getChildCount(); i++) {

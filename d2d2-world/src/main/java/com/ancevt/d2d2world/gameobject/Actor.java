@@ -154,6 +154,7 @@ abstract public class Actor extends Animated implements
 
     private void fixBodyPartsY() {
         if (weapon != null) {
+
             IDisplayObject weaponDisplayObject = weapon.getDisplayObject();
             float w = weaponDisplayObject.getWidth();
             float h = weaponDisplayObject.getHeight();
@@ -164,12 +165,14 @@ abstract public class Actor extends Animated implements
                 armSprite.setY(-8);
                 weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             }
+
+
         }
 
         if (headContainer != null) {
             switch (getAnimation()) {
                 case WALK, WALK_ATTACK -> {
-                    headContainer.setXY(3 * getDirection(), -6);
+                    headContainer.setXY(3 * getDirection(), -5);
                 }
                 default -> {
                     headContainer.setXY(0, -4);
@@ -217,46 +220,6 @@ abstract public class Actor extends Animated implements
         fixBodyPartsY();
     }
 
-
-    @Override
-    public void onEachFrame() {
-        super.onEachFrame();
-        if (damagingTime > 0) {
-            damagingTime--;
-            setAlpha((damagingTime / 2) % 2 == 0 ? 1.0f : 0.0f);
-        }
-
-        float deg = RotationUtils.getDegreeBetweenPoints(getX(), getY(), aimX, aimY);
-
-        if (aimX < getX()) {
-            setDirection(-1);
-        } else {
-            setDirection(1);
-        }
-
-        setBackward(goDirection != getDirection());
-
-        if (getDirection() == Direction.RIGHT) {
-            if (deg > 35) deg = 35;
-            else if (deg < -30) deg = -30;
-
-            headContainer.setRotation(-deg);
-        } else {
-            deg += 100;
-            if (deg > 0 && deg < 255) deg = 255;
-            else if (deg < 0 && deg >= -45) deg = -45;
-
-            headContainer.setRotation(-deg + 100);
-        }
-    }
-
-    public void setAimXY(float targetX, float targetY) {
-        this.aimX = targetX;
-        this.aimY = targetY;
-
-        if(isOnWorld()) getWorld().getSyncDataAggregator().aim(this);
-    }
-
     @Override
     public void setWorld(World world) {
         this.world = world;
@@ -287,6 +250,57 @@ abstract public class Actor extends Animated implements
         bitmapTextDebug.setText(o != null ? o.toString() : null);
         add(bitmapTextDebug);
         bitmapTextDebug.setScale(0.30f, 0.30f);
+    }
+
+    @Override
+    public void onEachFrame() {
+        super.onEachFrame();
+        if (damagingTime > 0) {
+            damagingTime--;
+            setAlpha((damagingTime / 2) % 2 == 0 ? 1.0f : 0.0f);
+        }
+
+        float deg = RotationUtils.getDegreeBetweenPoints(getX(), getY(), aimX, aimY);
+
+        if (aimX < getX()) {
+            setDirection(-1);
+        } else {
+            setDirection(1);
+        }
+
+        setBackward(goDirection != getDirection());
+
+        weaponContainer.setRotation(-deg);
+        weaponDegree = -deg;
+
+        if (getDirection() == Direction.RIGHT) {
+            if (deg > 22) deg = 22;
+            else if (deg < -30) deg = -30;
+
+            headContainer.setRotation(-deg);
+        } else {
+            deg += 100;
+
+            if (deg > 0 && deg < 255) deg = 255;
+            else if (deg < 0 && deg >= -60) deg = -60;
+
+            headContainer.setRotation(-deg + 100);
+        }
+    }
+
+    public void setAimXY(float targetX, float targetY) {
+        this.aimX = targetX;
+        this.aimY = targetY;
+
+        if(isOnWorld()) getWorld().getSyncDataAggregator().aim(this);
+    }
+
+    public float getAimX() {
+        return aimX;
+    }
+
+    public float getAimY() {
+        return aimY;
     }
 
     public final void debug(
@@ -596,13 +610,6 @@ abstract public class Actor extends Animated implements
         }
     }
 
-    public void setArmDegree(float deg) {
-        this.weaponDegree = deg;
-        weaponContainer.setRotation(deg);
-
-        if (isOnWorld()) getWorld().getSyncDataAggregator().armDegree(this);
-    }
-
     public float getArmDegree() {
         return weaponDegree;
     }
@@ -827,14 +834,6 @@ abstract public class Actor extends Animated implements
     public void mouseMove(float worldX, float worldY) {
         aimX = worldX;
         aimY = worldY;
-    }
-
-    public float getAimX() {
-        return aimX;
-    }
-
-    public float getAimY() {
-        return aimY;
     }
 }
 

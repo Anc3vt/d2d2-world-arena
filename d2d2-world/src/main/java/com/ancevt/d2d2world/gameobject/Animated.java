@@ -143,7 +143,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
                 fs.setBackward(isBackward());
                 fs.setLoop(loop);
 
-                //if(animationKey != AnimationKey.WALK_ATTACK) fs.setFrame(0);
+                if(animationKey != AnimationKey.WALK_ATTACK) fs.setFrame(0);
 
                 fs.play();
                 fs.setVisible(true);

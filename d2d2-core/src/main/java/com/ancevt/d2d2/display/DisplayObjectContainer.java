@@ -40,7 +40,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     @Override
     public void add(@NotNull IDisplayObject child) {
         ((DisplayObject) child).setParent(this);
-        child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
+        child.dispatchEvent(EventPool.createEvent(Event.ADD, this));
         children.remove(child);
         children.add(child);
 
@@ -50,7 +50,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     @Override
     public void add(@NotNull IDisplayObject child, int index) {
         ((DisplayObject) child).setParent(this);
-        child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
+        child.dispatchEvent(EventPool.createEvent(Event.ADD, this));
 
         children.remove(child);
         children.add(index, child);
@@ -62,7 +62,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     public void add(@NotNull IDisplayObject child, float x, float y) {
         child.setXY(x, y);
         ((DisplayObject) child).setParent(this);
-        child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
+        child.dispatchEvent(EventPool.createEvent(Event.ADD, this));
 
         children.remove(child);
         children.add(child);
@@ -75,7 +75,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     public void add(@NotNull IDisplayObject child, int index, float x, float y) {
         child.setXY(x, y);
         ((DisplayObject) child).setParent(this);
-        child.dispatchEvent(EventPool.createEvent(Event.ADD, child, this));
+        child.dispatchEvent(EventPool.createEvent(Event.ADD, this));
 
         children.remove(child);
         children.add(index, child);
@@ -88,7 +88,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
         final boolean removedFromStage = child.getStage() != null;
 
         ((DisplayObject) child).setParent(null);
-        child.dispatchEvent(EventPool.createEvent(Event.REMOVE, child, this));
+        child.dispatchEvent(EventPool.createEvent(Event.REMOVE, this));
 
         children.remove(child);
 

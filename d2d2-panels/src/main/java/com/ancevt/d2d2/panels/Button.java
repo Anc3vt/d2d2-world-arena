@@ -20,7 +20,7 @@ package com.ancevt.d2d2.panels;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.touch.TouchButton;
 
 public class Button extends Panel {
@@ -47,7 +47,7 @@ public class Button extends Panel {
 
         touchButton = new TouchButton();
 
-        touchButton.addEventListener(TouchEvent.TOUCH_DOWN, e -> {
+        touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e -> {
             Focus.setFocusedComponent(this);
 
             borderLeft.setColor(BORDER_COLOR_2);
@@ -58,8 +58,8 @@ public class Button extends Panel {
             pressed = true;
         });
 
-        touchButton.addEventListener(TouchEvent.TOUCH_UP, event -> {
-            var e = (TouchEvent) event;
+        touchButton.addEventListener(TouchButtonEvent.TOUCH_UP, event -> {
+            var e = (TouchButtonEvent) event;
 
             borderLeft.setColor(BORDER_COLOR_1);
             borderRight.setColor(BORDER_COLOR_2);

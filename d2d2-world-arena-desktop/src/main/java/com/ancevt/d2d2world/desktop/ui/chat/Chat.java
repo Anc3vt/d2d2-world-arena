@@ -17,7 +17,6 @@
  */
 package com.ancevt.d2d2world.desktop.ui.chat;
 
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.*;
@@ -30,8 +29,8 @@ import com.ancevt.d2d2world.desktop.ui.Font;
 import com.ancevt.d2d2world.desktop.ui.UiTextInput;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
-import com.ancevt.d2d2world.net.client.Player;
 import com.ancevt.util.repl.ReplInterpreter;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -45,6 +44,10 @@ public class Chat extends DisplayObjectContainer {
     private static final int MAX_MESSAGES = 100;
 
     private static final int INPUT_MAX_LENGTH = 100;
+
+    private static final int ALPHA_TIME = 500;
+
+    private int alphaTime = ALPHA_TIME;
 
     private final UiTextInput input;
     private final List<ChatMessage> messages;
@@ -139,6 +142,7 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void setScroll(int scroll) {
+        setAlpha(1.0f);
         if (this.scroll == scroll) return;
 
         if (scroll > messages.size() - getMessageCountOnDisplay()) {
@@ -160,17 +164,6 @@ public class Chat extends DisplayObjectContainer {
         redraw();
     }*/
 
-    public void addPlayerMessage(int id, @NotNull Player remotePlayer, @NotNull String messageText,
-                                 Color textColor) {
-        addPlayerMessage(
-                id,
-                remotePlayer.getId(),
-                remotePlayer.getName(),
-                remotePlayer.getColor(),
-                messageText,
-                textColor
-        );
-    }
 
     public void addPlayerMessage(int id,
                                  int playerId,
@@ -201,6 +194,8 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void addMessage(@NotNull String messageText, @NotNull Color textColor) {
+        setAlpha(1.0f);
+        alphaTime = ALPHA_TIME;
         if (messageText.length() > 100) {
             StringBuilder s = new StringBuilder();
             for (int i = 0; i < messageText.length(); i += 100) {
@@ -224,6 +219,8 @@ public class Chat extends DisplayObjectContainer {
     }
 
     private void addMessage(@NotNull ChatMessage chatMessage) {
+        setAlpha(1.0f);
+        alphaTime = ALPHA_TIME;
         chatMessage.setShadowEnabled(isShadowEnabled());
         messages.add(chatMessage);
 
@@ -240,6 +237,8 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void openInput() {
+        setAlpha(1.0f);
+        alphaTime = ALPHA_TIME;
         add(input);
         dispatchEvent(ChatEvent.builder()
                 .type(ChatEvent.CHAT_INPUT_OPEN)
@@ -269,6 +268,8 @@ public class Chat extends DisplayObjectContainer {
             switch (event.getType()) {
 
                 case UiTextInputEvent.TEXT_CHANGE -> {
+                    setAlpha(1.0f);
+                    alphaTime = ALPHA_TIME;
                     String text = uiTextInputEvent.getText();
                     int length = text.length();
                     if (length > INPUT_MAX_LENGTH) {
@@ -340,6 +341,16 @@ public class Chat extends DisplayObjectContainer {
         historyIndex = history.size();
     }
 
+    @Override
+    public void onEachFrame() {
+        super.onEachFrame();
+
+        alphaTime--;
+        if(alphaTime <= 0) {
+            setAlpha(0.25f);
+            alphaTime = 0;
+        }
+    }
 
     public static void main(String[] args) {
         D2D2.init(new LWJGLStarter(800, 600, "(floating)"));

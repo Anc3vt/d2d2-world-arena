@@ -25,7 +25,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Clipboard;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
@@ -108,7 +108,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
 
         addEventListener(Event.ADD_TO_STAGE, this);
         addEventListener(Event.REMOVE_FROM_STAGE, this);
-        touchButton.addEventListener(TouchEvent.TOUCH_DOWN, this);
+        touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, this);
     }
 
     public void setColor(Color color) {
@@ -185,7 +185,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     public void dispose() {
         removeEventListener(Event.ADD_TO_STAGE, this);
         removeEventListener(Event.REMOVE_FROM_STAGE, this);
-        touchButton.removeEventListener(TouchEvent.TOUCH_DOWN, this);
+        touchButton.removeEventListener(TouchButtonEvent.TOUCH_DOWN, this);
         touchButton.setEnabled(false);
         removeFromParent();
         UiTextInputProcessor.INSTANCE.removeTextInput(this);
@@ -243,11 +243,11 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
                 if (isFocused()) UiTextInputProcessor.INSTANCE.resetFocus();
             }
 
-            case TouchEvent.TOUCH_DOWN -> {
-                TouchEvent touchEvent = (TouchEvent) event;
+            case TouchButtonEvent.TOUCH_DOWN -> {
+                TouchButtonEvent touchButtonEvent = (TouchButtonEvent) event;
                 UiTextInputProcessor.INSTANCE.focus(this);
                 // TODO: repair caret position when scale mode is extended
-                setCaretPosition((int) (touchEvent.getX() / uiText.getCharWidth()));
+                setCaretPosition((int) (touchButtonEvent.getX() / uiText.getCharWidth()));
             }
         }
     }

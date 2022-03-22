@@ -236,7 +236,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         if (dto instanceof MapLoadedReport) {
             MODULE_WORLD_SCENE.getWorld().getSyncGameObjects().forEach(o -> {
                 byte[] bytes = SyncDataAggregator.createSyncMessageOf(o);
-                if(bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
+                if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
             });
 
             MODULE_SENDER.sendToPlayer(playerId,
@@ -347,6 +347,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setPingValue(d.getPing()));
         }
 
+        if (dto instanceof PlayerChatEventDto d) {
+            serverSender.sendToAll(d);
+        }
 
     }
 

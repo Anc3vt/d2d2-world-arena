@@ -59,14 +59,14 @@ public final class ServerProtocolImpl extends ProtocolImpl {
             switch (message.getType()) {
 
                 case MessageType.PING -> {
-                    log.debug("received <b>PING<> {}", connectionId);
+                    log.trace("received <b>PING<> {}", connectionId);
                     serverProtocolImplListeners.forEach(l -> l.ping(connectionId));
                 }
 
                 case MessageType.CLIENT_PLAYER_AIM_XY -> {
                     float x = in.readFloat();
                     float y = in.readFloat();
-                    log.debug("received <b>CLIENT_PLAYER_AIM_XY<> {} {} {}", connectionId, x, y);
+                    log.trace("received <b>CLIENT_PLAYER_AIM_XY<> {} {} {}", connectionId, x, y);
                     serverProtocolImplListeners.forEach(l -> l.playerAimXY(connectionId, x, y));
                 }
 
@@ -78,8 +78,8 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
                 case MessageType.CLIENT_REQUEST_FILE -> {
                     String headers = in.readUtf(short.class);
-                    if (log.isDebugEnabled()) {
-                        log.debug("received <b>CLIENT_REQUEST_FILE<> from {}\n<g>{}<>", connectionId, headers);
+                    if (log.isTraceEnabled()) {
+                        log.trace("received <b>CLIENT_REQUEST_FILE<> from {}\n<g>{}<>", connectionId, headers);
                     }
                     serverProtocolImplListeners.forEach(l -> l.requestFile(connectionId, headers));
                 }
@@ -88,8 +88,8 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     Headers headers = Headers.of(in.readUtf(short.class));
                     int contentLength = in.readInt();
                     byte[] fileData = in.readBytes(contentLength);
-                    if (log.isDebugEnabled()) {
-                        log.debug("received <b>FILE_DATA<> from {}\n<g>{}\n<contentLength={}<>",
+                    if (log.isTraceEnabled()) {
+                        log.trace("received <b>FILE_DATA<> from {}\n<g>{}\n<contentLength={}<>",
                                 connectionId,
                                 headers,
                                 contentLength);

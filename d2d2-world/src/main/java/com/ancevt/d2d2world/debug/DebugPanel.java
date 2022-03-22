@@ -10,7 +10,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.touch.TouchButton;
 
@@ -58,8 +58,8 @@ public class DebugPanel extends DisplayObjectContainer {
         add(text);
 
         touchButton = new TouchButton(width, height, true);
-        touchButton.addEventListener(TouchEvent.TOUCH_DOWN, this::touchButton_touchDown);
-        touchButton.addEventListener(TouchEvent.TOUCH_DRAG, this::touchButton_touchDrag);
+        touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, this::touchButton_touchDown);
+        touchButton.addEventListener(TouchButtonEvent.TOUCH_DRAG, this::touchButton_touchDrag);
 
         addEventListener(DebugPanel.class, Event.ADD_TO_STAGE, this::this_addToStage);
 
@@ -97,13 +97,13 @@ public class DebugPanel extends DisplayObjectContainer {
     }
 
     private void touchButton_touchDown(Event event) {
-        var e = (TouchEvent) event;
+        var e = (TouchButtonEvent) event;
         oldX = (int) (e.getX() + getX());
         oldY = (int) (e.getY() + getY());
     }
 
     private void touchButton_touchDrag(Event event) {
-        var e = (TouchEvent) event;
+        var e = (TouchButtonEvent) event;
 
         if (shiftDown) {
             bg.setSize(e.getX() + 1, e.getY() + 1);

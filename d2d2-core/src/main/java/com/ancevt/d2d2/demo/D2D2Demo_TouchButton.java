@@ -25,7 +25,7 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.touch.TouchButton;
 
@@ -57,9 +57,9 @@ public class D2D2Demo_TouchButton {
             plainRect = new PlainRect(w, h, Color.DARK_GRAY);
             TouchButton touchButton = new TouchButton(w, h);
             touchButton.setEnabled(true);
-            touchButton.addEventListener(TouchEvent.TOUCH_DOWN, this);
-            touchButton.addEventListener(TouchEvent.TOUCH_DRAG, this::touchDrag);
-            touchButton.addEventListener(TouchEvent.TOUCH_HOVER, this::touchHover);
+            touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, this);
+            touchButton.addEventListener(TouchButtonEvent.TOUCH_DRAG, this::touchDrag);
+            touchButton.addEventListener(TouchButtonEvent.TOUCH_HOVER, this::touchHover);
 
 
             add(plainRect);
@@ -67,12 +67,12 @@ public class D2D2Demo_TouchButton {
         }
 
         private void touchHover(Event event) {
-            TouchEvent e = (TouchEvent) event;
+            TouchButtonEvent e = (TouchButtonEvent) event;
             plainRect.setColor(Color.GRAY);
         }
 
         private void touchDrag(Event event) {
-            TouchEvent e = (TouchEvent) event;
+            TouchButtonEvent e = (TouchButtonEvent) event;
             if (e.isOnArea()) {
                 plainRect.setColor(Color.DARK_GREEN);
             } else {
@@ -82,7 +82,7 @@ public class D2D2Demo_TouchButton {
 
         @Override
         public void onEvent(Event event) {
-            if(Objects.equals(event.getType(), TouchEvent.TOUCH_DOWN)) {
+            if(Objects.equals(event.getType(), TouchButtonEvent.TOUCH_DOWN)) {
                 System.out.println(this);
             }
         }

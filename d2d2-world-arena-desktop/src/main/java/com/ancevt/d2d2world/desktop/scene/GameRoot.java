@@ -23,6 +23,7 @@ import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2.event.IEventDispatcher;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.debug.DebugPanel;
@@ -282,15 +283,20 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void playerChatEvent(int playerId, String action) {
+        worldScene.playerChatEvent(playerId, action);
+    }
+
+    /**
      * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override
     public void progress(@NotNull FileReceiver fileReceiver) {
         int proc = (fileReceiver.bytesLoaded() / fileReceiver.bytesTotal()) * 100;
-        MODULE_CHAT.addMessage(
-                format("%d%% content load %s", proc, fileReceiver.getPath()),
-                Color.DARK_GRAY
-        );
+        MODULE_CHAT.addMessage(format("%d%% content load %s", proc, fileReceiver.getPath()), Color.DARK_GRAY);
     }
 
     /**
@@ -298,10 +304,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void complete(@NotNull FileReceiver fileReceiver) {
-        MODULE_CHAT.addMessage(
-                format("content up-to-date %s", fileReceiver.getPath()),
-                Color.DARK_GRAY
-        );
+        MODULE_CHAT.addMessage(format("content up-to-date %s", fileReceiver.getPath()), Color.DARK_GRAY);
     }
 
     private void setTabWindowVisible(boolean value) {
@@ -317,7 +320,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         return MODULE_COMMAND_PROCESSOR.process(text);
     }
 
-    private void addToStage(Event event) {
+    private void addToStage(Event<IEventDispatcher> event) {
         add(new FpsMeter(), 0, getStage().getStageWidth() - 100);
     }
 

@@ -23,7 +23,7 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.touch.TouchButton;
 
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class DropList extends Component {
         add(label);
 
         touchButton = new TouchButton(true);
-        touchButton.addEventListener(TouchEvent.TOUCH_DOWN, e -> {
+        touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e -> {
             if (opened) {
                 openRect.getParent().remove(openRect);
                 opened = false;
@@ -169,7 +169,7 @@ public class DropList extends Component {
             openRect.add(bitmapText);
 
             final TouchButton button = new TouchButton(true);
-            button.addEventListener(TouchEvent.TOUCH_DOWN, e->{
+            button.addEventListener(TouchButtonEvent.TOUCH_DOWN, e->{
                 select(item.getKey());
                 openRect.getParent().remove(openRect);
                 opened = false;

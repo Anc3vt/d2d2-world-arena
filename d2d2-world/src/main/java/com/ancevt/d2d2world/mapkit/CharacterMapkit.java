@@ -80,7 +80,7 @@ public class CharacterMapkit extends Mapkit {
                 hook-attack = 336,96,48,48 |
                 damage = 48,144,48,48 |
                 head = 240,144,16,24; 256,144,16,24 |
-                headFall = 273,144,16,24 |
+                headFall = 272,144,16,24 |
                 arm = 240,176,16,16 |
                 """;
 
@@ -94,18 +94,20 @@ public class CharacterMapkit extends Mapkit {
                 class =""" + PlayerActor.class.getName() + """
                 |
                 damagePower = 1 |
-                weight = 1 |
+                weight = 0.4 |
                 maxHealth = 100 |
                 health = 100 |
                 speed = 0.75 |
-                jumpPower = 8 |
+                jumpPower = 3.5 |
                 collisionX = -6 |
                 collisionY = -12 |
                 collisionWidth = 12 |
                 collisionHeight = 28 |
                 
+                weaponX=15 |
+                weaponY=-3 |
                 atlas=blake-and-ava-tileset.png |
-                idle = 0,192,48,48; 48,192,48,48 |
+                idle = 96,192,48,48; 144,192,48,48 |
                 attack = 96,192,48,48; 144,192,48,48 |
                 walk = 192,192,48,48; 240,192,48,48; 288,192,48,48; 336,192,48,48 |
                 walk-attack = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48 |
@@ -115,7 +117,10 @@ public class CharacterMapkit extends Mapkit {
                 fall-attack = 336,240,48,48 |
                 hook = 288,288,48,48 |
                 hook-attack = 336,288,48,48 |
-                damage = 48,336,48,48
+                damage = 48,336,48,48 |
+                head = 240,336,16,24; 256,336,16,24 |
+                headFall = 272,336,16,24 |
+                arm = 240,368,16,16 |
                 """;
 
         DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));

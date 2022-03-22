@@ -59,7 +59,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
             switch (message.getType()) {
 
                 case MessageType.PING -> {
-                    log.debug("received <b>PING<>");
+                    log.trace("received <b>PING<>");
                     clientProtocolImplListeners.forEach(ClientProtocolImplListener::playerPingResponse);
                 }
 
@@ -72,8 +72,8 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 case MessageType.FILE_DATA -> {
                     Headers headers = Headers.of(in.readUtf(short.class));
                     int contentLength = in.readInt();
-                    if (log.isDebugEnabled()) {
-                        log.debug("received <b>FILE_DATA<>\n<g>{}<><contentLength={}><>", headers, contentLength);
+                    if (log.isTraceEnabled()) {
+                        log.trace("received <b>FILE_DATA<>\n<g>{}<><contentLength={}><>", headers, contentLength);
                     }
                     byte[] fileData = in.readBytes(contentLength);
                     FileReceiverManager.INSTANCE.fileData(headers, fileData);

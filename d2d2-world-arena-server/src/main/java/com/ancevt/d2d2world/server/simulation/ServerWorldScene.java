@@ -92,7 +92,14 @@ public class ServerWorldScene {
                 log.error(e.getMessage(), e);
             }
 
-            DebugPlayerActorCreator.createTestPlayerActor(world);
+            DebugPlayerActorCreator.createTestPlayerActor(world).addEventListener(Event.EACH_FRAME, event -> {
+                PlayerActor playerActor = (PlayerActor) event.getSource();
+
+                PlayerActor targetPlayerActor = playerActorMap.get(1);
+                if(targetPlayerActor != null) {
+                    playerActor.setAimXY(targetPlayerActor.getX(), targetPlayerActor.getY());
+                }
+            });
         }
     }
 
@@ -104,9 +111,6 @@ public class ServerWorldScene {
 
     /**
      * Calls from {@link GeneralService}
-     *
-     * @param playerId
-     * @param controllerState
      */
     public void playerController(int playerId, int controllerState) {
         PlayerActor playerActor = playerActorMap.get(playerId);
@@ -130,7 +134,7 @@ public class ServerWorldScene {
     }
 
     public void addPlayer(@NotNull Player player) {
-        MapkitItem mapkitItem = MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("character_blake");
+        MapkitItem mapkitItem = MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("character_ava");
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(world.getNextFreeGameObjectId());
         playerActor.getController().setEnabled(true);
         playerActor.setXY(448, 304);

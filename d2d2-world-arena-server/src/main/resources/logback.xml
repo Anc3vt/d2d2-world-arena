@@ -20,22 +20,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.ancevt.d2d2world.server" level="trace" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER_FILE"/>
-    </logger>
-
-    <logger name="com.ancevt.d2d2world.net.protocol" level="trace" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER_FILE"/>
-    </logger>
-
-    <logger name="com.ancevt.net.tcpb254" level="trace" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER_FILE"/>
-    </logger>
-
-    <root level="info" additivity="false">
+    <root level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </root>

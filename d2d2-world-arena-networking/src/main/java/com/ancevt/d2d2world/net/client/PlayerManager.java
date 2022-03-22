@@ -44,8 +44,8 @@ public class PlayerManager {
         return player;
     }
 
-    public boolean hasRemotePlayer(int remotePlayerId) {
-        return playerMap.containsKey(remotePlayerId);
+    public boolean hasPlayer(int playerId) {
+        return playerMap.containsKey(playerId);
     }
 
     public @NotNull Optional<Player> getPlayer(int playerId) {

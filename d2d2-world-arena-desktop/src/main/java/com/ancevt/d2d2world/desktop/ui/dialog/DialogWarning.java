@@ -92,7 +92,7 @@ public class DialogWarning extends TitledPanel implements EventListener {
     @Data
     @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
-    public static class DialogWarningEvent extends Event {
+    public static class DialogWarningEvent extends Event<DialogWarning> {
         public static final String DIALOG_OK = "dialogOk";
     }
 

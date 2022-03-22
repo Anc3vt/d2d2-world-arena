@@ -22,7 +22,17 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.world.World;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface IGameObject extends IDisplayObject, IProcessable {
+
+    //static
+    Map<IGameObject, Map<String, Object>> maps = new HashMap<>();
+
+    default Map<String, Object> extra() {
+        return maps.computeIfAbsent(this, k -> new HashMap<>());
+    }
 
     int getGameObjectId();
 
@@ -55,7 +65,6 @@ public interface IGameObject extends IDisplayObject, IProcessable {
     default boolean isOnWorld() {
         return getWorld() != null;
     }
-
 
     default void onAddToWorld(World world) {
         setWorld(world);

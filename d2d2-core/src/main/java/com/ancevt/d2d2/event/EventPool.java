@@ -21,20 +21,19 @@ import com.ancevt.d2d2.display.IDisplayObjectContainer;
 
 public class EventPool {
 
-    private static final Event SIMPLE_EVENT_SINGLETON = Event.builder().build();
+    private static final Event<IEventDispatcher> SIMPLE_EVENT_SINGLETON = Event.builder().build();
 
-    public static Event createEvent(String type, IEventDispatcher source, IDisplayObjectContainer parent) {
-        return Event.builder().type(type).source(source).parent(parent).build();
+    public static Event createEvent(String type, IDisplayObjectContainer parent) {
+        return Event.builder().type(type).parent(parent).build();
     }
 
-    public static Event createEvent(String type, IEventDispatcher source) {
-        return createEvent(type, source, null);
+    public static Event createEvent(String type) {
+        return createEvent(type, null);
     }
 
-    public static TouchEvent createTouchEvent(String type, IEventDispatcher source, int x, int y, boolean onArea) {
-        return TouchEvent.builder()
+    public static TouchButtonEvent createTouchEvent(String type, int x, int y, boolean onArea) {
+        return TouchButtonEvent.builder()
                 .type(type)
-                .source(source)
                 .x(x)
                 .y(y)
                 .onArea(onArea)

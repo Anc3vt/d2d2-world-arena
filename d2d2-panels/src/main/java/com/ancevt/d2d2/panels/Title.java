@@ -21,7 +21,7 @@ import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.touch.TouchButton;
 
 public class Title extends Component {
@@ -86,17 +86,17 @@ public class Title extends Component {
 		add(borderBottom);
 		
 		titleTouchButton = new TouchButton();
-		titleTouchButton.addEventListener(TouchEvent.TOUCH_DOWN, e->{
-			TouchEvent touchEvent = (TouchEvent)e;
-			oldX = touchEvent.getX();
-			oldY = touchEvent.getY();
+		titleTouchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e->{
+			TouchButtonEvent touchButtonEvent = (TouchButtonEvent)e;
+			oldX = touchButtonEvent.getX();
+			oldY = touchButtonEvent.getY();
 
 		});
 
-		titleTouchButton.addEventListener(TouchEvent.TOUCH_DRAG, e->{
-			TouchEvent touchEvent = (TouchEvent)e;
-			float diffX = touchEvent.getX() - oldX;
-			float diffY = touchEvent.getY() - oldY;
+		titleTouchButton.addEventListener(TouchButtonEvent.TOUCH_DRAG, e->{
+			TouchButtonEvent touchButtonEvent = (TouchButtonEvent)e;
+			float diffX = touchButtonEvent.getX() - oldX;
+			float diffY = touchButtonEvent.getY() - oldY;
 			owner.moveX(diffX);
 			owner.moveY(diffY);
 

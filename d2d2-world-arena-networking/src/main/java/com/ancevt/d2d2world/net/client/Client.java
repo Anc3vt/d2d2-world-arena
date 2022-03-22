@@ -181,9 +181,11 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             clientListeners.forEach(l -> l.serverTextToPlayer(d.getText(), d.getColor()));
         } else if (dto instanceof DeathDto d) {
             clientListeners.forEach(l -> l.playerDeath(d.getDeadPlayerId(), d.getKillerPlayerId()));
+        } else if (dto instanceof PlayerChatEventDto d) {
+            int playerId = d.getPlayerId();
+            String action = d.getAction();
+            clientListeners.forEach(l->l.playerChatEvent(playerId, action));
         }
-
-
     }
 
     /**
@@ -365,6 +367,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public IConnection getConnection() {
         return connection;
     }
+
 }
 
 

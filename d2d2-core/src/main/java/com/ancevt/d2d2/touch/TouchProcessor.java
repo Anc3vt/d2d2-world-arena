@@ -18,7 +18,7 @@
 package com.ancevt.d2d2.touch;
 
 import com.ancevt.d2d2.event.EventPool;
-import com.ancevt.d2d2.event.TouchEvent;
+import com.ancevt.d2d2.event.TouchButtonEvent;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -69,7 +69,7 @@ public class TouchProcessor {
                 final boolean onArea = x >= tcX && x <= tcX + tcW && y >= tcY && y <= tcY + tcH;
 
                 touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchEvent.TOUCH_UP, touchButton,
+                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_UP,
                                 (int) (x - tcX), (int) (y - tcY), onArea
                         )
                 );
@@ -89,7 +89,7 @@ public class TouchProcessor {
                 t.setTouchButton(touchButton);
                 t.getTouchButton().setDragging(true);
                 touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchEvent.TOUCH_DOWN, touchButton,
+                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_DOWN,
                                 (int) (x - tcX), (int) (y - tcY), true
                         )
                 );
@@ -109,14 +109,14 @@ public class TouchProcessor {
 
             if (touchButton.isOnScreen() && touchButton.isDragging()) {
                 touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchEvent.TOUCH_DRAG, touchButton,
+                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_DRAG,
                                 (int) (x - tcX), (int) (y - tcY), onArea
                         )
                 );
             }
             if (touchButton.isOnScreen() && onArea) {
                 touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchEvent.TOUCH_HOVER, touchButton,
+                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_HOVER,
                                 (int) (x - tcX), (int) (y - tcY), true
                         )
                 );

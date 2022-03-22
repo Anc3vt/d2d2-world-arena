@@ -25,7 +25,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ChatEvent extends Event {
+public class ChatEvent extends Event<Chat> {
 
     public static final String CHAT_TEXT_ENTER = "chatTextEnter";
     public static String CHAT_INPUT_OPEN = "chatInputOpen";

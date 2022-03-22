@@ -116,10 +116,11 @@ public class D2D2WorldEditorMain {
 
         MapkitItem playerActorMapkitItem = MapkitManager.getInstance()
                 .getByName(CharacterMapkit.NAME)
-                .getItem("character_blake");
+                .getItem("character_ava");
 
         playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
         playerActor.setXY(300, 300);
+        playerActor.setName("__");
         world.addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);
