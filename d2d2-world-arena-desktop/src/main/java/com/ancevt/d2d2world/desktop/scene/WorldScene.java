@@ -24,7 +24,6 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
@@ -34,7 +33,6 @@ import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
-import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
 import com.ancevt.d2d2world.net.dto.client.MapLoadedReport;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
@@ -257,6 +255,48 @@ public class WorldScene extends DisplayObjectContainer {
 
     private void addRootAndChatEventsIfNotYet() {
         if (!eventsAdded) {
+
+            getRoot().addEventListener(this, InputEvent.MOUSE_MOVE, event -> {
+                var e = (InputEvent) event;
+                float x = e.getX();
+                float y = e.getY();
+
+                float wx = world.getAbsoluteX();
+                float wy = world.getAbsoluteY();
+
+                float scale = world.getAbsoluteScaleX();
+
+                float worldX = (x - wx) / scale;
+                float worldY = (y - wy) / scale;
+
+                if(localPlayerActor != null) {
+                    localPlayerActor.setAimXY(worldX, worldY);
+                    MODULE_CLIENT.sendAimXY(worldX, worldY);
+                }
+            });
+
+            getRoot().addEventListener(this, InputEvent.MOUSE_DOWN, event -> {
+                var e = (InputEvent) event;
+                if(localPlayerActor != null) {
+                    final int oldState = localPlayerController.getState();
+                    localPlayerController.setB(true);
+                    if (oldState != localPlayerController.getState()) {
+                        MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                    }
+                }
+            });
+
+            getRoot().addEventListener(this, InputEvent.MOUSE_UP, event -> {
+                var e = (InputEvent) event;
+                if(localPlayerActor != null) {
+                    final int oldState = localPlayerController.getState();
+                    localPlayerController.setB(false);
+                    if (oldState != localPlayerController.getState()) {
+                        MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                    }
+                }
+            });
+
             getRoot().addEventListener(InputEvent.KEY_DOWN, event -> {
                 var e = (InputEvent) event;
                 final int oldState = localPlayerController.getState();
@@ -304,7 +344,7 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         world.getCamera().setAttachedTo(localPlayerActor);
-        localPlayerActor.getController().setControllerChangeListener(c -> {
+        /*localPlayerActor.getController().setControllerChangeListener(c -> {
             float deg = RotationUtils.getDegreeBetweenPoints(
                     localPlayerActor.getX(),
                     localPlayerActor.getY(),
@@ -313,7 +353,7 @@ public class WorldScene extends DisplayObjectContainer {
             );
 
             localPlayerActor.setArmDegree(deg);
-        });
+        });*/
 
         playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
     }
@@ -331,10 +371,6 @@ public class WorldScene extends DisplayObjectContainer {
         }
 
         frameCounter++;
-    }
-
-    public LocalPlayerController getLocalPlayerController() {
-        return localPlayerController;
     }
 
     public void start() {

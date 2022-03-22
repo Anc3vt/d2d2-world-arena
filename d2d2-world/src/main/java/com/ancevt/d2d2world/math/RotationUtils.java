@@ -5,9 +5,9 @@ import static java.lang.Math.*;
 
 public class RotationUtils {
 
-    private static float[] result = new float[2];
 
     public static float[] xySpeedOfDegree(float deg) {
+        var result = new float[2];
         float rad = (float) (deg * PI / 180);
         result[0] = (float) cos(rad);
         result[1] = (float) sin(rad);

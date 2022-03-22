@@ -50,4 +50,5 @@ public interface ISyncDataAggregator {
         }
     }
 
+    void aim(@NotNull Actor actor);
 }

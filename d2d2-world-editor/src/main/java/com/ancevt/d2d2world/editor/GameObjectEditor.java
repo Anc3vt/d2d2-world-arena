@@ -27,7 +27,6 @@ import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.world.Layer;
 import com.ancevt.d2d2world.world.World;
 
@@ -188,7 +187,7 @@ public class GameObjectEditor {
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
 
         float worldScale = getWorld().getAbsoluteScaleX();
-        playerActor.mouseMove(worldX, worldY);
+        playerActor.setAimXY(worldX, worldY);
 
 
         if (!moving && drag && selecting) {

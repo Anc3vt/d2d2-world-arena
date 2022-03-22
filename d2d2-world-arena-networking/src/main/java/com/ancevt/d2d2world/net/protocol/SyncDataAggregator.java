@@ -107,6 +107,14 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
+    public synchronized void aim(@NotNull Actor actor) {
+        buffer.writeByte(SyncDataType.AIM)
+                .writeInt(actor.getGameObjectId())
+                .writeFloat(actor.getAimX())
+                .writeFloat(actor.getAimY());
+    }
+
+    @Override
     public synchronized void visibility(@NotNull IGameObject gameObject, boolean value) {
         if (!(gameObject instanceof ISynchronized)) return;
 

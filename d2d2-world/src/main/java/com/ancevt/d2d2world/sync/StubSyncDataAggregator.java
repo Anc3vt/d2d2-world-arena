@@ -72,4 +72,9 @@ public class StubSyncDataAggregator implements ISyncDataAggregator {
     public void armDegree(Actor actor) {
 
     }
+
+    @Override
+    public void aim(@NotNull Actor actor) {
+
+    }
 }

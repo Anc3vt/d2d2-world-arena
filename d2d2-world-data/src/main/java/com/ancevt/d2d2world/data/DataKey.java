@@ -60,6 +60,8 @@ public class DataKey {
     public static final String MAX_HEALTH = "maxHealth";
     public static final String HEALTH = "health";
     public static final String HEAD = "head";
+    public static final String ARM = "arm";
+
 }
 
 /* ...: idle, walk, attack, jump, jumpAttack, walkAttack, damage, defense, hook,

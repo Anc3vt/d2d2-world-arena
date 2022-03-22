@@ -84,6 +84,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             }
         });
 
+
         addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             switch (e.getKeyCode()) {

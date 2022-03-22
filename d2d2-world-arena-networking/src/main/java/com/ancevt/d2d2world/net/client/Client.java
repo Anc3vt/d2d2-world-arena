@@ -23,6 +23,7 @@ import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.PlayerDto;
 import com.ancevt.d2d2world.net.dto.client.*;
 import com.ancevt.d2d2world.net.dto.server.*;
+import com.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import com.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
@@ -219,6 +220,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                 .protocolVersion(PROTOCOL_VERSION)
                 .build()
         );
+    }
+
+    public void sendAimXY(float aimX, float aimY) {
+        sender.send(ClientProtocolImpl.createMessagePlayerAimXY(aimX, aimY));
     }
 
     public void sendLocalPlayerController(int controllerState) {

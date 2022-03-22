@@ -119,6 +119,7 @@ public class FramedSprite extends Sprite implements IFramedDisplayObject {
     @Override
     public void setFrame(int frameIndex) {
         this.currentFrameIndex = frameIndex;
+        slowingCounter = 0;
 
         if (this.currentFrameIndex >= frameTextures.length) {
             if (loop) {

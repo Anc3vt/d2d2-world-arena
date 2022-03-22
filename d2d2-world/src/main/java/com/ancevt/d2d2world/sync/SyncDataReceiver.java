@@ -69,6 +69,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
                     }
+                    case SyncDataType.AIM -> {
+                        aim(gameObjectId, in.readFloat(), in.readFloat());
+                    }
                     case SyncDataType.ACTION_INDEX -> {
                         actionIndex(gameObjectId, in.readShort());
                     }
@@ -120,6 +123,12 @@ public class SyncDataReceiver implements ISyncDataReceiver {
             }
         }
 
+    }
+
+    private void aim(int gameObjectId, float aimX, float aimY) {
+        if(world.getGameObjectById(gameObjectId) instanceof Actor actor) {
+            actor.setAimXY(aimX, aimY);
+        }
     }
 
     private void actionIndex(int gameObjectId, int actionIndex) {

@@ -26,6 +26,12 @@ public class MessageType {
      */
     public static final int CLIENT_PLAYER_CONTROLLER = 3;
 
+
+    /**
+     * b)t f)aimX f)aimY
+     */
+    public static final int CLIENT_PLAYER_AIM_XY = 2;
+
     /**
      * b)t s)S)headers
      */

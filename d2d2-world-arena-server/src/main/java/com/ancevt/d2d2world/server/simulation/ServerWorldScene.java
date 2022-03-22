@@ -115,6 +115,16 @@ public class ServerWorldScene {
         }
     }
 
+    /**
+     * Calls from {@link GeneralService}
+     */
+    public void playerAimXY(int playerId, float x, float y) {
+        PlayerActor playerActor = playerActorMap.get(playerId);
+        if(playerActor != null) {
+            playerActor.setAimXY(x, y);
+        }
+    }
+
     public PlayerActor getPlayerActor(int playerId) {
         return playerActorMap.get(playerId);
     }
@@ -192,6 +202,7 @@ public class ServerWorldScene {
             }
         }
     }
+
 }
 
 

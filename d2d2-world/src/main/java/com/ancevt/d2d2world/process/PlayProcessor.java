@@ -310,12 +310,12 @@ public class PlayProcessor {
         }
 
         PushState pushFromLeft() {
-            pushFromLeft = 5;
+            pushFromLeft ++;
             return this;
         }
 
         PushState pushFromRight() {
-            pushFromRight = 5;
+            pushFromRight ++;
             return this;
         }
 
@@ -338,10 +338,11 @@ public class PlayProcessor {
                     actor.setHealthBy(0, null, false);
                 }
             }
-            if (pushFromLeft > 1 && pushFromRight > 1) {
+            if (pushFromLeft > 0 && pushFromRight > 0) {
                 if (tight instanceof Actor actor
                         && (tightFromLeft instanceof IPlatform || tightFromLeft instanceof AreaCollision)
                         && (tightFromRight instanceof IPlatform || tightFromRight instanceof AreaCollision)
+                        && !(tightFromLeft instanceof AreaCollision && tightFromRight instanceof AreaCollision)
                 ) {
                     actor.setHealthBy(0, null, false);
                 }

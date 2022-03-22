@@ -10,22 +10,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class StandardWeapon extends Weapon {
 
-    private static IDisplayObject displayObject;
 
     public StandardWeapon(@NotNull MapkitItem bulletMapkitItem, @NotNull Actor owner) {
         super(bulletMapkitItem, owner, getOrCreateDisplayObject());
     }
 
     private static IDisplayObject getOrCreateDisplayObject() {
-        if (displayObject == null) {
-            displayObject = new Sprite(
-                    MapkitManager.getInstance()
-                            .getByName(CharacterMapkit.NAME)
-                            .getTextureAtlas("bullets.png")
-                            .createTexture(0, 0, 32, 32)
-            );
-        }
-        return displayObject;
+        return new Sprite(
+                MapkitManager.getInstance()
+                        .getByName(CharacterMapkit.NAME)
+                        .getTextureAtlas("bullets.png")
+                        .createTexture(0, 0, 32, 32)
+        );
     }
 
 }

@@ -35,6 +35,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     private final int id;
     private boolean permanentSync;
     private boolean backward;
+    private boolean animationsPrepared;
 
     public Animated(MapkitItem mapKitItem, int gameObjectId) {
         this.mapkitItem = mapKitItem;
@@ -85,6 +86,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
         }
 
         fixXY();
+        animationsPrepared = true;
         setAnimation(AnimationKey.IDLE);
     }
 
@@ -125,7 +127,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setAnimation(final int animationKey, final boolean loop) {
-        if (animationKey == getAnimation()) return;
+        if (!animationsPrepared || animationKey == getAnimation()) return;
 
         this.currentAnimationKey = animationKey;
 
@@ -140,6 +142,9 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             if (i == animationKey) {
                 fs.setBackward(isBackward());
                 fs.setLoop(loop);
+
+                //if(animationKey != AnimationKey.WALK_ATTACK) fs.setFrame(0);
+
                 fs.play();
                 fs.setVisible(true);
             }

@@ -79,7 +79,9 @@ public class CharacterMapkit extends Mapkit {
                 hook = 288,96,48,48 |
                 hook-attack = 336,96,48,48 |
                 damage = 48,144,48,48 |
-                head = 240,144,16,32; 256,144,16,32 |
+                head = 240,144,16,24; 256,144,16,24 |
+                headFall = 273,144,16,24 |
+                arm = 240,176,16,16 |
                 """;
 
         DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));

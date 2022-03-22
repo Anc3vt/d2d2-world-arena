@@ -138,7 +138,10 @@ public class D2D2WorldEditorMain {
         });
 
 
-        DebugPlayerActorCreator.createTestPlayerActor(world);
+        DebugPlayerActorCreator.createTestPlayerActor(world).addEventListener(Event.EACH_FRAME, event -> {
+            PlayerActor bot = (PlayerActor) event.getSource();
+            bot.setAimXY(playerActor.getX(), playerActor.getY());
+        });
 
         /**/
 

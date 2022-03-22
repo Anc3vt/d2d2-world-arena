@@ -42,4 +42,8 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
 
     }
 
+    @Override
+    public void playerAimXY(int playerId, float x, float y) {
+
+    }
 }

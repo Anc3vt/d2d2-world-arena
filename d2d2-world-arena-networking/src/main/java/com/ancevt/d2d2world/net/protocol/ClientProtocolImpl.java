@@ -96,6 +96,15 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         }
     }
 
+    public static byte[] createMessagePlayerAimXY(float aimX, float aimY) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.CLIENT_PLAYER_AIM_XY)
+                .writeFloat(aimX)
+                .writeFloat(aimY)
+                .toByteArray();
+
+    }
+
     public static byte[] createMessagePlayerController(int controllerState) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.CLIENT_PLAYER_CONTROLLER)

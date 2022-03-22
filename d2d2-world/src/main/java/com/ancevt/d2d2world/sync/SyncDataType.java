@@ -13,4 +13,5 @@ public class SyncDataType {
     public static final int REPAIR = 9;
     public static final int ACTION_INDEX = 10;
     public static final int ARM_DEGREE = 11;
+    public static final int AIM = 12;
 }

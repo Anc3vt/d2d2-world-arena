@@ -63,6 +63,13 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     serverProtocolImplListeners.forEach(l -> l.ping(connectionId));
                 }
 
+                case MessageType.CLIENT_PLAYER_AIM_XY -> {
+                    float x = in.readFloat();
+                    float y = in.readFloat();
+                    log.debug("received <b>CLIENT_PLAYER_AIM_XY<> {} {} {}", connectionId, x, y);
+                    serverProtocolImplListeners.forEach(l -> l.playerAimXY(connectionId, x, y));
+                }
+
                 case MessageType.CLIENT_PLAYER_CONTROLLER -> {
                     int controlState = in.readByte();
                     log.trace("received <b>CLIENT_PLAYER_CONTROLLER<> from {}", connectionId);
