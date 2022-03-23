@@ -1,11 +1,11 @@
-package com.ancevt.d2d2.tcp;
+package com.ancevt.net;
 
-import com.ancevt.d2d2.tcp.connection.IConnection;
-import com.ancevt.d2d2.tcp.connection.TcpB254Connection;
-import com.ancevt.d2d2.tcp.connection.TcpConnection;
-import com.ancevt.d2d2.tcp.server.IServer;
-import com.ancevt.d2d2.tcp.server.TcpB254Server;
-import com.ancevt.d2d2.tcp.server.TcpServer;
+import com.ancevt.net.connection.IConnection;
+import com.ancevt.net.connection.TcpB254Connection;
+import com.ancevt.net.connection.TcpConnection;
+import com.ancevt.net.server.IServer;
+import com.ancevt.net.server.TcpB254Server;
+import com.ancevt.net.server.TcpServer;
 import org.jetbrains.annotations.NotNull;
 
 public class TcpFactory {

@@ -1,7 +1,7 @@
-package com.ancevt.d2d2.tcp.server;
+package com.ancevt.net.server;
 
-import com.ancevt.d2d2.tcp.CloseStatus;
-import com.ancevt.d2d2.tcp.connection.IConnection;
+import com.ancevt.net.CloseStatus;
+import com.ancevt.net.connection.IConnection;
 
 public class ServerListenerAdapter implements ServerListener{
 

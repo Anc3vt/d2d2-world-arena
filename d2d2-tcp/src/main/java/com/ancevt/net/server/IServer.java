@@ -15,9 +15,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.tcp.server;
+package com.ancevt.net.server;
 
-import com.ancevt.d2d2.tcp.connection.IConnection;
+import com.ancevt.net.connection.IConnection;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;

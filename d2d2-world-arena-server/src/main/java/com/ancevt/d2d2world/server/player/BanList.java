@@ -2,7 +2,7 @@ package com.ancevt.d2d2world.server.player;
 
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2world.data.file.FileDataUtils;
-import com.ancevt.d2d2.tcp.connection.IConnection;
+import com.ancevt.net.connection.IConnection;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

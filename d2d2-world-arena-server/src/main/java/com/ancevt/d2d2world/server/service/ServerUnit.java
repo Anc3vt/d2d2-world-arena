@@ -17,8 +17,8 @@
  */
 package com.ancevt.d2d2world.server.service;
 
-import com.ancevt.d2d2.tcp.TcpFactory;
-import com.ancevt.d2d2.tcp.server.IServer;
+import com.ancevt.net.TcpFactory;
+import com.ancevt.net.server.IServer;
 
 public class ServerUnit {
 

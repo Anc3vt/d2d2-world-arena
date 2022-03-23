@@ -1,17 +1,17 @@
-package com.ancevt.d2d2.tcp.test;
+package com.ancevt.net.test;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.commons.io.ByteOutputWriter;
 import com.ancevt.commons.unix.UnixDisplay;
-import com.ancevt.d2d2.tcp.CloseStatus;
-import com.ancevt.d2d2.tcp.connection.ConnectionListenerAdapter;
-import com.ancevt.d2d2.tcp.connection.IConnection;
-import com.ancevt.d2d2.tcp.connection.TcpConnection;
-import com.ancevt.d2d2.tcp.server.IServer;
-import com.ancevt.d2d2.tcp.server.ServerListenerAdapter;
-import com.ancevt.d2d2.tcp.server.TcpServer;
+import com.ancevt.net.CloseStatus;
+import com.ancevt.net.connection.ConnectionListenerAdapter;
+import com.ancevt.net.connection.IConnection;
+import com.ancevt.net.connection.TcpConnection;
+import com.ancevt.net.server.IServer;
+import com.ancevt.net.server.ServerListenerAdapter;
+import com.ancevt.net.server.TcpServer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;

@@ -2,7 +2,7 @@ package com.ancevt.d2d2world.net.client;
 
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
-import com.ancevt.d2d2.tcp.CloseStatus;
+import com.ancevt.net.CloseStatus;
 
 import java.time.LocalDateTime;
 

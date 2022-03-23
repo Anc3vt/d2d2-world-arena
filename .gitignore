@@ -46,3 +46,4 @@ playername.txt
 ban.list
 *.tmp
 buildtmp/
+build.info

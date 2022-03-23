@@ -15,23 +15,22 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.tcp.connection;
+package com.ancevt.net.server;
 
-import com.ancevt.d2d2.tcp.CloseStatus;
+import com.ancevt.net.CloseStatus;
+import com.ancevt.net.connection.IConnection;
 
-public class ConnectionListenerAdapter implements ConnectionListener{
-    @Override
-    public void connectionEstablished() {
+public interface ServerListener {
 
-    }
+    void serverStarted();
 
-    @Override
-    public void connectionBytesReceived(byte[] bytes) {
+    void connectionAccepted(IConnection connectionWithClient);
 
-    }
+    void connectionClosed(IConnection connectionWithClient, CloseStatus status);
 
-    @Override
-    public void connectionClosed(CloseStatus status) {
+    void connectionBytesReceived(IConnection connectionWithClient, byte[] bytes);
 
-    }
+    void serverClosed(CloseStatus status);
+
+    void connectionEstablished(IConnection connectionWithClient);
 }

@@ -17,7 +17,7 @@
  */
 package com.ancevt.d2d2world.server.repl;
 
-import com.ancevt.d2d2.tcp.connection.IConnection;
+import com.ancevt.net.connection.IConnection;
 import com.ancevt.util.args.Args;
 import com.ancevt.util.repl.ReplInterpreter;
 import com.ancevt.util.texttable.TextTable;

@@ -15,37 +15,15 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.tcp;
+package com.ancevt.net.connection;
 
-public class CloseStatus {
+import com.ancevt.net.CloseStatus;
 
-    private Throwable throwable;
+public interface ConnectionListener {
 
-    public CloseStatus(Throwable throwable) {
-        this.throwable = throwable;
-    }
+    void connectionEstablished();
 
-    public CloseStatus() {
+    void connectionBytesReceived(byte[] bytes);
 
-    }
-
-    public boolean isError() {
-        return throwable != null;
-    }
-
-    public String getErrorMessage() {
-        return isError() ? throwable.getMessage() : "";
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
-
-    @Override
-    public String toString() {
-        return "CloseStatus{" +
-                "isError=" + isError() +
-                ", throwable=" + throwable +
-                '}';
-    }
+    void connectionClosed(CloseStatus status);
 }

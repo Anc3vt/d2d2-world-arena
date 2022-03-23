@@ -15,11 +15,11 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.tcp.connection;
+package com.ancevt.net.connection;
 
 import com.ancevt.commons.io.ByteOutput;
 import com.ancevt.commons.unix.UnixDisplay;
-import com.ancevt.d2d2.tcp.CloseStatus;
+import com.ancevt.net.CloseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.Math.min;
 
 @Slf4j
-public class TcpConnection implements IConnection {
+public class TcpB254Connection implements IConnection {
 
     static {
         UnixDisplay.setEnabled(true); // TODO: remove
@@ -66,13 +66,13 @@ public class TcpConnection implements IConnection {
     private long bytesLoaded;
     private long bytesSent;
 
-    TcpConnection(int id) {
+    TcpB254Connection(int id) {
         this.id = id;
         listeners = new CopyOnWriteArraySet<>();
         log.debug("New connection {}", this);
     }
 
-    TcpConnection(int id, @NotNull Socket socket) {
+    TcpB254Connection(int id, @NotNull Socket socket) {
         this(id);
         this.socket = socket;
         this.host = socket.getLocalAddress().getHostName();
@@ -89,35 +89,55 @@ public class TcpConnection implements IConnection {
     @Override
     public void readLoop() {
         try {
-            if (isOpen()) {
-                dispatchConnectionEstablished();
-            }
+            if (isOpen()) dispatchConnectionEstablished();
 
-            var in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-            var byteOutput = ByteOutput.newInstance();
+            DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 
+            ByteOutput byteOutput = ByteOutput.newInstance();
             while (isOpen()) {
-                int len = in.readInt();
-                bytesLoaded += 4;
+                int len = in.readUnsignedByte();
+                bytesLoaded++;
+
+                if (len == 0) {
+                    int left = MAX_CHUNK_SIZE;
+                    while (left > 0) {
+                        final int a = in.available();
+                        if (a == 0) continue;
+                        byte[] bytes = new byte[min(a, left)];
+                        left -= in.read(bytes);
+                        byteOutput.write(bytes);
+                    }
+                    continue;
+                }
+
+                if (len == MAX_CHUNK_SIZE + 1) {
+                    byte[] array = byteOutput.toArray();
+                    bytesLoaded += array.length;
+                    dispatchConnectionBytesReceived(array);
+                    byteOutput = ByteOutput.newInstance();
+                    continue;
+                }
+
                 int left = len;
                 while (left > 0) {
                     final int a = in.available();
-                    byte[] bytes = new byte[Math.min(a, left)];
-                    int read = in.read(bytes);
-                    left -= read;
+                    if (a == 0) continue;
+                    byte[] bytes = new byte[min(a, left)];
+                    left -= in.read(bytes);
                     byteOutput.write(bytes);
-                }
-
-                if (byteOutput.hasData()) {
-                    byte[] data = byteOutput.toArray();
+                    byte[] array = byteOutput.toArray();
+                    bytesLoaded += array.length;
+                    dispatchConnectionBytesReceived(array);
                     byteOutput = ByteOutput.newInstance();
-                    dispatchConnectionBytesReceived(data);
                 }
             }
+
         } catch (IOException e) {
             closeIfOpen();
         }
         closeIfOpen();
+
+        log.debug("End of read loop, {}", this);
     }
 
     @Override
@@ -255,16 +275,11 @@ public class TcpConnection implements IConnection {
     @Override
     public void send(byte[] bytes) {
         if (!isOpen()) return;
-
         synchronized (sendMonitor) {
-            try {
-                dataOutputStream.writeInt(bytes.length);
-                dataOutputStream.write(bytes);
-                bytesSent += 4 + bytes.length;
-            } catch (SocketException e) {
-                log.debug("Socket closed when send data");
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
+            if (bytes.length > MAX_CHUNK_SIZE) {
+                sendComposite(bytes);
+            } else {
+                sendChunk(bytes, true);
             }
         }
     }
@@ -308,7 +323,7 @@ public class TcpConnection implements IConnection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TcpConnection that = (TcpConnection) o;
+        TcpB254Connection that = (TcpB254Connection) o;
         return id == that.id && port == that.port && remotePort == that.remotePort && bytesLoaded == that.bytesLoaded &&
                 bytesSent == that.bytesSent && Objects.equals(listeners, that.listeners) &&
                 Objects.equals(host, that.host) && Objects.equals(remoteAddress, that.remoteAddress) &&
@@ -345,12 +360,12 @@ public class TcpConnection implements IConnection {
 
     @Contract("_ -> new")
     public static @NotNull IConnection create(int id) {
-        return new TcpConnection(id);
+        return new TcpB254Connection(id);
     }
 
     @Contract("_, _ -> new")
     public static @NotNull IConnection createServerSide(int id, Socket socket) {
-        return new TcpConnection(id, socket);
+        return new TcpB254Connection(id, socket);
     }
 
 

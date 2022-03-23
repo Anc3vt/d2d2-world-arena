@@ -30,10 +30,10 @@ import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import com.ancevt.d2d2world.net.transfer.Headers;
 import com.ancevt.d2d2world.sync.ISyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
-import com.ancevt.d2d2.tcp.CloseStatus;
-import com.ancevt.d2d2.tcp.TcpFactory;
-import com.ancevt.d2d2.tcp.connection.ConnectionListener;
-import com.ancevt.d2d2.tcp.connection.IConnection;
+import com.ancevt.net.CloseStatus;
+import com.ancevt.net.TcpFactory;
+import com.ancevt.net.connection.ConnectionListener;
+import com.ancevt.net.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 

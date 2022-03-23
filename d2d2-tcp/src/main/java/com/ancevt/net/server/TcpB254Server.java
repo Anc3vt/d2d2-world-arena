@@ -15,15 +15,15 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.tcp.server;
+package com.ancevt.net.server;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.unix.UnixDisplay;
-import com.ancevt.d2d2.tcp.CloseStatus;
-import com.ancevt.d2d2.tcp.connection.ConnectionListener;
-import com.ancevt.d2d2.tcp.connection.IConnection;
-import com.ancevt.d2d2.tcp.connection.TcpB254Connection;
+import com.ancevt.net.CloseStatus;
+import com.ancevt.net.connection.ConnectionListener;
+import com.ancevt.net.connection.IConnection;
+import com.ancevt.net.connection.TcpB254Connection;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
