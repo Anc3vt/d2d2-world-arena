@@ -29,7 +29,7 @@ public interface IEventDispatcher {
 
     void removeEventListener(String type, EventListener listener);
 
-    void removeEventListeners(Object key);
+    void removeEventListener(Object key);
 
     void dispatchEvent(Event event);
 

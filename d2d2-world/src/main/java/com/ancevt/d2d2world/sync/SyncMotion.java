@@ -21,10 +21,10 @@ public class SyncMotion {
     public static void moveMotion(IDisplayObject o, float x, float y) {
         map.put(o, Pair.of(x, y));
 
-        o.removeEventListeners(SyncMotion.class);
+        o.removeEventListener(SyncMotion.class);
         o.addEventListener(SyncMotion.class, Event.REMOVE_FROM_STAGE, event -> {
             map.remove(o);
-            o.removeEventListeners(SyncMotion.class);
+            o.removeEventListener(SyncMotion.class);
         });
     }
 

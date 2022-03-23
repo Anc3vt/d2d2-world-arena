@@ -27,11 +27,11 @@ import java.util.Map;
 
 public interface IGameObject extends IDisplayObject, IProcessable {
 
-    //static
-    Map<IGameObject, Map<String, Object>> maps = new HashMap<>();
+    Map<IGameObject, Map<String, Object>> extraMap = new HashMap<>();
+    Map<IGameObject, World> worldMap = new HashMap<>();
 
     default Map<String, Object> extra() {
-        return maps.computeIfAbsent(this, k -> new HashMap<>());
+        return extraMap.computeIfAbsent(this, k -> new HashMap<>());
     }
 
     int getGameObjectId();
@@ -58,9 +58,13 @@ public interface IGameObject extends IDisplayObject, IProcessable {
 
     MapkitItem getMapkitItem();
 
-    void setWorld(World world);
+    default void setWorld(World world) {
+        worldMap.putIfAbsent(this, world);
+    }
 
-    World getWorld();
+    default World getWorld() {
+        return worldMap.get(this);
+    }
 
     default boolean isOnWorld() {
         return getWorld() != null;

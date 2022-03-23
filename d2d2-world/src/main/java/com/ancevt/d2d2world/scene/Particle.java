@@ -38,7 +38,52 @@ public class Particle extends DisplayObjectContainer {
         return framed.getColor();
     }
 
-    public static @NotNull IDisplayObject create(int amount, Color color) {
+    public static @NotNull IDisplayObject miniExplosion(int amount, Color color, float factor) {
+        DisplayObjectContainer doc = new DisplayObjectContainer() {
+
+            int time = 250;
+
+            @Override
+            public void onEachFrame() {
+                super.onEachFrame();
+                time--;
+                if (time <= 0) {
+                    removeFromParent();
+                }
+            }
+        };
+
+        for (int i = 0; i < amount; i++) {
+
+            Particle p = new Particle() {
+
+                {
+                    setScale((float) (random() + 1f), (float) (random() + 1f));
+                }
+
+                float b = (float) (factor * random() - factor / 2);
+                float t = (float) (factor * random() - factor / 2);
+
+                @Override
+                public void onEachFrame() {
+                    super.onEachFrame();
+                    move(b, t);
+                    toAlpha(0.975f);
+                    toScale(1.01f, 1.01f);
+                    rotate(45);
+                    t += 0.1f;
+                }
+            };
+
+            p.setColor(color);
+            doc.add(p);
+        }
+
+        return doc;
+    }
+
+
+    public static @NotNull IDisplayObject bloodExplosion(int amount, Color color) {
         DisplayObjectContainer doc = new DisplayObjectContainer() {
 
             int time = 250;
@@ -92,7 +137,7 @@ public class Particle extends DisplayObjectContainer {
         D2D2World.init(true);
 
 
-        root.add(Particle.create(500, Color.of(0x220000)), 300, 300);
+        root.add(Particle.bloodExplosion(500, Color.of(0x220000)), 300, 300);
 
         D2D2.loop();
     }

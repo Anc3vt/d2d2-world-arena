@@ -25,17 +25,24 @@ public class D2D2 {
 
     private static final TextureManager textureManager = new TextureManager();
     private static D2D2Starter starter;
-    private static ExitListener exitListener;
 
     private D2D2() {
     }
 
-    public static ExitListener getExitListener() {
-        return exitListener;
+    public static void setFullscreen(boolean value) {
+        starter.setFullscreen(value);
     }
 
-    public static void setExitListener(ExitListener exitListener) {
-        D2D2.exitListener = exitListener;
+    public static boolean isFullscreen() {
+        return starter.isFullscreen();
+    }
+
+    public static void setSmoothMode(boolean value) {
+        starter.setSmoothMode(value);
+    }
+
+    public static boolean isSmoothMode() {
+        return starter.isSmoothMode();
     }
 
     public static D2D2Starter getStarter() {
@@ -56,9 +63,6 @@ public class D2D2 {
 
     public static void loop() {
         starter.start();
-        if(exitListener != null) {
-            exitListener.engineExit();
-        }
     }
 
     public static TextureManager getTextureManager() {
@@ -69,8 +73,4 @@ public class D2D2 {
         starter.stop();
     }
 
-    @FunctionalInterface
-    public interface ExitListener {
-        void engineExit();
-    }
 }

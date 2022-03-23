@@ -51,7 +51,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
     }
 
     private void this_removeFromStage(Event event) {
-        removeEventListeners(2);
+        removeEventListener(2);
         dispose();
     }
 

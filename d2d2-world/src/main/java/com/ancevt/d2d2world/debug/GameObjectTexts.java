@@ -65,7 +65,7 @@ public class GameObjectTexts extends DisplayObjectContainer {
 
     private void gameObject_removeFromStage(@NotNull Event event) {
         if (event.getSource() instanceof IGameObject gameObject) {
-            gameObject.removeEventListeners(GameObjectTexts.class);
+            gameObject.removeEventListener(GameObjectTexts.class);
             BitmapText bitmapText = bitmapTextMap.get(gameObject);
             if (bitmapText != null) {
                 Async.runLater(5, TimeUnit.SECONDS, bitmapText::removeFromParent);

@@ -27,6 +27,8 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
+import com.ancevt.d2d2.event.InputEvent;
+import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
@@ -152,6 +154,22 @@ public class IntroRoot extends Root {
 
             add(new UAFlag());
         });
+
+        addEventListener(InputEvent.KEY_DOWN, event -> {
+            var e = (InputEvent) event;
+            switch (e.getKeyCode()) {
+                case KeyCode.F -> {
+                    if (e.isAlt()) D2D2.setFullscreen(!D2D2.isFullscreen());
+                }
+                case KeyCode.S -> {
+                    if (e.isAlt()) D2D2.setSmoothMode(!D2D2.isSmoothMode());
+                }
+            }
+        });
+
+        if(MODULE_CONFIG.getBoolean(FULLSCREEN)) {
+            D2D2.setFullscreen(true);
+        }
     }
 
     private void keyEnter(Event event) {

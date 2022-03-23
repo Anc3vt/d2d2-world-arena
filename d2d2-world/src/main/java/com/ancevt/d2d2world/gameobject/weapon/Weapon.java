@@ -20,6 +20,7 @@ package com.ancevt.d2d2world.gameobject.weapon;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
 abstract public class Weapon {
@@ -39,6 +40,8 @@ abstract public class Weapon {
 		return bulletMapkitItem;
 	}
 
+	abstract public int getAttackTime();
+
 	public IDisplayObject getDisplayObject() {
 		return displayObject;
 	}
@@ -56,4 +59,6 @@ abstract public class Weapon {
 	public void setOwner(@NotNull Actor owner) {
 		this.owner = owner;
 	}
+
+	abstract public void shoot(@NotNull World world);
 }

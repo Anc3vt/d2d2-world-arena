@@ -127,6 +127,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     private void aim(int gameObjectId, float aimX, float aimY) {
         if(world.getGameObjectById(gameObjectId) instanceof Actor actor) {
+            if(actor instanceof PlayerActor playerActor) {
+                if(playerActor.isLocalPlayerActor()) return;
+            }
             actor.setAimXY(aimX, aimY);
         }
     }

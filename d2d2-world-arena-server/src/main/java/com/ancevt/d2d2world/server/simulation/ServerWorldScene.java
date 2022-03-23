@@ -55,7 +55,7 @@ public class ServerWorldScene {
         Root root = D2D2.init(new NoRenderStarter(900, 600));
 
         world = new World(syncDataAggregator);
-        world.addEventListener(WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+        world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
         root.add(world);
 
         fpsMeter = new FpsMeter();
@@ -92,14 +92,7 @@ public class ServerWorldScene {
                 log.error(e.getMessage(), e);
             }
 
-            DebugPlayerActorCreator.createTestPlayerActor(world).addEventListener(Event.EACH_FRAME, event -> {
-                PlayerActor playerActor = (PlayerActor) event.getSource();
 
-                PlayerActor targetPlayerActor = playerActorMap.get(1);
-                if(targetPlayerActor != null) {
-                    playerActor.setAimXY(targetPlayerActor.getX(), targetPlayerActor.getY());
-                }
-            });
         }
     }
 
@@ -141,6 +134,8 @@ public class ServerWorldScene {
         world.addGameObject(playerActor, 5, false);
         playerActorMap.put(player.getId(), playerActor);
 
+        DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
+
         log.info("Add player actor {}", playerActor);
     }
 
@@ -163,6 +158,7 @@ public class ServerWorldScene {
 
     private void world_actorDeath(Event event) {
         var e = (WorldEvent) event;
+
 
         final Holder<Integer> deadPlayerId = new Holder<>(0);
         final Holder<Integer> killerPlayerId = new Holder<>(0);

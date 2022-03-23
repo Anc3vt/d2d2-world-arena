@@ -11,7 +11,6 @@ public abstract class Platform extends DisplayObjectContainer implements IPlatfo
     private final MapkitItem mapkitItem;
     private final int gameObjectId;
 
-    private World world;
     private String actionProgramData = ";";
     private ActionProgram actionProgram;
     private boolean floorOnly;
@@ -148,16 +147,6 @@ public abstract class Platform extends DisplayObjectContainer implements IPlatfo
     @Override
     public MapkitItem getMapkitItem() {
         return mapkitItem;
-    }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    @Override
-    public World getWorld() {
-        return world;
     }
 
     @Override

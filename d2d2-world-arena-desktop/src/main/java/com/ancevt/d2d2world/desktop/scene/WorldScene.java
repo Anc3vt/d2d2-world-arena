@@ -19,9 +19,11 @@ package com.ancevt.d2d2world.desktop.scene;
 
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
+import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.control.LocalPlayerController;
@@ -182,6 +184,15 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
+        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//fullscreen",
+                args -> {
+
+                    D2D2.setFullscreen(args.get(Boolean.class, 1));
+
+                    return true;
+                }
+        ));
     }
 
     private void config_configChangeListener(@NotNull String key, Object value) {
@@ -202,7 +213,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     private void this_addToStage(Event event) {
-        removeEventListeners(getClass());
+        removeEventListener(getClass());
         final float w = getStage().getStageWidth();
         final float h = getStage().getStageHeight();
         overlay = new Overlay(w, h);
@@ -210,15 +221,8 @@ public class WorldScene extends DisplayObjectContainer {
         add(overlay, -w / 2, -h / 2);
         world.getCamera().setViewportSize(w, h);
         world.getCamera().setBoundsLock(true);
-
-        getRoot().addEventListener(this, InputEvent.MOUSE_MOVE, this::root_mouseMove);
     }
 
-    private void root_mouseMove(Event event) {
-        var e = (InputEvent) event;
-        float x = e.getX();
-        float y = e.getY();
-    }
 
     public void init() {
         world.clear();
@@ -231,7 +235,7 @@ public class WorldScene extends DisplayObjectContainer {
         overlay.addEventListener(Event.CHANGE, Event.CHANGE, event -> {
             if (overlay.getState() == Overlay.STATE_BLACK) {
                 lock.unlockIfLocked();
-                overlay.removeEventListeners(Event.CHANGE);
+                overlay.removeEventListener(Event.CHANGE);
             }
         });
         lock.lock();
@@ -280,29 +284,6 @@ public class WorldScene extends DisplayObjectContainer {
 
     private void addRootAndChatEventsIfNotYet() {
         if (!eventsAdded) {
-
-            getRoot().addEventListener(this, InputEvent.MOUSE_MOVE, event -> {
-                var e = (InputEvent) event;
-
-
-                float scaleX = world.getAbsoluteScaleX();
-                float scaleY = world.getAbsoluteScaleY();
-
-                float wx = world.getAbsoluteX() / scaleX;
-                float wy = world.getAbsoluteY() / scaleY;
-
-                float x = e.getX() / 2;
-                float y = e.getY() / 2;
-
-                float worldX = (x - wx);
-                float worldY = (y - wy);
-
-                if (localPlayerActor != null) {
-                    //MODULE_CHAT.addMessage("x: " + x + " wx: " + wx + " scaleX: " + scaleX + " worldX: " + worldX + " pX: " + localPlayerActor.getX());
-                    localPlayerActor.setAimXY(worldX, worldY);
-                    MODULE_CLIENT.sendAimXY(worldX, worldY);
-                }
-            });
 
             getRoot().addEventListener(this, InputEvent.MOUSE_DOWN, event -> {
                 var e = (InputEvent) event;
@@ -377,6 +358,10 @@ public class WorldScene extends DisplayObjectContainer {
                         setXY(playerActor.getX() - this.getWidth() / 4, playerActor.getY() - 48);
                     }
                 };
+                ChatHint finalChatHint = chatHint;
+                playerActor.addEventListener(Event.REMOVE_FROM_STAGE, event -> {
+                    finalChatHint.removeFromParent();
+                });
                 chatHint.setScale(0.5f, 0.5f);
                 playerActor.extra().put(ChatHint.class.getName(), chatHint);
             }
@@ -393,6 +378,25 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+        localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
+
+            private float aimX;
+            private float aimY;
+
+            @Override
+            public void onEvent(Event event) {
+                float currentAimX = localPlayerActor.getAimX();
+                float currentAimY = localPlayerActor.getAimY();
+
+                if (currentAimX != aimX || currentAimY != aimY) {
+                    MODULE_CLIENT.sendAimXY(currentAimX, currentAimY);
+                }
+
+                aimX = localPlayerActor.getAimX();
+                aimY = localPlayerActor.getAimY();
+            }
+        });
+        localPlayerActor.setLocalAim(true);
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         world.getCamera().setAttachedTo(localPlayerActor);

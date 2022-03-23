@@ -18,15 +18,16 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2.input.Mouse;
+import com.ancevt.d2d2world.gameobject.weapon.LazerWeapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 
 public class PlayerActor extends Actor {
 
     private boolean localPlayerActor;
+    private boolean localAim;
 
     public PlayerActor(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -39,7 +40,8 @@ public class PlayerActor extends Actor {
     @Override
     public void onAddToWorld(World world) {
         super.onAddToWorld(world);
-        setWeapon(new StandardWeapon(MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("standard_bullet"), this));
+        //setWeapon(new StandardWeapon(this));
+        setWeapon(new LazerWeapon(this));
     }
 
     @Override
@@ -53,5 +55,36 @@ public class PlayerActor extends Actor {
 
     public boolean isLocalPlayerActor() {
         return localPlayerActor;
+    }
+
+    public void setLocalAim(boolean value) {
+        this.localAim = value;
+        if(value) {
+            addEventListener("localAim", Event.EACH_FRAME, this::this_eachFrameLocalAim);
+        } else {
+            removeAllEventListeners("localAim");
+        }
+    }
+
+    public boolean isLocalAim() {
+        return localAim;
+    }
+
+    private void this_eachFrameLocalAim(Event event) {
+        final World world = getWorld();
+
+        float scaleX = world.getAbsoluteScaleX();
+        float scaleY = world.getAbsoluteScaleY();
+
+        float wx = world.getAbsoluteX() / scaleX;
+        float wy = world.getAbsoluteY() / scaleY;
+
+        float x = Mouse.getX() / 2f;
+        float y = Mouse.getY() / 2f;
+
+        float worldX = (x - wx);
+        float worldY = (y - wy);
+
+        setAimXY(worldX, worldY);
     }
 }

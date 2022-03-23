@@ -47,3 +47,4 @@ ban.list
 *.tmp
 buildtmp/
 build.info
+.run

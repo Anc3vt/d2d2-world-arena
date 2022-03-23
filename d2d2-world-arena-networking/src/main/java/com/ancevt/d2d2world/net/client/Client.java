@@ -153,7 +153,6 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             setLocalPlayerId(playerDto.getId());
             setLocalPlayerColor(playerDto.getColor());
             setServerProtocolVersion(d.getProtocolVersion());
-            sendPingRequest();
             clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion, d.getServerStartTime()));
         } else if (dto instanceof PlayerExitDto d) {
             PLAYER_MANAGER.removePlayer(d.getPlayer().getId()).ifPresent(

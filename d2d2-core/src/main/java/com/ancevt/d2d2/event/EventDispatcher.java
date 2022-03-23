@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2.event;
 
+import com.ancevt.commons.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -32,11 +33,11 @@ public class EventDispatcher implements IEventDispatcher {
      * ref to 'map' above
      * key : type
      */
-    private final Map<Object, String> keysTypes;
+    private final Map<Object, Pair<String, EventListener>> keysTypeListenerMap;
 
     public EventDispatcher() {
         map = new HashMap<>();
-        keysTypes = new HashMap<>();
+        keysTypeListenerMap = new HashMap<>();
     }
 
     @Override
@@ -55,7 +56,7 @@ public class EventDispatcher implements IEventDispatcher {
     @Override
     public void addEventListener(Object key, String type, EventListener listener) {
         addEventListener(type, listener);
-        keysTypes.put(key, type);
+        keysTypeListenerMap.put(key, Pair.of(type, listener));
     }
 
     /**
@@ -64,7 +65,7 @@ public class EventDispatcher implements IEventDispatcher {
     @Override
     public void addEventListener(Object key, String type, EventListener listener, boolean reset) {
         addEventListener(type, listener, reset);
-        keysTypes.put(key, type);
+        keysTypeListenerMap.put(key, Pair.of(type, listener));
     }
 
     private @NotNull List<EventListener> createList() {
@@ -80,13 +81,10 @@ public class EventDispatcher implements IEventDispatcher {
     }
 
     @Override
-    public void removeEventListeners(Object key) {
-        String type = keysTypes.remove(key);
-        if (type != null) {
-            List<EventListener> listeners = map.get(type);
-            if (listeners != null) {
-                listeners.clear();
-            }
+    public void removeEventListener(Object key) {
+        var pair = keysTypeListenerMap.remove(key);
+        if(pair != null) {
+            removeEventListener(pair.getFirst(), pair.getSecond());
         }
     }
 

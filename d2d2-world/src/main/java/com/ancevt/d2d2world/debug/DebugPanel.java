@@ -79,7 +79,7 @@ public class DebugPanel extends DisplayObjectContainer {
         root = D2D2.getStage().getRoot();
         root.addEventListener(InputEvent.KEY_DOWN, this::root_keyDown);
         root.addEventListener(InputEvent.KEY_UP, this::root_keyUp);
-        removeEventListeners(DebugPanel.class);
+        removeEventListener(DebugPanel.class);
     }
 
     private void root_keyDown(Event event) {

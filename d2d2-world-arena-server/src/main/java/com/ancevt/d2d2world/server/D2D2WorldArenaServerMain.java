@@ -21,13 +21,16 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.net.client.ClientSender;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
+import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListenerAdapter;
 import com.ancevt.net.CloseStatus;
 import com.ancevt.net.connection.ConnectionListenerAdapter;
 import com.ancevt.net.connection.IConnection;
+import com.ancevt.net.connection.TcpConnection;
 import com.ancevt.net.server.ServerListener;
 import com.ancevt.util.args.Args;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +54,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class D2D2WorldArenaServerMain implements ServerListener, Thread.UncaughtExceptionHandler {
 
     public static void main(String @NotNull [] args) throws IOException {
-        //System.setProperty("send", "true");
         // Load serverConfig properties
         MODULE_SERVER_CONFIG.load();
         for (String arg : args) {
@@ -69,11 +71,19 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
 
         Args a = new Args(args);
 
+        Integer portToKill = a.get(int.class, "--kill");
+        if(portToKill != null) {
+            IConnection connection = TcpConnection.create();
+            connection.asyncConnectAndAwait("localhost", portToKill, 5, SECONDS);
+            new ClientSender(connection).send(LocalServerKillDto.INSTANCE);
+            System.exit(0);
+        }
+
         String version = getServerVersion();
 
         if (a.contains("-v", "--version")) {
             System.out.println(version);
-            return;
+            System.exit(0);
         }
 
         D2D2WorldArenaServerMain server = new D2D2WorldArenaServerMain();

@@ -33,7 +33,6 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     private IFramedDisplayObject[] animations;
     private final MapkitItem mapkitItem;
     private final int id;
-    private boolean permanentSync;
     private boolean backward;
     private boolean animationsPrepared;
 
@@ -50,16 +49,6 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     public boolean isBackward() {
         return backward;
-    }
-
-    @Override
-    public boolean isPermanentSync() {
-        return permanentSync;
-    }
-
-    @Override
-    public void setPermanentSync(boolean permanentSync) {
-        this.permanentSync = permanentSync;
     }
 
     private void prepareAnimations() {

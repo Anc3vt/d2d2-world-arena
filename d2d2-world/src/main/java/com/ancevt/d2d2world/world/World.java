@@ -25,11 +25,9 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.exception.GameException;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
-import com.ancevt.d2d2world.gameobject.weapon.Bullet;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.Room;
-import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.process.PlayProcessor;
 import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.sync.StubSyncDataAggregator;
@@ -129,7 +127,7 @@ public class World extends DisplayObjectContainer {
         return currentMap;
     }
 
-    public void setMap(GameMap map) {
+    public void setMap(@NotNull GameMap map) {
         removeAllGameObjects();
         this.currentMap = map;
 
@@ -398,18 +396,8 @@ public class World extends DisplayObjectContainer {
         }
     }
 
-    public void actorAttack(@NotNull Actor actor, @NotNull Weapon weapon) {
-        Bullet bullet = weapon.getNextBullet(actor.getArmDegree());
-        if (getGameObjectById(bullet.getGameObjectId()) == null) {
-            bullet.setDamagingOwnerActor(actor);
-            float deg = actor.getArmDegree();
-            float[] toXY = RotationUtils.xySpeedOfDegree(deg);
-            float distance = RotationUtils.distance(0, 0, actor.getWeaponX() * actor.getDirection(), actor.getWeaponY());
-            bullet.setXY(actor.getX(), actor.getY());
-            bullet.move(toXY[0] * distance, toXY[1] * distance + actor.getWeaponY());
-            bullet.setDirection(actor.getDirection());
-            addGameObject(bullet, 5, false);
-        }
+    public void actorAttack(@NotNull Weapon weapon) {
+        weapon.shoot(this);
     }
 
     public boolean isSwitchingRoomsNow() {

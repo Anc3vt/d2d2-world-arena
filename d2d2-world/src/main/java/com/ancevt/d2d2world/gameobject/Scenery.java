@@ -23,7 +23,7 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Slowing;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.world.World;
+import org.jetbrains.annotations.NotNull;
 
 public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotatable, IScalable, IAlphable, EventListener {
 
@@ -31,9 +31,8 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
     private final MapkitItem mapkitItem;
     private int frameCounter;
     private int frameIndex;
-    private World world;
 
-    public Scenery(MapkitItem mapkitItem, int gameObjectId) {
+    public Scenery(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
         this.gameObjectId = gameObjectId;
 
@@ -42,16 +41,6 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
         if (mapkitItem.getTextureCount(AnimationKey.IDLE) > 1) {
             addEventListener(Event.EACH_FRAME, this);
         }
-    }
-
-    @Override
-    public World getWorld() {
-        return world;
-    }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
     }
 
     @Override

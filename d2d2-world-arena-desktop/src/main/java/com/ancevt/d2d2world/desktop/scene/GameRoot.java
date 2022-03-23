@@ -19,6 +19,7 @@ package com.ancevt.d2d2world.desktop.scene;
 
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.hash.MD5;
+import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
@@ -102,6 +103,12 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 case KeyCode.TAB -> {
                     MODULE_CHAT.setVisible(false);
                     setTabWindowVisible(true);
+                }
+                case KeyCode.F -> {
+                    if (e.isAlt()) D2D2.setFullscreen(!D2D2.isFullscreen());
+                }
+                case KeyCode.S -> {
+                    if (e.isAlt()) D2D2.setSmoothMode(!D2D2.isSmoothMode());
                 }
             }
         });
@@ -320,7 +327,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         return MODULE_COMMAND_PROCESSOR.process(text);
     }
 
-    private void addToStage(Event<IEventDispatcher> event) {
+    private void addToStage(Event<? extends IEventDispatcher> event) {
         add(new FpsMeter(), 0, getStage().getStageWidth() - 100);
     }
 

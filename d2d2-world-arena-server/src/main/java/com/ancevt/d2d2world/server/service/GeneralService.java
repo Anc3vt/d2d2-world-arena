@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.server.service;
 
+import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.hash.MD5;
@@ -239,10 +240,12 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
             });
 
-            MODULE_SENDER.sendToPlayer(playerId,
+            serverSender.sendToPlayer(playerId,
                     PlayerActorDto.builder()
                             .playerActorGameObjectId(MODULE_WORLD_SCENE.getPlayerActorGameObjectId(playerId))
                             .build());
+
+            serverSender.sendToPlayer(playerId, getServerInfoDto());
         }
 
         if (dto instanceof ServerInfoRequestDto) {
@@ -349,6 +352,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
         if (dto instanceof PlayerChatEventDto d) {
             serverSender.sendToAll(d);
+        }
+
+        if (dto instanceof LocalServerKillDto) {
+            // TODO: implement test that connection is localhost
+            exit();
         }
 
     }

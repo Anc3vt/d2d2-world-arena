@@ -25,7 +25,6 @@ import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.ISizable;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.world.World;
 
 public abstract class Area extends BorderedRect implements IGameObject, ICollision, ISizable {
 
@@ -40,7 +39,6 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
     private boolean collisionEnabled;
     private final MapkitItem mapkitItem;
     private Sprite pointSprite;
-    private World world;
 
     protected Area(MapkitItem mapkitItem, int gameObjectId) {
         super(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -55,16 +53,6 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
         this.mapkitItem = mapkitItem;
 
         //setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    @Override
-    public World getWorld() {
-        return world;
     }
 
     @Override

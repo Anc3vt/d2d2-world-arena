@@ -25,7 +25,7 @@ public class ThreeSpritesPlatform extends Platform {
     }
 
     private void this_addToStage(Event event) {
-        removeEventListeners(ThreeSpritesPlatform.class);
+        removeEventListener(ThreeSpritesPlatform.class);
         rebuild();
     }
 

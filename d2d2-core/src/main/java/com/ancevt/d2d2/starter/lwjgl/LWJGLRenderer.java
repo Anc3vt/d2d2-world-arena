@@ -26,7 +26,9 @@ import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventPool;
+import com.ancevt.d2d2.input.Mouse;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 
@@ -34,17 +36,18 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class LWJGLRenderer implements IRenderer {
 
-    private static final boolean ANTIALIASING_ENABLED = false;
     private final Stage stage;
+    private final LWJGLStarter lwjglStarter;
+    boolean smoothMode;
     private LWJGLTextureEngine textureEngine;
 
-    public LWJGLRenderer(Stage stage) {
+    public LWJGLRenderer(Stage stage, LWJGLStarter lwjglStarter) {
         this.stage = stage;
+        this.lwjglStarter = lwjglStarter;
     }
 
     @Override
     public void init(long windowId) {
-
         GL30.glEnable(GL_BLEND);
         GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
@@ -68,10 +71,6 @@ public class LWJGLRenderer implements IRenderer {
 
         clear();
 
-        //GL30.glEnable( GL30.GL_LINE_SMOOTH );
-        //GL30.glEnable( GL30.GL_POLYGON_SMOOTH );
-        //GL30.glHint( GL30.GL_LINE_SMOOTH_HINT, GL30.GL_NICEST );
-        //GL30.glHint( GL30.GL_POLYGON_SMOOTH_HINT, GL30.GL_NICEST );
         GL30.glEnable(GL30.GL_BLEND);
         GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -85,12 +84,16 @@ public class LWJGLRenderer implements IRenderer {
                 stage.getScaleX(),
                 stage.getScaleY(),
                 stage.getRotation(),
-                stage.getAlpha()
-        );
+                stage.getAlpha());
 
         textureEngine.unloadTextureAtlases();
 
+        GLFW.glfwGetCursorPos(lwjglStarter.windowId ,mouseX, mouseY);
+        Mouse.setXY((int) mouseX[0], (int) mouseY[0]);
     }
+
+    private double[] mouseX = new double[1];
+    private double[] mouseY = new double[1];
 
     private void clear() {
         Color backgroundColor = stage.getRoot().getBackgroundColor();
@@ -102,13 +105,13 @@ public class LWJGLRenderer implements IRenderer {
     }
 
     private synchronized void renderDisplayObject(@NotNull IDisplayObject displayObject,
-                                     int level,
-                                     float toX,
-                                     float toY,
-                                     float toScaleX,
-                                     float toScaleY,
-                                     float toRotation,
-                                     float toAlpha) {
+                                                  int level,
+                                                  float toX,
+                                                  float toY,
+                                                  float toScaleX,
+                                                  float toScaleY,
+                                                  float toRotation,
+                                                  float toAlpha) {
 
         if (!displayObject.isVisible()) return;
 
@@ -329,21 +332,18 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glVertex2d(x, charHeight * -scY + y);
     }
 
-    private static void textureParamsHandle() {
-        if (ANTIALIASING_ENABLED) {
+    private void textureParamsHandle() {
+        if (smoothMode) {
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_REPEAT);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_REPEAT);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
         } else {
-            //GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_REPEAT);
-            //GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_REPEAT);
+            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_NEAREST);
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
         }
-
     }
 
     public void setLWJGLTextureEngine(LWJGLTextureEngine textureEngine) {

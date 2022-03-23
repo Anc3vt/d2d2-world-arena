@@ -50,4 +50,13 @@ public interface D2D2Starter {
     void putToClipboard(String string);
 
     String getStringFromClipboard();
+
+    boolean isFullscreen();
+
+    void setFullscreen(boolean value);
+
+    default void setSmoothMode(boolean value) {}
+
+    default boolean isSmoothMode() { return false; }
+
 }

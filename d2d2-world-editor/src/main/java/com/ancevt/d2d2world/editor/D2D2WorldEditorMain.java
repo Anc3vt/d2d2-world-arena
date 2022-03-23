@@ -121,6 +121,7 @@ public class D2D2WorldEditorMain {
         playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
         playerActor.setXY(300, 300);
         playerActor.setName("__");
+        playerActor.setLocalAim(true);
         world.addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);
@@ -139,10 +140,7 @@ public class D2D2WorldEditorMain {
         });
 
 
-        DebugPlayerActorCreator.createTestPlayerActor(world).addEventListener(Event.EACH_FRAME, event -> {
-            PlayerActor bot = (PlayerActor) event.getSource();
-            bot.setAimXY(playerActor.getX(), playerActor.getY());
-        });
+        DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
 
         /**/
 

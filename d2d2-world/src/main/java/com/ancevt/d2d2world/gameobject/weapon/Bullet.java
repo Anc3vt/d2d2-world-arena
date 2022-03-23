@@ -35,7 +35,6 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
     private World world;
     private int damagingPower;
     private float speed;
-    private final int toRemoveCounter = 10;
     private float degree;
 
     public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
@@ -96,16 +95,6 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
     @Override
     public int getGameObjectId() {
         return gameObjectId;
-    }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    @Override
-    public World getWorld() {
-        return world;
     }
 
     @Override
@@ -195,6 +184,7 @@ abstract public class Bullet extends DisplayObjectContainer implements ICollisio
     @Property
     public void setDegree(float degree) {
         this.degree = degree;
+        setRotation(degree);
     }
 
     @Property

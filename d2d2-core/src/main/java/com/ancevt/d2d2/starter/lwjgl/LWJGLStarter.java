@@ -45,7 +45,7 @@ public class LWJGLStarter implements D2D2Starter {
     private static final String DEFAULT_BITMAP_FONT = "Terminus.bmf";
 
     private IRenderer renderer;
-    private long windowId;
+    long windowId;
     private boolean mouseVisible;
 
     private int width;
@@ -59,6 +59,13 @@ public class LWJGLStarter implements D2D2Starter {
     private boolean isDown;
 
     private Stage stage;
+    private boolean fullscreen;
+    private int windowX;
+    private int windowY;
+    private int windowWidth;
+    private int windowHeight;
+    private int videoModeWidth;
+    private int videoModeHeight;
 
     public LWJGLStarter(int width, int height, String title) {
         this.width = width;
@@ -88,10 +95,20 @@ public class LWJGLStarter implements D2D2Starter {
         stage = new Stage();
         stage.setStageSize(width, height);
         stage.onResize(width, height);
-        renderer = new LWJGLRenderer(stage);
+        renderer = new LWJGLRenderer(stage, this);
         ((LWJGLRenderer) renderer).setLWJGLTextureEngine((LWJGLTextureEngine) D2D2.getTextureManager().getTextureEngine());
         windowId = createWindow();
         setVisible(true);
+    }
+
+    @Override
+    public void setSmoothMode(boolean value) {
+        ((LWJGLRenderer) renderer).smoothMode = value;
+    }
+
+    @Override
+    public boolean isSmoothMode() {
+        return ((LWJGLRenderer) renderer).smoothMode;
     }
 
     @Override
@@ -155,7 +172,7 @@ public class LWJGLStarter implements D2D2Starter {
 
         glfwDefaultWindowHints();
 
-        //glfwWindowHint(GLFW.GLFW_SAMPLES, 64);
+        glfwWindowHint(GLFW.GLFW_SAMPLES, 64);
 
         long resultWindowId = glfwCreateWindow(width, height, title, NULL, NULL);
 
@@ -275,6 +292,8 @@ public class LWJGLStarter implements D2D2Starter {
             );
         }
 
+        videoModeWidth = videoMode.width();
+        videoModeHeight = videoMode.height();
 
         glfwMakeContextCurrent(resultWindowId);
         GL.createCapabilities();
@@ -314,6 +333,40 @@ public class LWJGLStarter implements D2D2Starter {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public void setFullscreen(boolean value) {
+
+        if (!fullscreen) {
+            int x[] = new int[1];
+            int y[] = new int[1];
+            int w[] = new int[1];
+            int h[] = new int[1];
+            glfwGetWindowPos(windowId, x, y);
+            glfwGetWindowSize(windowId, w, h);
+            windowX = x[0];
+            windowY = y[0];
+            windowWidth = w[0];
+            windowHeight = h[0];
+        }
+
+        if (value) {
+            glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+            glfwSetWindowPos(windowId, 0, 0);
+            glfwSetWindowSize(windowId, videoModeWidth, videoModeHeight);
+        } else {
+            glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+            glfwSetWindowPos(windowId, windowX, windowY);
+            glfwSetWindowSize(windowId, windowWidth, windowHeight);
+        }
+
+        this.fullscreen = value;
+    }
+
+    @Override
+    public boolean isFullscreen() {
+        return fullscreen;
     }
 
     private int getTransformedX(int x) {

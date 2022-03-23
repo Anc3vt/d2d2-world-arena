@@ -128,4 +128,14 @@ public class NoRenderStarter implements D2D2Starter {
             }
         }
     }
+
+    @Override
+    public boolean isFullscreen() {
+        return false;
+    }
+
+    @Override
+    public void setFullscreen(boolean value) {
+
+    }
 }

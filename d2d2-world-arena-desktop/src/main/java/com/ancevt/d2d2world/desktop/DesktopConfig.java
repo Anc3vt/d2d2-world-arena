@@ -45,12 +45,14 @@ public class DesktopConfig {
     public static final String DEBUG_WORLD_ALPHA = "debug.world-alpha";
     public static final String DEBUG_GAME_OBJECT_IDS = "debug.game-object-ids";
     public static final String AUTO_ENTER = "auto-enter";
+    public static final String FULLSCREEN = "fullscreen";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "test.ancevt.com:2245");
         put(DEBUG_WORLD_ALPHA, "1.0");
         put(DEBUG_GAME_OBJECT_IDS, "false");
         put(AUTO_ENTER, "false");
+        put(FULLSCREEN, "true");
     }};
 
     private final List<ConfigChangeListener> changeListeners;

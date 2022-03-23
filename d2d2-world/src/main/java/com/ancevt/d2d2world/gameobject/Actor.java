@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -31,7 +32,6 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.scene.Particle;
 import com.ancevt.d2d2world.ui.HealthBar;
-import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +49,6 @@ abstract public class Actor extends Animated implements
         IControllable,
         ISpeedable {
 
-    private static final int ATTACK_TIME = 20;
     private static final int JUMP_TIME = 4;
     private static final int DAMAGING_TIME = 14;
     private final FramedSprite framedDoHead;
@@ -76,7 +75,6 @@ abstract public class Actor extends Animated implements
     private boolean alive;
     private Weapon weapon;
     private boolean pushable;
-    private World world;
     private final HealthBar healthBar;
     private final DisplayObjectContainer weaponContainer;
     private final DisplayObjectContainer headContainer;
@@ -159,8 +157,8 @@ abstract public class Actor extends Animated implements
             float w = weaponDisplayObject.getWidth();
             float h = weaponDisplayObject.getHeight();
             if (getAnimation() == WALK_ATTACK) {
-                armSprite.setY(-12);
-                weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
+                //armSprite.setY(-12);
+                //weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             } else {
                 armSprite.setY(-8);
                 weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
@@ -193,9 +191,9 @@ abstract public class Actor extends Animated implements
 
         if (!D2D2World.isServer() || !isAlive()) return;
 
-        attackTime = ATTACK_TIME;
+        attackTime = getWeapon().getAttackTime();
         if (getWeapon() != null)
-            getWorld().actorAttack(this, getWeapon());
+            getWorld().actorAttack(getWeapon());
     }
 
     @Override
@@ -218,16 +216,6 @@ abstract public class Actor extends Animated implements
         weaponContainer.setScale(direction, direction);
         headContainer.setScaleY(direction);
         fixBodyPartsY();
-    }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    @Override
-    public World getWorld() {
-        return world;
     }
 
     public final void debug(final Object o) {
@@ -292,7 +280,7 @@ abstract public class Actor extends Animated implements
         this.aimX = targetX;
         this.aimY = targetY;
 
-        if(isOnWorld()) getWorld().getSyncDataAggregator().aim(this);
+        if (isOnWorld()) getWorld().getSyncDataAggregator().aim(this);
     }
 
     public float getAimX() {
@@ -448,19 +436,23 @@ abstract public class Actor extends Animated implements
         setAlive(false);
         health = 0;
 
+
         if (damaging == null) {
             if (isOnWorld()) {
-                world.add(Particle.create(500, Color.of(0x220000)), getX(), getY());
+                getWorld().add(Particle.bloodExplosion(500, Color.of(0x220000)), getX(), getY());
                 setVisible(false);
             }
         }
 
         if (D2D2World.isServer()) {
-            world.dispatchEvent(WorldEvent.builder()
+
+            getWorld().dispatchEvent(WorldEvent.builder()
                     .type(WorldEvent.ACTOR_DEATH)
                     .deadActorGameObjectId(getGameObjectId())
                     .killerGameObjectId(damaging != null ? damaging.getGameObjectId() : 0)
                     .build());
+
+            UnixDisplay.debug("Actor:438: <A>death");
         }
     }
 
@@ -655,8 +647,7 @@ abstract public class Actor extends Animated implements
             //else if (attackTime == 0) setAnimation(AnimationKey.IDLE);
 
             if (c.isB()) {
-                if (attackTime == 0)
-                    attack();
+                if (attackTime == 0) attack();
             }
 
             if (c.isA() && getFloor() != null && !onJump) {
@@ -667,8 +658,8 @@ abstract public class Actor extends Animated implements
             if (!c.isA() && getFloor() != null) onJump = false;
         }
 
-        if (attackTime > 1) attackTime--;
-        if (attackTime == 1 && !c.isB()) attackTime--;
+        if (attackTime >= 1) attackTime--;
+        //if (attackTime == 1 && !c.isB()) attackTime--;
 
         if (jumpTime > 0) {
             jumpTime--;

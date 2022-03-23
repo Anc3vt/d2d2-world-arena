@@ -19,6 +19,7 @@ package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.weapon.LazerBullet;
 import com.ancevt.d2d2world.gameobject.weapon.StandardBullet;
 
 public class CharacterMapkit extends Mapkit {
@@ -30,10 +31,11 @@ public class CharacterMapkit extends Mapkit {
         super(UID, NAME);
         blakeMapkitItem();
         avaMapkitItem();
-        bulletMapkitItem();
+        standardBulletMapkitItem();
+        lazerBulletMapkitItem();
     }
 
-    private void bulletMapkitItem() {
+    private void standardBulletMapkitItem() {
         String mapkitData = """
                 id = standard_bullet |
                 class =""" + StandardBullet.class.getName() + """
@@ -43,6 +45,22 @@ public class CharacterMapkit extends Mapkit {
                 collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4 |
                 atlas = bullets.png |
                 idle = 32,0,16,16; 48,0,16,16; 32,0,16,16; 48,0,16,16 |
+                """;
+
+        DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));
+        createItem(mapkitDataEntry);
+    }
+
+    private void lazerBulletMapkitItem() {
+        String mapkitData = """
+                id = lazer_bullet |
+                class =""" + LazerBullet.class.getName() + """
+                |
+                damagingPower = 5 |
+                speed = 15 |
+                collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4 |
+                atlas = bullets.png |
+                idle = 32,32,32,16 |
                 """;
 
         DataEntry mapkitDataEntry = DataEntry.newInstance(mapkitData.replace('\n', ' '));
@@ -104,7 +122,7 @@ public class CharacterMapkit extends Mapkit {
                 collisionWidth = 12 |
                 collisionHeight = 28 |
                 
-                weaponX=15 |
+                weaponX=11 |
                 weaponY=-3 |
                 atlas=blake-and-ava-tileset.png |
                 idle = 96,192,48,48; 144,192,48,48 |

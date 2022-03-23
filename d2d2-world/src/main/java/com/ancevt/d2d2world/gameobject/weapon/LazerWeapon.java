@@ -4,22 +4,16 @@ import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.mapkit.CharacterMapkit;
-import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public class StandardWeapon extends Weapon {
+public class LazerWeapon extends Weapon {
 
-
-    public StandardWeapon(@NotNull Actor owner) {
-        super(MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("standard_bullet"), owner, getOrCreateDisplayObject());
-    }
-
-    private static MapkitItem getOrCreateMapkitItem() {
-        return null;
+    public LazerWeapon(@NotNull Actor owner) {
+        super(MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("lazer_bullet"), owner, getOrCreateDisplayObject());
     }
 
     @Contract(" -> new")
@@ -28,13 +22,13 @@ public class StandardWeapon extends Weapon {
                 MapkitManager.getInstance()
                         .getByName(CharacterMapkit.NAME)
                         .getTextureAtlas("bullets.png")
-                        .createTexture(0, 0, 32, 32)
+                        .createTexture(0, 32, 32, 32)
         );
     }
 
     @Override
     public int getAttackTime() {
-        return 20;
+        return 5;
     }
 
     @Override

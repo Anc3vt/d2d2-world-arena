@@ -6,14 +6,11 @@ import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.math.RotationUtils;
-import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
 public class StandardBullet extends Bullet implements ITight {
 
-
     private boolean setToRemove;
-    private boolean permanentSync;
 
     public StandardBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -21,7 +18,7 @@ public class StandardBullet extends Bullet implements ITight {
     }
 
     private void this_addToStage(Event event) {
-        removeEventListeners(StandardBullet.class);
+        removeEventListener(StandardBullet.class);
         var a = getMapkitItem().getTextureAtlas();
         FramedSprite framedSprite = new FramedSprite(
                 a.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))
@@ -79,30 +76,5 @@ public class StandardBullet extends Bullet implements ITight {
     @Override
     public boolean isPushable() {
         return false;
-    }
-
-    @Override
-    public boolean isOnWorld() {
-        return super.isOnWorld();
-    }
-
-    @Override
-    public void onAddToWorld(World world) {
-        super.onAddToWorld(world);
-    }
-
-    @Override
-    public void sync() {
-        super.sync();
-    }
-
-    @Override
-    public void setPermanentSync(boolean permanentSync) {
-        this.permanentSync = permanentSync;
-    }
-
-    @Override
-    public boolean isPermanentSync() {
-        return permanentSync;
     }
 }
