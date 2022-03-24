@@ -110,6 +110,20 @@
             <version>${ancevt-commons.version}</version>
         </dependency>
 
+        <!-- Sound -->
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>mp3spi</artifactId>
+            <version>${mp3spi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>vorbisspi</artifactId>
+            <version>1.0.3.3</version>
+        </dependency>
+
+
+
         <!-- PNG -->
         <dependency>
             <groupId>org.l33tlabs.twl</groupId>

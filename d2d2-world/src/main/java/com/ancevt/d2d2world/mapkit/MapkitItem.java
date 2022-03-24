@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.mapkit;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
-import com.ancevt.d2d2.sound.Sound;
+import com.ancevt.d2d2.sound.SoundImpl;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.data.DataEntry;
@@ -43,7 +43,7 @@ public class MapkitItem {
     private final DataEntry dataEntry;
 
     private final Texture[][] textures;
-    private final Sound[][] sounds;
+    private final SoundImpl[][] sounds;
 
 
     private Class<?> gameObjectClass;
@@ -155,8 +155,8 @@ public class MapkitItem {
     }
 
 
-    private Sound[][] prepareSounds() {
-        final Sound[][] result = new Sound[SoundKey.MAX_SOUNDS][];
+    private SoundImpl[][] prepareSounds() {
+        final SoundImpl[][] result = new SoundImpl[SoundKey.MAX_SOUNDS][];
 
         result[SoundKey.JUMP] = prepareSoundsOfKey(DataKey.SOUND_JUMP);
         result[SoundKey.DAMAGE] = prepareSoundsOfKey(DataKey.SOUND_DAMAGE);
@@ -166,7 +166,7 @@ public class MapkitItem {
         return result;
     }
 
-    private Sound[] prepareSoundsOfKey(final String key) {
+    private SoundImpl[] prepareSoundsOfKey(final String key) {
 //        final String value = dataLine.getString(key);
 //
 //        final String[] valueStrings = value.split(";");
