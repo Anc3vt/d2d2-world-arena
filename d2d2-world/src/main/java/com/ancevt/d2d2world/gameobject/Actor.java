@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -188,11 +189,15 @@ abstract public class Actor extends Animated implements
     public void attack() {
         fixBodyPartsY();
 
+        attackTime = getWeapon().getAttackTime();
+        getWeapon().playShootSound();
+
         if (!D2D2World.isServer() || !isAlive() || damagingTime > 0) return;
 
-        attackTime = getWeapon().getAttackTime();
-        if (getWeapon() != null)
+        if (getWeapon() != null) {
             getWorld().actorAttack(getWeapon());
+            getWorld().getSyncDataAggregator().attack(this);
+        }
     }
 
     @Override
@@ -254,6 +259,8 @@ abstract public class Actor extends Animated implements
         } else {
             setDirection(1);
         }
+
+        UnixDisplay.debug("Actor:262: <A>" + aimX + ":" + getX());
 
         setBackward(goDirection != getDirection());
 

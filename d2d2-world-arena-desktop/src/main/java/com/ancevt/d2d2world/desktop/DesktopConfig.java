@@ -46,6 +46,7 @@ public class DesktopConfig {
     public static final String DEBUG_GAME_OBJECT_IDS = "debug.game-object-ids";
     public static final String AUTO_ENTER = "auto-enter";
     public static final String FULLSCREEN = "fullscreen";
+    public static final String SOUND_ENABLED = "sound-enabled";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "test.ancevt.com:2245");
@@ -53,6 +54,7 @@ public class DesktopConfig {
         put(DEBUG_GAME_OBJECT_IDS, "false");
         put(AUTO_ENTER, "false");
         put(FULLSCREEN, "true");
+        put(SOUND_ENABLED, "true");
     }};
 
     private final List<ConfigChangeListener> changeListeners;

@@ -59,7 +59,7 @@ public class D2D2Demo_Input {
         //debugGrid.setScale(2f,2f);
         root.add(debugGrid);
 
-        D2D2.getStage().setScaleMode(ScaleMode.REAL);
+        D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
     }
 

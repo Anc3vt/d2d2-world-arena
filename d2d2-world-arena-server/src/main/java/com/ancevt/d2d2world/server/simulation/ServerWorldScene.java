@@ -7,7 +7,6 @@ import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
-import com.ancevt.d2d2world.gameobject.DebugPlayerActorCreator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
@@ -134,7 +133,7 @@ public class ServerWorldScene {
         world.addGameObject(playerActor, 5, false);
         playerActorMap.put(player.getId(), playerActor);
 
-        DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
+        //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
 
         log.info("Add player actor {}", playerActor);
     }

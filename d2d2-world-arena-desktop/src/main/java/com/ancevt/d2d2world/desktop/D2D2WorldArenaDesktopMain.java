@@ -20,6 +20,7 @@ package com.ancevt.d2d2world.desktop;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.ScaleMode;
+import com.ancevt.d2d2.sound.Sound;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
 
 @Slf4j
 public class D2D2WorldArenaDesktopMain {
@@ -60,6 +62,8 @@ public class D2D2WorldArenaDesktopMain {
                 UnixDisplay.setEnabled(true);
             }
         }
+
+        Sound.setEnabled(MODULE_CONFIG.getBoolean(SOUND_ENABLED));
 
         // Load project properties
         Properties properties = new Properties();

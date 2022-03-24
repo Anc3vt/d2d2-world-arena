@@ -17,12 +17,14 @@
  */
 package com.ancevt.d2d2world.mapkit;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
+import com.ancevt.d2d2.sound.Sound;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.map.MapIO;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,12 +40,14 @@ public abstract class Mapkit {
     private final Map<String, MapkitItem> items;
     private final String uid;
     private final Map<String, TextureAtlas> textureAtlases;
+    private final Map<String, Sound> sounds;
 
     Mapkit(String uid, String name) {
         this.uid = uid;
         this.items = new HashMap<>();
         this.name = name;
         textureAtlases = new HashMap<>();
+        sounds = new HashMap<>();
     }
 
     public String getUid() {
@@ -89,6 +93,11 @@ public abstract class Mapkit {
 
     public void removeItem(@NotNull MapkitItem item) {
         items.remove(item.getId());
+    }
+
+    @SneakyThrows
+    public void playSound(String filename) {
+        Sound.play(MapIO.mapkitsDirectory + uid + "/" + filename);
     }
 
     public MapkitItem getItem(String mapkitItemId) {

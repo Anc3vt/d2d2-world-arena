@@ -7,31 +7,52 @@ public interface ISyncDataAggregator {
 
     byte[] EMPTY_ARRAY = new byte[]{};
 
-    void newGameObject(IGameObject gameObject);
+    default void newGameObject(IGameObject gameObject) {
+    }
 
-    void armDegree(Actor actor);
+    default void armDegree(Actor actor) {
+    }
 
-    void actionIndex(IActioned actioned);
+    default void actionIndex(IActioned actioned) {
+    }
 
-    void repair(@NotNull IDestroyable destroyable);
+    default void repair(@NotNull IDestroyable destroyable) {
+    }
 
-    void xy(IGameObject gameObject);
+    default void xy(IGameObject gameObject) {
+    }
 
-    void animation(IAnimated animated, boolean loop);
+    default void animation(IAnimated animated, boolean loop) {
+    }
 
-    void health(IDestroyable destroyable, IDamaging damaging);
+    default void health(IDestroyable destroyable, IDamaging damaging) {
+    }
 
-    void maxHealth(IDestroyable destroyable);
+    default void maxHealth(IDestroyable destroyable) {
+    }
 
-    void direction(IDirectioned directioned);
+    default void direction(IDirectioned directioned) {
+    }
 
-    void remove(IGameObject gameObject);
+    default void remove(IGameObject gameObject) {
+    }
 
-    byte[] pullSyncDataMessage();
+    default void aim(@NotNull Actor actor) {
+    }
 
-    boolean hasData();
+    default void attack(@NotNull Actor actor) {
+    }
 
-    void visibility(@NotNull IGameObject gameObject, boolean value);
+    default byte[] pullSyncDataMessage() {
+        return EMPTY_ARRAY;
+    }
+
+    default boolean hasData() {
+        return false;
+    }
+
+    default void visibility(@NotNull IGameObject gameObject, boolean value) {
+    }
 
     default void createSyncDataOf(IGameObject o) {
         if (!(o instanceof ISynchronized)) return;
@@ -49,6 +70,4 @@ public interface ISyncDataAggregator {
             maxHealth(d);
         }
     }
-
-    void aim(@NotNull Actor actor);
 }

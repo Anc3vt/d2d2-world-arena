@@ -52,7 +52,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
@@ -277,8 +276,6 @@ public class WorldScene extends DisplayObjectContainer {
         overlay.startOut();
         gameObjectTexts.clear();
 
-        debug("WorldScene:221: <r><A>" + localPlayerActor);
-
         world.getCamera().setAttachedTo(localPlayerActor);
     }
 
@@ -328,6 +325,7 @@ public class WorldScene extends DisplayObjectContainer {
                     overlay.startOut();
                 }
             });
+
             getRoot().addEventListener(InputEvent.KEY_UP, event -> {
                 var e = (InputEvent) event;
                 final int oldState = localPlayerController.getState();
@@ -396,9 +394,9 @@ public class WorldScene extends DisplayObjectContainer {
                 aimY = localPlayerActor.getAimY();
             }
         });
-        localPlayerActor.setLocalAim(true);
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
+        localPlayerActor.setLocalAim(true);
         world.getCamera().setAttachedTo(localPlayerActor);
         playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
     }

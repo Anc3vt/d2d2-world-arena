@@ -51,7 +51,13 @@ abstract public class Weapon {
 		bullet.setDegree(degree);
 		return bullet;
 	}
-	
+
+	abstract public void shoot(@NotNull World world);
+
+	abstract public void playShootSound();
+
+	abstract public void playBulletDestroySound();
+
 	public Actor getOwner() {
 		return owner;
 	}
@@ -59,6 +65,4 @@ abstract public class Weapon {
 	public void setOwner(@NotNull Actor owner) {
 		this.owner = owner;
 	}
-
-	abstract public void shoot(@NotNull World world);
 }

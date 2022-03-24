@@ -38,6 +38,16 @@ public class StandardWeapon extends Weapon {
     }
 
     @Override
+    public void playShootSound() {
+
+    }
+
+    @Override
+    public void playBulletDestroySound() {
+
+    }
+
+    @Override
     public void shoot(@NotNull World world) {
         Bullet bullet = getNextBullet(getOwner().getArmDegree());
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {

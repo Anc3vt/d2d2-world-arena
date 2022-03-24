@@ -21,10 +21,12 @@ import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.asset.Assets;
 import com.ancevt.d2d2.exception.NotImplementedException;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +35,6 @@ import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
 import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
 public class SoundImpl implements Sound {
-
-    private static boolean enabled = true;
 
     private InputStream inputStream;
     private ByteArrayInputStream byteArrayInputStream;
@@ -116,7 +116,7 @@ public class SoundImpl implements Sound {
 
     @Override
     public void play() {
-        if (!enabled) return;
+        if (!Sound.isEnabled()) return;
 
         if (inputStream == null && assetFilePath == null) {
             throw new IllegalStateException("No inputStream or assetFilePath of sound to play");
@@ -196,22 +196,16 @@ public class SoundImpl implements Sound {
         }
     }
 
-    public static void setEnabled(boolean enabled) {
-        SoundImpl.enabled = enabled;
-    }
-
-    public static boolean isEnabled() {
-        return enabled;
-    }
-
-
+    @SneakyThrows
     public static void main(String[] args) {
-        SoundImpl sound = new SoundImpl("sound/tap.ogg");
+        //SoundImpl sound = new SoundImpl("sound/tap.ogg");
+
+        var sound = new SoundImpl(new FileInputStream("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/character-mapkit/lazer.ogg"))  ;
 
         Async.run(() -> {
             while (true) {
                 sound.play();
-                new Lock().lock(250, TimeUnit.MILLISECONDS);
+                new Lock().lock(1000, TimeUnit.MILLISECONDS);
             }
         });
     }

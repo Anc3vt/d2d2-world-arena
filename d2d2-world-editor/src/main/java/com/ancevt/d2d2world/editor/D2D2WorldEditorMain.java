@@ -29,7 +29,6 @@ import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
-import com.ancevt.d2d2world.gameobject.DebugPlayerActorCreator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
@@ -140,7 +139,7 @@ public class D2D2WorldEditorMain {
         });
 
 
-        DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
+        //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
 
         /**/
 

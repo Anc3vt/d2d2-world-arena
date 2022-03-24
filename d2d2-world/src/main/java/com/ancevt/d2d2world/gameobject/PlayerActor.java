@@ -79,8 +79,8 @@ public class PlayerActor extends Actor {
         float wx = world.getAbsoluteX() / scaleX;
         float wy = world.getAbsoluteY() / scaleY;
 
-        float x = Mouse.getX() / 2f;
-        float y = Mouse.getY() / 2f;
+        float x = Mouse.getX() / scaleX;
+        float y = Mouse.getY() / scaleY;
 
         float worldX = (x - wx);
         float worldY = (y - wy);

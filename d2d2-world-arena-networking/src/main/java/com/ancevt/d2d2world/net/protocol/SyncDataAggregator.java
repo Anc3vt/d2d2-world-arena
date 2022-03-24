@@ -36,12 +36,6 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public void armDegree(@NotNull Actor actor) {
-        buffer.writeByte(SyncDataType.ARM_DEGREE)
-                .writeShort((int) actor.getArmDegree());
-    }
-
-    @Override
     public synchronized void actionIndex(IActioned actioned) {
         if (!(actioned instanceof ISynchronized)) return;
 
@@ -112,6 +106,12 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeInt(actor.getGameObjectId())
                 .writeFloat(actor.getAimX())
                 .writeFloat(actor.getAimY());
+    }
+
+    @Override
+    public synchronized void attack(@NotNull Actor actor) {
+        buffer.writeByte(SyncDataType.ATTACK)
+                .writeInt(actor.getGameObjectId());
     }
 
     @Override

@@ -3,7 +3,9 @@ package com.ancevt.d2d2.sound;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.exception.NotImplementedException;
+import lombok.SneakyThrows;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +95,7 @@ public class SoundPool implements Sound {
 
     @Override
     public boolean isPlaying() {
-        return false;
+        return sounds.stream().anyMatch(Sound::isPlaying);
     }
 
     @Override
@@ -113,7 +115,9 @@ public class SoundPool implements Sound {
 
     @Override
     public void play() {
-        getNextSound().play();
+        if(Sound.isEnabled()) {
+            getNextSound().play();
+        }
     }
 
     private Sound getNextSound() {
@@ -125,9 +129,11 @@ public class SoundPool implements Sound {
         return currentSound;
     }
 
+    @SneakyThrows
     public static void main(String[] args) {
-        Sound sound = new SoundPool("sound/tap.ogg", 50);
-
+        Sound.setEnabled(true);
+        //Sound sound = new SoundPool("sound/tap.ogg", 50);
+        var sound = new SoundImpl(new FileInputStream("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/character-mapkit/lazer.ogg"));
         Async.run(() -> {
             while (true) {
                 sound.play();

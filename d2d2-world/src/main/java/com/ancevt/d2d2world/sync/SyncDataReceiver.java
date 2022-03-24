@@ -11,7 +11,6 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
 @Slf4j
@@ -47,8 +46,6 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
         ByteInputReader in = ByteInputReader.newInstance(syncData);
 
-        StringBuilder sb = new StringBuilder();
-
         while (in.hasNextData()) {
 
             int type = 0;
@@ -72,6 +69,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                     case SyncDataType.AIM -> {
                         aim(gameObjectId, in.readFloat(), in.readFloat());
                     }
+                    case SyncDataType.ATTACK -> {
+                        attack(gameObjectId);
+                    }
                     case SyncDataType.ACTION_INDEX -> {
                         actionIndex(gameObjectId, in.readShort());
                     }
@@ -84,12 +84,8 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         setAnimation(gameObjectId, animKey, loop);
                     }
                     case SyncDataType.XY -> {
-                        sb.append("----- xy\n");
-                        sb.append("goid: " + gameObjectId + "\n");
                         float x = in.readFloat();
-                        sb.append("x: " + x + "\n");
                         float y = in.readFloat();
-                        sb.append("y: " + y + "\n");
                         setXY(gameObjectId, x, y);
                     }
                     case SyncDataType.HEALTH -> {
@@ -117,12 +113,18 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                 }
             } catch (Exception e) {
                 log.error("type: " + type, e);
-                sb.setLength(0);
-                debug("com.ancevt.d2d2world.sync.SyncDataReceiver.bytesReceived(SyncDataReceiver:188): <A>" + sb);
-                e.printStackTrace();
             }
         }
 
+    }
+
+    private void attack(int gameObjectId) {
+        if(world.getGameObjectById(gameObjectId) instanceof Actor actor) {
+            if(actor instanceof PlayerActor playerActor) {
+                if(playerActor.isLocalPlayerActor()) return;
+            }
+            actor.attack();
+        }
     }
 
     private void aim(int gameObjectId, float aimX, float aimY) {
@@ -181,8 +183,10 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     }
 
     private void setDirection(int gameObjectId, int direction) {
-
         if (world.getGameObjectById(gameObjectId) instanceof IDirectioned d) {
+            if(d instanceof PlayerActor playerActor) {
+                if(playerActor.isLocalPlayerActor()) return;
+            }
             d.setDirection(direction);
         }
     }
