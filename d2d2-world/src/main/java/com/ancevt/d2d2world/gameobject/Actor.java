@@ -17,7 +17,6 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
-import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -189,7 +188,7 @@ abstract public class Actor extends Animated implements
     public void attack() {
         fixBodyPartsY();
 
-        if (!D2D2World.isServer() || !isAlive()) return;
+        if (!D2D2World.isServer() || !isAlive() || damagingTime > 0) return;
 
         attackTime = getWeapon().getAttackTime();
         if (getWeapon() != null)
@@ -451,8 +450,6 @@ abstract public class Actor extends Animated implements
                     .deadActorGameObjectId(getGameObjectId())
                     .killerGameObjectId(damaging != null ? damaging.getGameObjectId() : 0)
                     .build());
-
-            UnixDisplay.debug("Actor:438: <A>death");
         }
     }
 
