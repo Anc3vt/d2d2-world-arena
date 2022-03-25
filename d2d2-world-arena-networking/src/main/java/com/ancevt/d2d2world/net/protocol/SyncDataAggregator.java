@@ -21,7 +21,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void newGameObject(@NotNull IGameObject gameObject) {
-        if (!(gameObject instanceof ISynchronized o)) return;
+        if (!(gameObject instanceof ISynchronized)) return;
 
         MapkitItem mapkitItem = gameObject.getMapkitItem();
 
@@ -33,6 +33,13 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeUtf(byte.class, mapkitItem.getMapkit().getName())
                 .writeUtf(byte.class, mapkitItem.getId())
                 .writeUtf(short.class, getProperties(gameObject).stringify());
+    }
+
+    @Override
+    public synchronized void weapon(@NotNull Actor actor) {
+        buffer.writeByte(SyncDataType.WEAPON)
+                .writeInt(actor.getGameObjectId())
+                .writeUtf(byte.class, actor.getWeapon().getClass().getName());
     }
 
     @Override

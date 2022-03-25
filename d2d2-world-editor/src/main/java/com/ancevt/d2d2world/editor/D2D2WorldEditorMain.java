@@ -138,6 +138,14 @@ public class D2D2WorldEditorMain {
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
         });
 
+        root.addEventListener(InputEvent.MOUSE_WHEEL, event -> {
+            var e = (InputEvent) event;
+            if (e.getDelta() > 0) {
+                playerActor.nextWeapon();
+            } else {
+                playerActor.prevWeapon();
+            }
+        });
 
         //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
 

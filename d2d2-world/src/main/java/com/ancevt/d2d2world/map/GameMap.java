@@ -18,15 +18,10 @@
 package com.ancevt.d2d2world.map;
 
 import com.ancevt.d2d2world.data.Property;
-import com.ancevt.d2d2world.exception.GameException;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.world.Layer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class GameMap {
 
@@ -145,14 +140,6 @@ public class GameMap {
         }
 
         return null;
-    }
-
-    public final int getNextFreeGameObjectId() {
-        for (int i = 1; i < MAX_GAME_OBJECTS; i++) {
-            final IGameObject gameObject = getGameObjectById(i);
-            if (gameObject == null) return i;
-        }
-        throw new GameException("MAX_GAME_OBJECTS is reached");
     }
 
     @Override

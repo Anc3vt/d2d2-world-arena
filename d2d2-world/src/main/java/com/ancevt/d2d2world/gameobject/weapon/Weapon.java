@@ -17,52 +17,175 @@
  */
 package com.ancevt.d2d2world.gameobject.weapon;
 
+import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2world.gameobject.Actor;
+import com.ancevt.d2d2world.data.Property;
+import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
+
 abstract public class Weapon {
 
-	private final MapkitItem bulletMapkitItem;
-	private final IDisplayObject displayObject;
+    private final IDisplayObject displayObject;
+    private final Mapkit mapkit;
+    private Actor owner;
+    private int ammunition;
+    private int maxAmmunition;
 
-	public Weapon(@NotNull MapkitItem bulletMapkitItem, @NotNull Actor owner, @NotNull IDisplayObject displayObject) {
-		this.bulletMapkitItem = bulletMapkitItem;
-		this.owner = owner;
-		this.displayObject = displayObject;
-	}
+    public Weapon(@NotNull IDisplayObject displayObject) {
+        this.displayObject = displayObject;
+        mapkit = MapkitManager.getInstance().getByName(CharacterMapkit.NAME);
+    }
 
-	private Actor owner;
+    public @NotNull MapkitItem getBulletMapkitItem() {
+        return mapkit.getItem("bullet_" + getClass().getSimpleName());
+    }
 
-	protected @NotNull MapkitItem getBulletMapkitItem() {
-		return bulletMapkitItem;
-	}
+    public IDisplayObject getDisplayObject() {
+        return displayObject;
+    }
 
-	abstract public int getAttackTime();
+    public void setMaxAmmunition(int maxAmmunition) {
+        this.maxAmmunition = maxAmmunition;
+    }
 
-	public IDisplayObject getDisplayObject() {
-		return displayObject;
-	}
+    public int getMaxAmmunition() {
+        return maxAmmunition;
+    }
 
-	public Bullet getNextBullet(float degree) {
-		Bullet bullet = (Bullet) getBulletMapkitItem().createGameObject(getOwner().getWorld().getNextFreeGameObjectId());
-		bullet.setDegree(degree);
-		return bullet;
-	}
+    public void setAmmunition(int ammunition) {
+        this.ammunition = ammunition;
+        if (ammunition > maxAmmunition) ammunition = maxAmmunition;
+    }
 
-	abstract public void shoot(@NotNull World world);
+    public int getAmmunition() {
+        return ammunition;
+    }
 
-	abstract public void playShootSound();
+    public Bullet getNextBullet(float degree) {
+        Bullet bullet = (Bullet) getBulletMapkitItem().createGameObject(IdGenerator.INSTANCE.getNewId());
+        bullet.setDegree(degree);
+        return bullet;
+    }
 
-	abstract public void playBulletDestroySound();
+    abstract public int getAttackTime();
 
-	public Actor getOwner() {
-		return owner;
-	}
+    abstract public void shoot(@NotNull World world);
 
-	public void setOwner(@NotNull Actor owner) {
-		this.owner = owner;
-	}
+    abstract public void playShootSound();
+
+    abstract public void playBulletDestroySound();
+
+    public Actor getOwner() {
+        return owner;
+    }
+
+    public void setOwner(@NotNull Actor owner) {
+        this.owner = owner;
+    }
+
+    public static Weapon createWeapon(String className) {
+        try {
+            return (Weapon) Class.forName(className).getConstructor().newInstance();
+        } catch (ClassNotFoundException | InvocationTargetException |
+                InstantiationException | IllegalAccessException |
+                NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    abstract public static class Bullet extends DisplayObjectContainer implements
+            ICollision,
+            IDirectioned,
+            ISpeedable,
+            IDamaging,
+            ISynchronized {
+
+        private boolean collisionEnabled;
+        private float collisionX, collisionY, collisionWidth, collisionHeight;
+        private Actor owner;
+        private int direction;
+        private World world;
+        private int damagingPower;
+        private float speed;
+        private float degree;
+
+        public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
+            setMapkitItem(mapkitItem);
+            setGameObjectId(gameObjectId);
+            setCollisionEnabled(true);
+        }
+
+        @Override
+        public void process() {
+            if (isOnWorld()) {
+                if (getX() < 0 || getX() > getWorld().getRoom().getWidth() ||
+                        getY() < 0 || getY() > getWorld().getRoom().getHeight()) {
+                    destroy();
+                }
+            }
+        }
+
+        @Property
+        public int getOwnerGameObjectId() {
+            return owner.getGameObjectId();
+        }
+
+        @Override
+        public void setDamagingPower(int damagingPower) {
+            this.damagingPower = damagingPower;
+        }
+
+        @Override
+        public int getDamagingPower() {
+            return damagingPower;
+        }
+
+        abstract public void prepare();
+
+        abstract public void destroy();
+
+        @Override
+        public boolean isSavable() {
+            return false;
+        }
+
+        @Override
+        public void setDamagingOwnerActor(Actor actor) {
+            owner = actor;
+        }
+
+        @Override
+        public Actor getDamagingOwnerActor() {
+            return owner;
+        }
+
+        @Override
+        public void setDirection(int direction) {
+            this.direction = direction;
+            //setScaleX(direction);
+        }
+
+        @Override
+        public int getDirection() {
+            return direction;
+        }
+
+        @Property
+        public void setDegree(float degree) {
+            this.degree = degree;
+            setRotation(degree);
+        }
+
+        @Property
+        public float getDegree() {
+            return degree;
+        }
+    }
 }

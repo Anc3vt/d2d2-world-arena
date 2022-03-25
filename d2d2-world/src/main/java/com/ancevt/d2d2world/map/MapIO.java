@@ -22,6 +22,7 @@ import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataEntryLoader;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.mapkit.AreaMapkit;
 import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -93,7 +94,7 @@ public class MapIO {
 
             int gameObjectId = dataEntry.getInt(DataKey.ID, 0);
 
-            if (gameObjectId == 0) gameObjectId = map.getNextFreeGameObjectId();
+            if (gameObjectId == 0) gameObjectId = IdGenerator.INSTANCE.getNewId();
 
             String mapkitItemId = dataEntry.getString(DataKey.ITEM);
             int layer = dataEntry.getInt(DataKey.LAYER);

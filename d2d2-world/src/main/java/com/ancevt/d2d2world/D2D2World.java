@@ -18,10 +18,16 @@
 package com.ancevt.d2d2world;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.texture.Texture;
+import com.ancevt.d2d2world.gameobject.*;
+import org.jetbrains.annotations.NotNull;
 
 public class D2D2World {
 
     private static boolean server;
+    private static Aim aim;
 
     private D2D2World() {
     }
@@ -31,7 +37,61 @@ public class D2D2World {
         D2D2.getTextureManager().loadTextureDataInfo("d2d2-world-common-texture-data.inf");
     }
 
+    public static Texture getAimTexture() {
+        return D2D2.getTextureManager().getTexture("d2d2-world-common-tileset-aim");
+    }
+
     public static boolean isServer() {
         return server;
+    }
+
+    public static void resetGameObjectProperties() {
+        IGameObject.worldMap.clear();
+        IGameObject.extraMap.clear();
+        IGameObject.gameObjectIdMap.clear();
+        IMovable.startXMap.clear();
+        IMovable.startYMap.clear();
+        IMovable.movingSpeedXMap.clear();
+        IMovable.movingSpeedYMap.clear();
+        ICollision.collisionXMap.clear();
+        ICollision.collisionYMap.clear();
+        ICollision.collisionWidthMap.clear();
+        ICollision.collisionHeightMap.clear();
+        ICollision.collisionEnabledMap.clear();
+        ISynchronized.permanentSyncMap.clear();
+        IControllable.controllerMap.clear();
+        ISpeedable.speedMap.clear();
+        IRotatable.rotationMap.clear();
+    }
+
+    public static Aim getAim() {
+        return aim == null ? aim = new Aim() : aim;
+    }
+
+    public static class Aim extends DisplayObjectContainer {
+        public Aim() {
+            Sprite sprite = new Sprite(getAimTexture());
+            add(sprite, -sprite.getWidth()/2, -sprite.getHeight()/2);
+            setAlpha(0.5f);
+        }
+
+        @Override
+        public void onEachFrame() {
+            //rotate(10f);
+            if(getScaleX() > 1.0) {
+                toScale(0.9f, 0.9f);
+                if(getScaleX() < 0.1) {
+                    setScale(1f, 1f);
+                }
+            }
+        }
+
+        public void attack() {
+            setScale(2.0f, 2.0f);
+        }
+
+        public void setTarget(@NotNull IGameObject gameObject) {
+            setXY(gameObject.getX(), gameObject.getY());
+        }
     }
 }

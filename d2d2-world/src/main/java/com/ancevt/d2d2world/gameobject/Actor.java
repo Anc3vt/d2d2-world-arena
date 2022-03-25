@@ -17,7 +17,6 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
-import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -34,6 +33,9 @@ import com.ancevt.d2d2world.scene.Particle;
 import com.ancevt.d2d2world.ui.HealthBar;
 import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ancevt.d2d2world.constant.AnimationKey.*;
 
@@ -52,6 +54,10 @@ abstract public class Actor extends Animated implements
     private static final int JUMP_TIME = 4;
     private static final int DAMAGING_TIME = 14;
     private final FramedSprite framedDoHead;
+    private final List<Weapon> weapons;
+    private float weaponLocationX, weaponLocationY;
+    private Weapon weapon;
+    private int weaponIndex;
 
     private int attackTime;
     private int jumpTime;
@@ -71,9 +77,8 @@ abstract public class Actor extends Animated implements
 
     protected BitmapText bitmapTextDebug;
     private boolean fallEnabled;
-    private float weaponLocationX, weaponLocationY;
+
     private boolean alive;
-    private Weapon weapon;
     private boolean pushable;
     private final HealthBar healthBar;
     private final DisplayObjectContainer weaponContainer;
@@ -87,6 +92,8 @@ abstract public class Actor extends Animated implements
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
         healthBar = new HealthBar();
+        weapons = new ArrayList<>();
+
         weaponContainer = new DisplayObjectContainer();
 
 
@@ -259,9 +266,6 @@ abstract public class Actor extends Animated implements
         } else {
             setDirection(1);
         }
-
-        UnixDisplay.debug("Actor:262: <A>" + aimX + ":" + getX());
-
         setBackward(goDirection != getDirection());
 
         weaponContainer.setRotation(-deg);
@@ -769,11 +773,61 @@ abstract public class Actor extends Animated implements
         return weapon;
     }
 
+    public void setWeapon(@NotNull String weaponClassName) {
+        weapons.stream()
+                .filter(w -> w.getClass().getName().equals(weaponClassName))
+                .findAny()
+                .ifPresentOrElse(this::setWeapon, ()->{
+                    Weapon weapon = Weapon.createWeapon(weaponClassName);
+                    addWeapon(weapon, weapon.getMaxAmmunition());
+                    setWeapon(weapon);
+                });
+    }
+
     public void setWeapon(@NotNull Weapon weapon) {
+        if (this.weapon != null) {
+            this.weapon.getDisplayObject().removeFromParent();
+        }
+
         this.weapon = weapon;
         weapon.setOwner(this);
         weaponContainer.add(weapon.getDisplayObject());
         fixXY();
+
+        if (isOnScreen()) getWorld().getSyncDataAggregator().weapon(this);
+    }
+
+    public void nextWeapon() {
+        weaponIndex++;
+        if (weaponIndex >= weapons.size()) {
+            weaponIndex = 0;
+        }
+        setWeapon(weapons.get(weaponIndex));
+    }
+
+    public void prevWeapon() {
+        weaponIndex--;
+        if (weaponIndex < 0) {
+            weaponIndex = weapons.size() - 1;
+        }
+        setWeapon(weapons.get(weaponIndex));
+    }
+
+    public void addWeapon(Weapon weapon, int ammunition) {
+        weapons.stream()
+                .filter(w -> w.getClass() == weapon.getClass())
+                .findAny()
+                .ifPresentOrElse(w -> {
+                    w.setAmmunition(w.getAmmunition() + ammunition);
+                }, () -> {
+                    Weapon newWeapon = Weapon.createWeapon(weapon.getClass().getName());
+                    newWeapon.setAmmunition(ammunition);
+                    weapons.add(newWeapon);
+                });
+    }
+
+    public List<Weapon> getWeapons() {
+        return List.copyOf(weapons);
     }
 
     @Override

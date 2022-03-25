@@ -20,7 +20,11 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2world.gameobject.weapon.LazerWeapon;
+import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 
@@ -35,13 +39,18 @@ public class PlayerActor extends Actor {
         BitmapText playerNameBitmapText = new BitmapText();
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
+
+        addWeapon(new StandardWeapon(), 100);
+        addWeapon(new PlasmaWeapon(), 100);
+        addWeapon(new AutomaticWeapon(), 100);
+        addWeapon(new RailWeapon(), 100);
+        setWeapon(getWeapons().get(0));
     }
 
     @Override
     public void onAddToWorld(World world) {
         super.onAddToWorld(world);
-        //setWeapon(new StandardWeapon(this));
-        setWeapon(new LazerWeapon(this));
+        setWeapon(new StandardWeapon());
     }
 
     @Override
@@ -59,7 +68,7 @@ public class PlayerActor extends Actor {
 
     public void setLocalAim(boolean value) {
         this.localAim = value;
-        if(value) {
+        if (value) {
             addEventListener("localAim", Event.EACH_FRAME, this::this_eachFrameLocalAim);
         } else {
             removeAllEventListeners("localAim");
@@ -68,6 +77,15 @@ public class PlayerActor extends Actor {
 
     public boolean isLocalAim() {
         return localAim;
+    }
+
+    @Override
+    public void attack() {
+        super.attack();
+
+        if(isLocalPlayerActor()) {
+            D2D2World.getAim().attack();
+        }
     }
 
     private void this_eachFrameLocalAim(Event event) {

@@ -223,7 +223,8 @@ public class LWJGLStarter implements D2D2Starter {
                 mouseX = (int) x;
                 mouseY = (int) y;
 
-                Mouse.setXY(getTransformedX(mouseX), getTransformedY(mouseY));
+                //Mouse.setXY(getTransformedX(mouseX), getTransformedY(mouseY));
+                Mouse.setXY(mouseX, mouseY);
 
                 stage.getRoot().dispatchEvent(InputEvent.builder()
                         .type(InputEvent.MOUSE_MOVE)

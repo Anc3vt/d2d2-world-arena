@@ -27,6 +27,7 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.IEventDispatcher;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
+import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
@@ -66,6 +67,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     private int attempts;
 
     public GameRoot() {
+        Mouse.setVisible(false);
+
         UiTextInputProcessor.enableRoot(this);
 
         setBackgroundColor(Color.BLACK);

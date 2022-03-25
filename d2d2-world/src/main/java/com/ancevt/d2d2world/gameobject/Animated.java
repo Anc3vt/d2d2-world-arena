@@ -31,14 +31,12 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     private int direction;
     private int currentAnimationKey = -1;
     private IFramedDisplayObject[] animations;
-    private final MapkitItem mapkitItem;
-    private final int id;
     private boolean backward;
     private boolean animationsPrepared;
 
     public Animated(MapkitItem mapKitItem, int gameObjectId) {
-        this.mapkitItem = mapKitItem;
-        this.id = gameObjectId;
+        setMapkitItem(mapKitItem);
+        setGameObjectId(gameObjectId);
         prepareAnimations();
         setPermanentSync(true);
     }
@@ -56,13 +54,13 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
         for (int animKey = 0; animKey < AnimationKey.MAX_ANIMATIONS; animKey++) {
 
-            if (!mapkitItem.isAnimationKeyExists(animKey)) continue;
+            if (!getMapkitItem().isAnimationKeyExists(animKey)) continue;
 
-            final int framesCount = mapkitItem.getTextureCount(animKey);
+            final int framesCount = getMapkitItem().getTextureCount(animKey);
 
             Texture[] frames = new Texture[framesCount];
             for (int i = 0; i < framesCount; i++) {
-                frames[i] = mapkitItem.getTexture(animKey, i);
+                frames[i] = getMapkitItem().getTexture(animKey, i);
             }
 
             IFramedDisplayObject framedDisplayObject = new FramedSprite(frames);
@@ -88,18 +86,8 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     }
 
     @Override
-    public int getGameObjectId() {
-        return id;
-    }
-
-    @Override
     public boolean isSavable() {
         return false;
-    }
-
-    @Override
-    public MapkitItem getMapkitItem() {
-        return mapkitItem;
     }
 
     @Override

@@ -19,25 +19,55 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface IMovable extends IResettable {
 
-    @Property
-    void setStartX(float x);
+    Map<IMovable, Float> startXMap = new HashMap<>();
+    Map<IMovable, Float> startYMap = new HashMap<>();
+    Map<IMovable, Float> movingSpeedXMap = new HashMap<>();
+    Map<IMovable, Float> movingSpeedYMap = new HashMap<>();
 
     @Property
-    void setStartY(float y);
-
-    void setStartXY(float x, float y);
-
-    @Property
-    float getStartX();
+    default void setStartX(float x) {
+        startXMap.put(this, x);
+    }
 
     @Property
-    float getStartY();
+    default void setStartY(float y) {
+        startYMap.put(this, y);
+    }
 
-    float getMovingSpeedX();
+    default void setStartXY(float x, float y) {
+        setStartX(x);
+        setStartY(y);
+    }
 
-    float getMovingSpeedY();
+    @Property
+    default float getStartX() {
+        return startXMap.getOrDefault(this, 0f);
+    }
 
-    void setMovingSpeedX(float value);
+    @Property
+    default float getStartY() {
+        return startYMap.getOrDefault(this, 0f);
+    }
+
+    default float getMovingSpeedX() {
+        return movingSpeedXMap.getOrDefault(this, 0f);
+    }
+
+    default float getMovingSpeedY() {
+        return movingSpeedYMap.getOrDefault(this, 0f);
+    }
+
+    default void setMovingSpeedX(float value) {
+        movingSpeedXMap.put(this, value);
+    }
+
+    default void setMovingSpeedY(float value) {
+        movingSpeedYMap.put(this, value);
+    }
+
 }

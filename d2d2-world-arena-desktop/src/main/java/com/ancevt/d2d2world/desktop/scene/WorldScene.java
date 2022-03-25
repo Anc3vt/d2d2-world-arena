@@ -26,12 +26,14 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -222,12 +224,13 @@ public class WorldScene extends DisplayObjectContainer {
         world.getCamera().setBoundsLock(true);
     }
 
-
     public void init() {
         world.clear();
     }
 
     public void loadMap(String mapFilename) {
+        D2D2World.resetGameObjectProperties();
+        IdGenerator.INSTANCE.clear();
         world.clear();
         overlay.startIn();
         Lock lock = new Lock();
@@ -277,6 +280,8 @@ public class WorldScene extends DisplayObjectContainer {
         gameObjectTexts.clear();
 
         world.getCamera().setAttachedTo(localPlayerActor);
+
+        world.add(D2D2World.getAim());
     }
 
     private void addRootAndChatEventsIfNotYet() {
@@ -302,6 +307,12 @@ public class WorldScene extends DisplayObjectContainer {
                         MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
                     }
                 }
+            });
+
+            getRoot().addEventListener(InputEvent.MOUSE_WHEEL, event -> {
+                var e = (InputEvent) event;
+                int delta = e.getDelta();
+                MODULE_CLIENT.sendLocalPlayerWeaponSwitch(delta);
             });
 
             getRoot().addEventListener(InputEvent.KEY_DOWN, event -> {
@@ -423,6 +434,9 @@ public class WorldScene extends DisplayObjectContainer {
             MODULE_CLIENT.sendPingRequest();
         }
 
+        if(localPlayerActor != null) {
+            D2D2World.getAim().setXY(localPlayerActor.getAimX(), localPlayerActor.getAimY());
+        }
         frameCounter++;
     }
 

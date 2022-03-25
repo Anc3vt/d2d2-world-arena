@@ -63,6 +63,11 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     serverProtocolImplListeners.forEach(l -> l.ping(connectionId));
                 }
 
+                case MessageType.CLIENT_PLAYER_WEAPON_SWITCH -> {
+                    int delta = in.readByte() - 1;
+                    serverProtocolImplListeners.forEach(l -> l.playerWeaponSwitch(connectionId, delta));
+                }
+
                 case MessageType.CLIENT_PLAYER_AIM_XY -> {
                     float x = in.readFloat();
                     float y = in.readFloat();
@@ -106,6 +111,7 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     Dto extraDto = (Dto) gson().fromJson(json, Class.forName(className));
                     serverProtocolImplListeners.forEach(l -> l.dtoFromPlayer(connectionId, extraDto));
                 }
+
 
             }
         } catch (Exception e) {

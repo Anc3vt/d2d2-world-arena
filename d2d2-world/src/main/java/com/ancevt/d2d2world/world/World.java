@@ -22,7 +22,6 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.exception.GameException;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -72,15 +71,6 @@ public class World extends DisplayObjectContainer {
 
         playProcessor = new PlayProcessor(this);
         camera = new Camera(this);
-    }
-
-    public int getNextFreeGameObjectId() {
-        for (int i = 1; i < Integer.MAX_VALUE; i++) {
-            final IGameObject gameObject = getGameObjectById(i);
-            final IGameObject gameObjectFromMap = currentMap.getGameObjectById(i);
-            if (gameObject == null && gameObjectFromMap == null) return i;
-        }
-        throw new GameException("Integer.MAX_VALUE is reached");
     }
 
     public World() {
@@ -319,6 +309,9 @@ public class World extends DisplayObjectContainer {
                 throw new IllegalStateException("duplicate game object id: " + gameObject.getGameObjectId() + " " + gameObject + " and  " + o);
         });
 
+
+        IdGenerator.INSTANCE.addId(gameObject.getGameObjectId());
+
         gameObjects.add(gameObject);
         gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
         getLayer(layerIndex).add(gameObject);
@@ -335,7 +328,8 @@ public class World extends DisplayObjectContainer {
     }
 
 
-    public void removeGameObject(IGameObject gameObject, boolean updateRoom) {
+    public void removeGameObject(@NotNull IGameObject gameObject, boolean updateRoom) {
+        IdGenerator.INSTANCE.removeId(gameObject.getGameObjectId());
         gameObjects.remove(gameObject);
         gameObjectMap.remove(gameObject.getGameObjectId());
         for (int layerIndex = 0; layerIndex < layers.length; layerIndex++) {
@@ -353,7 +347,7 @@ public class World extends DisplayObjectContainer {
         return layers[layerNumber];
     }
 
-    public Layer getLayerByGameObject(IGameObject gameObject) {
+    public Layer getLayerByGameObject(@NotNull IGameObject gameObject) {
         if (gameObject.getParent() instanceof Layer layer) {
             return layer;
         }

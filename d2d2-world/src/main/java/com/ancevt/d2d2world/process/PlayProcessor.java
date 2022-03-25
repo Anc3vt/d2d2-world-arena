@@ -22,7 +22,7 @@ import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
-import com.ancevt.d2d2world.gameobject.weapon.Bullet;
+import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,9 +141,9 @@ public class PlayProcessor {
         o1.onCollide(o2);
         o2.onCollide(o1);
 
-        if (o2 instanceof Bullet bullet && o1 instanceof ITight && o1 != bullet.getDamagingOwnerActor()) {
+        if (o2 instanceof Weapon.Bullet bullet && o1 instanceof ITight && o1 != bullet.getDamagingOwnerActor()) {
             bullet.destroy();
-            if (o1 instanceof Bullet bullet2) {
+            if (o1 instanceof Weapon.Bullet bullet2) {
                 bullet2.destroy();
             }
         }
@@ -169,7 +169,7 @@ public class PlayProcessor {
 
         if (!o1.isPushable()) return;
 
-        if (o2 instanceof Bullet bullet) {
+        if (o2 instanceof Weapon.Bullet bullet) {
             if (bullet.getOwnerGameObjectId() == o1.getGameObjectId()) return;
         }
 
@@ -194,7 +194,7 @@ public class PlayProcessor {
 
         boolean wallHitTest = false;
 
-        if(!(o2 instanceof Bullet) /*&& !(o2 instanceof PlayerActor)*/) {
+        if(!(o2 instanceof Weapon.Bullet) /*&& !(o2 instanceof PlayerActor)*/) {
             if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
                 o1.setX(x2 - w1 - tx1 - 1);
                 getPushState(o1).pushFromRight().tightFromRight = o2;
@@ -211,7 +211,6 @@ public class PlayProcessor {
             if (wallHitTest) {
                 g.setMovingSpeedX(0);
             }
-
             boolean floorUnderObject = cy1 < cy2 && y1 + h1 < y2 + 11; // 11
 
             if (floorUnderObject) {
@@ -237,9 +236,9 @@ public class PlayProcessor {
     }
 
     private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {
-        float x1 = o1.getX() + o1.getCollisionX();
-        float y1 = o1.getY() + o1.getCollisionY();
-        float w1 = o1.getCollisionWidth();
+        float x1 = o1.getX() + o1.getCollisionX() + 1;
+        float y1 = o1.getY() + o1.getCollisionY() + 1;
+        float w1 = o1.getCollisionWidth() + 1;
         float h1 = o1.getCollisionHeight() + 1;
 
         float x2 = o2.getX() + o2.getCollisionX();

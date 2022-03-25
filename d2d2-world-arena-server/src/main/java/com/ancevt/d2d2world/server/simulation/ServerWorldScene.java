@@ -7,6 +7,8 @@ import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
+import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
@@ -72,6 +74,8 @@ public class ServerWorldScene {
     }
 
     public void loadMap(String mapName) {
+        D2D2World.resetGameObjectProperties();
+
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             ServerContentManager.Map scmMap = MODULE_CONTENT_MANAGER.getMaps()
                     .stream()
@@ -121,13 +125,23 @@ public class ServerWorldScene {
         }
     }
 
+    /**
+     * Calls from {@link GeneralService}
+     */
+    public void playerWeaponSwitch(int playerId, int delta) {
+        PlayerActor playerActor = playerActorMap.get(playerId);
+        if(playerActor != null) {
+            if(delta > 0) playerActor.nextWeapon(); else playerActor.prevWeapon();
+        }
+    }
+
     public PlayerActor getPlayerActor(int playerId) {
         return playerActorMap.get(playerId);
     }
 
     public void addPlayer(@NotNull Player player) {
         MapkitItem mapkitItem = MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("character_ava");
-        PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(world.getNextFreeGameObjectId());
+        PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.getController().setEnabled(true);
         playerActor.setXY(448, 304);
         world.addGameObject(playerActor, 5, false);

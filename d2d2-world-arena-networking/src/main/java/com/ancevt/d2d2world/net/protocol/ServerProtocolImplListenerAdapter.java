@@ -46,4 +46,9 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     public void playerAimXY(int playerId, float x, float y) {
 
     }
+
+    @Override
+    public void playerWeaponSwitch(int connectionId, int delta) {
+
+    }
 }

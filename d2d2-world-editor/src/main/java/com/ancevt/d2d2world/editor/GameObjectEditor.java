@@ -293,7 +293,7 @@ public class GameObjectEditor {
     }
 
     private void createNewGameObject() {
-        int newGameObjectId = getWorld().getNextFreeGameObjectId();
+        int newGameObjectId = IdGenerator.INSTANCE.getNewId();
         IGameObject gameObject = getPlacingMapkitItem().createGameObject(newGameObjectId);
         gameObject.setXY(cursor.getX(), cursor.getY());
         gameObject.setName("_" + newGameObjectId);
@@ -330,7 +330,7 @@ public class GameObjectEditor {
     private void paste() {
         unselect();
         copyBuffer.forEach(gameObject -> {
-            IGameObject copy = GameObjectUtils.copy(gameObject, getWorld().getNextFreeGameObjectId());
+            IGameObject copy = GameObjectUtils.copy(gameObject, IdGenerator.INSTANCE.getNewId());
             copy.setName(copy.getName() + "_" + copy.getGameObjectId());
             getWorld().addGameObject(copy, gameObjectLayersMap.get(gameObject.getGameObjectId()), true);
             select(copy);

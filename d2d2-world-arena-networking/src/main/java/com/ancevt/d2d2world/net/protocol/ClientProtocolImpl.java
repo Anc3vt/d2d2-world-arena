@@ -96,6 +96,13 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         }
     }
 
+    public static byte[] createMessagePlayerWeaponSwitch(int delta) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.CLIENT_PLAYER_WEAPON_SWITCH)
+                .writeByte(delta + 1)
+                .toByteArray();
+    }
+
     public static byte[] createMessagePlayerAimXY(float aimX, float aimY) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.CLIENT_PLAYER_AIM_XY)

@@ -115,6 +115,17 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         MODULE_WORLD_SCENE.playerAimXY(playerId, x, y);
     }
 
+    /**
+     * {@link ServerProtocolImplListener} method
+     */
+    @Override
+    public void playerWeaponSwitch(int playerId, int delta) {
+        MODULE_WORLD_SCENE.playerWeaponSwitch(playerId, delta);
+    }
+
+    /**
+     * {@link ServerProtocolImplListener} method
+     */
     @Override
     public void ping(int playerId) {
         MODULE_SENDER.sendToPlayer(playerId, createMessagePing());

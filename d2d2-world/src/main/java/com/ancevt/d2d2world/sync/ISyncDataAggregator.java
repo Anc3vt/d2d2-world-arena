@@ -7,10 +7,11 @@ public interface ISyncDataAggregator {
 
     byte[] EMPTY_ARRAY = new byte[]{};
 
-    default void newGameObject(IGameObject gameObject) {
+    default void weapon(Actor actor) {
+
     }
 
-    default void armDegree(Actor actor) {
+    default void newGameObject(IGameObject gameObject) {
     }
 
     default void actionIndex(IActioned actioned) {

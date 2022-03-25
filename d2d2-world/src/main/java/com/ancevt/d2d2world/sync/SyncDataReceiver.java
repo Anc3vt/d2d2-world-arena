@@ -4,7 +4,7 @@ import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.*;
-import com.ancevt.d2d2world.gameobject.weapon.Bullet;
+import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -66,6 +66,10 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
                     }
+                    case SyncDataType.WEAPON -> {
+                        String weaponClassName = in.readUtf(byte.class);
+                        weapon(gameObjectId, weaponClassName);
+                    }
                     case SyncDataType.AIM -> {
                         aim(gameObjectId, in.readFloat(), in.readFloat());
                     }
@@ -118,26 +122,32 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     }
 
+    private void weapon(int gameObjectId, String weaponClassName) {
+        if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
+            actor.setWeapon(weaponClassName);
+        }
+    }
+
     private void attack(int gameObjectId) {
-        if(world.getGameObjectById(gameObjectId) instanceof Actor actor) {
-            if(actor instanceof PlayerActor playerActor) {
-                if(playerActor.isLocalPlayerActor()) return;
+        if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
+            if (actor instanceof PlayerActor playerActor) {
+                if (playerActor.isLocalPlayerActor()) return;
             }
             actor.attack();
         }
     }
 
     private void aim(int gameObjectId, float aimX, float aimY) {
-        if(world.getGameObjectById(gameObjectId) instanceof Actor actor) {
-            if(actor instanceof PlayerActor playerActor) {
-                if(playerActor.isLocalPlayerActor()) return;
+        if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
+            if (actor instanceof PlayerActor playerActor) {
+                if (playerActor.isLocalPlayerActor()) return;
             }
             actor.setAimXY(aimX, aimY);
         }
     }
 
     private void actionIndex(int gameObjectId, int actionIndex) {
-        if(world.getGameObjectById(gameObjectId) instanceof IActioned actioned) {
+        if (world.getGameObjectById(gameObjectId) instanceof IActioned actioned) {
             actioned.getActionProgram().setCurrentActionIndex(actionIndex);
         }
     }
@@ -168,7 +178,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
         DataEntry dataEntry = DataEntry.newInstance(dataEntryText);
         setProperties(gameObject, dataEntry);
 
-        if (gameObject instanceof Bullet bullet) {
+        if (gameObject instanceof Weapon.Bullet bullet) {
             int ownerGameObjectId = dataEntry.getInt(DataKey.OWNER_GAME_OBJECT_ID);
             bullet.setDamagingOwnerActor((Actor) world.getGameObjectById(ownerGameObjectId));
         }
@@ -184,8 +194,8 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     private void setDirection(int gameObjectId, int direction) {
         if (world.getGameObjectById(gameObjectId) instanceof IDirectioned d) {
-            if(d instanceof PlayerActor playerActor) {
-                if(playerActor.isLocalPlayerActor()) return;
+            if (d instanceof PlayerActor playerActor) {
+                if (playerActor.isLocalPlayerActor()) return;
             }
             d.setDirection(direction);
         }
@@ -207,7 +217,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     private synchronized void setXY(int gameObjectId, float x, float y) {
         IGameObject o = world.getGameObjectById(gameObjectId);
         if (o != null) {
-            if (o instanceof Bullet) return;
+            if (o instanceof Weapon.Bullet) return;
             SyncMotion.moveMotion(o, x, y);
         }
     }

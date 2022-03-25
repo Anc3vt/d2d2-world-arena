@@ -14,17 +14,17 @@ import java.util.concurrent.TimeUnit;
 public class DebugPlayerActorCreator {
 
 
-    public static @NotNull PlayerActor createTestPlayerActor(PlayerActor targetPlayerActor, @NotNull World world) {
+    public static synchronized @NotNull PlayerActor createTestPlayerActor(PlayerActor targetPlayerActor, @NotNull World world) {
         PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance()
                 .getByName(CharacterMapkit.NAME)
                 .getItem("character_blake")
-                .createGameObject(world.getNextFreeGameObjectId());
+                .createGameObject(IdGenerator.INSTANCE.getNewId());
 
-        playerActor.setXY(800, 304);
+        playerActor.setXY((float) (Math.random() * 900), (float) (Math.random() * 400));
         playerActor.setDirection(Direction.LEFT);
 
-        playerActor.setMaxHealth(100);
-        playerActor.setHealth(100);
+        playerActor.setMaxHealth(25);
+        playerActor.setHealth(25);
 
         world.addGameObject(playerActor, 5, false);
         playerActor.getController().setEnabled(true);
@@ -37,8 +37,10 @@ public class DebugPlayerActorCreator {
 
         world.addEventListener(playerActor, WorldEvent.ACTOR_DEATH, event -> {
             world.removeEventListener(playerActor);
-            Async.runLater(5, TimeUnit.SECONDS,
-                    () -> createTestPlayerActor(targetPlayerActor, world).setXY((float) (Math.random() * 900), 300)
+            Async.runLater(2, TimeUnit.SECONDS,
+                    () -> {
+                        createTestPlayerActor(targetPlayerActor, world);
+                    }
             );
         });
 
@@ -51,6 +53,8 @@ public class DebugPlayerActorCreator {
                     Thread.sleep(500);
                     playerActor.getController().setA(false);
                     playerActor.getController().setB(false);
+
+                    if(Math.random() > 0.5) playerActor.nextWeapon();
                     //playerActor.attack();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

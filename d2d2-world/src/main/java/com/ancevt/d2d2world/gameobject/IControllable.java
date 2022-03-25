@@ -19,9 +19,18 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.control.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface IControllable extends IGameObject {
 
-    void setController(final Controller controller);
+    Map<IControllable, Controller> controllerMap = new HashMap<>();
 
-    Controller getController();
+    default void setController(final Controller controller) {
+        controllerMap.put(this, controller);
+    }
+
+    default Controller getController() {
+        return controllerMap.get(this);
+    }
 }

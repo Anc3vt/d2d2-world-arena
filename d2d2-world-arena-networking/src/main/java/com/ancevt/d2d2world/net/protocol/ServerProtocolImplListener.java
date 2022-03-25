@@ -31,4 +31,6 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
     void ping(int playerId);
 
     void playerAimXY(int playerId, float x, float y);
+
+    void playerWeaponSwitch(int connectionId, int delta);
 }
