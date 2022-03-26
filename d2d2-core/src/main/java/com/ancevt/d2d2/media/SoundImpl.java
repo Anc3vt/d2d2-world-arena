@@ -25,16 +25,13 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.concurrent.TimeUnit;
 
-import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
-import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
 public class SoundImpl implements Sound {
+
+    private static int counter = 0;
 
     private InputStream inputStream;
     private ByteArrayInputStream byteArrayInputStream;
@@ -42,6 +39,8 @@ public class SoundImpl implements Sound {
     private boolean loop;
     private volatile boolean playing;
     private Thread thread;
+
+
 
     public SoundImpl() {
 
@@ -116,6 +115,7 @@ public class SoundImpl implements Sound {
 
     @Override
     public void play() {
+
         if (!Sound.isEnabled()) return;
 
         if (inputStream == null && assetFilePath == null) {
@@ -124,11 +124,18 @@ public class SoundImpl implements Sound {
 
         if (isPlaying()) stop();
 
+        counter ++;
+        if(counter > MAX_SOUNDS) {
+            while(counter > MAX_SOUNDS) {
+                new Lock().lock(10, TimeUnit.MILLISECONDS);
+            }
+        }
+
         if (thread == null) {
             thread = new Thread(() -> {
 
                 do {
-                    try (final AudioInputStream in = getAudioInputStream(read())) {
+                    try (final AudioInputStream in = AudioSystem.getAudioInputStream(read())) {
 
                         final AudioFormat outFormat = getOutFormat(in.getFormat());
                         final DataLine.Info info = new DataLine.Info(SourceDataLine.class, outFormat);
@@ -139,7 +146,7 @@ public class SoundImpl implements Sound {
                             if (line != null) {
                                 line.open(outFormat);
                                 line.start();
-                                stream(getAudioInputStream(outFormat, in), line);
+                                stream(AudioSystem.getAudioInputStream(outFormat, in), line);
                                 line.drain();
                                 line.stop();
                             }
@@ -154,10 +161,12 @@ public class SoundImpl implements Sound {
 
                 playing = false;
                 thread = null;
+                counter --;
+
             });
 
             playing = true;
-            //thread.setDaemon(true);
+            thread.setDaemon(true);
             thread.start();
         }
     }
@@ -182,11 +191,10 @@ public class SoundImpl implements Sound {
     private @NotNull AudioFormat getOutFormat(@NotNull AudioFormat inFormat) {
         final int ch = inFormat.getChannels();
         final float rate = inFormat.getSampleRate();
-        return new AudioFormat(PCM_SIGNED, rate, 16, ch, ch * 2, rate, false);
+        return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, rate, 16, ch, ch * 2, rate, false);
     }
 
-    private void stream(AudioInputStream in, SourceDataLine line)
-            throws IOException {
+    private void stream(AudioInputStream in, SourceDataLine line) throws IOException {
         final byte[] buffer = new byte[4096];
         for (int n = 0; n != -1; n = in.read(buffer, 0, buffer.length)) {
             line.write(buffer, 0, n);
@@ -200,12 +208,17 @@ public class SoundImpl implements Sound {
     public static void main(String[] args) {
         //SoundImpl sound = new SoundImpl("sound/tap.ogg");
 
-        var sound = new SoundImpl(new FileInputStream("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/character-mapkit/lazer.ogg"))  ;
 
         Async.run(() -> {
             while (true) {
+                SoundImpl sound = null;
+                try {
+                    sound = new SoundImpl(new FileInputStream("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/character-mapkit/plasma.ogg"));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 sound.play();
-                new Lock().lock(1000, TimeUnit.MILLISECONDS);
+                new Lock().lock(10, TimeUnit.MILLISECONDS);
             }
         });
     }

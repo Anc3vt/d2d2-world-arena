@@ -34,8 +34,6 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 
-import static org.lwjgl.opengl.GL30.*;
-
 public class LWJGLRenderer implements IRenderer {
 
     private final Stage stage;
@@ -50,8 +48,8 @@ public class LWJGLRenderer implements IRenderer {
 
     @Override
     public void init(long windowId) {
-        GL30.glEnable(GL_BLEND);
-        GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //GL30.glEnable(GL_BLEND);
+        //GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
@@ -72,9 +70,6 @@ public class LWJGLRenderer implements IRenderer {
         textureEngine.loadTextureAtlases();
 
         clear();
-
-        GL30.glEnable(GL30.GL_BLEND);
-        GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
         GL30.glMatrixMode(GL30.GL_MODELVIEW);
         GL30.glLoadIdentity();
@@ -206,14 +201,19 @@ public class LWJGLRenderer implements IRenderer {
                 float py = rY * tH * scaleY;
 
                 GL30.glBegin(GL30.GL_QUADS);
+
                 GL30.glTexCoord2d(x, h + y);
                 GL30.glVertex2d(px, py + tH * scaleY);
+
                 GL30.glTexCoord2d(w + x, h + y);
                 GL30.glVertex2d(px + tW * scaleX, py + tH * scaleY);
+
                 GL30.glTexCoord2d(w + x, y);
                 GL30.glVertex2d(px + tW * scaleX, py + 0);
+
                 GL30.glTexCoord2d(x, y);
                 GL30.glVertex2d(px + 0, py + 0);
+
                 GL30.glEnd();
             }
         }

@@ -45,7 +45,7 @@ public class PlasmaWeapon extends Weapon {
             float[] toXY = RotationUtils.xySpeedOfDegree(deg);
             float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
             bullet.setXY(getOwner().getX(), getOwner().getY());
-            bullet.move(toXY[0] * distance, toXY[1] * distance + getOwner().getWeaponY());
+            bullet.move(toXY[0] * distance, toXY[1] * distance);
             bullet.setDirection(getOwner().getDirection());
             world.addGameObject(bullet, 5, false);
         }

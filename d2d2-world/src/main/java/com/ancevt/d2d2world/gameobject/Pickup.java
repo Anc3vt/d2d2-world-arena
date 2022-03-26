@@ -26,9 +26,10 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
         bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture());
         bubbleSprite.setAlpha(0.75f);
         icon = new Sprite("d2d2-world-common-tileset-pickup-health");
-        container.add(icon, -7, -8);
+        container.add(icon);
+        icon.setXY(-icon.getWidth() / 2, -icon.getHeight() / 2 + 1);
         container.add(bubbleSprite, -16, -16);
-        container.setScale(0.1f, 0.1f);
+        container.setScale(0.01f, 0.01f);
         add(container);
 
         setCollision(-16, -16, 32, 32);
@@ -48,8 +49,8 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
     public void onEachFrame() {
         if (!ready) {
             container.toScale(1.1f, 1.1f);
-            if(container.getScaleX() >= 1) {
-                container.setScale(1,1);
+            if (container.getScaleX() >= 1) {
+                container.setScale(1, 1);
                 ready = true;
             }
         } else {
@@ -59,10 +60,12 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
             if (counter < 20) {
                 container.setScale(container.getScaleX() + factor, container.getScaleY() - factor);
                 icon.setScale(icon.getScaleX() - factor, icon.getScaleY() + factor);
+                icon.moveY(-0.005f);
                 container.moveY(0.25f);
             } else {
                 container.setScale(container.getScaleX() - factor, container.getScaleY() + factor);
                 icon.setScale(icon.getScaleX() + factor, icon.getScaleY() - factor);
+                icon.moveY(+0.005f);
                 container.moveY(-0.25f);
             }
 
@@ -70,6 +73,7 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
                 counter = 0;
                 container.setScale(1, 1);
                 icon.setScale(1, 1);
+                icon.setXY(-icon.getWidth() / 2, -icon.getHeight() / 2);
                 container.setXY(0, 0);
             }
         }
@@ -80,7 +84,7 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
         D2D2World.init(true);
 
         Pickup pickup = new Pickup(null, 0);
-        pickup.setScale(1.5f, 1.5f);
+        pickup.setScale(3f, 3f);
 
         root.add(pickup, 100, 100);
 

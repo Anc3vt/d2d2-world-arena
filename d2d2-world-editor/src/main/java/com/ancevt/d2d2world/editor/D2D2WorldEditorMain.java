@@ -131,12 +131,21 @@ public class D2D2WorldEditorMain {
         root.addEventListener(InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
+
+            if(e.getKeyChar() == '.') {
+                playerActor.nextWeapon();
+            }
+            if(e.getKeyChar() == ',') {
+                playerActor.prevWeapon();
+            }
         });
 
         root.addEventListener(InputEvent.KEY_UP, event -> {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
         });
+
+
 
         root.addEventListener(InputEvent.MOUSE_WHEEL, event -> {
             var e = (InputEvent) event;

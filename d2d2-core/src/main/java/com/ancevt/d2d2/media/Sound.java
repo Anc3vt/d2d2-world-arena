@@ -8,6 +8,8 @@ import java.io.InputStream;
 
 public interface Sound {
 
+    int MAX_SOUNDS = 25;
+
     Holder<Boolean> enabledHolder = new Holder<>(true);
 
     static void setEnabled(boolean enabled) {
