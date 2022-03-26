@@ -3,7 +3,7 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.constant.Direction;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
@@ -16,7 +16,7 @@ public class DebugPlayerActorCreator {
 
     public static synchronized @NotNull PlayerActor createTestPlayerActor(PlayerActor targetPlayerActor, @NotNull World world) {
         PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance()
-                .getByName(CharacterMapkit.NAME)
+                .getByName(BuiltInMapkit.NAME)
                 .getItem("character_blake")
                 .createGameObject(IdGenerator.INSTANCE.getNewId());
 

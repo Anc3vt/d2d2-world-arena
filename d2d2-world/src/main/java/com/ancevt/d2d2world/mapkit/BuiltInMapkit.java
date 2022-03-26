@@ -24,12 +24,12 @@ import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 
-public class CharacterMapkit extends Mapkit {
+public class BuiltInMapkit extends Mapkit {
 
-    public static final String UID = "character-mapkit";
-    public static final String NAME = "character-mapkit";
+    public static final String UID = "builtin-mapkit";
+    public static final String NAME = "builtin-mapkit";
 
-    CharacterMapkit() {
+    BuiltInMapkit() {
         super(UID, NAME);
         blakeMapkitItem();
         avaMapkitItem();

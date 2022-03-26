@@ -24,7 +24,6 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 
@@ -40,17 +39,10 @@ public class PlayerActor extends Actor {
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
 
-        addWeapon(new StandardWeapon(), 100);
-        addWeapon(new PlasmaWeapon(), 100);
-        addWeapon(new AutomaticWeapon(), 100);
-        addWeapon(new RailWeapon(), 100);
-        setWeapon(getWeapons().get(0));
-    }
-
-    @Override
-    public void onAddToWorld(World world) {
-        super.onAddToWorld(world);
-        setWeapon(new StandardWeapon());
+        addWeapon(new PlasmaWeapon(), 10);
+        addWeapon(new AutomaticWeapon(), 10);
+        addWeapon(new RailWeapon(), 10);
+        setCurrentWeapon(getWeapons().get(2));
     }
 
     @Override
@@ -91,18 +83,20 @@ public class PlayerActor extends Actor {
     private void this_eachFrameLocalAim(Event event) {
         final World world = getWorld();
 
-        float scaleX = world.getAbsoluteScaleX();
-        float scaleY = world.getAbsoluteScaleY();
+        if(isOnWorld()) {
+            float scaleX = world.getAbsoluteScaleX();
+            float scaleY = world.getAbsoluteScaleY();
 
-        float wx = world.getAbsoluteX() / scaleX;
-        float wy = world.getAbsoluteY() / scaleY;
+            float wx = world.getAbsoluteX() / scaleX;
+            float wy = world.getAbsoluteY() / scaleY;
 
-        float x = Mouse.getX() / scaleX;
-        float y = Mouse.getY() / scaleY;
+            float x = Mouse.getX() / scaleX;
+            float y = Mouse.getY() / scaleY;
 
-        float worldX = (x - wx);
-        float worldY = (y - wy);
+            float worldX = (x - wx);
+            float worldY = (y - wy);
 
-        setAimXY(worldX, worldY);
+            setAimXY(worldX, worldY);
+        }
     }
 }

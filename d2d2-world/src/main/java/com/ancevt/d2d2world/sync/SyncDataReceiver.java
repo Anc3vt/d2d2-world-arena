@@ -11,6 +11,7 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
 @Slf4j
@@ -68,13 +69,13 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                     }
                     case SyncDataType.WEAPON -> {
                         String weaponClassName = in.readUtf(byte.class);
-                        weapon(gameObjectId, weaponClassName);
+                        int ammunition = in.readShort();
+                        weapon(gameObjectId, weaponClassName, ammunition);
+
+                        debug("SyncDataReceiver:74: <A>class: " + weaponClassName + ", " + ammunition);
                     }
                     case SyncDataType.AIM -> {
                         aim(gameObjectId, in.readFloat(), in.readFloat());
-                    }
-                    case SyncDataType.ATTACK -> {
-                        attack(gameObjectId);
                     }
                     case SyncDataType.ACTION_INDEX -> {
                         actionIndex(gameObjectId, in.readShort());
@@ -122,9 +123,12 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     }
 
-    private void weapon(int gameObjectId, String weaponClassName) {
+    private void weapon(int gameObjectId, String weaponClassName, int ammunition) {
         if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
-            actor.setWeapon(weaponClassName);
+            if (!weaponClassName.equals(actor.getCurrentWeapon().getClass().getName())) {
+                actor.setCurrentWeapon(weaponClassName);
+            }
+            actor.getCurrentWeapon().setAmmunition(ammunition);
         }
     }
 

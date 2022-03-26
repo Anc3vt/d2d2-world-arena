@@ -39,7 +39,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     public synchronized void weapon(@NotNull Actor actor) {
         buffer.writeByte(SyncDataType.WEAPON)
                 .writeInt(actor.getGameObjectId())
-                .writeUtf(byte.class, actor.getWeapon().getClass().getName());
+                .writeUtf(byte.class, actor.getCurrentWeapon().getClass().getName())
+                .writeShort(actor.getCurrentWeapon().getAmmunition());
     }
 
     @Override
@@ -113,12 +114,6 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeInt(actor.getGameObjectId())
                 .writeFloat(actor.getAimX())
                 .writeFloat(actor.getAimY());
-    }
-
-    @Override
-    public synchronized void attack(@NotNull Actor actor) {
-        buffer.writeByte(SyncDataType.ATTACK)
-                .writeInt(actor.getGameObjectId());
     }
 
     @Override

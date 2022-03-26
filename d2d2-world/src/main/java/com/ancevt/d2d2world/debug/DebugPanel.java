@@ -55,7 +55,7 @@ public class DebugPanel extends DisplayObjectContainer {
         text = new BitmapText();
         text.setColor(Color.WHITE);
         text.setBounds(width, height);
-        add(text);
+        add(text, 1, 1);
 
         touchButton = new TouchButton(width, height, true);
         touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, this::touchButton_touchDown);

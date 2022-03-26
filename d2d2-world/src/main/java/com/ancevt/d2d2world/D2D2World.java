@@ -71,7 +71,7 @@ public class D2D2World {
     }
 
     public static Texture getPickupBubbleTexture() {
-        return D2D2.getTextureManager().getTexture("d2d2-world-common-tileset-pickup-bubble");
+        return D2D2.getTextureManager().getTexture("pickup-bubble");
     }
 
     public static class Aim extends DisplayObjectContainer {
@@ -83,7 +83,6 @@ public class D2D2World {
 
         @Override
         public void onEachFrame() {
-            //rotate(10f);
             if(getScaleX() > 1.0) {
                 toScale(0.9f, 0.9f);
                 if(getScaleX() < 0.1) {

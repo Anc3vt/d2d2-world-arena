@@ -12,7 +12,7 @@ import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.dto.server.DeathDto;
@@ -140,7 +140,7 @@ public class ServerWorldScene {
     }
 
     public void addPlayer(@NotNull Player player) {
-        MapkitItem mapkitItem = MapkitManager.getInstance().getByName(CharacterMapkit.NAME).getItem("character_ava");
+        MapkitItem mapkitItem = MapkitManager.getInstance().getByName(BuiltInMapkit.NAME).getItem("character_ava");
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.getController().setEnabled(true);
         playerActor.setXY(448, 304);

@@ -206,7 +206,7 @@ public class MapkitToolsPanel extends TitledPanel {
         List<MapkitItem> items = new ArrayList<>();
 
         for (Mapkit mapkit : mapkits) {
-            if (mapkit instanceof CharacterMapkit) continue;
+            if (mapkit instanceof BuiltInMapkit) continue;
 
             for (String mapkitItemId : mapkit.keySet()) {
                 MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);

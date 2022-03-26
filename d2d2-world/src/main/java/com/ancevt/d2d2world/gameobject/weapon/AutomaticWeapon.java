@@ -2,9 +2,10 @@ package com.ancevt.d2d2world.gameobject.weapon;
 
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.IDisplayObject;
+import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.math.RotationUtils;
@@ -16,16 +17,16 @@ import org.jetbrains.annotations.NotNull;
 public class AutomaticWeapon extends Weapon {
 
     public AutomaticWeapon() {
-        super(getOrCreateDisplayObject());
+        super(createSprite());
         setMaxAmmunition(500);
         setAmmunition(getMaxAmmunition());
     }
 
     @Contract(" -> new")
-    private static @NotNull IDisplayObject getOrCreateDisplayObject() {
+    private static @NotNull ISprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
-                        .getByName(CharacterMapkit.NAME)
+                        .getByName(BuiltInMapkit.NAME)
                         .getTextureAtlas("bullets.png")
                         .createTexture(0, 64, 32, 32)
         );
@@ -37,7 +38,9 @@ public class AutomaticWeapon extends Weapon {
     }
 
     @Override
-    public void shoot(@NotNull World world) {
+    public boolean shoot(@NotNull World world) {
+        if (!super.shoot(world)) return false;
+
         Bullet bullet = getNextBullet(getOwner().getArmDegree());
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
@@ -45,10 +48,11 @@ public class AutomaticWeapon extends Weapon {
             float[] toXY = RotationUtils.xySpeedOfDegree(deg);
             float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
             bullet.setXY(getOwner().getX(), getOwner().getY());
-            bullet.move(toXY[0] * distance/2, toXY[1] * distance - 3);
+            bullet.move(toXY[0] * distance, toXY[1] * distance - 3);
             bullet.setDirection(getOwner().getDirection());
             world.addGameObject(bullet, 4, false);
         }
+        return true;
     }
 
     @Override
@@ -59,6 +63,11 @@ public class AutomaticWeapon extends Weapon {
     @Override
     public void playBulletDestroySound() {
 
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 
     public static class AutomaticBullet extends Bullet {
@@ -106,10 +115,9 @@ public class AutomaticWeapon extends Weapon {
         @Override
         public void onEachFrame() {
             if (setToRemove && isOnWorld()) {
-                toScale(0.8f, 0.8f);
+                toScale(0.1f, 0.1f);
                 toAlpha(0.8f);
                 moveY(-1);
-                rotate((float) (Math.random() * 30));
                 if (getAlpha() <= 0.1f) {
                     getWorld().removeGameObject(this, false);
                 }

@@ -6,6 +6,7 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -25,8 +26,7 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
         container = new DisplayObjectContainer();
         bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture());
         bubbleSprite.setAlpha(0.75f);
-        bubbleSprite.setName("__TEST__");
-        icon = new Sprite("d2d2-world-common-tileset-pickup-health");
+        icon = new Sprite("pickup-health25");
         container.add(icon);
         icon.setXY(-icon.getWidth() / 2, -icon.getHeight() / 2 + 1);
         container.add(bubbleSprite, -16, -16);
@@ -34,6 +34,9 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
         add(container);
 
         setCollision(-16, -16, 32, 32);
+    }
+    public void setTexture(Texture texture) {
+        icon.setTexture(texture);
     }
 
     @Override

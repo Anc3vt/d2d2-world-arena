@@ -31,6 +31,7 @@ public class MessageType {
      * b)t b)delta + 1
      */
     public static final int CLIENT_PLAYER_WEAPON_SWITCH = 4;
+
     /**
      * b)t f)aimX f)aimY
      */

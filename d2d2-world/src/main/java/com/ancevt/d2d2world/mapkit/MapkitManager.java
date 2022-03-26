@@ -47,7 +47,7 @@ public class MapkitManager {
     }
 
     private void putBuiltInMapkits() {
-        put(new CharacterMapkit());
+        put(new BuiltInMapkit());
         put(new AreaMapkit());
     }
 
@@ -117,7 +117,7 @@ public class MapkitManager {
     }
 
     public void dispose(Mapkit mapkit) {
-        if (mapkit instanceof CharacterMapkit || mapkit instanceof AreaMapkit) {
+        if (mapkit instanceof BuiltInMapkit || mapkit instanceof AreaMapkit) {
             throw new IllegalStateException("Unable to dispose built-in mapkit. name: " + mapkit.getName());
         }
 

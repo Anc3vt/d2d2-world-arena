@@ -1,12 +1,12 @@
 package com.ancevt.d2d2world.gameobject.weapon;
 
 import com.ancevt.d2d2.display.FramedSprite;
-import com.ancevt.d2d2.display.IDisplayObject;
+import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.ITight;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.math.RotationUtils;
@@ -18,20 +18,16 @@ public class StandardWeapon extends Weapon {
 
 
     public StandardWeapon() {
-        super(getOrCreateDisplayObject());
+        super(createSprite());
         setMaxAmmunition(500);
         setAmmunition(getMaxAmmunition());
     }
 
-    private static MapkitItem getOrCreateMapkitItem() {
-        return null;
-    }
-
     @Contract(" -> new")
-    private static @NotNull IDisplayObject getOrCreateDisplayObject() {
+    private static @NotNull ISprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
-                        .getByName(CharacterMapkit.NAME)
+                        .getByName(BuiltInMapkit.NAME)
                         .getTextureAtlas("bullets.png")
                         .createTexture(0, 0, 32, 32)
         );
@@ -53,7 +49,8 @@ public class StandardWeapon extends Weapon {
     }
 
     @Override
-    public void shoot(@NotNull World world) {
+    public boolean shoot(@NotNull World world) {
+        if(!super.shoot(world)) return false;
         Bullet bullet = getNextBullet(getOwner().getArmDegree());
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
@@ -65,6 +62,12 @@ public class StandardWeapon extends Weapon {
             bullet.setDirection(getOwner().getDirection());
             world.addGameObject(bullet, 4, false);
         }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 
     public static class StandardBullet extends Bullet implements ITight {

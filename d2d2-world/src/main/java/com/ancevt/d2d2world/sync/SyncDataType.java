@@ -14,5 +14,4 @@ public class SyncDataType {
     public static final int ACTION_INDEX = 10;
     public static final int WEAPON = 11;
     public static final int AIM = 12;
-    public static final int ATTACK = 13;
 }

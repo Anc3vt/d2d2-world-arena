@@ -197,20 +197,12 @@ public class LWJGLRenderer implements IRenderer {
         float repeatX = sprite.getRepeatX();
         float repeatY = sprite.getRepeatY();
 
-        boolean test = sprite.getName().equals("__TEST__");
-
         for (int rY = 0; rY < repeatY; rY++) {
             for (int rX = 0; rX < repeatX; rX++) {
                 float px = round(rX * tW * scaleX);
                 float py = round(rY * tH * scaleY);
 
                 GL30.glBegin(GL30.GL_QUADS);
-
-
-                if(test) {
-                    System.out.println("<<");
-                    System.out.println((w+x) + " " + x);
-                }
 
                 final double bleedingFix = 0.0005;
 

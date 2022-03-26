@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.commons.regex.PatternMatcher;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.net.dto.ChatMessageDto;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.PlayerDto;
@@ -464,11 +464,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         );
 
         var characterMapkitDto = ServerContentInfoDto.Mapkit.builder()
-                .name(CharacterMapkit.NAME)
-                .uid(CharacterMapkit.UID)
+                .name(BuiltInMapkit.NAME)
+                .uid(BuiltInMapkit.UID)
                 .files(MODULE_CONTENT_MANAGER.getMapkits()
                         .stream()
-                        .filter(m -> m.uid().equals(CharacterMapkit.UID))
+                        .filter(m -> m.uid().equals(BuiltInMapkit.UID))
                         .findAny()
                         .orElseThrow()
                         .files()

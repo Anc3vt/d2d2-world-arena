@@ -28,11 +28,12 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
+import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
@@ -112,19 +113,33 @@ public class D2D2WorldEditorMain {
         }
 
         /* Player */
-
         MapkitItem playerActorMapkitItem = MapkitManager.getInstance()
-                .getByName(CharacterMapkit.NAME)
+                .getByName(BuiltInMapkit.NAME)
                 .getItem("character_ava");
 
         playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
         playerActor.setXY(300, 300);
-        playerActor.setName("__");
+        playerActor.setName("playerActorFromEditor");
         playerActor.setLocalAim(true);
         world.addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);
         playerActor.setController(localPlayerController);
+
+        playerActor.addEventListener(Event.EACH_FRAME, event -> {
+            StringBuilder s = new StringBuilder();
+            playerActor.getWeapons().forEach(w -> {
+                if(playerActor.getCurrentWeapon() == w) {
+                    s.append('>');
+                }
+
+                s.append(w.toString()).append('\n');
+            });
+
+
+            DebugPanel.setEnabled(true);
+            DebugPanel.createIfEnabled("playerActor", s.toString()).ifPresent(dp->dp.setScale(1,1));
+        });
 
         world.getCamera().setAttachedTo(playerActor);
 
@@ -132,10 +147,10 @@ public class D2D2WorldEditorMain {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
 
-            if(e.getKeyChar() == '.') {
+            if (e.getKeyChar() == '.') {
                 playerActor.nextWeapon();
             }
-            if(e.getKeyChar() == ',') {
+            if (e.getKeyChar() == ',') {
                 playerActor.prevWeapon();
             }
         });
@@ -144,8 +159,6 @@ public class D2D2WorldEditorMain {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
         });
-
-
 
         root.addEventListener(InputEvent.MOUSE_WHEEL, event -> {
             var e = (InputEvent) event;
@@ -158,11 +171,10 @@ public class D2D2WorldEditorMain {
 
         //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
 
-        /**/
-
         root.add(new FpsMeter(), 5, 0);
         D2D2.getStage().setScaleMode(ScaleMode.REAL);
         D2D2.loop();
+        DebugPanel.saveAll();
         System.exit(0);
     }
 

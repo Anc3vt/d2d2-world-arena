@@ -41,9 +41,6 @@ public interface ISyncDataAggregator {
     default void aim(@NotNull Actor actor) {
     }
 
-    default void attack(@NotNull Actor actor) {
-    }
-
     default byte[] pullSyncDataMessage() {
         return EMPTY_ARRAY;
     }

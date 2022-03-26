@@ -18,10 +18,12 @@
 package com.ancevt.d2d2world.gameobject.weapon;
 
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.IDisplayObject;
+import com.ancevt.d2d2.display.ISprite;
+import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2world.data.Property;
+import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.gameobject.*;
-import com.ancevt.d2d2world.mapkit.CharacterMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -32,23 +34,27 @@ import java.lang.reflect.InvocationTargetException;
 
 abstract public class Weapon {
 
-    private final IDisplayObject displayObject;
+    private final ISprite sprite;
     private final Mapkit mapkit;
     private Actor owner;
     private int ammunition;
     private int maxAmmunition;
 
-    public Weapon(@NotNull IDisplayObject displayObject) {
-        this.displayObject = displayObject;
-        mapkit = MapkitManager.getInstance().getByName(CharacterMapkit.NAME);
+    public Weapon(@NotNull ISprite sprite) {
+        this.sprite = sprite;
+        mapkit = MapkitManager.getInstance().getByName(BuiltInMapkit.NAME);
     }
 
     public @NotNull MapkitItem getBulletMapkitItem() {
         return mapkit.getItem("bullet_" + getClass().getSimpleName());
     }
 
-    public IDisplayObject getDisplayObject() {
-        return displayObject;
+    public Texture getTexture() {
+        return sprite.getTexture();
+    }
+
+    public ISprite getSprite() {
+        return sprite;
     }
 
     public void setMaxAmmunition(int maxAmmunition) {
@@ -59,9 +65,26 @@ abstract public class Weapon {
         return maxAmmunition;
     }
 
-    public void setAmmunition(int ammunition) {
-        this.ammunition = ammunition;
-        if (ammunition > maxAmmunition) ammunition = maxAmmunition;
+    public void addAmmunition(int value) {
+        setAmmunition(getAmmunition() + value);
+    }
+
+    public void setAmmunition(int value) {
+        if(value == ammunition) return;
+        ammunition = value;
+        if (ammunition > maxAmmunition) {
+            ammunition = maxAmmunition;
+        } else if (ammunition <= 0) {
+            this.ammunition = 0;
+        }
+
+        if(getOwner() != null) {
+            getOwner().dispatchEvent(PlayerActorEvent.builder()
+                    .type(PlayerActorEvent.AMMUNITION_CHANGE)
+                    .weapon(this)
+                    .ammunition(ammunition)
+                    .build());
+        }
     }
 
     public int getAmmunition() {
@@ -76,7 +99,17 @@ abstract public class Weapon {
 
     abstract public int getAttackTime();
 
-    abstract public void shoot(@NotNull World world);
+    public boolean shoot(@NotNull World world) {
+        if (ammunition < 0) {
+            ammunition = 0;
+            // TODO: play weapon empty sound
+            return false;
+        }
+
+        ammunition--;
+        DebugPanel.createIfEnabled("shoot", "amm " + ammunition);
+        return true;
+    }
 
     abstract public void playShootSound();
 
@@ -100,6 +133,14 @@ abstract public class Weapon {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "ammunition=" + ammunition +
+                ", maxAmmunition=" + maxAmmunition +
+                '}';
+    }
+
     abstract public static class Bullet extends DisplayObjectContainer implements
             ICollision,
             IDirectioned,
@@ -107,13 +148,9 @@ abstract public class Weapon {
             IDamaging,
             ISynchronized {
 
-        private boolean collisionEnabled;
-        private float collisionX, collisionY, collisionWidth, collisionHeight;
         private Actor owner;
         private int direction;
-        private World world;
         private int damagingPower;
-        private float speed;
         private float degree;
 
         public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {

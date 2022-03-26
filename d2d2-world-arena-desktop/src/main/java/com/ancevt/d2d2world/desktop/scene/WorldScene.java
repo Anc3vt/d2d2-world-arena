@@ -33,8 +33,10 @@ import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
+import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActorEvent;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
@@ -54,6 +56,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
@@ -66,6 +69,7 @@ public class WorldScene extends DisplayObjectContainer {
 
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
+    private final AmmunitionHud ammunitionHud;
     private Overlay overlay;
     private final ShadowRadial shadowRadial;
     private boolean eventsAdded;
@@ -194,6 +198,7 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
+        ammunitionHud = new AmmunitionHud();
     }
 
     private void config_configChangeListener(@NotNull String key, Object value) {
@@ -222,6 +227,9 @@ public class WorldScene extends DisplayObjectContainer {
         add(overlay, -w / 2, -h / 2);
         world.getCamera().setViewportSize(w, h);
         world.getCamera().setBoundsLock(true);
+
+        ammunitionHud.setScale(3, 3);
+        getParent().add(ammunitionHud, getStage().getStageWidth() - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
     }
 
     public void init() {
@@ -387,6 +395,15 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+        localPlayerActor.addEventListener(PlayerActorEvent.AMMUNITION_CHANGE,
+                event -> {
+                    debug("WorldScene:399: <A>");
+                    ammunitionHud.updateFor(localPlayerActor);
+                });
+
+        localPlayerActor.addEventListener(PlayerActorEvent.SET_WEAPON, event ->
+                ammunitionHud.updateFor(localPlayerActor));
+
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
 
             private float aimX;
@@ -405,6 +422,12 @@ public class WorldScene extends DisplayObjectContainer {
                 aimY = localPlayerActor.getAimY();
             }
         });
+
+        localPlayerActor.addEventListener(PlayerActorEvent.SET_WEAPON, event -> {
+            var e = (PlayerActorEvent) event;
+            GameRoot.INSTANCE.playerSetWeapon(e.getWeapon());
+        });
+
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         localPlayerActor.setLocalAim(true);
@@ -434,7 +457,7 @@ public class WorldScene extends DisplayObjectContainer {
             MODULE_CLIENT.sendPingRequest();
         }
 
-        if(localPlayerActor != null) {
+        if (localPlayerActor != null) {
             D2D2World.getAim().setXY(localPlayerActor.getAimX(), localPlayerActor.getAimY());
         }
         frameCounter++;

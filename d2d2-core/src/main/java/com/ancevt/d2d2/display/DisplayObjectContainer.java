@@ -23,8 +23,10 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventPool;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 
 public class DisplayObjectContainer extends DisplayObject implements IDisplayObjectContainer {
 
@@ -34,7 +36,7 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     final List<IDisplayObject> children;
 
     public DisplayObjectContainer() {
-        children = new ArrayList<>();
+        children = new CopyOnWriteArrayList<>();
     }
 
     @Override
@@ -106,8 +108,13 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
     }
 
     @Override
-    public @NotNull IDisplayObject getChild(int index) {
-        return children.get(index);
+    public IDisplayObject getChild(int index) {
+        IDisplayObject child = children.get(index);
+        if(child == null) {
+            debug("DisplayObjectContainer:112: <A>");
+            try { throw new Exception(); } catch (Exception e) { e.printStackTrace(); }
+        }
+        return child;
     }
 
     @Override

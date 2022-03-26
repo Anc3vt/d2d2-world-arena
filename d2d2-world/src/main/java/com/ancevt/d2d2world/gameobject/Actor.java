@@ -26,6 +26,7 @@ import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
+import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.math.RotationUtils;
@@ -91,7 +92,8 @@ abstract public class Actor extends Animated implements
         weapons = new ArrayList<>();
 
         weaponContainer = new DisplayObjectContainer();
-
+        addWeapon(new StandardWeapon(), 10);
+        nextWeapon();
 
         framedDoHead = new FramedSprite(mapkitItem
                 .getTextureAtlas()
@@ -115,7 +117,6 @@ abstract public class Actor extends Animated implements
         add(weaponContainer, 0);
         headContainer.setXY(0, -4);
 
-
         add(healthBar, -healthBar.getWidth() / 2, -24);
         setPushable(true);
         setGravityEnabled(true);
@@ -133,14 +134,14 @@ abstract public class Actor extends Animated implements
 
             switch (getDirection()) {
                 case Direction.LEFT -> {
-                    IDisplayObject d = weapon.getDisplayObject();
+                    IDisplayObject d = weapon.getSprite();
                     d.setScaleX(-1);
                     d.setX(d.getWidth() - getWeaponX() - d.getWidth() / 2);
                     armSprite.setScaleX(-1);
                     armSprite.setXY(-2, -8);
                 }
                 case Direction.RIGHT -> {
-                    IDisplayObject d = weapon.getDisplayObject();
+                    IDisplayObject d = weapon.getSprite();
                     d.setScaleX(1);
                     d.setX(getWeaponX() - d.getWidth() / 2);
                     armSprite.setScaleX(1);
@@ -156,7 +157,7 @@ abstract public class Actor extends Animated implements
     private void fixBodyPartsY() {
         if (weapon != null) {
 
-            IDisplayObject weaponDisplayObject = weapon.getDisplayObject();
+            IDisplayObject weaponDisplayObject = weapon.getSprite();
             float w = weaponDisplayObject.getWidth();
             float h = weaponDisplayObject.getHeight();
             if (getAnimation() == WALK_ATTACK) {
@@ -164,7 +165,7 @@ abstract public class Actor extends Animated implements
                 //weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             } else {
                 armSprite.setY(-8);
-                weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
+                weapon.getSprite().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             }
 
 
@@ -192,14 +193,21 @@ abstract public class Actor extends Animated implements
     public void attack() {
         fixBodyPartsY();
 
-        attackTime = getWeapon().getAttackTime();
-        getWeapon().playShootSound();
+        attackTime = getCurrentWeapon().getAttackTime();
+
+        if (getCurrentWeapon().getAmmunition() <= 0) {
+            weapons.remove(getCurrentWeapon());
+            nextWeapon();
+            return;
+        } else {
+            getCurrentWeapon().playShootSound();
+        }
 
         if (!D2D2World.isServer() || !isAlive() || damagingTime > 0) return;
 
-        if (getWeapon() != null) {
-            getWorld().actorAttack(getWeapon());
-            getWorld().getSyncDataAggregator().attack(this);
+        if (getCurrentWeapon() != null) {
+            getCurrentWeapon().shoot(getWorld());
+            getWorld().getSyncDataAggregator().weapon(this);
         }
     }
 
@@ -671,31 +679,36 @@ abstract public class Actor extends Animated implements
         setWeaponY(y);
     }
 
-    public Weapon getWeapon() {
+    public Weapon getCurrentWeapon() {
         return weapon;
     }
 
-    public void setWeapon(@NotNull String weaponClassName) {
+    public void setCurrentWeapon(@NotNull String weaponClassName) {
         weapons.stream()
                 .filter(w -> w.getClass().getName().equals(weaponClassName))
                 .findAny()
-                .ifPresentOrElse(this::setWeapon, ()->{
+                .ifPresentOrElse(this::setCurrentWeapon, () -> {
                     Weapon weapon = Weapon.createWeapon(weaponClassName);
                     addWeapon(weapon, weapon.getMaxAmmunition());
-                    setWeapon(weapon);
                 });
     }
 
-    public void setWeapon(@NotNull Weapon weapon) {
+    public void setCurrentWeapon(@NotNull Weapon weapon) {
         if (this.weapon != null) {
-            this.weapon.getDisplayObject().removeFromParent();
+            this.weapon.getSprite().removeFromParent();
         }
 
         this.weapon = weapon;
         weapon.setOwner(this);
-        weaponContainer.setScale(2,2);
-        weaponContainer.add(weapon.getDisplayObject());
+        weaponContainer.setScale(2, 2);
+        weaponContainer.add(weapon.getSprite());
         fixXY();
+
+        dispatchEvent(PlayerActorEvent.builder()
+                .type(PlayerActorEvent.SET_WEAPON)
+                .weapon(weapon)
+                .build()
+        );
 
         if (isOnScreen()) getWorld().getSyncDataAggregator().weapon(this);
     }
@@ -705,7 +718,12 @@ abstract public class Actor extends Animated implements
         if (weaponIndex >= weapons.size()) {
             weaponIndex = 0;
         }
-        setWeapon(weapons.get(weaponIndex));
+        if(weapons.size() == 0) {
+            addWeapon(new StandardWeapon(), 25);
+            nextWeapon();
+            return;
+        }
+        setCurrentWeapon(weapons.get(weaponIndex));
     }
 
     public void prevWeapon() {
@@ -713,7 +731,11 @@ abstract public class Actor extends Animated implements
         if (weaponIndex < 0) {
             weaponIndex = weapons.size() - 1;
         }
-        setWeapon(weapons.get(weaponIndex));
+        if(weapons.size() == 0) {
+            addWeapon(new StandardWeapon(), 25);
+            return;
+        }
+        setCurrentWeapon(weapons.get(weaponIndex));
     }
 
     public void addWeapon(Weapon weapon, int ammunition) {
