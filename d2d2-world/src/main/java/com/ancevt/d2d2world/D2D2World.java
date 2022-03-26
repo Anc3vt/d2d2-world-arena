@@ -77,7 +77,7 @@ public class D2D2World {
     public static class Aim extends DisplayObjectContainer {
         public Aim() {
             Sprite sprite = new Sprite(getAimTexture());
-            add(sprite, -sprite.getWidth()/2, -sprite.getHeight()/2);
+            add(sprite, -sprite.getWidth()/2, -sprite.getHeight()/2 - 3);
             setAlpha(0.5f);
         }
 

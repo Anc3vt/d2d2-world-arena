@@ -25,6 +25,7 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
         container = new DisplayObjectContainer();
         bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture());
         bubbleSprite.setAlpha(0.75f);
+        bubbleSprite.setName("__TEST__");
         icon = new Sprite("d2d2-world-common-tileset-pickup-health");
         container.add(icon);
         icon.setXY(-icon.getWidth() / 2, -icon.getHeight() / 2 + 1);
@@ -59,13 +60,11 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
             final float factor = 0.0025f;
             if (counter < 20) {
                 container.setScale(container.getScaleX() + factor, container.getScaleY() - factor);
-                icon.setScale(icon.getScaleX() - factor, icon.getScaleY() + factor);
-                icon.moveY(-0.005f);
+                icon.moveY(-0.01f);
                 container.moveY(0.25f);
             } else {
                 container.setScale(container.getScaleX() - factor, container.getScaleY() + factor);
-                icon.setScale(icon.getScaleX() + factor, icon.getScaleY() - factor);
-                icon.moveY(+0.005f);
+                icon.moveY(+0.01f);
                 container.moveY(-0.25f);
             }
 
@@ -84,7 +83,7 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
         D2D2World.init(true);
 
         Pickup pickup = new Pickup(null, 0);
-        pickup.setScale(3f, 3f);
+        pickup.setScale(1.5f, 1.5f);
 
         root.add(pickup, 100, 100);
 

@@ -693,6 +693,7 @@ abstract public class Actor extends Animated implements
 
         this.weapon = weapon;
         weapon.setOwner(this);
+        weaponContainer.setScale(2,2);
         weaponContainer.add(weapon.getDisplayObject());
         fixXY();
 

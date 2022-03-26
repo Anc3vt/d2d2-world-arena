@@ -34,6 +34,8 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 
+import static java.lang.Math.round;
+
 public class LWJGLRenderer implements IRenderer {
 
     private final Stage stage;
@@ -195,24 +197,41 @@ public class LWJGLRenderer implements IRenderer {
         float repeatX = sprite.getRepeatX();
         float repeatY = sprite.getRepeatY();
 
+        boolean test = sprite.getName().equals("__TEST__");
+
         for (int rY = 0; rY < repeatY; rY++) {
             for (int rX = 0; rX < repeatX; rX++) {
-                float px = rX * tW * scaleX;
-                float py = rY * tH * scaleY;
+                float px = round(rX * tW * scaleX);
+                float py = round(rY * tH * scaleY);
 
                 GL30.glBegin(GL30.GL_QUADS);
 
-                GL30.glTexCoord2d(x, h + y);
+
+                if(test) {
+                    System.out.println("<<");
+                    System.out.println((w+x) + " " + x);
+                }
+
+                final double bleedingFix = 0.0005;
+
+                // L
+                GL30.glTexCoord2d(x + bleedingFix,(h + y) - bleedingFix);
                 GL30.glVertex2d(px, py + tH * scaleY);
 
-                GL30.glTexCoord2d(w + x, h + y);
+                // _|
+                GL30.glTexCoord2d((w + x) - bleedingFix, (h + y) - bleedingFix);
                 GL30.glVertex2d(px + tW * scaleX, py + tH * scaleY);
 
-                GL30.glTexCoord2d(w + x, y);
-                GL30.glVertex2d(px + tW * scaleX, py + 0);
+                // ^|
+                GL30.glTexCoord2d((w + x) - bleedingFix, y + bleedingFix);
+                GL30.glVertex2d(px + tW * scaleX,py + 0);
 
-                GL30.glTexCoord2d(x, y);
-                GL30.glVertex2d(px + 0, py + 0);
+                // Г
+                GL30.glTexCoord2d(x+bleedingFix, y+bleedingFix);
+                GL30.glVertex2d(round(px + 0), round(py + 0));
+
+
+
 
                 GL30.glEnd();
             }

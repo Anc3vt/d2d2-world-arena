@@ -28,6 +28,7 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanelEvent;
 import com.ancevt.d2d2world.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
 
     private final List<IDisplayObject> panels;
 
-    public EditorContainer(Root root, World world) {
+    public EditorContainer(@NotNull Root root, @NotNull World world) {
         this.world = world;
         this.grid = new Grid();
 
@@ -109,11 +110,11 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
                 case InputEvent.KEY_DOWN -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), true);
                 case InputEvent.KEY_UP -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), false);
                 case InputEvent.MOUSE_DOWN -> {
-                    if (!isMouseAtPanels(x, y)) editor.mouseButton(x, y, worldX, worldY, true);
+                    if (!isMouseAtPanels(x, y) || world.isPlaying()) editor.mouseButton(x, y, worldX, worldY, true);
                 }
                 case InputEvent.MOUSE_UP -> editor.mouseButton(x, y, worldX, worldY, false);
                 case InputEvent.MOUSE_MOVE -> {
-                    if (!isMouseAtPanels(x, y))
+                    if (!isMouseAtPanels(x, y) || world.isPlaying())
                         editor.mouseMove(x, y, worldX, worldY, inputEvent.isDrag());
                 }
 

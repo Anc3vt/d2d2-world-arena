@@ -63,7 +63,7 @@ public class StandardWeapon extends Weapon {
             bullet.setXY(getOwner().getX(), getOwner().getY());
             bullet.move(toXY[0] * distance, toXY[1] * distance + getOwner().getWeaponY());
             bullet.setDirection(getOwner().getDirection());
-            world.addGameObject(bullet, 5, false);
+            world.addGameObject(bullet, 4, false);
         }
     }
 

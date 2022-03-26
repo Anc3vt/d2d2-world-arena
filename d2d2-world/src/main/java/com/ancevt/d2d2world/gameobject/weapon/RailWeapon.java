@@ -45,10 +45,11 @@ public class RailWeapon extends Weapon {
             float deg = getOwner().getArmDegree();
             float[] toXY = RotationUtils.xySpeedOfDegree(deg);
             float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
-            bullet.setXY(getOwner().getX(), getOwner().getY() - 5);
-            bullet.move(toXY[0] * distance, toXY[1] * distance);
+            bullet.setXY(getOwner().getX(), getOwner().getY() - 3);
+            bullet.move(toXY[0], toXY[1]);
             bullet.setDirection(getOwner().getDirection());
-            world.addGameObject(bullet, 5, false);
+            bullet.setScaleY(getOwner().getDirection());
+            world.addGameObject(bullet, 4, false);
         }
     }
 
@@ -86,8 +87,9 @@ public class RailWeapon extends Weapon {
 
             if (!setToRemove) {
 
+
                 Sprite sprite = new Sprite(getMapkitItem().getTexture());
-                DisplayObjectContainer doc = new DisplayObjectContainer(){
+                DisplayObjectContainer doc = new DisplayObjectContainer() {
                     @Override
                     public void onEachFrame() {
                         super.onEachFrame();
@@ -95,7 +97,7 @@ public class RailWeapon extends Weapon {
                         if (getAlpha() < 0.01f) removeFromParent();
                     }
                 };
-                doc.add(sprite, -sprite.getWidth() / 2, - sprite.getHeight() / 2);
+                doc.add(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
                 doc.setRotation(getRotation());
                 doc.setXY(getX(), getY());
 
@@ -109,8 +111,7 @@ public class RailWeapon extends Weapon {
 //                sprite.move(toXY[0] * distance, toXY[1] * distance + getDamagingOwnerActor().getWeaponY());
 
 
-
-                getWorld().add(doc);
+                getWorld().getLayer(4).add(doc);
             }
 
 
