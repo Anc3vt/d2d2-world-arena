@@ -62,10 +62,16 @@ public class D2D2World {
         IControllable.controllerMap.clear();
         ISpeedable.speedMap.clear();
         IRotatable.rotationMap.clear();
+        IDamaging.damagingOwnerActorMap.clear();
+        IDamaging.damagingPowerMap.clear();
     }
 
     public static Aim getAim() {
         return aim == null ? aim = new Aim() : aim;
+    }
+
+    public static Texture getPickupBubbleTexture() {
+        return D2D2.getTextureManager().getTexture("d2d2-world-common-tileset-pickup-bubble");
     }
 
     public static class Aim extends DisplayObjectContainer {

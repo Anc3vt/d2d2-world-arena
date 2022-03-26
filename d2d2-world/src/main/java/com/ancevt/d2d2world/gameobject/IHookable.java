@@ -19,9 +19,18 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface IHookable extends IGravitied, ICollision {
 
-    void setHook(final AreaHook hook);
+    Map<IHookable, AreaHook> hookMap = new HashMap<>();
 
-    AreaHook getHook();
+    default void setHook(final AreaHook hook) {
+        hookMap.put(this, hook);
+    }
+
+    default AreaHook getHook() {
+        return hookMap.get(this);
+    }
 }

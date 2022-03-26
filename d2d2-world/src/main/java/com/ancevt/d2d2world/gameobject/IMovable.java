@@ -69,5 +69,4 @@ public interface IMovable extends IResettable {
     default void setMovingSpeedY(float value) {
         movingSpeedYMap.put(this, value);
     }
-
 }

@@ -64,11 +64,7 @@ abstract public class Actor extends Animated implements
     private int damagingTime;
     private boolean onJump;
 
-    private float startX, startY, movingSpeedX, movingSpeedY;
-    private float speed;
     private int health, maxHealth;
-    private boolean collisionEnabled;
-    private float collisionX, collisionY, collisionWidth, collisionHeight;
     private float weight;
     private ICollision floor;
     private float velocityX, velocityY;
@@ -317,42 +313,6 @@ abstract public class Actor extends Animated implements
     }
 
     @Override
-    public void setStartX(float x) {
-        startX = x;
-    }
-
-    @Override
-    public void setStartY(float y) {
-        startY = y;
-    }
-
-    @Override
-    public void setStartXY(float x, float y) {
-        setStartX(x);
-        setStartY(y);
-    }
-
-    @Override
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-
-    @Override
-    public float getStartX() {
-        return startX;
-    }
-
-    @Override
-    public float getStartY() {
-        return startY;
-    }
-
-    @Override
-    public float getSpeed() {
-        return speed;
-    }
-
-    @Override
     public void setMaxHealth(int health) {
         this.maxHealth = health;
         healthBar.setMaxValue(health);
@@ -446,7 +406,6 @@ abstract public class Actor extends Animated implements
         setAlive(false);
         health = 0;
 
-
         if (damaging == null) {
             if (isOnWorld()) {
                 getWorld().add(Particle.bloodExplosion(500, Color.of(0x220000)), getX(), getY());
@@ -462,64 +421,6 @@ abstract public class Actor extends Animated implements
                     .killerGameObjectId(damaging != null ? damaging.getGameObjectId() : 0)
                     .build());
         }
-    }
-
-    @Override
-    public void setCollisionEnabled(boolean collisionEnabled) {
-        this.collisionEnabled = collisionEnabled;
-    }
-
-    @Override
-    public boolean isCollisionEnabled() {
-        return collisionEnabled;
-    }
-
-    @Override
-    public void setCollision(float x, float y, float w, float h) {
-        this.collisionX = x;
-        this.collisionY = y;
-        this.collisionWidth = w;
-        this.collisionHeight = h;
-    }
-
-    @Override
-    public void setCollisionX(float collisionX) {
-        this.collisionX = collisionX;
-    }
-
-    @Override
-    public void setCollisionY(float collisionY) {
-        this.collisionY = collisionY;
-    }
-
-    @Override
-    public void setCollisionWidth(float collisionWidth) {
-        this.collisionWidth = collisionWidth;
-    }
-
-    @Override
-    public void setCollisionHeight(float collisionHeight) {
-        this.collisionHeight = collisionHeight;
-    }
-
-    @Override
-    public float getCollisionX() {
-        return collisionX;
-    }
-
-    @Override
-    public float getCollisionY() {
-        return collisionY;
-    }
-
-    @Override
-    public float getCollisionWidth() {
-        return collisionWidth;
-    }
-
-    @Override
-    public float getCollisionHeight() {
-        return collisionHeight;
     }
 
     @Override
@@ -696,7 +597,8 @@ abstract public class Actor extends Animated implements
             }
         }
 
-        movingSpeedX = movingSpeedY = 0.0f;
+        setMovingSpeedX(0f);
+        setMovingSpeedY(0f);
     }
 
     public boolean isOnJump() {
@@ -705,12 +607,12 @@ abstract public class Actor extends Animated implements
 
     @Override
     public float getWidth() {
-        return collisionWidth;
+        return getCollisionWidth();
     }
 
     @Override
     public float getHeight() {
-        return collisionHeight;
+        return getCollisionHeight();
     }
 
     protected boolean isAttackingNow() {
@@ -723,7 +625,7 @@ abstract public class Actor extends Animated implements
     }
 
     @Override
-    public void setController(Controller controller) {
+    public void setController(@NotNull Controller controller) {
         this.controller = controller;
         controller.setControllerChangeListener(c -> {
             if (c.getState() == 0) setAnimation(IDLE);
@@ -847,37 +749,22 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void move(float toX, float toY) {
-        movingSpeedX = toX;
-        movingSpeedY = toY;
+        setMovingSpeedX(toX);
+        setMovingSpeedY(toY);
         super.moveX(toX);
         super.moveY(toY);
     }
 
     @Override
     public void moveX(float value) {
-        movingSpeedX = value;
+        setMovingSpeedX(value);
         super.moveX(value);
     }
 
     @Override
     public void moveY(float value) {
-        movingSpeedY = value;
+        setMovingSpeedY(value);
         super.moveY(value);
-    }
-
-    @Override
-    public float getMovingSpeedX() {
-        return movingSpeedX;
-    }
-
-    @Override
-    public float getMovingSpeedY() {
-        return movingSpeedY;
-    }
-
-    @Override
-    public void setMovingSpeedX(float movingSpeedX) {
-        this.movingSpeedX = movingSpeedX;
     }
 
     public void mouseMove(float worldX, float worldY) {

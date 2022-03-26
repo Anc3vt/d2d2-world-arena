@@ -29,10 +29,12 @@ import com.ancevt.d2d2.event.EventPool;
 import com.ancevt.d2d2.input.Mouse;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class LWJGLRenderer implements IRenderer {
 
@@ -158,6 +160,8 @@ public class LWJGLRenderer implements IRenderer {
 
         TextureAtlas textureAtlas = texture.getTextureAtlas();
 
+        textureParamsHandle();
+
         GL30.glEnable(GL30.GL_BLEND);
         GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -168,8 +172,6 @@ public class LWJGLRenderer implements IRenderer {
         }
 
         D2D2.getTextureManager().getTextureEngine().enable(textureAtlas);
-
-        textureParamsHandle();
 
         final Color color = sprite.getColor();
 
@@ -200,13 +202,12 @@ public class LWJGLRenderer implements IRenderer {
 
         for (int rY = 0; rY < repeatY; rY++) {
             for (int rX = 0; rX < repeatX; rX++) {
-
                 float px = rX * tW * scaleX;
                 float py = rY * tH * scaleY;
 
                 GL30.glBegin(GL30.GL_QUADS);
                 GL30.glTexCoord2d(x, h + y);
-                GL30.glVertex2d(px + 0, py + tH * scaleY);
+                GL30.glVertex2d(px, py + tH * scaleY);
                 GL30.glTexCoord2d(w + x, h + y);
                 GL30.glVertex2d(px + tW * scaleX, py + tH * scaleY);
                 GL30.glTexCoord2d(w + x, y);
@@ -334,13 +335,16 @@ public class LWJGLRenderer implements IRenderer {
 
     private void textureParamsHandle() {
         if (smoothMode) {
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_REPEAT);
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_REPEAT);
+            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
+            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
         } else {
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
+            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_NEAREST);
         }
