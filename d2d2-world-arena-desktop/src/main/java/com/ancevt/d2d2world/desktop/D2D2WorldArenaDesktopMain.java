@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.desktop;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.ScaleMode;
-import com.ancevt.d2d2.sound.Sound;
+import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;

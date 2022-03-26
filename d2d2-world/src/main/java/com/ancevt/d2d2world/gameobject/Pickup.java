@@ -46,8 +46,6 @@ public class Pickup extends DisplayObjectContainer implements ICollision {
 
     @Override
     public void onEachFrame() {
-
-
         if (!ready) {
             container.toScale(1.1f, 1.1f);
             if(container.getScaleX() >= 1) {

@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.server;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.unix.UnixDisplay;
-import com.ancevt.d2d2.sound.Sound;
+import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.net.client.ClientSender;
 import com.ancevt.d2d2world.net.dto.Dto;

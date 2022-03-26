@@ -4,7 +4,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.MouseButton;
-import com.ancevt.d2d2.sound.SoundImpl;
+import com.ancevt.d2d2.media.SoundImpl;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_Sound {

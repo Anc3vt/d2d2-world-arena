@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.mapkit;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
-import com.ancevt.d2d2.sound.SoundImpl;
+import com.ancevt.d2d2.media.SoundImpl;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.data.DataEntry;

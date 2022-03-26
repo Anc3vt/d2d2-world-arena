@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
-import com.ancevt.d2d2.sound.Sound;
+import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.map.MapIO;
 import lombok.SneakyThrows;
