@@ -11,7 +11,6 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
 @Slf4j
@@ -71,8 +70,6 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         String weaponClassName = in.readUtf(byte.class);
                         int ammunition = in.readShort();
                         weapon(gameObjectId, weaponClassName, ammunition);
-
-                        debug("SyncDataReceiver:74: <A>class: " + weaponClassName + ", " + ammunition);
                     }
                     case SyncDataType.AIM -> {
                         aim(gameObjectId, in.readFloat(), in.readFloat());

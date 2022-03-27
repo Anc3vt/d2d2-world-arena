@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
@@ -75,10 +76,11 @@ public class D2D2World {
     }
 
     public static class Aim extends DisplayObjectContainer {
+        private final Sprite sprite;
+
         public Aim() {
-            Sprite sprite = new Sprite(getAimTexture());
+            sprite = new Sprite(getAimTexture());
             add(sprite, -sprite.getWidth()/2, -sprite.getHeight()/2 - 3);
-            setAlpha(0.5f);
         }
 
         @Override
@@ -89,6 +91,14 @@ public class D2D2World {
                     setScale(1f, 1f);
                 }
             }
+        }
+
+        public void setColor(Color color) {
+            sprite.setColor(color);
+        }
+
+        public Color getColor() {
+            return sprite.getColor();
         }
 
         public void attack() {

@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 public class PlayerDto implements Dto {
     private final int id;
     private final String name;
-    private final int color;
-    private final int ping;
-    private final int frags;
-    private final int playerActorGameObjectId;
+    private final Integer color;
+    private final Integer ping;
+    private final Integer frags;
+    private final Integer playerActorGameObjectId;
 }

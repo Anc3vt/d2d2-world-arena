@@ -9,6 +9,6 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class DeathDto implements Dto {
-    private final int deadPlayerId;
-    private final int killerPlayerId;
+    private final Integer deadPlayerId;
+    private final Integer killerPlayerId;
 }

@@ -153,6 +153,11 @@ public class IntroRoot extends Root {
             }
 
             add(new UAFlag());
+
+            if(!MODULE_CONFIG.getString(PLAYER).equals("") && !MODULE_CONFIG.getString(SERVER).equals("")) {
+                enter(MODULE_CONFIG.getString(SERVER), MODULE_CONFIG.getString(PLAYER));
+            }
+
         });
 
         addEventListener(InputEvent.KEY_DOWN, event -> {

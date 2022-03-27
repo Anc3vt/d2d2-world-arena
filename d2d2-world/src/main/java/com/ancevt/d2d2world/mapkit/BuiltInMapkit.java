@@ -142,8 +142,8 @@ public class BuiltInMapkit extends Mapkit {
                 | class =""" + PlayerActor.class.getName() + """
                 | damagePower = 1 
                 | weight = 0.4 
-                | maxHealth = 5000 
-                | health = 5000 
+                | maxHealth = 100 
+                | health = 100 
                 | speed = 0.75 
                 | jumpPower = 3.5 
                 | collisionX = -6 

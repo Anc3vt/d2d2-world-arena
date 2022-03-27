@@ -2,7 +2,7 @@
   <configuration default="false" name="D2D2WorldDesktopMain-First" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopMain" />
     <module name="d2d2-world-arena-desktop" />
-    <option name="PROGRAM_PARAMETERS" value="--colorize-logs -Pplayer=Ancevt --colorize-logs --debug -Prcon-password=change!me -Pdebug.world-alpha=1 -/Pauto-enter=true -Pdebug.game-object-ids=true -Pserver=localhost:2255 -Psound-enabled=false" />
+    <option name="PROGRAM_PARAMETERS" value="--colorize-logs -Pplayer=First --colorize-logs --debug -Prcon-password=change!me -Pdebug.world-alpha=1 -Pdebug.game-object-ids=true -Pserver=localhost:2255 -Psound-enabled=false" />
     <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
     <extension name="coverage">
       <pattern>

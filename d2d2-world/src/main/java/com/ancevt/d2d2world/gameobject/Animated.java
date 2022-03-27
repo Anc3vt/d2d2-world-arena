@@ -103,7 +103,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     }
 
     @Override
-    public void setAnimation(final int animationKey, final boolean loop) {
+    public void setAnimation(int animationKey, boolean loop) {
         if (!animationsPrepared || animationKey == getAnimation()) return;
 
         this.currentAnimationKey = animationKey;

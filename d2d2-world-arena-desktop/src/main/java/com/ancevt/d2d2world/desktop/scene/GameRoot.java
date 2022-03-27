@@ -28,6 +28,7 @@ import com.ancevt.d2d2.event.IEventDispatcher;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.input.Mouse;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
@@ -191,6 +192,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                         ". Server started at " + serverStartTime
                 , Color.WHITE);
         worldScene.start();
+
+        D2D2World.getAim().setColor(Color.of(localPlayerColor));
 
         String rconPassword = MODULE_CONFIG.getString(DesktopConfig.RCON_PASSWORD);
         if (!rconPassword.isEmpty()) {

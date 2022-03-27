@@ -220,6 +220,14 @@ abstract public class Actor extends Animated implements
             framedDoHead.setFrame(0);
         }
 
+        if (framedDoHead != null) {
+            if (animationKey == DAMAGE) {
+                framedDoHead.removeFromParent();
+            } else if (!framedDoHead.hasParent()) {
+                headContainer.add(framedDoHead);
+            }
+        }
+
         super.setAnimation(animationKey, loop);
 
         fixBodyPartsY();
@@ -355,8 +363,8 @@ abstract public class Actor extends Animated implements
 
         if (fromServer || D2D2World.isServer()) {
             this.health = health;
-            healthBar.setValue(health);
             if (health <= 0 && isAlive()) death(damaging);
+            healthBar.setValue(health);
         }
         if (isOnWorld()) {
             getWorld().getSyncDataAggregator().health(this, damaging);
@@ -426,7 +434,10 @@ abstract public class Actor extends Animated implements
             getWorld().dispatchEvent(WorldEvent.builder()
                     .type(WorldEvent.ACTOR_DEATH)
                     .deadActorGameObjectId(getGameObjectId())
-                    .killerGameObjectId(damaging != null ? damaging.getGameObjectId() : 0)
+                    .killerGameObjectId(
+                            damaging != null && damaging.getDamagingOwnerActor() != null ?
+                            damaging.getDamagingOwnerActor().getGameObjectId()
+                            : 0)
                     .build());
         }
     }
@@ -718,7 +729,7 @@ abstract public class Actor extends Animated implements
         if (weaponIndex >= weapons.size()) {
             weaponIndex = 0;
         }
-        if(weapons.size() == 0) {
+        if (weapons.size() == 0) {
             addWeapon(new StandardWeapon(), 25);
             nextWeapon();
             return;
@@ -731,7 +742,7 @@ abstract public class Actor extends Animated implements
         if (weaponIndex < 0) {
             weaponIndex = weapons.size() - 1;
         }
-        if(weapons.size() == 0) {
+        if (weapons.size() == 0) {
             addWeapon(new StandardWeapon(), 25);
             return;
         }

@@ -49,6 +49,24 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
     }
 
     @Override
+    public void setSize(float width, float height) {
+        super.setSize(width, height);
+        setCollision(0, 0, width, height);
+    }
+
+    @Override
+    public void setWidth(float width) {
+        super.setWidth(width);
+        setCollisionWidth(width);
+    }
+
+    @Override
+    public void setHeight(float height) {
+        super.setHeight(height);
+        setCollisionHeight(height);
+    }
+
+    @Override
     public boolean isSavable() {
         return true;
     }

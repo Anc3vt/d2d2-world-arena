@@ -56,11 +56,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
 import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
+import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 
@@ -396,10 +396,7 @@ public class WorldScene extends DisplayObjectContainer {
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
         localPlayerActor.addEventListener(PlayerActorEvent.AMMUNITION_CHANGE,
-                event -> {
-                    debug("WorldScene:399: <A>");
-                    ammunitionHud.updateFor(localPlayerActor);
-                });
+                event -> ammunitionHud.updateFor(localPlayerActor));
 
         localPlayerActor.addEventListener(PlayerActorEvent.SET_WEAPON, event ->
                 ammunitionHud.updateFor(localPlayerActor));
@@ -438,6 +435,7 @@ public class WorldScene extends DisplayObjectContainer {
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
         UiText uiText = new UiText(playerName + "(" + playerId + ")");
         uiText.setScale(0.5f, 0.5f);
+        PLAYER_MANAGER.getPlayer(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
         playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
     }
 

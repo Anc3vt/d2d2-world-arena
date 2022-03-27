@@ -172,7 +172,6 @@ public class ServerWorldScene {
     private void world_actorDeath(Event event) {
         var e = (WorldEvent) event;
 
-
         final Holder<Integer> deadPlayerId = new Holder<>(0);
         final Holder<Integer> killerPlayerId = new Holder<>(0);
 

@@ -82,12 +82,17 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public synchronized void health(@NotNull IDestroyable destroyable, IDamaging damaging) {
-        if (damaging != null && !(damaging instanceof ISynchronized)) return;
+        if (!(destroyable instanceof ISynchronized)) return;
 
         buffer.writeByte(SyncDataType.HEALTH)
                 .writeInt(destroyable.getGameObjectId())
-                .writeShort(destroyable.getHealth())
-                .writeInt(damaging != null ? damaging.getGameObjectId() : 0);
+                .writeShort(destroyable.getHealth());
+
+        if(damaging != null) {
+            buffer.writeInt(damaging.getGameObjectId());
+        } else {
+            buffer.writeInt(0);
+        }
     }
 
     @Override
