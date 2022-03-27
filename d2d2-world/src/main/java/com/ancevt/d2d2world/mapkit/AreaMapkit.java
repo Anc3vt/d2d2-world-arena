@@ -51,15 +51,14 @@ public class AreaMapkit extends Mapkit {
 
         private final Sprite icon;
 
-        public AreaMapkitItem(Mapkit mapkit, String id, Class<?> gameObjectClass, Color color) {
-            super(mapkit, createDataEntry(id, gameObjectClass));
-
+        public AreaMapkitItem(Mapkit mapkit, String name, Class<?> gameObjectClass, Color color) {
+            super(mapkit, createDataEntry(name, gameObjectClass));
             icon = new PlainRect(1.0f, 1.0f, color);
         }
 
-        private static @NotNull DataEntry createDataEntry(String id, @NotNull Class<?> gameObjectClass) {
+        private static @NotNull DataEntry createDataEntry(String name, @NotNull Class<?> gameObjectClass) {
             DataEntry dataEntry = DataEntry.newInstance();
-            dataEntry.add(DataKey.ID, id);
+            dataEntry.add(DataKey.NAME, name);
             dataEntry.add(DataKey.CLASS, gameObjectClass.getName());
             return dataEntry;
         }

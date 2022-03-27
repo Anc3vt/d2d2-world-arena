@@ -26,7 +26,7 @@ import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 
 public class BuiltInMapkit extends Mapkit {
 
-    public static final String UID = "builtin-mapkit";
+    public static final String UID ="builtin-mapkit";
     public static final String NAME = "builtin-mapkit";
 
     BuiltInMapkit() {
@@ -41,7 +41,7 @@ public class BuiltInMapkit extends Mapkit {
 
     private void railBulletMapkitItem() {
         String mapkitData = """
-                id = bullet_""" + RailWeapon.class.getSimpleName()  +"""
+                name = bullet_""" + RailWeapon.class.getSimpleName()  +"""
                 | class =""" + RailWeapon.RailBullet.class.getName() + """
                 | damagingPower = 49
                 | speed = 31
@@ -56,7 +56,7 @@ public class BuiltInMapkit extends Mapkit {
 
     private void standardBulletMapkitItem() {
         String mapkitData = """
-                id = bullet_""" + StandardWeapon.class.getSimpleName()  +"""
+                name = bullet_""" + StandardWeapon.class.getSimpleName()  +"""
                 | class =""" + StandardWeapon.StandardBullet.class.getName() + """
                 | damagingPower = 15
                 | speed = 5
@@ -71,7 +71,7 @@ public class BuiltInMapkit extends Mapkit {
 
     private void automaticBulletMapkitItem() {
         String mapkitData = """
-                id = bullet_""" + AutomaticWeapon.class.getSimpleName() + """
+                name = bullet_""" + AutomaticWeapon.class.getSimpleName() + """
                 | class =""" + AutomaticWeapon.AutomaticBullet.class.getName() + """
                 | damagingPower = 15
                 | speed = 15
@@ -86,7 +86,7 @@ public class BuiltInMapkit extends Mapkit {
 
     private void lazerBulletMapkitItem() {
         String mapkitData = """
-                id = bullet_""" + PlasmaWeapon.class.getSimpleName() + """
+                name = bullet_""" + PlasmaWeapon.class.getSimpleName() + """
                 | class =""" + PlasmaWeapon.PlasmaBullet.class.getName() + """
                 | damagingPower = 10
                 | speed = 15
@@ -101,7 +101,7 @@ public class BuiltInMapkit extends Mapkit {
 
     private void blakeMapkitItem() {
         String mapkitData = """
-                id = character_blake
+                name = character_blake
                 | class =""" + PlayerActor.class.getName() + """
                 | damagePower = 1
                 | weight = 0.4
@@ -138,7 +138,7 @@ public class BuiltInMapkit extends Mapkit {
 
     private void avaMapkitItem() {
         String mapkitData = """
-                id = character_ava
+                name = character_ava
                 | class =""" + PlayerActor.class.getName() + """
                 | damagePower = 1 
                 | weight = 0.4 

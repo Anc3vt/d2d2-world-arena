@@ -84,15 +84,15 @@ public abstract class Mapkit {
     }
 
     public MapkitItem putItem(@NotNull MapkitItem item) {
-        if (items.containsKey(item.getId())) {
-            throw new IllegalStateException("duplicate mapkit item id: " + item.getId());
+        if (items.containsKey(item.getName())) {
+            throw new IllegalStateException("duplicate mapkit item id: " + item.getName());
         }
-        items.put(item.getId(), item);
+        items.put(item.getName(), item);
         return item;
     }
 
     public void removeItem(@NotNull MapkitItem item) {
-        items.remove(item.getId());
+        items.remove(item.getName());
     }
 
     @SneakyThrows

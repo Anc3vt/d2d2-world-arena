@@ -80,8 +80,8 @@ public class MapkitItem {
         }
     }
 
-    public String getId() {
-        return dataEntry.getString(DataKey.ID);
+    public String getName() {
+        return dataEntry.getString(DataKey.NAME);
     }
 
     public final DataEntry getDataEntry() {

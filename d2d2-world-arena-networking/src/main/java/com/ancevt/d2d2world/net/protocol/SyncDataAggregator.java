@@ -31,7 +31,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeFloat(gameObject.getX())
                 .writeFloat((gameObject.getY()))
                 .writeUtf(byte.class, mapkitItem.getMapkit().getName())
-                .writeUtf(byte.class, mapkitItem.getId())
+                .writeUtf(byte.class, mapkitItem.getName())
                 .writeUtf(short.class, getProperties(gameObject).stringify());
     }
 

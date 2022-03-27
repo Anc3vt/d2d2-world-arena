@@ -140,7 +140,7 @@ public class MapIO {
 
                     gameObjectDataEntry.add(DataKey.MAPKIT, gameObject.getMapkitItem().getMapkit().getName());
 
-                    gameObjectDataEntry.add(DataKey.ITEM, gameObject.getMapkitItem().getId());
+                    gameObjectDataEntry.add(DataKey.ITEM, gameObject.getMapkitItem().getName());
                     gameObjectDataEntry.add(DataKey.LAYER, String.valueOf(layer));
 
                     getProperties(gameObject, gameObjectDataEntry);

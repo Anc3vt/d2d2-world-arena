@@ -274,7 +274,7 @@ public class MapkitToolsPanel extends TitledPanel {
     }
 
     public void setMapkitItem(@NotNull MapkitItem mapkitItem) {
-        label.setText(mapkitItem.getId());
+        label.setText(mapkitItem.getName());
     }
 
     public void onMapkitItemSelected(MapkitItem mapkitItem) {
