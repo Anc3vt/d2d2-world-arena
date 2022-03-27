@@ -48,4 +48,4 @@ ban.list
 buildtmp/
 build.info
 ffplay
-.run
+.run/
