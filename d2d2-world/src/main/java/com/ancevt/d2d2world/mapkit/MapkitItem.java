@@ -20,9 +20,7 @@ package com.ancevt.d2d2world.mapkit;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
-import com.ancevt.d2d2.media.SoundImpl;
 import com.ancevt.d2d2world.constant.AnimationKey;
-import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.IntRectangle;
@@ -43,26 +41,21 @@ public class MapkitItem {
     private final DataEntry dataEntry;
 
     private final Texture[][] textures;
-    private final SoundImpl[][] sounds;
-
-
-    private Class<?> gameObjectClass;
 
     public MapkitItem(Mapkit mapkit, DataEntry dataEntry) {
         this.mapkit = mapkit;
         this.dataEntry = dataEntry;
 
         textures = prepareTextures();
-        sounds = prepareSounds();
     }
 
     public Mapkit getMapkit() {
         return mapkit;
     }
 
-    public Class<?> getGameObjectClass() {
+    public Class<? extends IGameObject> getGameObjectClass() {
         try {
-            return Class.forName(dataEntry.getString(DataKey.CLASS));
+            return (Class<? extends IGameObject>) Class.forName(dataEntry.getString(DataKey.CLASS));
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
@@ -154,47 +147,11 @@ public class MapkitItem {
         return result;
     }
 
-
-    private SoundImpl[][] prepareSounds() {
-        final SoundImpl[][] result = new SoundImpl[SoundKey.MAX_SOUNDS][];
-
-        result[SoundKey.JUMP] = prepareSoundsOfKey(DataKey.SOUND_JUMP);
-        result[SoundKey.DAMAGE] = prepareSoundsOfKey(DataKey.SOUND_DAMAGE);
-        result[SoundKey.EXTRA_SOUND] = prepareSoundsOfKey(DataKey.SOUND_EXTRA);
-        result[SoundKey.DEATH] = prepareSoundsOfKey(DataKey.SOUND_DEATH);
-
-        return result;
-    }
-
-    private SoundImpl[] prepareSoundsOfKey(final String key) {
-//        final String value = dataLine.getString(key);
-//
-//        final String[] valueStrings = value.split(";");
-//
-//        final Sound[] result = new Sound[valueStrings.length];
-//
-//        for (int i = 0; i < valueStrings.length; i++) {
-//            final String current = valueStrings[i];
-//
-//            final String path = Path.MAPKIT_DIRECTORY + mapkit.getDirectory() + current;
-//
-//            final Sound sound = new Sound(path);
-//            result[i] = sound;
-//        }
-//
-//        return result;
-        return null;
-    }
-
-    public final void playSound(final int soundKey) {
-        playSound(soundKey, 0);
-    }
-
-    public final void playSound(final int soundKey, final int index) {
-        if (sounds[soundKey] == null || sounds[soundKey].length <= index || sounds[soundKey][index] == null) {
-            return;
+    public void playSound(String soundKey) {
+        if (dataEntry.containsKey(soundKey)) {
+            getMapkit().playSound(dataEntry.getString(soundKey));
+        } else {
+            System.err.println("no such sound with key \"" + soundKey + "\"");
         }
-
-        sounds[soundKey][index].play();
     }
 }

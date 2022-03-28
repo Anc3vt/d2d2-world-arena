@@ -359,7 +359,10 @@ abstract public class Actor extends Animated implements
         if (health < 0) health = 0;
         else if (health > maxHealth) health = maxHealth;
 
-        if (health < oldHealth) damageBlink();
+        if (health < oldHealth) {
+            damageBlink();
+            getMapkitItem().playSound(SoundKey.DAMAGE);
+        }
 
         if (fromServer || D2D2World.isServer()) {
             this.health = health;
@@ -374,9 +377,6 @@ abstract public class Actor extends Animated implements
     @Override
     public void damage(int toHealth, IDamaging damaging) {
         if (toHealth > 0) {
-            if (getHealth() > toHealth)
-                getMapkitItem().playSound(SoundKey.DAMAGE, 0);
-
             if (damagingTime > 0) return;
             setAnimation(AnimationKey.DAMAGE);
             setVelocity(getDirection() * -2, -2);
@@ -510,7 +510,6 @@ abstract public class Actor extends Animated implements
     public void jump() {
         if (floor != null) {
             onJump = true;
-            getMapkitItem().playSound(SoundKey.JUMP, 0);
             setVelocityY(getVelocityY() + -getJumpPower());
             setFloor(null);
         }

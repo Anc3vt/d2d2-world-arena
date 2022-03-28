@@ -23,11 +23,11 @@ public class RailWeapon extends Weapon {
     }
 
     @Contract(" -> new")
-    private static @NotNull Sprite createSprite() {
+    public static @NotNull Sprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
-                        .getTextureAtlas("bullets.png")
+                        .getTextureAtlas("tileset.png")
                         .createTexture(0, 96, 32, 32)
         );
     }

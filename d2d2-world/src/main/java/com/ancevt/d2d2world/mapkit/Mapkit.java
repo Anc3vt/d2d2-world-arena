@@ -100,10 +100,10 @@ public abstract class Mapkit {
         Sound.play(MapIO.mapkitsDirectory + uid + "/" + filename);
     }
 
-    public MapkitItem getItem(String mapkitItemId) {
-        MapkitItem mapkitItem = items.get(mapkitItemId);
+    public MapkitItem getItem(String mapkitItemName) {
+        MapkitItem mapkitItem = items.get(mapkitItemName);
 
-        if (mapkitItem == null) throw new IllegalStateException("Mapkit item not defined, id: " + mapkitItemId
+        if (mapkitItem == null) throw new IllegalStateException("Mapkit item not defined, name: " + mapkitItemName
                 + ". Mapkit: " + getName());
         return mapkitItem;
     }

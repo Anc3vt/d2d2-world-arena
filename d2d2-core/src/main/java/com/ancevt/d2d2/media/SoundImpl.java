@@ -213,12 +213,12 @@ public class SoundImpl implements Sound {
             while (true) {
                 SoundImpl sound = null;
                 try {
-                    sound = new SoundImpl(new FileInputStream("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/character-mapkit/plasma.ogg"));
+                    sound = new SoundImpl(new FileInputStream("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/builtin-mapkit/character-damage.ogg"));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 sound.play();
-                new Lock().lock(10, TimeUnit.MILLISECONDS);
+                new Lock().lock(100, TimeUnit.MILLISECONDS);
             }
         });
     }

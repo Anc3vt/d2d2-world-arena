@@ -24,6 +24,7 @@ import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.mapkit.AreaMapkit;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.Layer;
@@ -59,6 +60,7 @@ public class MapIO {
 
         Map<String, String> mapkitNamesVsUids = new HashMap<>();
         mapkitNamesVsUids.put(AreaMapkit.NAME, AreaMapkit.UID);
+        mapkitNamesVsUids.put(BuiltInMapkit.NAME, BuiltInMapkit.UID);
 
         for (DataEntry dataEntry : dataEntries) {
 

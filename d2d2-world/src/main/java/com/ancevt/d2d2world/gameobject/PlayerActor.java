@@ -45,11 +45,6 @@ public class PlayerActor extends Actor {
         setCurrentWeapon(getWeapons().get(2));
     }
 
-    @Override
-    public boolean isFloorOnly() {
-        return true;
-    }
-
     public void setLocalPlayerActor(boolean localPlayerActor) {
         this.localPlayerActor = localPlayerActor;
     }

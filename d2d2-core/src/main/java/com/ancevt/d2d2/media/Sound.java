@@ -14,7 +14,9 @@ public interface Sound {
 
     static void setEnabled(boolean enabled) {
         enabledHolder.setValue(enabled);
-    };
+    }
+
+    ;
 
     static boolean isEnabled() {
         return enabledHolder.getValue();
@@ -46,7 +48,7 @@ public interface Sound {
         try {
             new SoundImpl(new FileInputStream(path)).play();
         } catch (FileNotFoundException e) {
-            throw new IllegalStateException(e);
+            System.err.println("sound \"" + path + "\" not found");
         }
     }
 }

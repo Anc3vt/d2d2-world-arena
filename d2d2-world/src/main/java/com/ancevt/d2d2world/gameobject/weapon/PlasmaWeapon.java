@@ -23,11 +23,11 @@ public class PlasmaWeapon extends Weapon {
     }
 
     @Contract(" -> new")
-    private static @NotNull ISprite createSprite() {
+    public static @NotNull ISprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
-                        .getTextureAtlas("bullets.png")
+                        .getTextureAtlas("tileset.png")
                         .createTexture(0, 32, 32, 32)
         );
     }
@@ -39,7 +39,7 @@ public class PlasmaWeapon extends Weapon {
 
     @Override
     public boolean shoot(@NotNull World world) {
-        if(!super.shoot(world)) return false;
+        if (!super.shoot(world)) return false;
         Bullet bullet = getNextBullet(getOwner().getArmDegree());
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());

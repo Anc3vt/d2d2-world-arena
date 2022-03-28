@@ -21,8 +21,12 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.panels.*;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.Area;
-import com.ancevt.d2d2world.mapkit.*;
+import com.ancevt.d2d2world.mapkit.AreaMapkit;
+import com.ancevt.d2d2world.mapkit.Mapkit;
+import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.mapkit.MapkitManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -154,13 +158,11 @@ public class MapkitToolsPanel extends TitledPanel {
         dropListMapkit.addItem(new DropListItem("All", ALL));
         dropListClass.addItem(new DropListItem("All", ALL));
 
-
         Set<Class<?>> classes = new HashSet<>();
 
-
-        List<String> mapkitIds = new ArrayList<>(MapkitManager.getInstance().keySet()).stream().sorted().toList();
-        for (String mapkitId : mapkitIds) {
-            Mapkit mapkit = MapkitManager.getInstance().get(mapkitId);
+        List<String> mapkitUids = new ArrayList<>(MapkitManager.getInstance().keySet()).stream().sorted().toList();
+        for (String mapkitUid : mapkitUids) {
+            Mapkit mapkit = MapkitManager.getInstance().get(mapkitUid);
             dropListMapkit.addItem(new DropListItem(mapkit.getName(), mapkit));
 
             for (String mapkitItemId : mapkit.keySet()) {
@@ -206,10 +208,11 @@ public class MapkitToolsPanel extends TitledPanel {
         List<MapkitItem> items = new ArrayList<>();
 
         for (Mapkit mapkit : mapkits) {
-            if (mapkit instanceof BuiltInMapkit) continue;
-
             for (String mapkitItemId : mapkit.keySet()) {
                 MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
+
+                if (mapkitItem.getGameObjectClass() == PlayerActor.class ||
+                        mapkitItem.getName().startsWith("bullet_of_")) continue;
 
                 if ((dropListClass.getSelectedKey() == ALL ||
                         dropListClass.getSelectedKey() == mapkitItem.getGameObjectClass())

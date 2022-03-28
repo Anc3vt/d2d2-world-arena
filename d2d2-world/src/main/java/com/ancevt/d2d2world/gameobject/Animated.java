@@ -64,7 +64,6 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             }
 
             IFramedDisplayObject framedDisplayObject = new FramedSprite(frames);
-            framedDisplayObject.setName("__" + animKey);
             framedDisplayObject.setFrame(0);
             framedDisplayObject.setLoop(true);
             framedDisplayObject.setSlowing(AnimationKey.SLOWING);

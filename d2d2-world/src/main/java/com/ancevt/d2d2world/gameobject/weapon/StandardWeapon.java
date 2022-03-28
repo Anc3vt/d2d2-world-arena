@@ -24,11 +24,11 @@ public class StandardWeapon extends Weapon {
     }
 
     @Contract(" -> new")
-    private static @NotNull ISprite createSprite() {
+    public static @NotNull ISprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
-                        .getTextureAtlas("bullets.png")
+                        .getTextureAtlas("tileset.png")
                         .createTexture(0, 0, 32, 32)
         );
     }

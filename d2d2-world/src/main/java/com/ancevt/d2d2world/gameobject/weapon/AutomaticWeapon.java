@@ -23,11 +23,11 @@ public class AutomaticWeapon extends Weapon {
     }
 
     @Contract(" -> new")
-    private static @NotNull ISprite createSprite() {
+    public static @NotNull ISprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
-                        .getTextureAtlas("bullets.png")
+                        .getTextureAtlas("tileset.png")
                         .createTexture(0, 64, 32, 32)
         );
     }

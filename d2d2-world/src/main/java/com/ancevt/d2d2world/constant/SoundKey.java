@@ -18,10 +18,11 @@
 package com.ancevt.d2d2world.constant;
 
 public class SoundKey {
-	public static final int MAX_SOUNDS = 16;
-	
-	public static final int JUMP = 0;
-	public static final int DAMAGE = 1;
-	public static final int DEATH = 2;
-	public static final int EXTRA_SOUND = 15;
+
+    public static final String DAMAGE = "damageSound";
+
+    public static final String DEATH = "deathSound";
+
+    public static final String PICK_UP = "pickUpSound";
+    
 }
