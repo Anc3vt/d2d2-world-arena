@@ -397,12 +397,13 @@ public class WorldScene extends DisplayObjectContainer {
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
         localPlayerActor.setName("lpa");
-        localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE,
-                event -> ammunitionHud.updateFor(localPlayerActor));
-
-        localPlayerActor.addEventListener(ActorEvent.SET_WEAPON,
-                event -> ammunitionHud.updateFor(localPlayerActor));
-
+        localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
+        localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));
+        localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> overlay.startIn());
+        localPlayerActor.addEventListener(ActorEvent.ACTOR_REPAIR, event -> {
+            world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
+            overlay.startOut();
+        });
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
 
             private float aimX;

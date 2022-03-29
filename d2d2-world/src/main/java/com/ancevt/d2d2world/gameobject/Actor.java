@@ -402,6 +402,8 @@ abstract public class Actor extends Animated implements
         setAlive(true);
 
         if (isOnWorld()) getWorld().getSyncDataAggregator().repair(this);
+
+        dispatchEvent(ActorEvent.builder().type(ActorEvent.ACTOR_REPAIR).build());
     }
 
     public boolean isAlive() {
@@ -430,17 +432,16 @@ abstract public class Actor extends Animated implements
             }
         }
 
-        if (D2D2World.isServer()) {
+        dispatchEvent(ActorEvent.builder().type(ActorEvent.ACTOR_DEATH).build());
 
-            getWorld().dispatchEvent(WorldEvent.builder()
-                    .type(WorldEvent.ACTOR_DEATH)
-                    .deadActorGameObjectId(getGameObjectId())
-                    .killerGameObjectId(
-                            damaging != null && damaging.getDamagingOwnerActor() != null ?
-                                    damaging.getDamagingOwnerActor().getGameObjectId()
-                                    : 0)
-                    .build());
-        }
+        getWorld().dispatchEvent(WorldEvent.builder()
+                .type(WorldEvent.ACTOR_DEATH)
+                .deadActorGameObjectId(getGameObjectId())
+                .killerGameObjectId(
+                        damaging != null && damaging.getDamagingOwnerActor() != null ?
+                                damaging.getDamagingOwnerActor().getGameObjectId()
+                                : 0)
+                .build());
     }
 
     @Override
@@ -450,6 +451,7 @@ abstract public class Actor extends Animated implements
         getController().reset();
         setAlive(true);
         repair();
+
     }
 
     @Override
@@ -738,7 +740,7 @@ abstract public class Actor extends Animated implements
     }
 
     public void nextWeapon() {
-        if(weapons.size() <= 1) return;
+        if (weapons.size() <= 1) return;
         weaponIndex++;
         if (weaponIndex >= weapons.size()) {
             weaponIndex = 0;
@@ -752,7 +754,7 @@ abstract public class Actor extends Animated implements
     }
 
     public void prevWeapon() {
-        if(weapons.size() <= 1) return;
+        if (weapons.size() <= 1) return;
         weaponIndex--;
         if (weaponIndex < 0) {
             weaponIndex = weapons.size() - 1;
@@ -792,7 +794,7 @@ abstract public class Actor extends Animated implements
                             .build());
                 });
 
-        if(resultHolder.getValue()) {
+        if (resultHolder.getValue()) {
             dispatchEvent(ActorEvent.builder()
                     .type(ActorEvent.AMMUNITION_CHANGE)
                     .weaponClassName(weaponClassname)

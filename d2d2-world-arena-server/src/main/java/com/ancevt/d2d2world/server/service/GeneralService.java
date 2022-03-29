@@ -249,6 +249,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
             });
 
+            MODULE_WORLD_SCENE.getPlayerActorByPlayerId(playerId).ifPresent(pa -> pa.setVisible(true));
+
             serverSender.sendToPlayer(playerId,
                     PlayerActorDto.builder()
                             .playerActorGameObjectId(MODULE_WORLD_SCENE.getPlayerActorGameObjectId(playerId))

@@ -18,7 +18,6 @@
 package com.ancevt.net.connection;
 
 import com.ancevt.commons.io.ByteOutput;
-import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.net.CloseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
@@ -41,10 +40,6 @@ import static java.lang.Math.min;
 
 @Slf4j
 public class TcpB254Connection implements IConnection {
-
-    static {
-        UnixDisplay.setEnabled(true); // TODO: remove
-    }
 
     private static final int MAX_CHUNK_SIZE = 254;
 

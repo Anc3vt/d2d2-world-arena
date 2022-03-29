@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -135,8 +136,8 @@ public class ServerWorldScene {
         }
     }
 
-    public PlayerActor getPlayerActor(int playerId) {
-        return playerActorMap.get(playerId);
+    public Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {
+        return Optional.ofNullable(playerActorMap.get(playerId));
     }
 
     public void addPlayer(@NotNull Player player) {
@@ -145,6 +146,7 @@ public class ServerWorldScene {
         playerActor.getController().setEnabled(true);
         playerActor.setXY(64, 64);
         world.addGameObject(playerActor, 5, false);
+        playerActor.setVisible(false);
         playerActorMap.put(player.getId(), playerActor);
 
         //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
@@ -162,11 +164,7 @@ public class ServerWorldScene {
     }
 
     public int getPlayerActorGameObjectId(int playerId) {
-        PlayerActor playerActor = getPlayerActor(playerId);
-        if (playerActor != null) {
-            return playerActor.getGameObjectId();
-        }
-        throw new IllegalStateException("no player actor for player id " + playerId);
+        return getPlayerActorByPlayerId(playerId).orElseThrow().getGameObjectId();
     }
 
     private void world_actorDeath(Event event) {

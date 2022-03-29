@@ -38,10 +38,7 @@ public class ServerInfoRetriever {
     private ServerInfoRetriever() {
     }
 
-    public static void retrieve(String host,
-                                int port,
-                                @NotNull ResultFunction resultFunction,
-                                @NotNull ErrorFunction errorFunction) {
+    public static void retrieve(String host, int port, @NotNull ResultFunction resultFunction, @NotNull ErrorFunction errorFunction) {
 
         log.info("Retrieve server info {}:{}", host, port);
         IConnection connection = TcpFactory.createConnection(0);

@@ -47,8 +47,6 @@ public class SyncDataAggregator implements ISyncDataAggregator {
         buffer.writeByte(SyncDataType.ADD_WEAPON)
                 .writeInt(actor.getGameObjectId())
                 .writeUtf(byte.class, weaponClassname);
-
-        debug("SyncDataAggregator:51: <A>addWeapon");
     }
 
     @Override
@@ -57,8 +55,6 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeInt(actor.getGameObjectId())
                 .writeUtf(byte.class, weaponClassname)
                 .writeShort(ammunition);
-
-        debug("SyncDataAggregator:52: <A>changeWeaponState " + weaponClassname + " " + ammunition);
     }
 
     @Override
@@ -66,7 +62,6 @@ public class SyncDataAggregator implements ISyncDataAggregator {
         buffer.writeByte(SyncDataType.SWITCH_WEAPON)
                 .writeInt(actor.getGameObjectId())
                 .writeUtf(byte.class, actor.getCurrentWeapon().getClass().getName());
-        debug("SyncDataAggregator:70: <A>switchWeapon " + actor.getCurrentWeapon().getClass().getName());
     }
 
     @Override

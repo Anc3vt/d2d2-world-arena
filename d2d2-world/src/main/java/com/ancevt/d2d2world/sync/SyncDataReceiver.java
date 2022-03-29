@@ -12,7 +12,6 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
 @Slf4j
@@ -157,14 +156,12 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     private void changeWeaponState(int gameObjectId, String weaponClassname, int ammunition) {
         if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
             actor.setWeaponAmmunition(weaponClassname, ammunition);
-            debug("SyncDataReceiver:151: changeWeaponState <A>" + weaponClassname + " " + ammunition);
         }
     }
 
     private void switchWeapon(int gameObjectId, String weaponClassname) {
         if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
             actor.setCurrentWeaponClassname(weaponClassname);
-            debug("SyncDataReceiver:155:switchWeapon <A>" + weaponClassname);
         }
     }
 

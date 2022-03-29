@@ -70,7 +70,7 @@
     <dependencies>
         <dependency>
             <groupId>com.ancevt.d2d2</groupId>
-            <artifactId>d2d2-tcp</artifactId>
+            <artifactId>d2d2-sockets</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ancevt.d2d2</groupId>

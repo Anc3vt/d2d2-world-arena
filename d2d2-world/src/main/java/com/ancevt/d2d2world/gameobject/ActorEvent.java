@@ -12,6 +12,8 @@ public class ActorEvent extends Event<Actor> {
 
     public static final String SET_WEAPON = "setWeapon";
     public static final String AMMUNITION_CHANGE = "ammunitionChange";
+    public static final String ACTOR_DEATH = "actorDeath";
+    public static final String ACTOR_REPAIR = "actorRepair";
 
     private final String weaponClassName;
     private final int ammunition;

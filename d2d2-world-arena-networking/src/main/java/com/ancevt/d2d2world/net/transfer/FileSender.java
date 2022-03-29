@@ -85,8 +85,6 @@ public class FileSender {
         }
 
         Async.run(this::run);
-
-        //run();
     }
 
     private void run() {
