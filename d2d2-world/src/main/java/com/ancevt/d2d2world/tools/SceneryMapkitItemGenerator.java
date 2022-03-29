@@ -22,10 +22,15 @@ import com.ancevt.util.args.Args;
 
 import static java.lang.String.format;
 
-public class SceneryMapkitItemsGenerator {
+public class SceneryMapkitItemGenerator {
 
     public static void main(String[] args) {
         Args a = new Args(args);
+
+        if (a.contains("--help")) {
+            System.out.println("[-x 0 -y 0] -w 128 -h 128 [-sw 16 -sh 16] -p prefix -a atlas-name.png ");
+            System.exit(0);
+        }
 
         int sceneryWidth = a.get(int.class, "-sw", 16);
         int sceneryHeight = a.get(int.class, "-sh", 16);
@@ -58,7 +63,7 @@ public class SceneryMapkitItemsGenerator {
         for (int y = areaY; y < areaY + areaHeight; y += sceneryHeight) {
             for (int x = areaX; x < areaX + areaWidth; x += sceneryWidth) {
                 String line = format(
-                        "id = %s%s | class = %s | atlas = %s | idle=%d,%d,%d,%d",
+                        "name = %s%s | class = %s | atlas = %s | idle=%d,%d,%d,%d",
                         namePrefix,
                         idSuffix,
                         clazz,

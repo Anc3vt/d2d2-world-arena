@@ -22,6 +22,7 @@ public class ThreeSpritesPlatform extends Platform {
     public ThreeSpritesPlatform(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
         addEventListener(ThreeSpritesPlatform.class, Event.ADD_TO_STAGE, this::this_addToStage);
+        setWidth(48);
     }
 
     private void this_addToStage(Event event) {

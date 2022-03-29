@@ -25,6 +25,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
+import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
@@ -47,6 +48,10 @@ public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
 
+        if (a.contains("--disable-sound")) {
+            Sound.setEnabled(false);
+        }
+
         UnixDisplay.setEnabled(a.contains("--colorize-logs"));
 
         MapIO.mapkitsDirectory = a.get("--mapkits-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
@@ -58,6 +63,7 @@ public class D2D2WorldEditorMain {
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");
         Root root = D2D2.getStage().getRoot();
+        D2D2.setSmoothMode(false);
 
         DisplayObjectContainer cameraLayer = new DisplayObjectContainer();
 
@@ -118,7 +124,7 @@ public class D2D2WorldEditorMain {
                 .getItem("character_ava");
 
         playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
-        playerActor.setXY(300, 300);
+        playerActor.setXY(64, 64);
         playerActor.setName("playerActorFromEditor");
         playerActor.setLocalAim(true);
         world.addGameObject(playerActor, 5, false);

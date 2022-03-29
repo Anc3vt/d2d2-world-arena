@@ -1,9 +1,7 @@
 package com.ancevt.d2d2world.debug;
 
-import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.debug.DebugBorder;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
@@ -20,10 +18,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
-import static java.nio.file.StandardOpenOption.*;
 import static com.ancevt.d2d2.input.KeyCode.isShift;
+import static java.nio.file.StandardOpenOption.*;
 
 public class DebugPanel extends DisplayObjectContainer {
 
@@ -179,9 +176,6 @@ public class DebugPanel extends DisplayObjectContainer {
             }
 
             D2D2.getStage().getRoot().add(debugPanel);
-            DebugBorder debugBorder = new DebugBorder(debugPanel);
-            Async.runLater(1, TimeUnit.SECONDS, debugBorder::removeFromParent);
-            D2D2.getStage().getRoot().add(debugBorder);
             if(propertyName != null) {
                 System.setProperty(propertyName, String.valueOf(value));
             }

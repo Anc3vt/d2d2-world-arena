@@ -55,11 +55,11 @@ public class GameObjectEditor {
     private boolean moving;
     private IRepeatable repeating;
     private boolean snapToGrid;
-    private float oldMouseX;
-    private float oldMouseY;
+    private float oldMouseX = 64;
+    private float oldMouseY = 64;
     private boolean selecting;
     private MapkitItem lastPlacingMapkitItem;
-    private float worldMouseX = 100, worldMouseY = 100;
+    private float worldMouseX = 64, worldMouseY = 64;
 
     public GameObjectEditor(Editor editor) {
         this.editor = editor;
@@ -116,7 +116,7 @@ public class GameObjectEditor {
                         unselect();
                     }
                     case 'D' -> {
-                        setPlacingMapkitItem(lastPlacingMapkitItem);
+                        if(!getWorld().isPlaying()) setPlacingMapkitItem(lastPlacingMapkitItem);
                     }
 
                     case 'L' -> setLayerNumbersVisible(!LayerNumbers.isShow());

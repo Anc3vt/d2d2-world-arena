@@ -68,22 +68,24 @@ public class PlayerActor extends Actor {
     }
 
     private void this_eachFrameLocalAim(Event event) {
-        final World world = getWorld();
+        if(isLocalPlayerActor()) {
+            if (isOnWorld()) {
+                final World world = getWorld();
 
-        if(isOnWorld()) {
-            float scaleX = world.getAbsoluteScaleX();
-            float scaleY = world.getAbsoluteScaleY();
+                float scaleX = world.getAbsoluteScaleX();
+                float scaleY = world.getAbsoluteScaleY();
 
-            float wx = world.getAbsoluteX() / scaleX;
-            float wy = world.getAbsoluteY() / scaleY;
+                float wx = world.getAbsoluteX() / scaleX;
+                float wy = world.getAbsoluteY() / scaleY;
 
-            float x = Mouse.getX() / scaleX;
-            float y = Mouse.getY() / scaleY;
+                float x = Mouse.getX() / scaleX;
+                float y = Mouse.getY() / scaleY;
 
-            float worldX = (x - wx);
-            float worldY = (y - wy);
+                float worldX = (x - wx);
+                float worldY = (y - wy);
 
-            setAimXY(worldX, worldY);
+                setAimXY(worldX, worldY);
+            }
         }
     }
 }

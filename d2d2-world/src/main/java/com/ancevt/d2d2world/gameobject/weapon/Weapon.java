@@ -70,8 +70,7 @@ abstract public class Weapon {
     }
 
     public boolean setAmmunition(int value) {
-        final int oldAmmunition = ammunition;
-        if(value == ammunition) return false;
+        if (value == ammunition) return false;
         ammunition = value;
         if (ammunition > maxAmmunition) {
             ammunition = maxAmmunition;
@@ -79,7 +78,6 @@ abstract public class Weapon {
             this.ammunition = 0;
         }
 
-        if(oldAmmunition == ammunition) return false;
         return true;
     }
 

@@ -18,7 +18,6 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
-import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -704,8 +703,6 @@ abstract public class Actor extends Animated implements
                 .filter(w -> w.getClass().getName().equals(weaponClassname))
                 .findAny()
                 .ifPresent(w -> {
-                    UnixDisplay.debug("Actor:707: <A>setCurrentWeaponClassname");
-
                     currentWeapon = w;
                     currentWeapon.setOwner(this);
                     weaponContainer.setScale(2, 2);

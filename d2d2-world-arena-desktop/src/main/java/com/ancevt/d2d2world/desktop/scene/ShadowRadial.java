@@ -15,23 +15,24 @@ public class ShadowRadial extends DisplayObjectContainer {
 
     private static Texture texture;
     private final List<Sprite> sprites;
+    private Color color = Color.WHITE;
 
     public ShadowRadial() {
         if (texture == null) {
             texture = textureManager().loadTextureAtlas("shadow-radial.png").createTexture();
         }
         sprites = new ArrayList<>();
-        setDarknessValue(5);
+        setValue(5);
     }
 
-    public void setDarknessValue(int value) {
+    public void setValue(int value) {
         while (!sprites.isEmpty()) {
             sprites.remove(0).removeFromParent();
         }
 
         for (int i = 0; i < value; i++) {
             Sprite sprite = new Sprite(texture);
-            sprite.setColor(Color.BLACK);
+            sprite.setColor(color);
             float sw = D2D2.getStage().getStageWidth();
             float sh = D2D2.getStage().getStageHeight();
 
@@ -44,11 +45,12 @@ public class ShadowRadial extends DisplayObjectContainer {
         }
     }
 
-    public int getDarknessValue() {
+    public int getValue() {
         return sprites.size();
     }
 
     public void setColor(Color color) {
+        this.color = color;
         sprites.forEach(s -> s.setColor(color));
     }
 

@@ -186,7 +186,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion, @NotNull LocalDateTime serverStartTime) {
+    public void playerEnterServer(int localPlayerId,
+                                  int localPlayerColor,
+                                  @NotNull String serverProtocolVersion,
+                                  @NotNull LocalDateTime serverStartTime) {
+
         MODULE_CHAT.addMessage("Your id is " +
                         localPlayerId +
                         ", server protocol version is "
@@ -195,7 +199,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 , Color.WHITE);
         worldScene.start();
 
-        D2D2World.getAim().setColor(Color.of(localPlayerColor));
+        D2D2World.getAim().setColor(Color.WHITE);
 
         String rconPassword = MODULE_CONFIG.getString(DesktopConfig.RCON_PASSWORD);
         if (!rconPassword.isEmpty()) {

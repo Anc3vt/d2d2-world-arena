@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.editor;
+package com.ancevt.d2d2world.ui;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;

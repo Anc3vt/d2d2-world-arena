@@ -27,6 +27,7 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanelEvent;
+import com.ancevt.d2d2world.ui.Grid;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 

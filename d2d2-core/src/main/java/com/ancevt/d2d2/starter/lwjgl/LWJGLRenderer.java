@@ -29,18 +29,17 @@ import com.ancevt.d2d2.event.EventPool;
 import com.ancevt.d2d2.input.Mouse;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 
 import static java.lang.Math.round;
+import static org.lwjgl.opengl.GL11.*;
 
 public class LWJGLRenderer implements IRenderer {
 
     private final Stage stage;
     private final LWJGLStarter lwjglStarter;
-    boolean smoothMode;
+    boolean smoothMode = false;
     private LWJGLTextureEngine textureEngine;
 
     public LWJGLRenderer(Stage stage, LWJGLStarter lwjglStarter) {
@@ -50,8 +49,8 @@ public class LWJGLRenderer implements IRenderer {
 
     @Override
     public void init(long windowId) {
-        //GL30.glEnable(GL_BLEND);
-        //GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL30.glEnable(GL_BLEND);
+        GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
@@ -159,8 +158,8 @@ public class LWJGLRenderer implements IRenderer {
 
         textureParamsHandle();
 
-        GL30.glEnable(GL30.GL_BLEND);
-        GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+        GL30.glEnable(GL_BLEND);
+        GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         boolean bindResult = D2D2.getTextureManager().getTextureEngine().bind(textureAtlas);
 
@@ -229,7 +228,7 @@ public class LWJGLRenderer implements IRenderer {
             }
         }
 
-        GL30.glDisable(GL30.GL_BLEND);
+        GL30.glDisable(GL_BLEND);
         D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
     }
 
@@ -239,8 +238,8 @@ public class LWJGLRenderer implements IRenderer {
         BitmapFont bitmapFont = bitmapText.getBitmapFont();
         TextureAtlas textureAtlas = bitmapFont.getTextureAtlas();
 
-        GL30.glEnable(GL30.GL_BLEND);
-        GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+        GL30.glEnable(GL_BLEND);
+        GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         boolean bindResult = D2D2.getTextureManager().getTextureEngine().bind(textureAtlas);
 
@@ -303,7 +302,7 @@ public class LWJGLRenderer implements IRenderer {
 
         GL30.glEnd();
 
-        GL30.glDisable(GL30.GL_BLEND);
+        GL30.glDisable(GL_BLEND);
         D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
     }
 
@@ -353,9 +352,6 @@ public class LWJGLRenderer implements IRenderer {
         } else {
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_NEAREST);
         }

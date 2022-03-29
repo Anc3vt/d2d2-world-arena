@@ -145,7 +145,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>com.ancevt.d2d2world.tools.SceneryMapkitItemsGenerator</mainClass>
+                                    <mainClass>com.ancevt.d2d2world.tools.SceneryMapkitItemGenerator</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

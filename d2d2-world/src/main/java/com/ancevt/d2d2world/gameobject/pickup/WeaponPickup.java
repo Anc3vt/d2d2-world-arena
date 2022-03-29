@@ -38,7 +38,6 @@ public class WeaponPickup extends Pickup {
         }
 
         try {
-            System.out.println(cls);
             weaponClass = (Class<? extends Weapon>) Class.forName(cls);
             Method method = weaponClass.getMethod("createSprite");
             Sprite sprite = (Sprite) method.invoke(null);

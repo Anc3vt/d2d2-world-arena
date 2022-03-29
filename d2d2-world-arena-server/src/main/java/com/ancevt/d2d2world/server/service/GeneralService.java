@@ -242,10 +242,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
             // send enter message to all players including new player
             serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
-        }
 
-
-        if (dto instanceof MapLoadedReport) {
+        } else if (dto instanceof MapLoadedReport) {
             MODULE_WORLD_SCENE.getWorld().getSyncGameObjects().forEach(o -> {
                 byte[] bytes = SyncDataAggregator.createSyncMessageOf(o);
                 if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
@@ -257,13 +255,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                             .build());
 
             serverSender.sendToPlayer(playerId, getServerInfoDto());
-        }
 
-        if (dto instanceof ServerInfoRequestDto) {
+        } else if (dto instanceof ServerInfoRequestDto) {
             serverSender.sendToPlayer(playerId, getServerInfoDto());
-        }
 
-        if (dto instanceof RconLoginRequestDto d) {
+        } else if (dto instanceof RconLoginRequestDto d) {
             String serverRconPasswordHash = MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD));
             if (serverRconPasswordHash.equals(d.getPasswordHash())) {
                 serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
@@ -299,9 +295,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                 .color(0xFF0000)
                                 .build());
             }
-        }
-
-        if (dto instanceof RconCommandDto d) {
+        } else if (dto instanceof RconCommandDto d) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
                 if (p.isRconLoggedIn()) {
                     String commandText = d.getCommandText();
@@ -317,9 +311,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     );
                 }
             });
-        }
 
-        if (dto instanceof PlayerTextToChatDto d) {
+        } else if (dto instanceof PlayerTextToChatDto d) {
             String text = d.getText();
             serverPlayerManager.getPlayerById(playerId).ifPresent(
                     player -> {
@@ -330,9 +323,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                         }
                     }
             );
-        }
 
-        if (dto instanceof PlayerExitRequestDto) {
+        } else if (dto instanceof PlayerExitRequestDto) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
                 MODULE_WORLD_SCENE.removePlayer(player);
 
@@ -355,19 +347,19 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             });
 
             getConnection(playerId).ifPresent(IConnection::close);
-        }
 
-        if (dto instanceof PlayerPingReportDto d) {
+        } else if (dto instanceof PlayerPingReportDto d) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setPingValue(d.getPing()));
-        }
 
-        if (dto instanceof PlayerChatEventDto d) {
+        } else if (dto instanceof PlayerChatEventDto d) {
             serverSender.sendToAll(d);
-        }
 
-        if (dto instanceof LocalServerKillDto) {
-            // TODO: implement test that connection is localhost
-            exit();
+        } else if (dto instanceof LocalServerKillDto) {
+            getConnection(playerId).ifPresent(c -> {
+                if (IConnection.getIpFromAddress(c.getRemoteAddress()).equals("127.0.0.1")) {
+                    exit();
+                }
+            });
         }
 
     }

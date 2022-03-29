@@ -194,7 +194,7 @@ public class PlayProcessor {
 
         boolean wallHitTest = false;
 
-        if(!(o2 instanceof Weapon.Bullet) /*&& !(o2 instanceof PlayerActor)*/) {
+        if (!(o2 instanceof Weapon.Bullet) /*&& !(o2 instanceof PlayerActor)*/) {
             if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
                 o1.setX(x2 - w1 - tx1 - 1);
                 getPushState(o1).pushFromRight().tightFromRight = o2;
@@ -214,8 +214,7 @@ public class PlayProcessor {
             boolean floorUnderObject = cy1 < cy2 && y1 + h1 < y2 + 11; // 11
 
             if (floorUnderObject) {
-                if ((o2 instanceof IMovable moveable && moveable.getMovingSpeedY() < 5)
-                        || g.getVelocityY() > 0) {
+                if ((o2 instanceof IMovable moveable && moveable.getMovingSpeedY() < 5) || g.getVelocityY() > 0) {
                     o1.setY(y2 - h1 - ty1);
                     setFloorTo(g, o2);
                 }
@@ -309,12 +308,12 @@ public class PlayProcessor {
         }
 
         PushState pushFromLeft() {
-            pushFromLeft ++;
+            pushFromLeft++;
             return this;
         }
 
         PushState pushFromRight() {
-            pushFromRight ++;
+            pushFromRight++;
             return this;
         }
 

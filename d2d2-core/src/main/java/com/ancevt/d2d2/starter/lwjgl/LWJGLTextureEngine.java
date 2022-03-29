@@ -46,7 +46,7 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class LWJGLTextureEngine implements ITextureEngine {
 
-    private static final boolean TEXTURE_PREPROCESSING_ENABLED = true;
+    private static final boolean TEXTURE_PREPROCESSING_ENABLED = false;
     private final TextureLoadQueue loadQueue;
     private final Queue<TextureAtlas> unloadQueue;
     private final TextureMapping mapping;

@@ -108,8 +108,9 @@ public class WorldScene extends DisplayObjectContainer {
                 }
             }
         };
+        shadowRadial.setColor(Color.YELLOW);
         shadowRadial.setScale(2f, 2f);
-        world.add(shadowRadial);
+        //world.add(shadowRadial);
 
 
         ((SyncDataReceiver) MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
@@ -332,10 +333,10 @@ public class WorldScene extends DisplayObjectContainer {
                     MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
                 }
                 if (e.getKeyCode() == KeyCode.F11) {
-                    if (shadowRadial.getDarknessValue() == 0) return;
-                    shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() - 1);
+                    if (shadowRadial.getValue() == 0) return;
+                    shadowRadial.setValue(shadowRadial.getValue() - 1);
                 } else if (e.getKeyCode() == KeyCode.F12) {
-                    shadowRadial.setDarknessValue(shadowRadial.getDarknessValue() + 1);
+                    shadowRadial.setValue(shadowRadial.getValue() + 1);
                 }
                 if (e.getKeyCode() == KeyCode.F9) {
                     overlay.startIn();
