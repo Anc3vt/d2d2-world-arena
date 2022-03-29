@@ -93,8 +93,8 @@ abstract public class Actor extends Animated implements
         weapons = new ArrayList<>();
 
         weaponContainer = new DisplayObjectContainer();
-        addWeapon(StandardWeapon.class.getName(), 100);
-        nextWeapon();
+        addWeapon(StandardWeapon.class, 100);
+        setCurrentWeaponClass(StandardWeapon.class);
 
         framedDoHead = new FramedSprite(mapkitItem
                 .getTextureAtlas()
@@ -694,6 +694,10 @@ abstract public class Actor extends Animated implements
         return currentWeapon;
     }
 
+    public void setCurrentWeaponClass(Class<? extends Weapon> cls) {
+        setCurrentWeaponClassname(cls.getName());
+    }
+
     public void setCurrentWeaponClassname(@NotNull String weaponClassname) {
         if (this.currentWeapon != null) {
             this.currentWeapon.getSprite().removeFromParent();
@@ -734,6 +738,7 @@ abstract public class Actor extends Animated implements
     }
 
     public void nextWeapon() {
+        if(weapons.size() <= 1) return;
         weaponIndex++;
         if (weaponIndex >= weapons.size()) {
             weaponIndex = 0;
@@ -747,6 +752,7 @@ abstract public class Actor extends Animated implements
     }
 
     public void prevWeapon() {
+        if(weapons.size() <= 1) return;
         weaponIndex--;
         if (weaponIndex < 0) {
             weaponIndex = weapons.size() - 1;
@@ -758,7 +764,11 @@ abstract public class Actor extends Animated implements
         setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }
 
-    public boolean addWeapon(String weaponClassname, int ammunition) {
+    public boolean addWeapon(@NotNull Class<? extends Weapon> cls, int ammunition) {
+        return addWeapon(cls.getName(), ammunition);
+    }
+
+    public boolean addWeapon(@NotNull String weaponClassname, int ammunition) {
         Holder<Boolean> resultHolder = new Holder<>(false);
         Holder<Weapon> weaponHolder = new Holder<>();
         weapons.stream()
