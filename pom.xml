@@ -59,7 +59,7 @@
         <module>d2d2-world-arena-networking</module>
         <module>d2d2-world-arena-server</module>
         <module>d2d2-ttf2bmf</module>
-        <module>d2d2-tcp</module>
+        <module>d2d2-sockets</module>
     </modules>
 
     <properties>
@@ -199,6 +199,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
