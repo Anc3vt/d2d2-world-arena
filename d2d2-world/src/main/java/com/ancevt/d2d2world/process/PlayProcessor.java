@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
+
 public class PlayProcessor {
 
     private static final float DEFAULT_GRAVITY = 1f;
@@ -171,6 +173,9 @@ public class PlayProcessor {
 
         if (o2 instanceof Weapon.Bullet bullet) {
             if (bullet.getOwnerGameObjectId() == o1.getGameObjectId()) return;
+            if(o1.getName().equals("lpa") && o2 instanceof Weapon.Bullet) {
+                debug("PlayProcessor:176: <A>");
+            }
         }
 
         float tx1 = o1.getCollisionX();
@@ -232,6 +237,10 @@ public class PlayProcessor {
         if (target.getFloor() == floor) return;
         target.setVelocityY(0);
         target.setFloor(floor);
+
+        if(target.getName().equals("lpa") && floor instanceof Weapon.Bullet) {
+            debug("PlayProcessor:222: <A>setFloorToa");
+        }
     }
 
     private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {

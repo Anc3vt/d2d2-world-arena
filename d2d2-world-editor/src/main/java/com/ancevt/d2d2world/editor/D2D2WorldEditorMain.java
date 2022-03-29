@@ -123,9 +123,9 @@ public class D2D2WorldEditorMain {
                 .getByName(BuiltInMapkit.NAME)
                 .getItem("character_ava");
 
-        playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(0);
+        playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(-1);
         playerActor.setXY(64, 64);
-        playerActor.setName("playerActorFromEditor");
+        playerActor.setName("lpa");
         playerActor.setLocalAim(true);
         world.addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();

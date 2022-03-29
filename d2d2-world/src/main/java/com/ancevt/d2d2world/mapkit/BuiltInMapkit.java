@@ -20,10 +20,7 @@ package com.ancevt.d2d2world.mapkit;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
-import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.*;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 
@@ -140,15 +137,6 @@ public class BuiltInMapkit extends Mapkit {
                         """);
 
                 add("""
-                        name = bullet_of_""" + RailWeapon.class.getSimpleName() + """
-                        | class =""" + RailWeapon.RailBullet.class.getName() + """
-                        | damagingPower = 49
-                        | speed = 31
-                        | collisionX = -8 | collisionY = -8 | collisionWidth = 16 | collisionHeight = 16
-                        | atlas = $ATLAS$
-                        | idle = 32,96,32,16
-                        """);
-                add("""
                         name = bullet_of_""" + StandardWeapon.class.getSimpleName() + """
                         | class =""" + StandardWeapon.StandardBullet.class.getName() + """
                         | damagingPower = 15
@@ -156,6 +144,26 @@ public class BuiltInMapkit extends Mapkit {
                         | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
                         | atlas = $ATLAS$
                         | idle = 32,0,16,16; 48,0,16,16; 32,0,16,16; 48,0,16,16
+                        """);
+
+                add("""
+                        name = bullet_of_""" + ArrowWeapon.class.getSimpleName() + """
+                        | class =""" + ArrowWeapon.ArrowBullet.class.getName() + """
+                        | damagingPower = 20
+                        | speed = 8
+                        | collisionX = -5 | collisionY = -1 | collisionWidth = 10 | collisionHeight = 3
+                        | atlas = $ATLAS$
+                        | idle = 32,128,32,16
+                        """);
+
+                add("""
+                        name = bullet_of_""" + RailWeapon.class.getSimpleName() + """
+                        | class =""" + RailWeapon.RailBullet.class.getName() + """
+                        | damagingPower = 49
+                        | speed = 31
+                        | collisionX = -8 | collisionY = -8 | collisionWidth = 16 | collisionHeight = 16
+                        | atlas = $ATLAS$
+                        | idle = 32,96,32,16
                         """);
                 add("""
                         name = bullet_of_""" + AutomaticWeapon.class.getSimpleName() + """

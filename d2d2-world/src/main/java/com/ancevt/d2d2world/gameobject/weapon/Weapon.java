@@ -165,6 +165,7 @@ abstract public class Weapon {
 
         @Property
         public int getOwnerGameObjectId() {
+            if(owner == null) return 0;
             return owner.getGameObjectId();
         }
 

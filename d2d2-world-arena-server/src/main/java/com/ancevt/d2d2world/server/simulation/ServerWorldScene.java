@@ -143,7 +143,7 @@ public class ServerWorldScene {
         MapkitItem mapkitItem = MapkitManager.getInstance().getByName(BuiltInMapkit.NAME).getItem("character_ava");
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.getController().setEnabled(true);
-        playerActor.setXY(448, 304);
+        playerActor.setXY(64, 64);
         world.addGameObject(playerActor, 5, false);
         playerActorMap.put(player.getId(), playerActor);
 
