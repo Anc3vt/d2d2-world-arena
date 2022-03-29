@@ -65,12 +65,13 @@ abstract public class Weapon {
         return maxAmmunition;
     }
 
-    public void addAmmunition(int value) {
-        setAmmunition(getAmmunition() + value);
+    public boolean addAmmunition(int value) {
+        return setAmmunition(getAmmunition() + value);
     }
 
-    public void setAmmunition(int value) {
-        if(value == ammunition) return;
+    public boolean setAmmunition(int value) {
+        final int oldAmmunition = ammunition;
+        if(value == ammunition) return false;
         ammunition = value;
         if (ammunition > maxAmmunition) {
             ammunition = maxAmmunition;
@@ -78,13 +79,8 @@ abstract public class Weapon {
             this.ammunition = 0;
         }
 
-        if(getOwner() != null) {
-            getOwner().dispatchEvent(PlayerActorEvent.builder()
-                    .type(PlayerActorEvent.AMMUNITION_CHANGE)
-                    .weapon(this)
-                    .ammunition(ammunition)
-                    .build());
-        }
+        if(oldAmmunition == ammunition) return false;
+        return true;
     }
 
     public int getAmmunition() {

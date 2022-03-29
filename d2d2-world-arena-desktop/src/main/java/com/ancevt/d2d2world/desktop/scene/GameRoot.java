@@ -34,7 +34,6 @@ import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
-import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.net.client.ClientListener;
 import com.ancevt.d2d2world.net.client.Player;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
@@ -131,7 +130,10 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         worldScene = new WorldScene();
         add(worldScene);
 
+
         add(MODULE_CHAT, 10, 10);
+
+        add(new FpsMeter());
 
         tabWindow = new TabWindow();
 
@@ -366,10 +368,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         new Lock().lock(1, SECONDS);
         DebugPanel.saveAll();
         System.exit(0);
-    }
-
-    public void playerSetWeapon(Weapon weapon) {
-
     }
 }
 

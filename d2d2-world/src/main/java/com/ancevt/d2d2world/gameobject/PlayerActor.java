@@ -21,9 +21,6 @@ import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 
@@ -38,11 +35,6 @@ public class PlayerActor extends Actor {
         BitmapText playerNameBitmapText = new BitmapText();
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
-
-        addWeapon(new PlasmaWeapon(), 10);
-        addWeapon(new AutomaticWeapon(), 10);
-        addWeapon(new RailWeapon(), 10);
-        setCurrentWeapon(getWeapons().get(2));
     }
 
     public void setLocalPlayerActor(boolean localPlayerActor) {

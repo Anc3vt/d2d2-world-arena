@@ -3,8 +3,10 @@ package com.ancevt.d2d2world.gameobject.pickup;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 
@@ -23,22 +25,25 @@ public class WeaponPickup extends Pickup {
     public WeaponPickup(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
         setScale(1f, 1f);
+        setWeaponClassname(PlasmaWeapon.class.getName());
     }
 
     @Property
-    public void setWeaponClass(String cls) {
+    public void setWeaponClassname(String cls) {
         if (cls == null || cls.isBlank() || cls.equals("null")) return;
+
+        // if class name without package
+        if (!cls.startsWith(Weapon.class.getName().substring(0, 5))) {
+            cls = Weapon.class.getPackageName() + "." + cls;
+        }
 
         try {
             System.out.println(cls);
-
             weaponClass = (Class<? extends Weapon>) Class.forName(cls);
-
             Method method = weaponClass.getMethod("createSprite");
             Sprite sprite = (Sprite) method.invoke(null);
             getImage().setTexture(sprite.getTexture());
             getImage().setXY(-getImage().getWidth() / 1.5f, -getImage().getHeight() / 2 + 1);
-
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
@@ -47,7 +52,7 @@ public class WeaponPickup extends Pickup {
     }
 
     @Property
-    public String getWeaponClass() {
+    public String getWeaponClassname() {
         return weaponClass != null ? weaponClass.getName() : null;
     }
 
@@ -62,13 +67,8 @@ public class WeaponPickup extends Pickup {
     }
 
     @Override
-    public void onPlayerActorPickUpPickup(PlayerActor playerActor) {
-        try {
-            Weapon weapon = weaponClass.getConstructor().newInstance();
-            playerActor.addWeapon(weapon, getAmmunition());
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor playerActor) {
+        return playerActor.addWeapon(weaponClass.getName(), getAmmunition());
     }
 
     public Set<Class<? extends Weapon>> findAllSubclassesOfWeapon() {

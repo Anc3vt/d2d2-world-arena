@@ -7,10 +7,6 @@ public interface ISyncDataAggregator {
 
     byte[] EMPTY_ARRAY = new byte[]{};
 
-    default void weapon(Actor actor) {
-
-    }
-
     default void newGameObject(IGameObject gameObject) {
     }
 
@@ -35,10 +31,18 @@ public interface ISyncDataAggregator {
     default void direction(IDirectioned directioned) {
     }
 
+    default void visibility(@NotNull IGameObject gameObject) {
+
+    }
+
     default void remove(IGameObject gameObject) {
     }
 
     default void aim(@NotNull Actor actor) {
+    }
+
+    default void reset(@NotNull IResettable resettable) {
+
     }
 
     default byte[] pullSyncDataMessage() {
@@ -47,9 +51,6 @@ public interface ISyncDataAggregator {
 
     default boolean hasData() {
         return false;
-    }
-
-    default void visibility(@NotNull IGameObject gameObject, boolean value) {
     }
 
     default void createSyncDataOf(IGameObject o) {
@@ -67,5 +68,21 @@ public interface ISyncDataAggregator {
             health(d, null);
             maxHealth(d);
         }
+    }
+
+    default void pickUp(PlayerActor playerActor, int pickupGameObjectId) {
+
+    }
+
+    default void addWeapon(@NotNull Actor actor, String weaponClassname) {
+
+    }
+
+    default void changeWeaponState(Actor actor, String weaponClassname, int ammunition) {
+
+    }
+
+    default void switchWeapon(Actor actor) {
+
     }
 }

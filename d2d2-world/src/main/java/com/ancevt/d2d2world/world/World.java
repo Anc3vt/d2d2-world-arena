@@ -109,6 +109,7 @@ public class World extends DisplayObjectContainer {
     public void onEachFrame() {
         if (!isPlaying()) return;
 
+        dispatchEvent(WorldEvent.builder().type(WorldEvent.WORLD_PROCESS).build());
         playProcessor.process();
         camera.process();
     }

@@ -3,16 +3,21 @@ package com.ancevt.d2d2world.gameobject.pickup;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IResettable;
+import com.ancevt.d2d2world.gameobject.ISynchronized;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.world.World;
+import com.ancevt.d2d2world.world.WorldEvent;
 
-public abstract class Pickup extends DisplayObjectContainer implements ICollision, IResettable {
+public abstract class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized {
 
+    private static final int DEFAULT_RESPAWN_MILLIS = 30000;
     private final Sprite bubbleSprite;
     private final DisplayObjectContainer container;
     private final Sprite image;
@@ -20,6 +25,9 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
     private int counter = 0;
     private boolean ready;
     private String pickUpSound;
+    private long respawnTimeMillis;
+    private long pickUpTimeMillis;
+    private World world;
 
     public Pickup(MapkitItem mapkitItem, int gameObjectId) {
         setMapkitItem(mapkitItem);
@@ -35,12 +43,57 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
         add(container);
         setCollision(-8f / 2f, -8f / 2f, 16f / 2f, 16f / 2f);
         setScale(0.5f, 0.5f);
+
+        setRespawnTimeMillis(DEFAULT_RESPAWN_MILLIS);
     }
 
-    public abstract void onPlayerActorPickUpPickup(PlayerActor playerActor);
+    @Override
+    public void onAddToWorld(World world) {
+        ICollision.super.onAddToWorld(world);
+        this.world = world;
+        world.addEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId(), WorldEvent.WORLD_PROCESS, this::world_worldProcess);
+        addEventListener(Event.REMOVE_FROM_STAGE + getGameObjectId(), Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
+    }
+
+    private void this_removeFromStage(Event event) {
+        removeEventListener(Event.REMOVE_FROM_STAGE + getName());
+        world.removeEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId());
+    }
+
+    private void world_worldProcess(Event event) {
+        if (!isVisible() && pickUpTimeMillis > 0 && respawnTimeMillis > 0) {
+
+            long now = System.currentTimeMillis();
+
+            if (now - pickUpTimeMillis > respawnTimeMillis) {
+                reset();
+                pickUpTimeMillis = 0;
+            }
+        }
+    }
+
+    public abstract boolean onPlayerActorPickUpPickup(PlayerActor playerActor);
 
     public Sprite getImage() {
         return image;
+    }
+
+    @Override
+    public void onCollide(ICollision collideWith) {
+        if (!D2D2World.isServer()) return;
+
+        if (collideWith instanceof PlayerActor playerActor && pickUpTimeMillis == 0) {
+            if (onPlayerActorPickUpPickup(playerActor)) {
+                playPickUpSound();
+                setVisible(false);
+                setCollisionEnabled(false);
+                pickUpTimeMillis = System.currentTimeMillis();
+
+                if(playerActor.isOnWorld()) {
+                    playerActor.getWorld().getSyncDataAggregator().pickUp(playerActor, getGameObjectId());
+                }
+            }
+        }
     }
 
     @Override
@@ -50,6 +103,15 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
         counter = 0;
         container.setScale(0.01f, 0.01f);
         setCollisionEnabled(true);
+        pickUpTimeMillis = 0;
+
+        if (isOnWorld()) getWorld().getSyncDataAggregator().reset(this);
+    }
+
+    @Override
+    public void setVisible(boolean value) {
+        super.setVisible(value);
+        if (isOnWorld()) getWorld().getSyncDataAggregator().visibility(this);
     }
 
     @Override
@@ -70,16 +132,14 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
         return bubbleSprite.getColor();
     }
 
-    @Override
-    public void onCollide(ICollision collideWith) {
-        if (collideWith instanceof PlayerActor playerActor) {
-            playPickUpSound();
-            setVisible(false);
-            setCollisionEnabled(false);
-            if (D2D2World.isServer()) {
-                onPlayerActorPickUpPickup(playerActor);
-            }
-        }
+    @Property
+    public void setRespawnTimeMillis(long respawnTimeMillis) {
+        this.respawnTimeMillis = respawnTimeMillis;
+    }
+
+    @Property
+    public long getRespawnTimeMillis() {
+        return respawnTimeMillis;
     }
 
     @Property
@@ -92,7 +152,7 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
         return pickUpSound;
     }
 
-    private void playPickUpSound() {
+    public void playPickUpSound() {
         if (getMapkitItem().getDataEntry().containsKey(SoundKey.PICK_UP)) {
             getMapkitItem().playSound(SoundKey.PICK_UP);
         } else {
@@ -136,7 +196,7 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
                 container.setScale(1, 1);
                 image.setScale(1, 1);
 
-                if(this instanceof WeaponPickup) {
+                if (this instanceof WeaponPickup) {
                     image.setXY(-image.getWidth() / 1.5f, -image.getHeight() / 2);
                 } else {
                     image.setXY(-image.getWidth() / 2, -image.getHeight() / 2);
@@ -145,9 +205,6 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
             }
         }
     }
-
-
-
 }
 
 

@@ -34,9 +34,9 @@ import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
+import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
-import com.ancevt.d2d2world.gameobject.PlayerActorEvent;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
@@ -395,11 +395,12 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
-        localPlayerActor.addEventListener(PlayerActorEvent.AMMUNITION_CHANGE,
+        localPlayerActor.setName("lpa");
+        localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE,
                 event -> ammunitionHud.updateFor(localPlayerActor));
 
-        localPlayerActor.addEventListener(PlayerActorEvent.SET_WEAPON, event ->
-                ammunitionHud.updateFor(localPlayerActor));
+        localPlayerActor.addEventListener(ActorEvent.SET_WEAPON,
+                event -> ammunitionHud.updateFor(localPlayerActor));
 
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
 
@@ -418,11 +419,6 @@ public class WorldScene extends DisplayObjectContainer {
                 aimX = localPlayerActor.getAimX();
                 aimY = localPlayerActor.getAimY();
             }
-        });
-
-        localPlayerActor.addEventListener(PlayerActorEvent.SET_WEAPON, event -> {
-            var e = (PlayerActorEvent) event;
-            GameRoot.INSTANCE.playerSetWeapon(e.getWeapon());
         });
 
         localPlayerActor.setController(localPlayerController);

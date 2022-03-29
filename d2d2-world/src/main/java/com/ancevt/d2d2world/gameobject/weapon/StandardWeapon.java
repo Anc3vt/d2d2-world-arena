@@ -19,8 +19,8 @@ public class StandardWeapon extends Weapon {
 
     public StandardWeapon() {
         super(createSprite());
-        setMaxAmmunition(500);
-        setAmmunition(getMaxAmmunition());
+        setMaxAmmunition(100);
+        setAmmunition(1);
     }
 
     @Contract(" -> new")

@@ -12,6 +12,10 @@ public class SyncDataType {
     public static final int VISIBILITY = 8;
     public static final int REPAIR = 9;
     public static final int ACTION_INDEX = 10;
-    public static final int WEAPON = 11;
-    public static final int AIM = 12;
+    public static final int ADD_WEAPON = 11;
+    public static final int CHANGE_WEAPON_STATE = 12;
+    public static final int SWITCH_WEAPON = 13;
+    public static final int AIM = 14;
+    public static final int RESET = 15;
+    public static final int PICKUP = 16;
 }

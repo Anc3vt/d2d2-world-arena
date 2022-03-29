@@ -100,6 +100,11 @@ class DataEntryImpl implements DataEntry {
     }
 
     @Override
+    public long getLong(int index) {
+        return Long.parseLong(getString(index));
+    }
+
+    @Override
     public int getInt(String key) {
         return Integer.parseInt(getString(key));
     }
@@ -112,6 +117,11 @@ class DataEntryImpl implements DataEntry {
     @Override
     public boolean getBoolean(String key) {
         return Boolean.parseBoolean(getString(key));
+    }
+
+    @Override
+    public long getLong(String key) {
+        return Long.parseLong(getString(key));
     }
 
     @Override
@@ -135,6 +145,11 @@ class DataEntryImpl implements DataEntry {
     @Override
     public boolean getBoolean(String key, boolean defaultValue) {
         return !containsKey(key) ? defaultValue : getBoolean(key);
+    }
+
+    @Override
+    public long getLong(String key, long defaultValue) {
+        return !containsKey(key) ? defaultValue : getLong(key);
     }
 
     @Override

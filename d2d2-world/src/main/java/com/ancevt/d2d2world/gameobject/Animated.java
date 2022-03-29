@@ -80,7 +80,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     public void setVisible(boolean value) {
         super.setVisible(value);
         if (isOnWorld() && isPermanentSync()) {
-            getWorld().getSyncDataAggregator().visibility(this, value);
+            getWorld().getSyncDataAggregator().visibility(this);
         }
     }
 

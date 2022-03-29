@@ -17,6 +17,8 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
+import com.ancevt.commons.Holder;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -57,7 +59,7 @@ abstract public class Actor extends Animated implements
     private final FramedSprite framedDoHead;
     private final List<Weapon> weapons;
     private float weaponLocationX, weaponLocationY;
-    private Weapon weapon;
+    private Weapon currentWeapon;
     private int weaponIndex;
 
     private int attackTime;
@@ -92,7 +94,7 @@ abstract public class Actor extends Animated implements
         weapons = new ArrayList<>();
 
         weaponContainer = new DisplayObjectContainer();
-        addWeapon(new StandardWeapon(), 10);
+        addWeapon(StandardWeapon.class.getName(), 100);
         nextWeapon();
 
         framedDoHead = new FramedSprite(mapkitItem
@@ -130,18 +132,18 @@ abstract public class Actor extends Animated implements
 
     @Override
     protected void fixXY() {
-        if (weapon != null) {
+        if (currentWeapon != null) {
 
             switch (getDirection()) {
                 case Direction.LEFT -> {
-                    IDisplayObject d = weapon.getSprite();
+                    IDisplayObject d = currentWeapon.getSprite();
                     d.setScaleX(-1);
                     d.setX(d.getWidth() - getWeaponX() - d.getWidth() / 2);
                     armSprite.setScaleX(-1);
                     armSprite.setXY(-2, -8);
                 }
                 case Direction.RIGHT -> {
-                    IDisplayObject d = weapon.getSprite();
+                    IDisplayObject d = currentWeapon.getSprite();
                     d.setScaleX(1);
                     d.setX(getWeaponX() - d.getWidth() / 2);
                     armSprite.setScaleX(1);
@@ -155,9 +157,9 @@ abstract public class Actor extends Animated implements
     }
 
     private void fixBodyPartsY() {
-        if (weapon != null) {
+        if (currentWeapon != null) {
 
-            IDisplayObject weaponDisplayObject = weapon.getSprite();
+            IDisplayObject weaponDisplayObject = currentWeapon.getSprite();
             float w = weaponDisplayObject.getWidth();
             float h = weaponDisplayObject.getHeight();
             if (getAnimation() == WALK_ATTACK) {
@@ -165,7 +167,7 @@ abstract public class Actor extends Animated implements
                 //weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             } else {
                 armSprite.setY(-8);
-                weapon.getSprite().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
+                currentWeapon.getSprite().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             }
 
 
@@ -207,7 +209,7 @@ abstract public class Actor extends Animated implements
 
         if (getCurrentWeapon() != null) {
             getCurrentWeapon().shoot(getWorld());
-            getWorld().getSyncDataAggregator().weapon(this);
+            getWorld().getSyncDataAggregator().changeWeaponState(this, getCurrentWeapon().getClass().getName(), getCurrentWeapon().getAmmunition());
         }
     }
 
@@ -436,8 +438,8 @@ abstract public class Actor extends Animated implements
                     .deadActorGameObjectId(getGameObjectId())
                     .killerGameObjectId(
                             damaging != null && damaging.getDamagingOwnerActor() != null ?
-                            damaging.getDamagingOwnerActor().getGameObjectId()
-                            : 0)
+                                    damaging.getDamagingOwnerActor().getGameObjectId()
+                                    : 0)
                     .build());
         }
     }
@@ -690,37 +692,48 @@ abstract public class Actor extends Animated implements
     }
 
     public Weapon getCurrentWeapon() {
-        return weapon;
+        return currentWeapon;
     }
 
-    public void setCurrentWeapon(@NotNull String weaponClassName) {
+    public void setCurrentWeaponClassname(@NotNull String weaponClassname) {
+        if (this.currentWeapon != null) {
+            this.currentWeapon.getSprite().removeFromParent();
+        }
+
         weapons.stream()
-                .filter(w -> w.getClass().getName().equals(weaponClassName))
+                .filter(w -> w.getClass().getName().equals(weaponClassname))
                 .findAny()
-                .ifPresentOrElse(this::setCurrentWeapon, () -> {
-                    Weapon weapon = Weapon.createWeapon(weaponClassName);
-                    addWeapon(weapon, weapon.getMaxAmmunition());
+                .ifPresent(w -> {
+                    UnixDisplay.debug("Actor:707: <A>setCurrentWeaponClassname");
+
+                    currentWeapon = w;
+                    currentWeapon.setOwner(this);
+                    weaponContainer.setScale(2, 2);
+                    weaponContainer.add(currentWeapon.getSprite());
+                    fixXY();
+
+                    dispatchEvent(ActorEvent.builder()
+                            .type(ActorEvent.SET_WEAPON)
+                            .weaponClassName(weaponClassname)
+                            .build()
+                    );
+
+                    if (isOnScreen()) getWorld().getSyncDataAggregator().switchWeapon(this);
                 });
     }
 
-    public void setCurrentWeapon(@NotNull Weapon weapon) {
-        if (this.weapon != null) {
-            this.weapon.getSprite().removeFromParent();
-        }
-
-        this.weapon = weapon;
-        weapon.setOwner(this);
-        weaponContainer.setScale(2, 2);
-        weaponContainer.add(weapon.getSprite());
-        fixXY();
-
-        dispatchEvent(PlayerActorEvent.builder()
-                .type(PlayerActorEvent.SET_WEAPON)
-                .weapon(weapon)
-                .build()
-        );
-
-        if (isOnScreen()) getWorld().getSyncDataAggregator().weapon(this);
+    public void setWeaponAmmunition(@NotNull String weaponClassname, int ammunition) {
+        weapons.stream()
+                .filter(w -> w.getClass().getName().equals(weaponClassname))
+                .findAny()
+                .ifPresent(w -> {
+                    w.setAmmunition(ammunition);
+                    dispatchEvent(ActorEvent.builder()
+                            .type(ActorEvent.AMMUNITION_CHANGE)
+                            .weaponClassName(weaponClassname)
+                            .build()
+                    );
+                });
     }
 
     public void nextWeapon() {
@@ -729,11 +742,11 @@ abstract public class Actor extends Animated implements
             weaponIndex = 0;
         }
         if (weapons.size() == 0) {
-            addWeapon(new StandardWeapon(), 25);
+            addWeapon(StandardWeapon.class.getName(), 25);
             nextWeapon();
             return;
         }
-        setCurrentWeapon(weapons.get(weaponIndex));
+        setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }
 
     public void prevWeapon() {
@@ -742,23 +755,50 @@ abstract public class Actor extends Animated implements
             weaponIndex = weapons.size() - 1;
         }
         if (weapons.size() == 0) {
-            addWeapon(new StandardWeapon(), 25);
+            addWeapon(StandardWeapon.class.getName(), 25);
             return;
         }
-        setCurrentWeapon(weapons.get(weaponIndex));
+        setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }
 
-    public void addWeapon(Weapon weapon, int ammunition) {
+    public boolean addWeapon(String weaponClassname, int ammunition) {
+        Holder<Boolean> resultHolder = new Holder<>(false);
+        Holder<Weapon> weaponHolder = new Holder<>();
         weapons.stream()
-                .filter(w -> w.getClass() == weapon.getClass())
+                .filter(w -> w.getClass().getName().equals(weaponClassname))
                 .findAny()
-                .ifPresentOrElse(w -> {
-                    w.setAmmunition(w.getAmmunition() + ammunition);
+                .ifPresentOrElse(weapon -> {
+                    boolean result = weapon.addAmmunition(ammunition);
+                    resultHolder.setValue(result);
+                    weaponHolder.setValue(weapon);
                 }, () -> {
-                    Weapon newWeapon = Weapon.createWeapon(weapon.getClass().getName());
-                    newWeapon.setAmmunition(ammunition);
+                    Weapon newWeapon = Weapon.createWeapon(weaponClassname);
+                    boolean result = newWeapon.setAmmunition(ammunition);
                     weapons.add(newWeapon);
+                    resultHolder.setValue(result);
+                    weaponHolder.setValue(newWeapon);
+
+                    dispatchEvent(ActorEvent.builder()
+                            .type(ActorEvent.AMMUNITION_CHANGE)
+                            .weaponClassName(weaponClassname)
+                            .ammunition(ammunition)
+                            .build());
                 });
+
+        if(resultHolder.getValue()) {
+            dispatchEvent(ActorEvent.builder()
+                    .type(ActorEvent.AMMUNITION_CHANGE)
+                    .weaponClassName(weaponClassname)
+                    .ammunition(ammunition)
+                    .build());
+
+            if (isOnWorld()) {
+                getWorld().getSyncDataAggregator().addWeapon(this, weaponClassname);
+                getWorld().getSyncDataAggregator().changeWeaponState(this, weaponClassname, weaponHolder.getValue().getAmmunition());
+            }
+        }
+
+        return resultHolder.getValue();
     }
 
     public List<Weapon> getWeapons() {

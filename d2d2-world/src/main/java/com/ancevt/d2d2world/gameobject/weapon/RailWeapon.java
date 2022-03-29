@@ -18,7 +18,7 @@ public class RailWeapon extends Weapon {
 
     public RailWeapon() {
         super(createSprite());
-        setMaxAmmunition(500);
+        setMaxAmmunition(15);
         setAmmunition(getMaxAmmunition());
     }
 

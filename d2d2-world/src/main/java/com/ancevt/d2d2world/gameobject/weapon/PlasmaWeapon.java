@@ -18,7 +18,7 @@ public class PlasmaWeapon extends Weapon {
 
     public PlasmaWeapon() {
         super(createSprite());
-        setMaxAmmunition(500);
+        setMaxAmmunition(100);
         setAmmunition(getMaxAmmunition());
     }
 

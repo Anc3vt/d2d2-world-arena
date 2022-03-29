@@ -4,6 +4,7 @@ import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -11,6 +12,7 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
 @Slf4j
@@ -18,8 +20,6 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     private World world;
     private boolean enabled;
-
-    private ISyncDataReceiver debugSDR;
 
     public SyncDataReceiver() {
     }
@@ -66,10 +66,22 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
                     }
-                    case SyncDataType.WEAPON -> {
-                        String weaponClassName = in.readUtf(byte.class);
+                    case SyncDataType.ADD_WEAPON -> {
+                        String weaponClassname = in.readUtf(byte.class);
+                        addWeapon(gameObjectId, weaponClassname);
+                    }
+                    case SyncDataType.CHANGE_WEAPON_STATE -> {
+                        String weaponClassname = in.readUtf(byte.class);
                         int ammunition = in.readShort();
-                        weapon(gameObjectId, weaponClassName, ammunition);
+                        changeWeaponState(gameObjectId, weaponClassname, ammunition);
+                    }
+                    case SyncDataType.SWITCH_WEAPON -> {
+                        String weaponClassname = in.readUtf(byte.class);
+                        switchWeapon(gameObjectId, weaponClassname);
+                    }
+                    case SyncDataType.PICKUP -> {
+                        int pickupGameObjectId = in.readInt();
+                        pickup(gameObjectId, pickupGameObjectId);
                     }
                     case SyncDataType.AIM -> {
                         aim(gameObjectId, in.readFloat(), in.readFloat());
@@ -110,6 +122,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                     case SyncDataType.REPAIR -> {
                         repair(gameObjectId);
                     }
+                    case SyncDataType.RESET -> {
+                        reset(gameObjectId);
+                    }
 
                     default -> throw new IllegalStateException("no such SyncDataType " + type);
                 }
@@ -120,21 +135,36 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     }
 
-    private void weapon(int gameObjectId, String weaponClassName, int ammunition) {
-        if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
-            if (!weaponClassName.equals(actor.getCurrentWeapon().getClass().getName())) {
-                actor.setCurrentWeapon(weaponClassName);
-            }
-            actor.getCurrentWeapon().setAmmunition(ammunition);
+    private void addWeapon(int gameObjectId, String weaponClassname) {
+        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor actor) {
+            actor.addWeapon(weaponClassname, 0);
         }
     }
 
-    private void attack(int gameObjectId) {
+    private void pickup(int gameObjectId, int pickupGameObjectId) {
+        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor actor &&
+                world.getGameObjectById(pickupGameObjectId) instanceof Pickup pickup) {
+            pickup.playPickUpSound();
+        }
+    }
+
+    private void reset(int gameObjectId) {
+        if (world.getGameObjectById(gameObjectId) instanceof IResettable resettable) {
+            resettable.reset();
+        }
+    }
+
+    private void changeWeaponState(int gameObjectId, String weaponClassname, int ammunition) {
         if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
-            if (actor instanceof PlayerActor playerActor) {
-                if (playerActor.isLocalPlayerActor()) return;
-            }
-            actor.attack();
+            actor.setWeaponAmmunition(weaponClassname, ammunition);
+            debug("SyncDataReceiver:151: changeWeaponState <A>" + weaponClassname + " " + ammunition);
+        }
+    }
+
+    private void switchWeapon(int gameObjectId, String weaponClassname) {
+        if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
+            actor.setCurrentWeaponClassname(weaponClassname);
+            debug("SyncDataReceiver:155:switchWeapon <A>" + weaponClassname);
         }
     }
 
@@ -160,7 +190,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     }
 
     private void setVisibility(int gameObjectId, boolean b) {
-        world.getGameObjectById(gameObjectId).setVisible(true);
+        world.getGameObjectById(gameObjectId).setVisible(b);
     }
 
     private void newGameObject(int gameObjectId, int layer, float x, float y, String mapkitName, String mapkitItemId, String dataEntryText) {

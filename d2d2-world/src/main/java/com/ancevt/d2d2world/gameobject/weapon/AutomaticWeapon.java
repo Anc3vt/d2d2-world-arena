@@ -18,8 +18,8 @@ public class AutomaticWeapon extends Weapon {
 
     public AutomaticWeapon() {
         super(createSprite());
-        setMaxAmmunition(500);
-        setAmmunition(getMaxAmmunition());
+        setMaxAmmunition(50);
+        setAmmunition(1);
     }
 
     @Contract(" -> new")

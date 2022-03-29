@@ -36,11 +36,37 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public synchronized void weapon(@NotNull Actor actor) {
-        buffer.writeByte(SyncDataType.WEAPON)
+    public void pickUp(@NotNull PlayerActor playerActor, int pickupGameObjectId) {
+        buffer.writeByte(SyncDataType.PICKUP)
+                .writeInt(playerActor.getGameObjectId())
+                .writeInt(pickupGameObjectId);
+    }
+
+    @Override
+    public synchronized void addWeapon(@NotNull Actor actor, String weaponClassname) {
+        buffer.writeByte(SyncDataType.ADD_WEAPON)
                 .writeInt(actor.getGameObjectId())
-                .writeUtf(byte.class, actor.getCurrentWeapon().getClass().getName())
-                .writeShort(actor.getCurrentWeapon().getAmmunition());
+                .writeUtf(byte.class, weaponClassname);
+
+        debug("SyncDataAggregator:51: <A>addWeapon");
+    }
+
+    @Override
+    public synchronized void changeWeaponState(@NotNull Actor actor, String weaponClassname, int ammunition) {
+        buffer.writeByte(SyncDataType.CHANGE_WEAPON_STATE)
+                .writeInt(actor.getGameObjectId())
+                .writeUtf(byte.class, weaponClassname)
+                .writeShort(ammunition);
+
+        debug("SyncDataAggregator:52: <A>changeWeaponState " + weaponClassname + " " + ammunition);
+    }
+
+    @Override
+    public void switchWeapon(Actor actor) {
+        buffer.writeByte(SyncDataType.SWITCH_WEAPON)
+                .writeInt(actor.getGameObjectId())
+                .writeUtf(byte.class, actor.getCurrentWeapon().getClass().getName());
+        debug("SyncDataAggregator:70: <A>switchWeapon " + actor.getCurrentWeapon().getClass().getName());
     }
 
     @Override
@@ -122,12 +148,18 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public synchronized void visibility(@NotNull IGameObject gameObject, boolean value) {
+    public void reset(@NotNull IResettable resettable) {
+        buffer.writeByte(SyncDataType.RESET)
+                .writeInt(resettable.getGameObjectId());
+    }
+
+    @Override
+    public synchronized void visibility(@NotNull IGameObject gameObject) {
         if (!(gameObject instanceof ISynchronized)) return;
 
         buffer.writeByte(SyncDataType.VISIBILITY)
                 .writeInt(gameObject.getGameObjectId())
-                .writeByte(value ? 1 : 0);
+                .writeByte(gameObject.isVisible() ? 1 : 0);
     }
 
     @Override

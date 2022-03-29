@@ -37,7 +37,9 @@ public class Properties {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 Class<?> type = parameterTypes[0];
 
-                if (type == int.class) {
+                if (type == long.class) {
+                    method.invoke(object, dataEntry.getLong(key));
+                } else if (type == int.class) {
                     method.invoke(object, dataEntry.getInt(key));
                 } else if (type == float.class) {
                     method.invoke(object, dataEntry.getFloat(key));

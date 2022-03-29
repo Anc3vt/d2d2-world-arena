@@ -31,9 +31,9 @@ public class HealthPickup extends Pickup {
     public void setValue(int value) {
         this.value = value;
 
-        if(value >= 100) {
+        if (value >= 100) {
             getImage().setColor(Color.RED);
-        } else if (value >=50) {
+        } else if (value >= 50) {
             getImage().setColor(Color.YELLOW);
         } else {
             getImage().setColor(Color.GREEN);
@@ -46,8 +46,10 @@ public class HealthPickup extends Pickup {
     }
 
     @Override
-    public void onPlayerActorPickUpPickup(@NotNull PlayerActor playerActor) {
+    public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor playerActor) {
+        if (playerActor.getHealth() == playerActor.getMaxHealth()) return false;
         playerActor.setHealth(playerActor.getHealth() + value);
+        return true;
     }
 
     @Override

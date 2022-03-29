@@ -30,6 +30,7 @@ public class WorldEvent extends Event<World> {
 
     public static final String CHANGE_ROOM = "changeRoom";
     public static final String ACTOR_DEATH = "actorDeath";
+    public static final String WORLD_PROCESS = "worldProcess";
 
     private final int deadActorGameObjectId;
     private final int killerGameObjectId;
