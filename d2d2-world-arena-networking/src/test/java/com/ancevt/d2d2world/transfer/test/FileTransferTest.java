@@ -94,12 +94,12 @@ public class FileTransferTest {
 
         FileReceiverManager.INSTANCE.addFileReceiverManagerListener(new FileReceiverManager.FileReceiverManagerListener() {
             @Override
-            public void progress(FileReceiver fileReceiver) {
+            public void fileReceiverProgress(FileReceiver fileReceiver) {
                 System.out.println("Progress: " + fileReceiver);
             }
 
             @Override
-            public void complete(FileReceiver fileReceiver) {
+            public void fileReceiverComplete(FileReceiver fileReceiver) {
                 System.out.println("Complete: " + fileReceiver);
                 lock.unlockIfLocked();
             }
@@ -180,12 +180,12 @@ public class FileTransferTest {
         FileReceiverManager.INSTANCE.addFileReceiverManagerListener(new FileReceiverManager.FileReceiverManagerListener() {
 
             @Override
-            public void progress(FileReceiver fileReceiver) {
+            public void fileReceiverProgress(FileReceiver fileReceiver) {
                 System.out.println("Progress: " + fileReceiver);
             }
 
             @Override
-            public synchronized void complete(FileReceiver fileReceiver) {
+            public synchronized void fileReceiverComplete(FileReceiver fileReceiver) {
                 debug("<g>Complete: " + fileReceiver);
                 receivedFiles.add(new File(fileReceiver.getPath()));
 

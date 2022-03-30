@@ -124,12 +124,12 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             );
             FileReceiverManager.INSTANCE.addFileReceiverManagerListener(new FileReceiverManager.FileReceiverManagerListener() {
                 @Override
-                public void progress(FileReceiver fileReceiver) {
+                public void fileReceiverProgress(FileReceiver fileReceiver) {
 
                 }
 
                 @Override
-                public void complete(FileReceiver fileReceiver) {
+                public void fileReceiverComplete(FileReceiver fileReceiver) {
                     queue.remove(fileReceiver.getPath());
                     if (queue.isEmpty()) {
                         clientListeners.forEach(l -> l.mapContentLoaded(d.getFilename()));

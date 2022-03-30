@@ -56,16 +56,16 @@ public class FileReceiverManager {
 
     public void wholeFileWritten(@NotNull FileReceiver fileReceiver) {
         fileReceiverMap.remove(fileReceiver.getPath());
-        fileReceiverManagerListeners.forEach(l -> l.complete(fileReceiver));
+        fileReceiverManagerListeners.forEach(l -> l.fileReceiverComplete(fileReceiver));
     }
 
     public void progress(FileReceiver fileReceiver) {
-        fileReceiverManagerListeners.forEach(l -> l.progress(fileReceiver));
+        fileReceiverManagerListeners.forEach(l -> l.fileReceiverProgress(fileReceiver));
     }
 
     public interface FileReceiverManagerListener {
-        void progress(FileReceiver fileReceiver);
+        void fileReceiverProgress(FileReceiver fileReceiver);
 
-        void complete(FileReceiver fileReceiver);
+        void fileReceiverComplete(FileReceiver fileReceiver);
     }
 }

@@ -314,7 +314,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override
-    public void progress(@NotNull FileReceiver fileReceiver) {
+    public void fileReceiverProgress(@NotNull FileReceiver fileReceiver) {
         int proc = (fileReceiver.bytesLoaded() / fileReceiver.bytesTotal()) * 100;
         MODULE_CHAT.addMessage(format("%d%% content load %s", proc, fileReceiver.getPath()), Color.DARK_GRAY);
     }
@@ -323,8 +323,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override
-    public void complete(@NotNull FileReceiver fileReceiver) {
-        MODULE_CHAT.addMessage(format("content up-to-date %s", fileReceiver.getPath()), Color.DARK_GRAY);
+    public void fileReceiverComplete(@NotNull FileReceiver fileReceiver) {
+
     }
 
     private void setTabWindowVisible(boolean value) {
