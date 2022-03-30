@@ -19,20 +19,15 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface IDirectioned extends IGameObject{
-
-	Map<IDirectioned, Integer> directionedMap = new HashMap<>();
 
 	@Property
 	default void setDirection(int direction) {
-		directionedMap.put(this, direction);
+		DefaultMaps.directionedMap.put(this, direction);
 	}
 
 	@Property
 	default int getDirection() {
-		return directionedMap.getOrDefault(this, 0);
+		return DefaultMaps.directionedMap.getOrDefault(this, 0);
 	}
 }

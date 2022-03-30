@@ -5,13 +5,27 @@ import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultMaps {
 
-    public void clear() {
-
+    public static void clear() {
+        /*
+         * Clear all static fields (maps) of this class
+         */
+        Field[] declaredFields = DefaultMaps.class.getDeclaredFields();
+        for (Field field : declaredFields) {
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                try {
+                    Map<IGameObject, Object> map = (Map<IGameObject, Object>) field.get(null);
+                    map.clear();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     // IGameObject
@@ -28,7 +42,7 @@ public class DefaultMaps {
     static Map<ICollision, Float> collisionHeightMap = new HashMap<>();
 
     // IControllable
-    Map<IControllable, Controller> controllerMap = new HashMap<>();
+    static Map<IControllable, Controller> controllerMap = new HashMap<>();
 
     // IDamaging
     static Map<IDamaging, Integer> damagingPowerMap = new HashMap<>();
@@ -56,10 +70,6 @@ public class DefaultMaps {
     static Map<IMovable, Float> startYMap = new HashMap<>();
     static Map<IMovable, Float> movingSpeedXMap = new HashMap<>();
     static Map<IMovable, Float> movingSpeedYMap = new HashMap<>();
-
-    // ISizable
-    static Map<ISizable, Float> widthMap = new HashMap<>();
-    static Map<ISizable, Float> heightMap = new HashMap<>();
 
     // ISpeedable
     static Map<ISpeedable, Float> speedMap = new HashMap<>();

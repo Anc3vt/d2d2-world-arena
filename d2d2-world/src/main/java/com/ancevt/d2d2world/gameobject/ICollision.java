@@ -19,25 +19,16 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface ICollision extends IGameObject {
-
-    Map<ICollision, Boolean> collisionEnabledMap = new HashMap<>();
-    Map<ICollision, Float> collisionXMap = new HashMap<>();
-    Map<ICollision, Float> collisionYMap = new HashMap<>();
-    Map<ICollision, Float> collisionWidthMap = new HashMap<>();
-    Map<ICollision, Float> collisionHeightMap = new HashMap<>();
 
     @Property
     default void setCollisionEnabled(boolean value) {
-        collisionEnabledMap.put(this, value);
+        DefaultMaps.collisionEnabledMap.put(this, value);
     }
 
     @Property
     default boolean isCollisionEnabled() {
-        return collisionEnabledMap.getOrDefault(this, true);
+        return DefaultMaps.collisionEnabledMap.getOrDefault(this, true);
     }
 
     default void setCollision(float x, float y, float width, float height) {
@@ -49,42 +40,42 @@ public interface ICollision extends IGameObject {
 
     @Property
     default void setCollisionWidth(float collisionWidth) {
-        collisionWidthMap.put(this, collisionWidth);
+        DefaultMaps.collisionWidthMap.put(this, collisionWidth);
     }
 
     @Property
     default float getCollisionWidth() {
-        return collisionWidthMap.getOrDefault(this, 0f);
+        return DefaultMaps.collisionWidthMap.getOrDefault(this, 0f);
     }
 
     @Property
     default void setCollisionHeight(float collisionHeight) {
-        collisionHeightMap.put(this, collisionHeight);
+        DefaultMaps.collisionHeightMap.put(this, collisionHeight);
     }
 
     @Property
     default float getCollisionHeight() {
-        return collisionHeightMap.getOrDefault(this, 0f);
+        return DefaultMaps.collisionHeightMap.getOrDefault(this, 0f);
     }
 
     @Property
     default void setCollisionX(float collisionX) {
-        collisionXMap.put(this, collisionX);
+        DefaultMaps.collisionXMap.put(this, collisionX);
     }
 
     @Property
     default float getCollisionX() {
-        return collisionXMap.getOrDefault(this, 0f);
+        return DefaultMaps.collisionXMap.getOrDefault(this, 0f);
     }
 
     @Property
     default void setCollisionY(float collisionY) {
-        collisionYMap.put(this, collisionY);
+        DefaultMaps.collisionYMap.put(this, collisionY);
     }
 
     @Property
     default float getCollisionY() {
-        return collisionYMap.getOrDefault(this, 0f);
+        return DefaultMaps.collisionYMap.getOrDefault(this, 0f);
     }
 
     default void onCollide(ICollision collideWith) {

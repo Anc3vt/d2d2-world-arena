@@ -46,27 +46,6 @@ public class D2D2World {
         return server;
     }
 
-    public static void resetGameObjectProperties() {
-        IGameObject.worldMap.clear();
-        IGameObject.extraMap.clear();
-        IGameObject.gameObjectIdMap.clear();
-        IMovable.startXMap.clear();
-        IMovable.startYMap.clear();
-        IMovable.movingSpeedXMap.clear();
-        IMovable.movingSpeedYMap.clear();
-        ICollision.collisionXMap.clear();
-        ICollision.collisionYMap.clear();
-        ICollision.collisionWidthMap.clear();
-        ICollision.collisionHeightMap.clear();
-        ICollision.collisionEnabledMap.clear();
-        ISynchronized.permanentSyncMap.clear();
-        IControllable.controllerMap.clear();
-        ISpeedable.speedMap.clear();
-        IRotatable.rotationMap.clear();
-        IDamaging.damagingOwnerActorMap.clear();
-        IDamaging.damagingPowerMap.clear();
-    }
-
     public static Aim getAim() {
         return aim == null ? aim = new Aim() : aim;
     }

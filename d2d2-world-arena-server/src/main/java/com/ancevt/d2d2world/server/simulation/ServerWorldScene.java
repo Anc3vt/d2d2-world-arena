@@ -7,7 +7,7 @@ import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
-import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
@@ -75,7 +75,7 @@ public class ServerWorldScene {
     }
 
     public void loadMap(String mapName) {
-        D2D2World.resetGameObjectProperties();
+        DefaultMaps.clear();
 
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             ServerContentManager.Map scmMap = MODULE_CONTENT_MANAGER.getMaps()

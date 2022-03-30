@@ -19,31 +19,25 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface ITight extends ICollision {
-
-    Map<ITight, Boolean> floorOnlyMap = new HashMap<>();
-    Map<ITight, Boolean> pushableMap = new HashMap<>();
 
     @Property
     default void setFloorOnly(boolean b) {
-        floorOnlyMap.put(this, b);
+        DefaultMaps.floorOnlyMap.put(this, b);
     }
 
     @Property
     default boolean isFloorOnly() {
-        return floorOnlyMap.getOrDefault(this, false);
+        return DefaultMaps.floorOnlyMap.getOrDefault(this, false);
     }
 
     @Property
     default void setPushable(boolean b) {
-        pushableMap.put(this, b);
+        DefaultMaps.pushableMap.put(this, b);
     }
 
     @Property
     default boolean isPushable() {
-        return pushableMap.getOrDefault(this, false);
+        return DefaultMaps.pushableMap.getOrDefault(this, false);
     }
 }

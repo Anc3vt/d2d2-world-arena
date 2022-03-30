@@ -19,29 +19,23 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface IDamaging extends ICollision {
-
-	Map<IDamaging, Integer> damagingPowerMap = new HashMap<>();
-	Map<IDamaging, Actor> damagingOwnerActorMap = new HashMap<>();
 
 	@Property
 	default void setDamagingPower(int damagingPower) {
-		damagingPowerMap.put(this, damagingPower);
+		DefaultMaps.damagingPowerMap.put(this, damagingPower);
 	}
 
 	@Property
 	default int getDamagingPower() {
-		return damagingPowerMap.getOrDefault(this, 0);
+		return DefaultMaps.damagingPowerMap.getOrDefault(this, 0);
 	}
 
 	default void setDamagingOwnerActor(Actor actor) {
-		damagingOwnerActorMap.put(this, actor);
+		DefaultMaps.damagingOwnerActorMap.put(this, actor);
 	}
 
     default Actor getDamagingOwnerActor() {
-		return damagingOwnerActorMap.get(this);
+		return DefaultMaps.damagingOwnerActorMap.get(this);
 	}
 }

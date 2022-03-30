@@ -19,22 +19,16 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface IDestroyable extends ICollision, IResettable {
-
-    Map<IGameObject, Integer> maxHealthsMap = new HashMap<>();
-    Map<IGameObject, Integer> healthMap = new HashMap<>();
 
     @Property
     default void setMaxHealth(int health) {
-        maxHealthsMap.put(this, health);
+        DefaultMaps.maxHealthsMap.put(this, health);
     }
 
     @Property
     default int getMaxHealth() {
-        return maxHealthsMap.getOrDefault(this, 0);
+        return DefaultMaps.maxHealthsMap.getOrDefault(this, 0);
     }
 
     @Property
@@ -45,12 +39,12 @@ public interface IDestroyable extends ICollision, IResettable {
             health = getMaxHealth();
         }
 
-        healthMap.put(this, health);
+        DefaultMaps.healthMap.put(this, health);
     }
 
     @Property
     default int getHealth() {
-        return healthMap.getOrDefault(this, 0);
+        return DefaultMaps.healthMap.getOrDefault(this, 0);
     }
 
     void repair();

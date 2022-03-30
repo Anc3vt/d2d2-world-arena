@@ -27,21 +27,16 @@ import java.util.Map;
 
 public interface IGameObject extends IDisplayObject, IProcessable {
 
-    Map<IGameObject, Map<String, Object>> extraMap = new HashMap<>();
-    Map<IGameObject, World> worldMap = new HashMap<>();
-    Map<IGameObject, Integer> gameObjectIdMap = new HashMap<>();
-    Map<IGameObject, MapkitItem> mapkitItemMap = new HashMap<>();
-
     default Map<String, Object> extra() {
-        return extraMap.computeIfAbsent(this, k -> new HashMap<>());
+        return DefaultMaps.extraMap.computeIfAbsent(this, k -> new HashMap<>());
     }
 
     default void setGameObjectId(int id) {
-        gameObjectIdMap.put(this, id);
+        DefaultMaps.gameObjectIdMap.put(this, id);
     }
 
     default int getGameObjectId() {
-        return gameObjectIdMap.getOrDefault(this, 0);
+        return DefaultMaps.gameObjectIdMap.getOrDefault(this, 0);
     }
 
     @Property
@@ -65,19 +60,19 @@ public interface IGameObject extends IDisplayObject, IProcessable {
     boolean isSavable();
 
     default void setMapkitItem(MapkitItem mapkitItem) {
-        mapkitItemMap.put(this, mapkitItem);
+        DefaultMaps.mapkitItemMap.put(this, mapkitItem);
     }
 
     default MapkitItem getMapkitItem() {
-        return mapkitItemMap.get(this);
+        return DefaultMaps.mapkitItemMap.get(this);
     }
 
     default void setWorld(World world) {
-        worldMap.putIfAbsent(this, world);
+        DefaultMaps.worldMap.putIfAbsent(this, world);
     }
 
     default World getWorld() {
-        return worldMap.get(this);
+        return DefaultMaps.worldMap.get(this);
     }
 
     default boolean isOnWorld() {

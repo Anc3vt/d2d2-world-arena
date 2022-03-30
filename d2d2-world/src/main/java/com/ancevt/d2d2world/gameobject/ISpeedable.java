@@ -19,20 +19,15 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface ISpeedable {
-
-    Map<ISpeedable, Float> speedMap = new HashMap<>();
 
     @Property
     default void setSpeed(float speed) {
-        speedMap.put(this, speed);
+        DefaultMaps.speedMap.put(this, speed);
     }
 
     @Property
     default float getSpeed() {
-        return speedMap.getOrDefault(this, 0f);
+        return DefaultMaps.speedMap.getOrDefault(this, 0f);
     }
 }

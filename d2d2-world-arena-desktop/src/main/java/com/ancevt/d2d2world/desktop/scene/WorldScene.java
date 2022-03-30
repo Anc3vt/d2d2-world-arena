@@ -35,6 +35,7 @@ import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
+import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
@@ -238,7 +239,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void loadMap(String mapFilename) {
-        D2D2World.resetGameObjectProperties();
+        DefaultMaps.clear();
         IdGenerator.INSTANCE.clear();
         world.clear();
         overlay.startIn();

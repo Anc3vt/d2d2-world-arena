@@ -19,41 +19,32 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface IGravitied extends IMovable {
-
-    Map<IGravitied, Float> weightMap = new HashMap<>();
-    Map<IGravitied, ICollision> floorMap = new HashMap<>();
-    Map<IGravitied, Float> velocityXMap = new HashMap<>();
-    Map<IGravitied, Float> velocityYMap = new HashMap<>();
-    Map<IGravitied, Boolean> gravityEnabledMap = new HashMap<>();
 
     @Property
     default float getWeight() {
-        return weightMap.getOrDefault(this, 0f);
+        return DefaultMaps.weightMap.getOrDefault(this, 0f);
     }
 
     @Property
     default void setWeight(float weight) {
-        weightMap.put(this, weight);
+        DefaultMaps.weightMap.put(this, weight);
     }
 
     default void setFloor(ICollision floor) {
-        floorMap.put(this, floor);
+        DefaultMaps.floorMap.put(this, floor);
     }
 
     default ICollision getFloor() {
-        return floorMap.get(this);
+        return DefaultMaps.floorMap.get(this);
     }
 
     default void setVelocityX(float velocityX) {
-        velocityXMap.put(this, velocityX);
+        DefaultMaps.velocityXMap.put(this, velocityX);
     }
 
     default void setVelocityY(float velocityY) {
-        velocityYMap.put(this, velocityY);
+        DefaultMaps.velocityYMap.put(this, velocityY);
     }
 
     default void setVelocity(float vX, float vY) {
@@ -62,20 +53,20 @@ public interface IGravitied extends IMovable {
     }
 
     default float getVelocityX() {
-        return velocityXMap.getOrDefault(this, 0f);
+        return DefaultMaps.velocityXMap.getOrDefault(this, 0f);
     }
 
     default float getVelocityY() {
-        return velocityYMap.getOrDefault(this, 0f);
+        return DefaultMaps.velocityYMap.getOrDefault(this, 0f);
     }
 
     @Property
     default void setGravityEnabled(boolean b) {
-        gravityEnabledMap.put(this, b);
+        DefaultMaps.gravityEnabledMap.put(this, b);
     }
 
     @Property
     default boolean isGravityEnabled() {
-        return gravityEnabledMap.getOrDefault(this, false);
+        return DefaultMaps.gravityEnabledMap.getOrDefault(this, false);
     }
 }

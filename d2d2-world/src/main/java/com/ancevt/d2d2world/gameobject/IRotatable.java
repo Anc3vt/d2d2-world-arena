@@ -19,22 +19,13 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public interface IRotatable extends IGameObject {
 
-    Map<IRotatable, Float> rotationMap = new HashMap<>();
+    @Property
+    void setRotation(float r);
 
     @Property
-    default void setRotation(float r) {
-        rotationMap.put(this, r);
-    }
-
-    @Property
-    default float getRotation() {
-        return rotationMap.getOrDefault(this, 0f);
-    }
+    float getRotation();
 
     default void rotate(float r) {
         setRotation(getRotation() + r);
