@@ -41,7 +41,7 @@ import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
-import com.ancevt.d2d2world.net.dto.client.MapLoadedReport;
+import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
 import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
@@ -283,7 +283,7 @@ public class WorldScene extends DisplayObjectContainer {
                 .type(SceneEvent.MAP_LOADED)
                 .build());
 
-        MODULE_CLIENT.sendDto(MapLoadedReport.INSANCE);
+        MODULE_CLIENT.sendDto(PlayerReadyToSpawnDto.INSTANCE);
         MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
 
         overlay.startOut();

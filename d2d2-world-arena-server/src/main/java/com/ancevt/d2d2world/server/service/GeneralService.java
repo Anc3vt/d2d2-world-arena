@@ -243,7 +243,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             // send enter message to all players including new player
             serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
 
-        } else if (dto instanceof MapLoadedReport) {
+        } else if (dto instanceof PlayerReadyToSpawnDto) {
             MODULE_WORLD_SCENE.getWorld().getSyncGameObjects().forEach(o -> {
                 byte[] bytes = SyncDataAggregator.createSyncMessageOf(o);
                 if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
