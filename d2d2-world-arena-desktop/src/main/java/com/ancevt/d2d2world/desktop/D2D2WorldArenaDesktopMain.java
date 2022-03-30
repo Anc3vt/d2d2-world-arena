@@ -26,7 +26,6 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
-import com.ancevt.util.args.Args;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -40,7 +39,6 @@ public class D2D2WorldArenaDesktopMain {
 
     public static void main(String[] args) throws IOException {
         //System.setProperty("receive", "true");
-
         // Load desktopConfig properties
         MODULE_CONFIG.load();
         for (String arg : args) {

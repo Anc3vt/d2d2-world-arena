@@ -29,8 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
-
 public class PlayProcessor {
 
     private static final float DEFAULT_GRAVITY = 1f;
@@ -234,10 +232,6 @@ public class PlayProcessor {
         if (target.getFloor() == floor) return;
         target.setVelocityY(0);
         target.setFloor(floor);
-
-        if (target.getName().equals("lpa") && floor instanceof Weapon.Bullet) {
-            debug("PlayProcessor:222: <A>setFloorToa");
-        }
     }
 
     private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {
@@ -255,7 +249,7 @@ public class PlayProcessor {
     }
 
     private void processGravity(IGravitied o) {
-        if (!D2D2World.isServer()) return;
+        if (!D2D2World.isServer() || !o.isGravityEnabled()) return;
 
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);

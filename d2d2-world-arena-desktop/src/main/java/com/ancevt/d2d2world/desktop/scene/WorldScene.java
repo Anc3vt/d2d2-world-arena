@@ -26,11 +26,13 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
+import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
+import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
@@ -41,8 +43,8 @@ import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
-import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
 import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncMotion;
@@ -56,6 +58,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
@@ -275,23 +278,39 @@ public class WorldScene extends DisplayObjectContainer {
     private void mapLoaded() {
         world.setSceneryPacked(true);
         world.getPlayProcessor().setEnabled(true);
-        addRootAndChatEventsIfNotYet();
 
-        start();
+        CharSelectScene charSelectScene = new CharSelectScene();
+        charSelectScene.addEventListener(CharSelectScene.CharSelectSceneEvent.CHARACTER_SELECT, event -> {
+            var e = (CharSelectScene.CharSelectSceneEvent) event;
+            var mapkitName = e.getMapkitItem().getMapkit().getName();
+            var mapkitItemName = e.getMapkitItem().getName();
 
-        dispatchEvent(SceneEvent.builder()
-                .type(SceneEvent.MAP_LOADED)
-                .build());
+            addRootAndChatEventsIfNotYet();
 
-        MODULE_CLIENT.sendDto(PlayerReadyToSpawnDto.INSTANCE);
-        MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
+            MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
 
-        overlay.startOut();
-        gameObjectTexts.clear();
+            overlay.startOut();
+            gameObjectTexts.clear();
 
-        world.getCamera().setAttachedTo(localPlayerActor);
+            world.getCamera().setAttachedTo(localPlayerActor);
 
-        world.add(D2D2World.getAim());
+            world.add(D2D2World.getAim());
+
+            start();
+
+            MODULE_CLIENT.sendDto(PlayerReadyToSpawnDto.builder()
+                    .mapkitName(mapkitName)
+                    .mapkitItemName(mapkitItemName)
+                    .build()
+            );
+
+            dispatchEvent(SceneEvent.builder()
+                    .type(SceneEvent.MAP_LOADED)
+                    .build());
+
+            Mouse.setVisible(false);
+        });
+        getRoot().add(charSelectScene);
     }
 
     private void addRootAndChatEventsIfNotYet() {
@@ -397,6 +416,12 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+
+        if (localPlayerActor == null) {
+            Async.runLater(1, TimeUnit.SECONDS, () -> setLocalPlayerActorGameObjectId(playerActorGameObjectId));
+            return;
+        }
+
         localPlayerActor.setName("lpa");
         localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
         localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));

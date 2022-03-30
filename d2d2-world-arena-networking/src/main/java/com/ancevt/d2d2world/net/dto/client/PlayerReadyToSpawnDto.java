@@ -1,10 +1,16 @@
 package com.ancevt.d2d2world.net.dto.client;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import com.ancevt.d2d2world.net.dto.Dto;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+@Data
+@Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayerReadyToSpawnDto implements Dto {
-    public static final PlayerReadyToSpawnDto INSTANCE = new PlayerReadyToSpawnDto();
+
+    private final String mapkitName;
+    private final String mapkitItemName;
 }

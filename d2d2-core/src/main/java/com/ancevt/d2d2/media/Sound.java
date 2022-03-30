@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
+
 public interface Sound {
 
     int MAX_SOUNDS = 25;

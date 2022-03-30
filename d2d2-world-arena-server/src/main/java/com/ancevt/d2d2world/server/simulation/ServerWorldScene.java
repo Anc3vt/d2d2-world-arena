@@ -121,7 +121,7 @@ public class ServerWorldScene {
      */
     public void playerAimXY(int playerId, float x, float y) {
         PlayerActor playerActor = playerActorMap.get(playerId);
-        if(playerActor != null) {
+        if (playerActor != null) {
             playerActor.setAimXY(x, y);
         }
     }
@@ -131,8 +131,9 @@ public class ServerWorldScene {
      */
     public void playerWeaponSwitch(int playerId, int delta) {
         PlayerActor playerActor = playerActorMap.get(playerId);
-        if(playerActor != null) {
-            if(delta > 0) playerActor.nextWeapon(); else playerActor.prevWeapon();
+        if (playerActor != null) {
+            if (delta > 0) playerActor.nextWeapon();
+            else playerActor.prevWeapon();
         }
     }
 
@@ -140,8 +141,8 @@ public class ServerWorldScene {
         return Optional.ofNullable(playerActorMap.get(playerId));
     }
 
-    public void addPlayer(@NotNull Player player) {
-        MapkitItem mapkitItem = MapkitManager.getInstance().getByName(BuiltInMapkit.NAME).getItem("character_ava");
+    public void addPlayer(@NotNull Player player, @NotNull String mapkitItemName) {
+        MapkitItem mapkitItem = MapkitManager.getInstance().getByName(BuiltInMapkit.NAME).getItem(mapkitItemName);
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.getController().setEnabled(true);
         playerActor.setXY(64, 64);
@@ -164,7 +165,9 @@ public class ServerWorldScene {
     }
 
     public int getPlayerActorGameObjectId(int playerId) {
-        return getPlayerActorByPlayerId(playerId).orElseThrow().getGameObjectId();
+        Holder<Integer> gameObjectId = new Holder<>(0);
+        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> gameObjectId.setValue(playerActor.getGameObjectId()));
+        return gameObjectId.getValue();
     }
 
     private void world_actorDeath(Event event) {

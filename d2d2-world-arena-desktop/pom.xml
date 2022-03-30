@@ -121,6 +121,19 @@
             <groupId>com.ancevt.util</groupId>
             <artifactId>repl</artifactId>
         </dependency>
+        <!-- Sound -->
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>mp3spi</artifactId>
+            <version>1.9.5.4</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>vorbisspi</artifactId>
+            <version>1.0.3.3</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>

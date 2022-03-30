@@ -7,3 +7,11 @@ mvn install:install-file \
    -Dpackaging=jar \
    -DgeneratePom=true
 
+mvn install:install-file \
+   -Dfile=d2d2-core/src/main/resources/vorbisspi-1.0.3.3.jar \
+   -DgroupId=jar \
+   -DartifactId=vorbisspi \
+   -Dversion=1 \
+   -Dpackaging=jar \
+   -DgeneratePom=true
+

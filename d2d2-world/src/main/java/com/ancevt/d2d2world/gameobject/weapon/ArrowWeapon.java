@@ -4,6 +4,7 @@ import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.gameobject.ICollision;
+import com.ancevt.d2d2world.gameobject.IGravitied;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -34,7 +35,7 @@ public class ArrowWeapon extends Weapon {
 
     @Override
     public int getAttackTime() {
-        return 20;
+        return 100;
     }
 
     @Override
@@ -69,15 +70,19 @@ public class ArrowWeapon extends Weapon {
         return super.toString();
     }
 
-    public static class ArrowBullet extends Bullet implements ITight {
+    public static class ArrowBullet extends Bullet implements ITight, IGravitied {
 
         private boolean setToRemove;
-        private int destroyTime = 300;
+        private int destroyTime = 500;
         private Sprite sprite;
 
         public ArrowBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
             addEventListener(ArrowBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            setGravityEnabled(true);
+            setPushable(true);
+            setFloorOnly(false);
+            setWeight(0.01f);
         }
 
         private void this_addToStage(Event event) {
@@ -98,6 +103,7 @@ public class ArrowWeapon extends Weapon {
             setToRemove = true;
             setDamagingOwnerActor(null);
             setDamagingPower(0);
+            setGravityEnabled(false);
             //setCollisionEnabled(true);
         }
 
@@ -107,10 +113,12 @@ public class ArrowWeapon extends Weapon {
                 destroyTime--;
 
                 if(destroyTime <= 0) {
-                    toAlpha(0.9f);
+                    setWeight(0.05f);
+                    setGravityEnabled(true);
+                    toAlpha(0.99f);
                 }
 
-                if (getAlpha() <= 0.1f) {
+                if (getAlpha() <= 0.01f) {
                     getWorld().removeGameObject(this, false);
                 }
             } else {
@@ -121,28 +129,13 @@ public class ArrowWeapon extends Weapon {
         }
 
         @Override
-        public void setFloorOnly(boolean b) {
-
-        }
-
-        @Override
         public void onCollide(ICollision collideWith) {
             super.onCollide(collideWith);
         }
 
         @Override
-        public boolean isFloorOnly() {
-            return true;
-        }
+        public void reset() {
 
-        @Override
-        public void setPushable(boolean b) {
-
-        }
-
-        @Override
-        public boolean isPushable() {
-            return false;
         }
     }
 }

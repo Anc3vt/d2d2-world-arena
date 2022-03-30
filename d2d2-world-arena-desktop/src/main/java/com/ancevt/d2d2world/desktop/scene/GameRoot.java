@@ -23,11 +23,8 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.IEventDispatcher;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
@@ -68,12 +65,9 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     private int attempts;
 
     public GameRoot() {
-        Mouse.setVisible(false);
-
         UiTextInputProcessor.enableRoot(this);
 
         setBackgroundColor(Color.BLACK);
-        addEventListener(Event.ADD_TO_STAGE, this::addToStage);
 
         MODULE_CLIENT.addClientListener(this);
 
@@ -133,7 +127,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         add(MODULE_CHAT, 10, 10);
 
-        add(new FpsMeter());
+        FpsMeter fpsMeter = new FpsMeter();
+        add(fpsMeter, D2D2.getStage().getStageWidth() - 50, 2);
 
         tabWindow = new TabWindow();
 
@@ -338,10 +333,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
     private boolean clientCommand(String text) {
         return MODULE_COMMAND_PROCESSOR.process(text);
-    }
-
-    private void addToStage(Event<? extends IEventDispatcher> event) {
-        add(new FpsMeter(), 0, getStage().getStageWidth() - 100);
     }
 
     public void start(@NotNull String server, String localPlayerName) {

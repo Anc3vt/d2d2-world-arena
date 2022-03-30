@@ -32,6 +32,7 @@ public class TouchButtonEvent extends Event<TouchButton> {
     public static final String TOUCH_UP = "touchUp";
     public static final String TOUCH_DRAG = "touchDrag";
     public static final String TOUCH_HOVER = "touchHover";
+    public static final String TOUCH_HOVER_OUT = "touchHoverOut";
 
     private final int x;
     private final int y;

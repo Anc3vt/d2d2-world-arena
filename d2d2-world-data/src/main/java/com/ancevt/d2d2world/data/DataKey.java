@@ -39,14 +39,14 @@ public class DataKey {
             WALK = "walk",
             ATTACK = "attack",
             JUMP = "jump",
-            JUMP_ATTACK = "jump-attack",
-            WALK_ATTACK = "walk-attack",
+            JUMP_ATTACK = "jumpAttack",
+            WALK_ATTACK = "walkAttack",
             DAMAGE = "damage",
             DEFENSE = "defense",
             HOOK = "hook",
-            HOOK_ATTACK = "hook-attack",
+            HOOK_ATTACK = "hookAttack",
             FALL = "fall",
-            FALL_ATTACK = "fall-attack",
+            FALL_ATTACK = "fallAttack",
             EXTRA_ANIMATION = "extra-animation",
             DEATH = "death";
 
@@ -62,6 +62,7 @@ public class DataKey {
     public static final String HEAD = "head";
     public static final String ARM = "arm";
 
+    public static String READABLE_NAME = "readableName";
 }
 
 /* ...: idle, walk, attack, jump, jumpAttack, walkAttack, damage, defense, hook,

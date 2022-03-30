@@ -114,9 +114,9 @@ public class TouchProcessor {
                         )
                 );
             }
-            if (touchButton.isOnScreen() && onArea) {
+            if (touchButton.isOnScreen()) {
                 touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_HOVER,
+                        EventPool.createTouchEvent(onArea ? TouchButtonEvent.TOUCH_HOVER : TouchButtonEvent.TOUCH_HOVER_OUT,
                                 (int) (x - tcX), (int) (y - tcY), true
                         )
                 );

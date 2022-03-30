@@ -44,6 +44,7 @@ public class DesktopConfig {
     public static final String RCON_PASSWORD = "rcon-password";
     public static final String DEBUG_WORLD_ALPHA = "debug.world-alpha";
     public static final String DEBUG_GAME_OBJECT_IDS = "debug.game-object-ids";
+    public static final String DEBUG_CHARACTER = "debug.character-mapkit-item";
     public static final String AUTO_ENTER = "auto-enter";
     public static final String FULLSCREEN = "fullscreen";
     public static final String SOUND_ENABLED = "sound-enabled";

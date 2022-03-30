@@ -51,6 +51,8 @@ public class RailWeapon extends Weapon {
             bullet.setDirection(getOwner().getDirection());
             bullet.setScaleY(getOwner().getDirection());
             world.addGameObject(bullet, 4, false);
+
+            getOwner().setVelocityX(-2.5f * getOwner().getDirection());
         }
         return true;
     }

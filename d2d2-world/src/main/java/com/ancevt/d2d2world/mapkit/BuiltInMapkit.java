@@ -36,10 +36,20 @@ public class BuiltInMapkit extends Mapkit {
     public static final String ATLAS = "tileset.png";
     public static final String CHARACTER_ATLAS = "character-tileset.png";
 
-    private static Mapkit instance;
+    private static BuiltInMapkit instance;
 
-    public static Mapkit getInstance() {
-        return instance == null ? instance = MapkitManager.getInstance().getByName(NAME) : instance;
+    public static BuiltInMapkit getInstance() {
+        return instance == null ? instance = (BuiltInMapkit) MapkitManager.getInstance().getByName(NAME) : instance;
+    }
+
+    public Set<MapkitItem> getCharacterMapkitItems() {
+        final Set<MapkitItem> items = new HashSet<>();
+        keySet().forEach(mapkitItemName->{
+            if(mapkitItemName.startsWith("character_")) {
+                items.add(getItem(mapkitItemName));
+            }
+        });
+        return items;
     }
 
 
@@ -72,6 +82,7 @@ public class BuiltInMapkit extends Mapkit {
 
                 add("""
                         name = character_blake
+                        | readableName = Blake
                         | class =""" + PlayerActor.class.getName() + """
                         | damagePower = 1
                         | weight = 0.4
@@ -89,13 +100,13 @@ public class BuiltInMapkit extends Mapkit {
                         | idle = 96,0,48,48; 144,0,48,48
                         | attack = 96,0,48,48; 144,0,48,48
                         | walk = 192,0,48,48; 240,0,48,48; 288,0,48,48; 336,0,48,48
-                        | walk-attack = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48
+                        | walkAttack = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48
                         | jump = 192,48,48,48
                         | fall = 240,48,48,48
-                        | jump-attack = 288,48,48,48
-                        | fall-attack = 336,48,48,48
+                        | jumpAttack = 288,48,48,48
+                        | fallAttack = 336,48,48,48
                         | hook = 288,96,48,48
-                        | hook-attack = 336,96,48,48
+                        | hookAttack = 336,96,48,48
                         | damage = 48,144,48,48
                         | head = 240,144,16,24; 256,144,16,24
                         | headFall = 272,144,16,24
@@ -105,6 +116,7 @@ public class BuiltInMapkit extends Mapkit {
 
                 add("""
                         name = character_ava
+                        | readableName = Ava
                         | class =""" + PlayerActor.class.getName() + """
                         | damagePower = 1
                         | weight = 0.4
@@ -122,13 +134,13 @@ public class BuiltInMapkit extends Mapkit {
                         | idle = 96,192,48,48; 144,192,48,48
                         | attack = 96,192,48,48; 144,192,48,48
                         | walk = 192,192,48,48; 240,192,48,48; 288,192,48,48; 336,192,48,48
-                        | walk-attack = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48
+                        | walkAttack = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48
                         | jump = 192,240,48,48
                         | fall = 240,240,48,48
-                        | jump-attack = 288,240,48,48
-                        | fall-attack = 336,240,48,48
+                        | jumpAttack = 288,240,48,48
+                        | fallAttack = 336,240,48,48
                         | hook = 288,288,48,48
-                        | hook-attack = 336,288,48,48
+                        | hookAttack = 336,288,48,48
                         | damage = 48,336,48,48 
                         | head = 240,336,16,24; 256,336,16,24
                         | headFall = 272,336,16,24

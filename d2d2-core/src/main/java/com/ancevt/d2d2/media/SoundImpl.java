@@ -40,8 +40,6 @@ public class SoundImpl implements Sound {
     private volatile boolean playing;
     private Thread thread;
 
-
-
     public SoundImpl() {
 
     }
@@ -218,7 +216,7 @@ public class SoundImpl implements Sound {
                     e.printStackTrace();
                 }
                 sound.play();
-                new Lock().lock(100, TimeUnit.MILLISECONDS);
+                new Lock().lock(1000, TimeUnit.MILLISECONDS);
             }
         });
     }

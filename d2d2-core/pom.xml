@@ -98,11 +98,21 @@
 
 
     <dependencies>
+
+        <!-- NOTE: run ./before-all.sh to install these jars to your .m2 directory  -->
         <dependency>
             <groupId>jar</groupId>
             <artifactId>blooming-jar</artifactId>
             <version>1</version>
         </dependency>
+
+        <dependency>
+            <groupId>jar</groupId>
+            <artifactId>vorbisspi</artifactId>
+            <version>1</version>
+        </dependency>
+        <!-- /NOTE -->
+
 
         <dependency>
             <groupId>com.ancevt.commons</groupId>
@@ -114,15 +124,13 @@
         <dependency>
             <groupId>com.googlecode.soundlibs</groupId>
             <artifactId>mp3spi</artifactId>
-            <version>${mp3spi.version}</version>
+            <version>1.9.5.4</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.soundlibs</groupId>
             <artifactId>vorbisspi</artifactId>
             <version>1.0.3.3</version>
         </dependency>
-
-
 
         <!-- PNG -->
         <dependency>
@@ -356,7 +364,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>com.ancevt.d2d2.demo.D2D2Demo</mainClass>
+                                    <mainClass>com.ancevt.d2d2.media.SoundImpl</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

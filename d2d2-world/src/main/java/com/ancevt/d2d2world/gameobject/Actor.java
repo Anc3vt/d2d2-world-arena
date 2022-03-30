@@ -860,6 +860,14 @@ abstract public class Actor extends Animated implements
         aimX = worldX;
         aimY = worldY;
     }
+
+    public void setHealthBarVisible(boolean b) {
+        healthBar.setVisible(b);
+    }
+
+    public boolean isHealthBarVisible() {
+        return healthBar.isVisible();
+    }
 }
 
 

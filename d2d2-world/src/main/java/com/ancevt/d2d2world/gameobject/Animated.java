@@ -96,7 +96,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setAnimation(final int animationKey) {
-        if (D2D2World.isServer()) {
+        if (D2D2World.isServer()) { // <== TODO: please refactor and remove it
             setAnimation(animationKey, true);
         }
     }

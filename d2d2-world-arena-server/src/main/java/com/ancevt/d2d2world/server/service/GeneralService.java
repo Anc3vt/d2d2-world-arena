@@ -74,7 +74,10 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerState serverStateInfo = MODULE_SERVER_STATE;
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 
+    private final Map<Integer, String> playerMapkitItemMap;
+
     private GeneralService() {
+        playerMapkitItemMap = new HashMap<>();
         serverChat.addServerChatListener(this);
     }
 
@@ -181,8 +184,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     getConnection(playerId).orElseThrow().getRemoteAddress()
             );
 
-            MODULE_WORLD_SCENE.addPlayer(newPlayer);
-
             log.info("Player enter {}({})", playerName, playerId);
 
             // now the connection id is new player id
@@ -243,11 +244,18 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             // send enter message to all players including new player
             serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
 
-        } else if (dto instanceof PlayerReadyToSpawnDto) {
+        } else if (dto instanceof PlayerReadyToSpawnDto d) {
             MODULE_WORLD_SCENE.getWorld().getSyncGameObjects().forEach(o -> {
                 byte[] bytes = SyncDataAggregator.createSyncMessageOf(o);
                 if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
             });
+
+            playerMapkitItemMap.put(playerId, d.getMapkitItemName());
+
+            MODULE_WORLD_SCENE.addPlayer(
+                    MODULE_PLAYER_MANAGER.getPlayerById(playerId).orElseThrow(),
+                    d.getMapkitItemName()
+            );
 
             MODULE_WORLD_SCENE.getPlayerActorByPlayerId(playerId).ifPresent(pa -> pa.setVisible(true));
 
@@ -430,7 +438,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             MODULE_SERVER_STATE.setMap(mapName);
             MODULE_WORLD_SCENE.loadMap(mapName);
-            MODULE_PLAYER_MANAGER.getPlayerList().forEach(MODULE_WORLD_SCENE::addPlayer);
+            MODULE_PLAYER_MANAGER.getPlayerList().forEach(
+                    player -> MODULE_WORLD_SCENE.addPlayer(player, playerMapkitItemMap.get(player.getId())));
             sendCurrentMapContentInfoToAll();
         } else {
             throw new IllegalStateException("no such map '" + mapName + "'");
