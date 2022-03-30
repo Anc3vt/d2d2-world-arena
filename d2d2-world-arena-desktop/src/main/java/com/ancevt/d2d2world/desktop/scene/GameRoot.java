@@ -124,7 +124,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         worldScene = new WorldScene();
         add(worldScene);
 
-
         add(MODULE_CHAT, 10, 10);
 
         FpsMeter fpsMeter = new FpsMeter();
