@@ -82,6 +82,7 @@ public class ServerContentManager {
 
             Files.walk(Paths.get(path))
                     .filter(Files::isRegularFile)
+                    .filter(p->!p.toFile().getName().endsWith("d.xcf"))
                     .forEach(p -> {
                         syncSendFileToPlayer(p.toFile().getPath(), playerId);
                     });
@@ -182,6 +183,7 @@ public class ServerContentManager {
 
             Files.walk(Path.of("data/mapkits/" + uid + "/"))
                     .filter(Files::isRegularFile)
+                    .filter(p->!p.toFile().getName().endsWith(".xcf"))
                     .forEach(p -> files.add(p.getFileName().toString()));
 
             return new Mapkit(uid, name, totalFilesize, files);

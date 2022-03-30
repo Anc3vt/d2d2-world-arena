@@ -296,7 +296,9 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                 .text("Rcon: Wrong rcon password")
                                 .color(0xFF0000)
                                 .build());
+
             }
+
         } else if (dto instanceof RconCommandDto d) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
                 if (p.isRconLoggedIn()) {
@@ -457,7 +459,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                         .build())
         );
 
-        var characterMapkitDto = ServerContentInfoDto.Mapkit.builder()
+        var builtInMapkit = ServerContentInfoDto.Mapkit.builder()
                 .name(BuiltInMapkit.NAME)
                 .uid(BuiltInMapkit.UID)
                 .files(MODULE_CONTENT_MANAGER.getMapkits()
@@ -469,9 +471,24 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 )
                 .build();
 
-        mapkits.add(characterMapkitDto);
+        mapkits.add(builtInMapkit);
 
         builder.mapkits(mapkits);
+
+        Set<ServerContentInfoDto.Character> characters = new HashSet<>();
+
+        characters.add(ServerContentInfoDto.Character.builder()
+                .mapkitName("builtin-mapkit")
+                .mapkitItemName("character_blake")
+                .build()
+        );
+        characters.add(ServerContentInfoDto.Character.builder()
+                .mapkitName("builtin-mapkit")
+                .mapkitItemName("character_ava")
+                .build()
+        );
+
+        builder.characters(characters);
 
         return builder.build();
     }

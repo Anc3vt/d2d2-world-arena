@@ -696,7 +696,7 @@ abstract public class Actor extends Animated implements
         return currentWeapon;
     }
 
-    public void setCurrentWeaponClass(Class<? extends Weapon> cls) {
+    public void setCurrentWeaponClass(@NotNull Class<? extends Weapon> cls) {
         setCurrentWeaponClassname(cls.getName());
     }
 
@@ -740,29 +740,36 @@ abstract public class Actor extends Animated implements
     }
 
     public void nextWeapon() {
-        if (weapons.size() <= 1) return;
+        final int oldWeaponIndex = weaponIndex;
         weaponIndex++;
         if (weaponIndex >= weapons.size()) {
             weaponIndex = 0;
         }
         if (weapons.size() == 0) {
-            addWeapon(StandardWeapon.class.getName(), 25);
+            addWeapon(StandardWeapon.class.getName(), 5);
             nextWeapon();
             return;
         }
+
+        if(weaponIndex == oldWeaponIndex) return;
+
         setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }
 
     public void prevWeapon() {
-        if (weapons.size() <= 1) return;
+        final int oldWeaponIndex = weaponIndex;
         weaponIndex--;
         if (weaponIndex < 0) {
             weaponIndex = weapons.size() - 1;
         }
         if (weapons.size() == 0) {
-            addWeapon(StandardWeapon.class.getName(), 25);
+            addWeapon(StandardWeapon.class.getName(), 5);
+            prevWeapon();
             return;
         }
+
+        if(weaponIndex == oldWeaponIndex) return;
+
         setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }
 
