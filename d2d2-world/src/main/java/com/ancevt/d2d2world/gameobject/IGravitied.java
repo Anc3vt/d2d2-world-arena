@@ -19,31 +19,63 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface IGravitied extends IMovable {
 
-    @Property
-    float getWeight();
+    Map<IGravitied, Float> weightMap = new HashMap<>();
+    Map<IGravitied, ICollision> floorMap = new HashMap<>();
+    Map<IGravitied, Float> velocityXMap = new HashMap<>();
+    Map<IGravitied, Float> velocityYMap = new HashMap<>();
+    Map<IGravitied, Boolean> gravityEnabledMap = new HashMap<>();
 
     @Property
-    void setWeight(float weight);
-
-    void setFloor(final ICollision floor);
-
-    ICollision getFloor();
-
-    void setVelocityX(float velocityX);
-
-    void setVelocityY(float velocityY);
-
-    void setVelocity(float vX, float vY);
-
-    float getVelocityX();
-
-    float getVelocityY();
+    default float getWeight() {
+        return weightMap.getOrDefault(this, 0f);
+    }
 
     @Property
-    void setGravityEnabled(boolean b);
+    default void setWeight(float weight) {
+        weightMap.put(this, weight);
+    }
+
+    default void setFloor(ICollision floor) {
+        floorMap.put(this, floor);
+    }
+
+    default ICollision getFloor() {
+        return floorMap.get(this);
+    }
+
+    default void setVelocityX(float velocityX) {
+        velocityXMap.put(this, velocityX);
+    }
+
+    default void setVelocityY(float velocityY) {
+        velocityYMap.put(this, velocityY);
+    }
+
+    default void setVelocity(float vX, float vY) {
+        setVelocityX(vX);
+        setVelocityY(vY);
+    }
+
+    default float getVelocityX() {
+        return velocityXMap.getOrDefault(this, 0f);
+    }
+
+    default float getVelocityY() {
+        return velocityYMap.getOrDefault(this, 0f);
+    }
 
     @Property
-    boolean isGravityEnabled();
+    default void setGravityEnabled(boolean b) {
+        gravityEnabledMap.put(this, b);
+    }
+
+    @Property
+    default boolean isGravityEnabled() {
+        return gravityEnabledMap.getOrDefault(this, false);
+    }
 }

@@ -19,19 +19,36 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface ISizable extends IGameObject {
 
-    @Property
-    void setWidth(float width);
+    Map<ISizable, Float> widthMap = new HashMap<>();
+    Map<ISizable, Float> heightMap = new HashMap<>();
 
     @Property
-    float getWidth();
+    default void setWidth(float width) {
+        widthMap.put(this, width);
+    }
 
     @Property
-    void setHeight(float height);
+    default float getWidth() {
+        return widthMap.getOrDefault(this, 0f);
+    }
 
     @Property
-    float getHeight();
+    default void setHeight(float height) {
+        heightMap.put(this, height);
+    }
 
-    void setSize(float width, float height);
+    @Property
+    default float getHeight() {
+        return heightMap.getOrDefault(this, 0f);
+    }
+
+    default void setSize(float width, float height) {
+        setWidth(width);
+        setHeight(height);
+    }
 }

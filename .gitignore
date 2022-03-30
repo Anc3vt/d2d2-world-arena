@@ -47,5 +47,4 @@ ban.list
 *.tmp
 buildtmp/
 build.info
-ffplay
 .run/
