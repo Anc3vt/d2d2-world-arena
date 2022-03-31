@@ -165,7 +165,7 @@ public class BuiltInMapkit extends Mapkit {
                         | speed = 8
                         | collisionX = -5 | collisionY = -1 | collisionWidth = 10 | collisionHeight = 3
                         | atlas = $ATLAS$
-                        | idle = 32,128,32,16
+                        | idle = 32,64,32,16
                         """);
 
                 add("""
@@ -175,7 +175,7 @@ public class BuiltInMapkit extends Mapkit {
                         | speed = 31
                         | collisionX = -8 | collisionY = -8 | collisionWidth = 16 | collisionHeight = 16
                         | atlas = $ATLAS$
-                        | idle = 32,96,32,16
+                        | idle = 32,48,32,16
                         """);
                 add("""
                         name = bullet_of_""" + AutomaticWeapon.class.getSimpleName() + """
@@ -184,7 +184,7 @@ public class BuiltInMapkit extends Mapkit {
                         | speed = 15
                         | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
                         | atlas = $ATLAS$
-                        | idle = 32,64,32,16
+                        | idle = 32,32,32,16
                         """);
                 add("""
                         name = bullet_of_""" + PlasmaWeapon.class.getSimpleName() + """
@@ -193,7 +193,7 @@ public class BuiltInMapkit extends Mapkit {
                         | speed = 15
                         | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
                         | atlas = $ATLAS$
-                        | idle = 32,32,32,16
+                        | idle = 32,16,32,16
                         """);
 
             }

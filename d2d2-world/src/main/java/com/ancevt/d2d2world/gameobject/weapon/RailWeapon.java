@@ -28,7 +28,7 @@ public class RailWeapon extends Weapon {
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
-                        .createTexture(0, 96, 32, 32)
+                        .createTexture(0, 48, 32, 16)
         );
     }
 
@@ -82,7 +82,7 @@ public class RailWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(RailWeapon.class);
             Sprite sprite = new Sprite(getMapkitItem().getTexture());
-            sprite.setColor(Color.LIGHT_GRAY);
+            sprite.setColor(Color.createRandomColor());
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);
         }
@@ -93,8 +93,6 @@ public class RailWeapon extends Weapon {
             move(getSpeed() * xy[0], getSpeed() * xy[1]);
 
             if (!setToRemove) {
-
-
                 Sprite sprite = new Sprite(getMapkitItem().getTexture());
                 DisplayObjectContainer doc = new DisplayObjectContainer() {
                     @Override
@@ -107,20 +105,8 @@ public class RailWeapon extends Weapon {
                 doc.add(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
                 doc.setRotation(getRotation());
                 doc.setXY(getX(), getY());
-
-                //sprite.setRotation(getRotation());
-                //sprite.setScale(getScaleX(), getScaleY());
-
-//                float deg = getDamagingOwnerActor().getArmDegree();
-//                float[] toXY = RotationUtils.xySpeedOfDegree(deg);
-//                float distance = RotationUtils.distance(0, 0, getDamagingOwnerActor().getWeaponX() * getDamagingOwnerActor().getDirection(),
-//                      getDamagingOwnerActor().getWeaponY());
-//                sprite.move(toXY[0] * distance, toXY[1] * distance + getDamagingOwnerActor().getWeaponY());
-
-
                 getWorld().getLayer(4).add(doc);
             }
-
 
             super.process();
         }

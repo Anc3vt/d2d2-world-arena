@@ -47,7 +47,7 @@ public class HealthPickup extends Pickup {
 
     @Override
     public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor playerActor) {
-        if (playerActor.getHealth() == playerActor.getMaxHealth()) return false;
+        if (playerActor.getHealth() >= playerActor.getMaxHealth()) return false;
         playerActor.setHealth(playerActor.getHealth() + value);
         return true;
     }

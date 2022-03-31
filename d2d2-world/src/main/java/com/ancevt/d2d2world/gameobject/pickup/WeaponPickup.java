@@ -42,7 +42,7 @@ public class WeaponPickup extends Pickup {
             Method method = weaponClass.getMethod("createSprite");
             Sprite sprite = (Sprite) method.invoke(null);
             getImage().setTexture(sprite.getTexture());
-            getImage().setXY(-getImage().getWidth() / 1.5f, -getImage().getHeight() / 2 + 1);
+            getImage().setXY(-getImage().getWidth() / 3, -getImage().getHeight() / 2);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {

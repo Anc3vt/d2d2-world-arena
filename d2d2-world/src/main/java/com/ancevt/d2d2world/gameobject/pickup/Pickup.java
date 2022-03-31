@@ -37,7 +37,7 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
         bubbleSprite.setAlpha(0.75f);
         image = new Sprite(mapkitItem.getTexture());
         container.add(image);
-        image.setXY(-image.getWidth() / 2, -image.getHeight() / 2 + 1);
+        image.setXY(-image.getWidth() / 3, -image.getHeight() / 2);
         container.add(bubbleSprite, -16, -16);
         container.setScale(0.01f, 0.01f);
         add(container);
@@ -56,7 +56,7 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
     }
 
     private void this_removeFromStage(Event event) {
-        removeEventListener(Event.REMOVE_FROM_STAGE + getName());
+        removeEventListener(Event.REMOVE_FROM_STAGE + getGameObjectId());
         world.removeEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId());
     }
 
@@ -197,7 +197,7 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
                 image.setScale(1, 1);
 
                 if (this instanceof WeaponPickup) {
-                    image.setXY(-image.getWidth() / 1.5f, -image.getHeight() / 2);
+                    image.setXY(-image.getWidth() / 3, -image.getHeight() / 2);
                 } else {
                     image.setXY(-image.getWidth() / 2, -image.getHeight() / 2);
                 }

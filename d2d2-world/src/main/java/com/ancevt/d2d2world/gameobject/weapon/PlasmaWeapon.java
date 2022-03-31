@@ -28,7 +28,7 @@ public class PlasmaWeapon extends Weapon {
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
-                        .createTexture(0, 32, 32, 32)
+                        .createTexture(0, 16, 32, 16)
         );
     }
 

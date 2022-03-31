@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -137,14 +138,14 @@ abstract public class Actor extends Animated implements
                 case Direction.LEFT -> {
                     IDisplayObject d = currentWeapon.getSprite();
                     d.setScaleX(-1);
-                    d.setX(d.getWidth() - getWeaponX() - d.getWidth() / 2);
+                    d.setX(d.getWidth() - getWeaponX() - 32 + 4);
                     armSprite.setScaleX(-1);
                     armSprite.setXY(-2, -8);
                 }
                 case Direction.RIGHT -> {
                     IDisplayObject d = currentWeapon.getSprite();
                     d.setScaleX(1);
-                    d.setX(getWeaponX() - d.getWidth() / 2);
+                    d.setX(getWeaponX() - 4);
                     armSprite.setScaleX(1);
                     armSprite.setXY(2, -8);
                 }
@@ -790,6 +791,7 @@ abstract public class Actor extends Animated implements
                 }, () -> {
                     Weapon newWeapon = Weapon.createWeapon(weaponClassname);
                     boolean result = newWeapon.setAmmunition(ammunition);
+
                     weapons.add(newWeapon);
                     resultHolder.setValue(result);
                     weaponHolder.setValue(newWeapon);

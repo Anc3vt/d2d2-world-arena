@@ -28,7 +28,7 @@ public class ArrowWeapon extends Weapon {
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
-                        .createTexture(0, 128, 32, 32)
+                        .createTexture(0, 64, 32, 16)
         );
     }
 

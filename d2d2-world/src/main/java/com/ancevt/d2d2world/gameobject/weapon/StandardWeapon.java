@@ -29,7 +29,7 @@ public class StandardWeapon extends Weapon {
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
-                        .createTexture(0, 0, 32, 32)
+                        .createTexture(0, 0, 32, 16)
         );
     }
 

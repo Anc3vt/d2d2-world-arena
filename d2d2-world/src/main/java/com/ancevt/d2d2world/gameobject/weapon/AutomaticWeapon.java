@@ -28,7 +28,7 @@ public class AutomaticWeapon extends Weapon {
                 MapkitManager.getInstance()
                         .getByName(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
-                        .createTexture(0, 64, 32, 32)
+                        .createTexture(0, 32, 32, 16)
         );
     }
 
@@ -83,7 +83,7 @@ public class AutomaticWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(AutomaticWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
-            sprite.setColor(Color.LIGHT_GRAY);
+            sprite.setColor(Color.GRAY);
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);
         }

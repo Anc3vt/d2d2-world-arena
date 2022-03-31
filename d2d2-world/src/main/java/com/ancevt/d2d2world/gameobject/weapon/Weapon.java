@@ -21,7 +21,6 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2world.data.Property;
-import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.Mapkit;
@@ -70,7 +69,8 @@ abstract public class Weapon {
     }
 
     public boolean setAmmunition(int value) {
-        if (value == ammunition) return false;
+        if(value > maxAmmunition) value = maxAmmunition;
+        if(ammunition == value) return false;
         ammunition = value;
         if (ammunition > maxAmmunition) {
             ammunition = maxAmmunition;
@@ -101,7 +101,6 @@ abstract public class Weapon {
         }
 
         ammunition--;
-        DebugPanel.createIfEnabled("shoot", "amm " + ammunition);
         return true;
     }
 

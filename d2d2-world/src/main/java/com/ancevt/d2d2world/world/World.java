@@ -256,7 +256,7 @@ public class World extends DisplayObjectContainer {
         }
     }
 
-    private void removePackedScenery(PackedScenery ps) {
+    private void removePackedScenery(@NotNull PackedScenery ps) {
         ps.removeFromParent();
         D2D2.getTextureManager().unloadTextureAtlas(ps.getTexture().getTextureAtlas());
         System.gc();
