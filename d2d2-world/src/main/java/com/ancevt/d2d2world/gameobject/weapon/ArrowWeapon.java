@@ -4,7 +4,6 @@ import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.gameobject.ICollision;
-import com.ancevt.d2d2world.gameobject.IGravitied;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -70,7 +69,7 @@ public class ArrowWeapon extends Weapon {
         return super.toString();
     }
 
-    public static class ArrowBullet extends Bullet implements ITight, IGravitied {
+    public static class ArrowBullet extends Bullet implements ITight {
 
         private boolean setToRemove;
         private int destroyTime = 500;
@@ -79,10 +78,8 @@ public class ArrowWeapon extends Weapon {
         public ArrowBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
             addEventListener(ArrowBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
-            setGravityEnabled(true);
-            setPushable(true);
+            setPushable(false);
             setFloorOnly(false);
-            setWeight(0.01f);
         }
 
         private void this_addToStage(Event event) {
@@ -103,7 +100,6 @@ public class ArrowWeapon extends Weapon {
             setToRemove = true;
             setDamagingOwnerActor(null);
             setDamagingPower(0);
-            setGravityEnabled(false);
             //setCollisionEnabled(true);
         }
 
@@ -113,12 +109,10 @@ public class ArrowWeapon extends Weapon {
                 destroyTime--;
 
                 if(destroyTime <= 0) {
-                    setWeight(0.05f);
-                    setGravityEnabled(true);
                     toAlpha(0.99f);
                 }
 
-                if (getAlpha() <= 0.01f) {
+                if (getAlpha() <= 0.1f) {
                     getWorld().removeGameObject(this, false);
                 }
             } else {
@@ -133,9 +127,5 @@ public class ArrowWeapon extends Weapon {
             super.onCollide(collideWith);
         }
 
-        @Override
-        public void reset() {
-
-        }
     }
 }

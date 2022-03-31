@@ -28,14 +28,10 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
-import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
-import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.util.args.Args;
@@ -43,8 +39,6 @@ import com.ancevt.util.args.Args;
 import java.io.IOException;
 
 public class D2D2WorldEditorMain {
-    public static PlayerActor playerActor;
-
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
 
@@ -117,63 +111,6 @@ public class D2D2WorldEditorMain {
         for (String mapkitId : MapkitManager.getInstance().keySet()) {
             MapkitToolsPanel.getInstance().addMapkit(MapkitManager.getInstance().get(mapkitId));
         }
-
-        /* Player */
-        MapkitItem playerActorMapkitItem = MapkitManager.getInstance()
-                .getByName(BuiltInMapkit.NAME)
-                .getItem("character_ava");
-
-        playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(-1);
-        playerActor.setXY(64, 64);
-        playerActor.setName("lpa");
-        playerActor.setLocalAim(true);
-        world.addGameObject(playerActor, 5, false);
-        LocalPlayerController localPlayerController = new LocalPlayerController();
-        localPlayerController.setEnabled(true);
-        playerActor.setController(localPlayerController);
-
-        playerActor.addEventListener(Event.EACH_FRAME, event -> {
-            StringBuilder s = new StringBuilder();
-            playerActor.getWeapons().forEach(w -> {
-                if(playerActor.getCurrentWeapon() == w) {
-                    s.append('>');
-                }
-
-                s.append(w.toString()).append('\n');
-            });
-
-
-            DebugPanel.setEnabled(true);
-            DebugPanel.createIfEnabled("playerActor", s.toString()).ifPresent(dp->dp.setScale(1,1));
-        });
-
-        world.getCamera().setAttachedTo(playerActor);
-
-        root.addEventListener(InputEvent.KEY_DOWN, event -> {
-            var e = (InputEvent) event;
-            localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
-
-            if (e.getKeyChar() == '.') {
-                playerActor.nextWeapon();
-            }
-            if (e.getKeyChar() == ',') {
-                playerActor.prevWeapon();
-            }
-        });
-
-        root.addEventListener(InputEvent.KEY_UP, event -> {
-            var e = (InputEvent) event;
-            localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
-        });
-
-        root.addEventListener(InputEvent.MOUSE_WHEEL, event -> {
-            var e = (InputEvent) event;
-            if (e.getDelta() > 0) {
-                playerActor.nextWeapon();
-            } else {
-                playerActor.prevWeapon();
-            }
-        });
 
         //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
 

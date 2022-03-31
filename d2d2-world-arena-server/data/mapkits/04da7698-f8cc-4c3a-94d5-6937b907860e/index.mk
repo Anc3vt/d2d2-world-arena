@@ -70,3 +70,5 @@ name = _ance2_26 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = anc
 name = _ance2_27 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=144,96,16,16
 name = _ance2_27_1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=16,112,16,16
 name = _ance2_27_2 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=32,112,16,16
+name = _ance2_27_3 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=256,48,32,32
+

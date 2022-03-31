@@ -51,8 +51,6 @@ public class RailWeapon extends Weapon {
             bullet.setDirection(getOwner().getDirection());
             bullet.setScaleY(getOwner().getDirection());
             world.addGameObject(bullet, 4, false);
-
-            getOwner().setVelocityX(-2.5f * getOwner().getDirection());
         }
         return true;
     }
@@ -140,7 +138,9 @@ public class RailWeapon extends Weapon {
 
             IDisplayObject displayObjectContainer = Particle.miniExplosion(5, Color.WHITE, 2f);
             displayObjectContainer.setScale(0.25f, 0.25f);
-            getParent().add(displayObjectContainer, getX(), getY());
+            if(getParent() != null) {
+                getParent().add(displayObjectContainer, getX(), getY());
+            }
         }
 
         @Override

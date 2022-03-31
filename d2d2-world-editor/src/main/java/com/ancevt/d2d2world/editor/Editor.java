@@ -17,20 +17,10 @@
  */
 package com.ancevt.d2d2world.editor;
 
-import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
-import com.ancevt.d2d2world.gameobject.ICollision;
-import com.ancevt.d2d2world.gameobject.IGameObject;
-import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.map.Room;
 import com.ancevt.d2d2world.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Editor {
@@ -56,6 +46,7 @@ public class Editor {
         this.world = world;
 
         gameObjectEditor = new GameObjectEditor(this);
+        gameObjectEditor.addPlayerActor();
 
         setEnabled(true);
     }
@@ -72,49 +63,7 @@ public class Editor {
 
         gameObjectEditor.key(keyCode, keyChar, down);
 
-        switch (keyChar) {
-            case 'C' -> {
-                setCollisionsVisible(down);
-            }
-
-            case 'P' -> {
-                if (down) {
-                    setEnabled(false);
-                    gameObjectEditor.unselect();
-                    world.setPlaying(true);
-                    world.getCamera().setBoundsLock(true);
-                    world.setSceneryPacked(true);
-                    world.setAreasVisible(false);
-                }
-            }
-
-            case 'S' -> {
-                if (down && isControlDown()) {
-                    world.reset();
-                    getEditorDisplayObject().setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.mapFileName));
-                }
-            }
-
-            case 'R' -> {
-                if (down) {
-                    if (isControlDown()) {
-                        JPropertiesEditor.create(getWorld().getRoom(), text -> {
-                            world.setRoom(world.getRoom());
-                            showRoomInfo();
-                        });
-                    } else if (isAltDown()) {
-                        world.reset();
-                    } else {
-                        showRoomInfo();
-                    }
-                }
-
-            }
-
-            case ' ' -> {
-                spaceDown = down;
-            }
-        }
+        if(keyChar == ' ') spaceDown = down;
 
         if (!isEnabled()) return;
 
@@ -156,7 +105,7 @@ public class Editor {
     }
 
     public void mouseButton(float x, float y, float worldX, float worldY, boolean down) {
-        D2D2WorldEditorMain.playerActor.getController().setB(down);
+        gameObjectEditor.getPlayerActor().getController().setB(down);
         if (!isEnabled()) return;
 
         if (!spaceDown) {
@@ -165,7 +114,7 @@ public class Editor {
     }
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
-        D2D2WorldEditorMain.playerActor.mouseMove(worldX, worldY);
+        gameObjectEditor.getPlayerActor().mouseMove(worldX, worldY);
         if (!isEnabled()) return;
 
         if (drag && spaceDown) {
@@ -180,35 +129,7 @@ public class Editor {
         oldMouseY = y;
     }
 
-    private final List<IDisplayObject> collisionRects = new ArrayList<>();
-
-    private void setCollisionsVisible(boolean visible) {
-        if (visible) {
-            for (int i = 0; i < world.getGameObjectCount(); i++) {
-                IGameObject gameObject = world.getGameObject(i);
-
-                if (gameObject instanceof ICollision c) {
-                    PlainRect rect = new PlainRect(c.getCollisionWidth(), c.getCollisionHeight(), Color.GREEN) {
-                        @Override
-                        public void onEachFrame() {
-                            setXY(c.getX() + c.getCollisionX(), c.getY() + c.getCollisionY());
-                        }
-                    };
-                    rect.setXY(c.getX() + c.getCollisionX(), c.getY() + c.getCollisionY());
-                    rect.setAlpha(0.25f);
-                    world.add(rect);
-
-                    collisionRects.add(rect);
-                }
-            }
-        } else {
-            while (!collisionRects.isEmpty()) {
-                collisionRects.remove(0).removeFromParent();
-            }
-        }
-    }
-
-    private void showRoomInfo() {
+    public void showRoomInfo() {
         StringBuilder s = new StringBuilder();
 
         s.append("Rooms:\n");

@@ -17,8 +17,16 @@
  */
 package com.ancevt.d2d2world.editor;
 
+import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.common.PlainRect;
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.IDisplayObject;
+import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
+import com.ancevt.d2d2world.control.LocalPlayerController;
+import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.objects.GameObjectLayersMap;
 import com.ancevt.d2d2world.editor.objects.SelectArea;
 import com.ancevt.d2d2world.editor.objects.SelectRectangle;
@@ -26,16 +34,20 @@ import com.ancevt.d2d2world.editor.objects.Selection;
 import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
+import com.ancevt.d2d2world.map.MapIO;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.Layer;
 import com.ancevt.d2d2world.world.World;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.ancevt.d2d2world.editor.D2D2WorldEditorMain.playerActor;
 
 public class GameObjectEditor {
 
@@ -50,6 +62,7 @@ public class GameObjectEditor {
     private final GameObjectLayersMap gameObjectLayersMap;
     private final Set<Layer> lockedLayers;
     private final Cursor cursor;
+    private final List<IDisplayObject> collisionRects;
     private MapkitItem placingMapkitItem;
     private Area resizingArea;
     private boolean moving;
@@ -60,6 +73,7 @@ public class GameObjectEditor {
     private boolean selecting;
     private MapkitItem lastPlacingMapkitItem;
     private float worldMouseX = 64, worldMouseY = 64;
+    private PlayerActor playerActor;
 
     public GameObjectEditor(Editor editor) {
         this.editor = editor;
@@ -70,6 +84,7 @@ public class GameObjectEditor {
         selections = new ArrayList<>();
         copyBuffer = new ArrayList<>();
         lockedLayers = new HashSet<>();
+        collisionRects = new ArrayList<>();
 
         setSnapToGrid(true);
 
@@ -91,24 +106,58 @@ public class GameObjectEditor {
                 case KeyCode.E -> setPlayerXYToCursor();
             }
 
+
             if (editor.isControlDown()) {
                 switch (keyChar) {
                     case 'C' -> copy();
                     case 'V' -> paste();
                     case 'X' -> cut();
                     case 'L' -> toggleLockCurrentLayer();
+
+                    case 'R' -> {
+                        if (editor.isControlDown()) {
+                            JPropertiesEditor.create(getWorld().getRoom(), text -> {
+                                getWorld().setRoom(getWorld().getRoom());
+                                editor.showRoomInfo();
+                                addPlayerActor();
+                            });
+                        }
+                    }
+
+                    case 'S' -> {
+                        getWorld().reset();
+                        setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.mapFileName));
+                    }
                 }
             } else {
 
                 switch (keyChar) {
-                    case 'Q' -> {
-                        getWorld().reset();
+                    case 'C' -> {
+                        setCollisionsVisible(down);
+                    }
+
+                    case 'P' -> {
+                        editor.setEnabled(false);
+                        unselect();
+                        getWorld().setPlaying(true);
+                        getWorld().getCamera().setBoundsLock(true);
+                        getWorld().setSceneryPacked(true);
+                        getWorld().setAreasVisible(false);
                     }
 
                     case 'S' -> {
                         setSnapToGrid(!isSnapToGrid());
                         setInfoText("Snap to grid: " + isSnapToGrid());
                     }
+
+                    case 'R' -> {
+                        editor.showRoomInfo();
+                    }
+
+                    case 'Q' -> {
+                        getWorld().reset();
+                    }
+
                     case 'V' -> {
                         getWorld().setAreasVisible(!getWorld().isAreasVisible());
                         setInfoText("Area visibility: "
@@ -116,7 +165,7 @@ public class GameObjectEditor {
                         unselect();
                     }
                     case 'D' -> {
-                        if(!getWorld().isPlaying()) setPlacingMapkitItem(lastPlacingMapkitItem);
+                        if (!getWorld().isPlaying()) setPlacingMapkitItem(lastPlacingMapkitItem);
                     }
 
                     case 'L' -> setLayerNumbersVisible(!LayerNumbers.isShow());
@@ -185,9 +234,6 @@ public class GameObjectEditor {
     }
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
-        playerActor.setAimXY(worldX, worldY);
-
-
         if (!moving && drag && selecting) {
             selectRectangle.setX2(worldX);
             selectRectangle.setY2(worldY);
@@ -233,15 +279,42 @@ public class GameObjectEditor {
         worldMouseY = worldY;
     }
 
+    private void setCollisionsVisible(boolean visible) {
+        if (visible) {
+            for (int i = 0; i < getWorld().getGameObjectCount(); i++) {
+                IGameObject gameObject = getWorld().getGameObject(i);
+
+                if (gameObject instanceof ICollision c) {
+                    PlainRect rect = new PlainRect(c.getCollisionWidth(), c.getCollisionHeight(), Color.GREEN) {
+                        @Override
+                        public void onEachFrame() {
+                            setXY(c.getX() + c.getCollisionX(), c.getY() + c.getCollisionY());
+                        }
+                    };
+                    rect.setXY(c.getX() + c.getCollisionX(), c.getY() + c.getCollisionY());
+                    rect.setAlpha(0.25f);
+                    getWorld().add(rect);
+
+                    collisionRects.add(rect);
+                }
+            }
+        } else {
+            while (!collisionRects.isEmpty()) {
+                collisionRects.remove(0).removeFromParent();
+            }
+        }
+    }
+
     private void setPlayerXYToCursor() {
-        playerActor = (PlayerActor) getWorld().getGameObjects()
+        getWorld().getGameObjects()
                 .stream()
                 .filter(o -> o instanceof PlayerActor)
                 .findAny()
-                .orElseThrow();
-
-        playerActor.repair();
-        playerActor.setXY(worldMouseX, worldMouseY);
+                .ifPresent(p -> {
+                    playerActor = (PlayerActor) p;
+                    playerActor.repair();
+                    playerActor.setXY(playerActor.getAimX(), playerActor.getAimY());
+                });
     }
 
     private void toggleLockCurrentLayer() {
@@ -411,7 +484,7 @@ public class GameObjectEditor {
         }
     }
 
-    private static boolean hitTest(float x, float y, IDisplayObject o) {
+    private static boolean hitTest(float x, float y, @NotNull IDisplayObject o) {
         float ox = o.getX(), oy = o.getY(), ow = o.getWidth(), oh = o.getHeight();
         if (o instanceof ICollision c) {
             ox += c.getCollisionX();
@@ -424,7 +497,7 @@ public class GameObjectEditor {
                 y < oy + oh;
     }
 
-    private static boolean hitTest(IDisplayObject o1, IDisplayObject o2) {
+    private static boolean hitTest(@NotNull IDisplayObject o1, IDisplayObject o2) {
 
         float x1 = o1.getX(), y1 = o1.getY(), w1 = o1.getWidth(), h1 = o1.getHeight();
 
@@ -460,7 +533,7 @@ public class GameObjectEditor {
         }
     }
 
-    private void snapToGrid(IDisplayObject displayObject) {
+    private void snapToGrid(@NotNull IDisplayObject displayObject) {
         int x = (int) displayObject.getX();
         int y = (int) displayObject.getY();
 
@@ -509,7 +582,8 @@ public class GameObjectEditor {
         }
     }
 
-    private Selection getSelectionByGameObject(final IGameObject gameObject) {
+    @Contract(pure = true)
+    private @Nullable Selection getSelectionByGameObject(final IGameObject gameObject) {
         for (final Selection selection : selections)
             if (selection.getGameObject() == gameObject)
                 return selection;
@@ -605,6 +679,70 @@ public class GameObjectEditor {
         selectedGameObjects.forEach(gameObject -> {
             getWorld().removeGameObject(gameObject, true);
             getWorld().addGameObject(gameObject, layerIndex, true);
+        });
+    }
+
+    public PlayerActor getPlayerActor() {
+        return playerActor;
+    }
+
+    public void addPlayerActor() {
+        MapkitItem playerActorMapkitItem = MapkitManager.getInstance()
+                .getByName(BuiltInMapkit.NAME)
+                .getItem("character_blake");
+
+        playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(-1);
+        playerActor.setXY(64, 64);
+        playerActor.setName("lpa");
+        playerActor.setLocalAim(true);
+        getWorld().addGameObject(playerActor, 5, false);
+        LocalPlayerController localPlayerController = new LocalPlayerController();
+        localPlayerController.setEnabled(true);
+        playerActor.setController(localPlayerController);
+
+        playerActor.addEventListener(Event.EACH_FRAME, event -> {
+            StringBuilder s = new StringBuilder();
+            playerActor.getWeapons().forEach(w -> {
+                if (playerActor.getCurrentWeapon() == w) {
+                    s.append('>');
+                }
+
+                s.append(w.toString()).append('\n');
+            });
+
+
+            DebugPanel.setEnabled(true);
+            DebugPanel.createIfEnabled("playerActor", s.toString()).ifPresent(dp -> dp.setScale(1, 1));
+        });
+
+        getWorld().getCamera().setAttachedTo(playerActor);
+
+        Root root = D2D2.getStage().getRoot();
+
+        root.removeEventListener(hashCode() + InputEvent.KEY_DOWN);
+        root.addEventListener(hashCode() + InputEvent.KEY_DOWN, InputEvent.KEY_DOWN, event -> {
+            var e = (InputEvent) event;
+            localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
+
+            if (e.getKeyCode() == KeyCode.TAB) {
+                playerActor.nextWeapon();
+            }
+        });
+
+        root.removeEventListener(hashCode() + InputEvent.KEY_UP);
+        root.addEventListener(hashCode() + InputEvent.KEY_UP, InputEvent.KEY_UP, event -> {
+            var e = (InputEvent) event;
+            localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
+        });
+
+        root.removeEventListener(hashCode() + InputEvent.MOUSE_WHEEL);
+        root.addEventListener(hashCode() + InputEvent.MOUSE_WHEEL, InputEvent.MOUSE_WHEEL, event -> {
+            var e = (InputEvent) event;
+            if (e.getDelta() > 0) {
+                playerActor.nextWeapon();
+            } else {
+                playerActor.prevWeapon();
+            }
         });
     }
 }

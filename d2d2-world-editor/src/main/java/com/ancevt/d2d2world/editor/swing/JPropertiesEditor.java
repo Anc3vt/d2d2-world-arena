@@ -191,21 +191,21 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
         DataEntry dataEntry = getProperties(room);
         dataEntry.add(DataKey.BACKGROUND_COLOR, room.getBackgroundColor().toHexString());
 
-        String oldId = room.getName();
+        String oldName = room.getName();
 
         create("Room " + room.getName(), split(dataEntry.stringify()), text -> {
             DataEntry dataEntryToSet = DataEntry.newInstance(collect(text));
 
-            String newId = dataEntryToSet.getString(DataKey.ID);
+            String newName = dataEntryToSet.getString(DataKey.NAME);
 
             GameMap map = room.getMap();
 
-            if (map.getRoom(newId) != null && map.getRoom(newId) != room) {
-                JOptionPane.showMessageDialog(null, "Room with id " + newId + " is already exists");
-                throw new IllegalStateException("Room with id " + newId + " is already exists");
+            if (map.getRoom(newName) != null && map.getRoom(newName) != room) {
+                JOptionPane.showMessageDialog(null, "Room with id " + newName + " is already exists");
+                throw new IllegalStateException("Room with id " + newName + " is already exists");
             }
 
-            if (!newId.equals(oldId)) {
+            if (!newName.equals(oldName)) {
                 map.removeRoom(room);
             }
 
@@ -213,7 +213,7 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
 
             room.setBackgroundColor(new Color(dataEntryToSet.getString(DataKey.BACKGROUND_COLOR)));
 
-            if (!newId.equals(oldId)) {
+            if (!newName.equals(oldName)) {
                 map.putRoom(room);
             }
 
