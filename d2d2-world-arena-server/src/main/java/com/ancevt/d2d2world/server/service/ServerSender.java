@@ -18,12 +18,8 @@
 package com.ancevt.d2d2world.server.service;
 
 import com.ancevt.d2d2world.net.dto.Dto;
-import com.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
-import com.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
-import com.ancevt.d2d2world.sync.ISyncDataReceiver;
 import com.ancevt.net.server.IServer;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.createDtoMessage;
 import static com.ancevt.d2d2world.net.serialization.JsonEngine.gson;
@@ -60,8 +56,6 @@ public class ServerSender {
     }
 
     public void sendToAllExcluding(byte[] bytes, int excludingPlayerId) {
-        debug(bytes);
-
         try {
             serverUnit.getConnections()
                     .stream()
@@ -73,8 +67,6 @@ public class ServerSender {
     }
 
     public synchronized void sendToAll(byte[] bytes) {
-        debug(bytes);
-
         try {
             serverUnit.sendToAll(bytes);
         } catch (Exception e) {
@@ -83,8 +75,6 @@ public class ServerSender {
     }
 
     public void sendToPlayer(int playerId, byte[] bytes) {
-        debug(bytes);
-
         try {
             serverUnit.getConnections()
                     .stream()
@@ -97,47 +87,8 @@ public class ServerSender {
         }
     }
 
-    private boolean listenersAdded = false;
 
-    private void debug(byte[] bytes) {
-        if(!listenersAdded) {
-            ClientProtocolImpl.MODULE_CLIENT_PROTOCOL.addClientProtocolImplListener(new ClientProtocolImplListener() {
-                @Override
-                public void dtoFromServer(@NotNull Dto extraDto) {
-                }
 
-                @Override
-                public void playerPingResponse() {
-
-                }
-
-                @Override
-                public void fileData(@NotNull String headers, byte[] fileData) {
-
-                }
-
-                @Override
-                public void serverSyncData(byte @NotNull [] syncData) {
-                    new ISyncDataReceiver() {
-                        @Override
-                        public void setEnabled(boolean enabled) {
-
-                        }
-
-                        @Override
-                        public boolean isEnabled() {
-                            return false;
-                        }
-
-                        @Override
-                        public void bytesReceived(byte[] bytes) {
-                        }
-                    }.bytesReceived(syncData);
-                }
-            });
-            listenersAdded = true;
-        }
-    }
 }
 
 

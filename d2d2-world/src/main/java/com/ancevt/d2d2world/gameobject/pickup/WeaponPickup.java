@@ -50,6 +50,11 @@ public class WeaponPickup extends Pickup {
         }
     }
 
+    @Override
+    public void playPickUpSound() {
+        getMapkitItem().getMapkit().playSound("weapon-pickup.ogg");
+    }
+
     @Property
     public String getWeaponClassname() {
         return weaponClass != null ? weaponClass.getName() : null;
@@ -67,7 +72,7 @@ public class WeaponPickup extends Pickup {
 
     @Override
     public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor playerActor) {
-        return playerActor.addWeapon(weaponClass.getName(), getAmmunition());
+        return playerActor.addWeapon(weaponClass, getAmmunition());
     }
 
     public Set<Class<? extends Weapon>> findAllSubclassesOfWeapon() {

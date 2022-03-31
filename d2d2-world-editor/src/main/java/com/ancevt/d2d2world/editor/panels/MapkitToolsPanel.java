@@ -160,9 +160,9 @@ public class MapkitToolsPanel extends TitledPanel {
 
         Set<Class<?>> classes = new HashSet<>();
 
-        List<String> mapkitUids = new ArrayList<>(MapkitManager.getInstance().keySet()).stream().sorted().toList();
-        for (String mapkitUid : mapkitUids) {
-            Mapkit mapkit = MapkitManager.getInstance().get(mapkitUid);
+        List<String> mapkitNames = new ArrayList<>(MapkitManager.getInstance().keySet()).stream().sorted().toList();
+        for (String mapkitName : mapkitNames) {
+            Mapkit mapkit = MapkitManager.getInstance().getMapkit(mapkitName);
             dropListMapkit.addItem(new DropListItem(mapkit.getName(), mapkit));
 
             for (String mapkitItemId : mapkit.keySet()) {

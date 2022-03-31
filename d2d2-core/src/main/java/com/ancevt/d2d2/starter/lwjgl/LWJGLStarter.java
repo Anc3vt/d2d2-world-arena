@@ -26,6 +26,8 @@ import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.touch.TouchProcessor;
+import lombok.SneakyThrows;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 
@@ -336,6 +338,7 @@ public class LWJGLStarter implements D2D2Starter {
         }
     }
 
+    @SneakyThrows
     @Override
     public void setFullscreen(boolean value) {
 

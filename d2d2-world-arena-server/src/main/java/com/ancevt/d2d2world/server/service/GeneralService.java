@@ -89,6 +89,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         Headers h = Headers.of(headers);
         String path = h.get(PATH);
 
+        log.trace(headers);
 
         if (h.contains(HASH) && h.get(HASH).equals(MD5.hashFile(path))) {
             serverSender.sendToPlayer(connectionId, createMessageFileData(
@@ -446,7 +447,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         }
     }
 
-    private ServerContentInfoDto createServerContentDto(String mapName) {
+    private MapContentInfoDto createServerContentDto(String mapName) {
         ServerContentManager.Map map = MODULE_CONTENT_MANAGER.getMaps()
                 .stream()
                 .filter(m -> m.name().equals(mapName))
@@ -454,26 +455,26 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 .orElseThrow(() -> new IllegalStateException("no such map on disk: " + mapName));
 
         var builder =
-                ServerContentInfoDto.builder()
+                MapContentInfoDto.builder()
                         .name(map.name())
                         .filename(map.filename());
 
-        Set<ServerContentInfoDto.Mapkit> mapkits = new HashSet<>();
+        Set<MapContentInfoDto.Mapkit> mapkits = new HashSet<>();
 
         map.mapkits().forEach(
-                mk -> mapkits.add(ServerContentInfoDto.Mapkit.builder()
-                        .uid(mk.uid())
+                mk -> mapkits.add(MapContentInfoDto.Mapkit.builder()
                         .name(mk.name())
+                        .dirname(mk.dirname())
                         .files(Set.copyOf(mk.files()))
                         .build())
         );
 
-        var builtInMapkit = ServerContentInfoDto.Mapkit.builder()
+        var builtInMapkit = MapContentInfoDto.Mapkit.builder()
                 .name(BuiltInMapkit.NAME)
-                .uid(BuiltInMapkit.UID)
+                .dirname(BuiltInMapkit.NAME)
                 .files(MODULE_CONTENT_MANAGER.getMapkits()
                         .stream()
-                        .filter(m -> m.uid().equals(BuiltInMapkit.UID))
+                        .filter(m -> m.name().equals(BuiltInMapkit.NAME))
                         .findAny()
                         .orElseThrow()
                         .files()
@@ -484,14 +485,14 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
         builder.mapkits(mapkits);
 
-        Set<ServerContentInfoDto.Character> characters = new HashSet<>();
+        Set<MapContentInfoDto.Character> characters = new HashSet<>();
 
-        characters.add(ServerContentInfoDto.Character.builder()
+        characters.add(MapContentInfoDto.Character.builder()
                 .mapkitName("builtin-mapkit")
                 .mapkitItemName("character_blake")
                 .build()
         );
-        characters.add(ServerContentInfoDto.Character.builder()
+        characters.add(MapContentInfoDto.Character.builder()
                 .mapkitName("builtin-mapkit")
                 .mapkitItemName("character_ava")
                 .build()

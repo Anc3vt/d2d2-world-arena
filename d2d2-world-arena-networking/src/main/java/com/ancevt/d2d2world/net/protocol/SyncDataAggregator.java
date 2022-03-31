@@ -8,7 +8,6 @@ import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.sync.SyncDataType;
 import org.jetbrains.annotations.NotNull;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 
 public class SyncDataAggregator implements ISyncDataAggregator {
@@ -170,10 +169,6 @@ public class SyncDataAggregator implements ISyncDataAggregator {
         ISyncDataAggregator aggregator = new SyncDataAggregator();
 
         aggregator.createSyncDataOf(o);
-
-        if (o.getName().equals("_test_platform_1")) {
-            debug("SyncDataAggregator:127: <y><A>" + o.getGameObjectId());
-        }
 
         return aggregator.pullSyncDataMessage();
     }

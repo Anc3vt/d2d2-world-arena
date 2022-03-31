@@ -1,4 +1,4 @@
-mapkit | uid = 04da7698-f8cc-4c3a-94d5-6937b907860e | name = ance
+mapkit | name = ance
 
 name = _ance1_0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=16,0,16,16
 name = _ance1_1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=32,0,16,16

@@ -23,8 +23,6 @@ import com.ancevt.d2d2world.data.DataEntryLoader;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
-import com.ancevt.d2d2world.mapkit.AreaMapkit;
-import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.Layer;
@@ -59,8 +57,6 @@ public class MapIO {
         Room room = null;
 
         Map<String, String> mapkitNamesVsUids = new HashMap<>();
-        mapkitNamesVsUids.put(AreaMapkit.NAME, AreaMapkit.UID);
-        mapkitNamesVsUids.put(BuiltInMapkit.NAME, BuiltInMapkit.UID);
 
         for (DataEntry dataEntry : dataEntries) {
 
@@ -69,16 +65,10 @@ public class MapIO {
             if (dataEntry.containsKey(DataKey.MAP)) {
                 setProperties(map, dataEntry);
 
-                String mapkitUids = dataEntry.getString(DataKey.MAPKIT_UIDS);
                 String mapkitNames = dataEntry.getString(DataKey.MAPKIT_NAMES);
-                String[] splitUids = mapkitUids.split(",");
                 String[] splitNames = mapkitNames.split(",");
-                if (splitUids.length != splitNames.length) {
-                    throw new IllegalStateException("mapkit uids count and names count are differs");
-                }
                 for (int i = 0; i < splitNames.length; i++) {
-                    mapkitNamesVsUids.put(splitNames[i], splitUids[i]);
-                    MapkitManager.getInstance().load(splitUids[i]);
+                    MapkitManager.getInstance().load(splitNames[i]);
                 }
                 continue;
             }
@@ -98,14 +88,15 @@ public class MapIO {
 
             if (gameObjectId == 0) gameObjectId = IdGenerator.INSTANCE.getNewId();
 
-            String mapkitItemId = dataEntry.getString(DataKey.ITEM);
+            String mapkitItemName = dataEntry.getString(DataKey.ITEM);
             int layer = dataEntry.getInt(DataKey.LAYER);
 
-            String mapkitUid = mapkitNamesVsUids.get(dataEntry.getString(DataKey.MAPKIT));
-            Mapkit mapkit = MapkitManager.getInstance().get(mapkitUid);
+            String mapkitName = dataEntry.getString(DataKey.MAPKIT);
+
+            Mapkit mapkit = MapkitManager.getInstance().getMapkit(mapkitName);
 
             if (room == null) throw new IllegalStateException("room undefined");
-            IGameObject gameObject = (IGameObject) setProperties(mapkit.getItem(mapkitItemId).createGameObject(gameObjectId), dataEntry);
+            IGameObject gameObject = (IGameObject) setProperties(mapkit.getItem(mapkitItemName).createGameObject(gameObjectId), dataEntry);
             room.addGameObject(layer, gameObject);
         }
 

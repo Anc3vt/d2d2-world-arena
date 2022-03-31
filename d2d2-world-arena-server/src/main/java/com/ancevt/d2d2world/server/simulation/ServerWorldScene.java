@@ -142,7 +142,7 @@ public class ServerWorldScene {
     }
 
     public void addPlayer(@NotNull Player player, @NotNull String mapkitItemName) {
-        MapkitItem mapkitItem = MapkitManager.getInstance().getByName(BuiltInMapkit.NAME).getItem(mapkitItemName);
+        MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemName);
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.getController().setEnabled(true);
         playerActor.setXY(64, 64);

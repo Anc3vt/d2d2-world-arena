@@ -1,1 +1,1 @@
-mapkit | uid = builtin-mapkit | name = builtin-mapkit
+mapkit | name = builtin-mapkit

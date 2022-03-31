@@ -195,7 +195,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
         boolean needAddToWorld = false;
         if (gameObject == null) {
-            Mapkit mapkit = MapkitManager.getInstance().getByName(mapkitName);
+            Mapkit mapkit = MapkitManager.getInstance().getMapkit(mapkitName);
             MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
             gameObject = mapkitItem.createGameObject(gameObjectId);
             needAddToWorld = true;

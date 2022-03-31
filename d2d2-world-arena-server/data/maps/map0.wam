@@ -1,4 +1,4 @@
-map | name = Test map | startRoomName = start-room | mapkitUids = 2c45cdcb-dac9-4f24-832b-005627f961cf,04da7698-f8cc-4c3a-94d5-6937b907860e | mapkitNames = mapkit0,ance | gravity = 1.0 
+map | name = Test map | startRoomName = start-room | mapkitNames = mapkit0,ance | gravity = 1.0
 
 room | name = start-room | width = 992 | height = 340 | backgroundColor = 0 
 id = 1 | mapkit = ance | item = _ance1_36 | layer = 0 | name = _1 | x = 0.0 | y = 0.0 | repeatX = 62 | repeatY = 8 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 

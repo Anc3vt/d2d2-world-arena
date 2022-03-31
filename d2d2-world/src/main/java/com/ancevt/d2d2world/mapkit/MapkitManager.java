@@ -17,14 +17,18 @@
  */
 package com.ancevt.d2d2world.mapkit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.ancevt.commons.Holder;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataEntryLoader;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.map.MapIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class MapkitManager {
@@ -58,7 +62,7 @@ public class MapkitManager {
                 .filter(m -> m instanceof ExternalMapkit)
                 .forEach(m -> {
                     m.dispose();
-                    keysToRemove.add(m.getUid());
+                    keysToRemove.add(m.getName());
                 });
 
         while (!keysToRemove.isEmpty()) {
@@ -66,27 +70,16 @@ public class MapkitManager {
         }
     }
 
-    public Mapkit get(String uid) {
-        if (!mapkits.containsKey(uid)) {
-            throw new IllegalStateException("mapkit not found, uid: " + uid + ". Must be one of: " + mapkits.keySet());
-        }
-        return mapkits.get(uid);
-    }
+    public Mapkit load(String mapkitName) throws IOException {
+        log.debug("load mapkit '{}'", mapkitName);
 
-    public Mapkit load(String mapkitDirName) throws IOException {
-        log.debug("load mapkit directory {}", mapkitDirName);
+        String dirName = getMapkitDirNameByMapkitName(mapkitName);
 
-        DataEntry[] dataLines = DataEntryLoader.load(MapIO.mapkitsDirectory + mapkitDirName + INDEX);
-
-
-        String uid = dataLines[0].getString(DataKey.UID);
-        if (!uid.equals(mapkitDirName)) {
-            throw new IllegalStateException("mapkit uid is different from directory name: " + uid + "," + mapkitDirName);
-        }
+        DataEntry[] dataLines = DataEntryLoader.load(MapIO.mapkitsDirectory + dirName + INDEX);
 
         String name = dataLines[0].getString(DataKey.NAME);
 
-        Mapkit mapkit = createExternalMapkit(uid, name);
+        Mapkit mapkit = createExternalMapkit(name);
 
         for (DataEntry dataEntry : dataLines) {
             //log.debug("loaded data line: " + dataEntry.toString());
@@ -103,17 +96,53 @@ public class MapkitManager {
         return mapkit;
     }
 
-    public Mapkit getByName(String name) {
+    public static String getMapkitDirNameByMapkitName(String mapkitName) {
+
+        Holder<String> dirName = new Holder<>();
+        try {
+
+//            File mapkitsDir = new File(MapIO.mapkitsDirectory);
+//            File[] mapkitDirs = mapkitsDir.listFiles();
+//            for (File mapkitDir : mapkitDirs) {
+//                if(new File(indexPath).exists()) {
+//            }
+
+
+            Files.walk(Path.of(MapIO.mapkitsDirectory), 1)
+                    .forEach(path -> {
+                        String indexPath = path.toFile().getAbsolutePath() + INDEX;
+
+                        if(new File(indexPath).exists()) {
+                            DataEntry[] dataEntries = DataEntryLoader.load(indexPath);
+                            for (DataEntry dataEntry : dataEntries) {
+                                if (dataEntry.containsKey(DataKey.MAPKIT)) {
+                                    String name = dataEntry.getString(DataKey.NAME);
+                                    if (mapkitName.equals(name)) {
+                                        dirName.setValue(path.getFileName().toString());
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    });
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return dirName.getValue();
+    }
+
+    public Mapkit getMapkit(String mapkitName) {
         for (Mapkit mapkit : mapkits.values()) {
-            if (mapkit.getName().equals(name)) {
+            if (mapkit.getName().equals(mapkitName)) {
                 return mapkit;
             }
         }
-        throw new IllegalStateException("no such mapkit name: " + name);
+        throw new IllegalStateException("no such mapkit name: " + mapkitName);
     }
 
     private void put(Mapkit mapkit) {
-        mapkits.put(mapkit.getUid(), mapkit);
+        mapkits.put(mapkit.getName(), mapkit);
     }
 
     public void dispose(Mapkit mapkit) {
@@ -121,7 +150,7 @@ public class MapkitManager {
             throw new IllegalStateException("Unable to dispose built-in mapkit. name: " + mapkit.getName());
         }
 
-        mapkits.remove(mapkit.getUid());
+        mapkits.remove(mapkit.getName());
         mapkit.dispose();
     }
 
@@ -132,8 +161,8 @@ public class MapkitManager {
                 '}';
     }
 
-    private Mapkit createExternalMapkit(String uid, String name) {
-        return new ExternalMapkit(uid, name);
+    private Mapkit createExternalMapkit(String name) {
+        return new ExternalMapkit(name);
     }
 
     public Set<String> keySet() {

@@ -22,12 +22,10 @@ public class DataKey {
     public static final String //map & mapkit global properties
             MAP = "map",
             MAPKIT = "mapkit",
-            MAPKIT_UIDS = "mapkitUids",
             MAPKIT_NAMES = "mapkitNames",
             ATLAS = "atlas",
             NAME = "name",
             ROOM = "room",
-            UID = "uid",
             ID = "id",
             ITEM = "item",
             LAYER = "layer",

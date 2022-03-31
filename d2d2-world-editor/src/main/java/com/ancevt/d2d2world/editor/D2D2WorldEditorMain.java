@@ -108,8 +108,10 @@ public class D2D2WorldEditorMain {
             editorContainer.getGrid().redrawLines();
         });
 
-        for (String mapkitId : MapkitManager.getInstance().keySet()) {
-            MapkitToolsPanel.getInstance().addMapkit(MapkitManager.getInstance().get(mapkitId));
+        for (String mapkitName : MapkitManager.getInstance().keySet()) {
+            MapkitToolsPanel.getInstance().addMapkit(
+                    MapkitManager.getInstance().getMapkit(mapkitName)
+            );
         }
 
         //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);

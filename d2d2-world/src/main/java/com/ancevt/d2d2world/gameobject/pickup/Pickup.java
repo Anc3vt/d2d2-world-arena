@@ -83,7 +83,9 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
         if (!D2D2World.isServer()) return;
 
         if (collideWith instanceof PlayerActor playerActor && pickUpTimeMillis == 0) {
-            if (onPlayerActorPickUpPickup(playerActor)) {
+
+            var result = onPlayerActorPickUpPickup(playerActor);
+            if (result) {
                 playPickUpSound();
                 setVisible(false);
                 setCollisionEnabled(false);

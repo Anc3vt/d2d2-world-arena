@@ -19,14 +19,13 @@ public class RailWeapon extends Weapon {
     public RailWeapon() {
         super(createSprite());
         setMaxAmmunition(15);
-        setAmmunition(getMaxAmmunition());
     }
 
     @Contract(" -> new")
     public static @NotNull Sprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
-                        .getByName(BuiltInMapkit.NAME)
+                        .getMapkit(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
                         .createTexture(0, 48, 32, 16)
         );

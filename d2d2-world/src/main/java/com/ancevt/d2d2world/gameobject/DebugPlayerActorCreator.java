@@ -16,7 +16,7 @@ public class DebugPlayerActorCreator {
 
     public static synchronized @NotNull PlayerActor createTestPlayerActor(PlayerActor targetPlayerActor, @NotNull World world) {
         PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance()
-                .getByName(BuiltInMapkit.NAME)
+                .getMapkit(BuiltInMapkit.NAME)
                 .getItem("character_blake")
                 .createGameObject(IdGenerator.INSTANCE.getNewId());
 

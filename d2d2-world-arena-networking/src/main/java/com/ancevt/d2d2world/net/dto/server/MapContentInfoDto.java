@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ServerContentInfoDto implements Dto {
+public class MapContentInfoDto implements Dto {
 
     private final String name;
     private final String filename;
@@ -23,7 +23,7 @@ public class ServerContentInfoDto implements Dto {
     @RequiredArgsConstructor
     public static class Mapkit {
         private final String name;
-        private final String uid;
+        private final String dirname;
         private final Set<String> files;
     }
 

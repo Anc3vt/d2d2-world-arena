@@ -34,10 +34,6 @@ import com.ancevt.d2d2world.editor.objects.Selection;
 import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
-import com.ancevt.d2d2world.gameobject.weapon.ArrowWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
-import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -692,7 +688,7 @@ public class GameObjectEditor {
 
     public void addPlayerActor() {
         MapkitItem playerActorMapkitItem = MapkitManager.getInstance()
-                .getByName(BuiltInMapkit.NAME)
+                .getMapkit(BuiltInMapkit.NAME)
                 .getItem("character_blake");
 
         playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(-1);
@@ -704,10 +700,10 @@ public class GameObjectEditor {
         localPlayerController.setEnabled(true);
         playerActor.setController(localPlayerController);
 
-        playerActor.addWeapon(RailWeapon.class, 100);
-        playerActor.addWeapon(AutomaticWeapon.class, 100);
-        playerActor.addWeapon(PlasmaWeapon.class, 100);
-        playerActor.addWeapon(ArrowWeapon.class, 100);
+        //playerActor.addWeapon(RailWeapon.class, 100);
+        //playerActor.addWeapon(AutomaticWeapon.class, 100);
+        //playerActor.addWeapon(PlasmaWeapon.class, 100);
+        //playerActor.addWeapon(ArrowWeapon.class, 100);
 
         playerActor.addEventListener(Event.EACH_FRAME, event -> {
             StringBuilder s = new StringBuilder();

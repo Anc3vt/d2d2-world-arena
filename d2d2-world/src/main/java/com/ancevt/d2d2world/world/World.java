@@ -129,7 +129,6 @@ public class World extends DisplayObjectContainer {
     public void setRoom(Room room) {
         setSceneryPacked(false);
         removeAllGameObjects();
-
         for (int layer = 0; layer < Layer.LAYER_COUNT; layer++) {
             int objectCount = room.getGameObjectsCount(layer);
             for (int index = 0; index < objectCount; index++) {

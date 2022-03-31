@@ -14,4 +14,3 @@ mvn install:install-file \
    -Dversion=1 \
    -Dpackaging=jar \
    -DgeneratePom=true
-

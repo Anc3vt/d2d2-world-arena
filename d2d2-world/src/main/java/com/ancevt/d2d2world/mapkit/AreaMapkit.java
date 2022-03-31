@@ -31,11 +31,10 @@ import com.ancevt.d2d2world.gameobject.area.AreaHook;
 
 public class AreaMapkit extends Mapkit {
 
-    public static final String UID = "area-mapkit";
     public static final String NAME = "areas";
 
     AreaMapkit() {
-        super(UID, NAME);
+        super(NAME);
         addItems();
     }
 

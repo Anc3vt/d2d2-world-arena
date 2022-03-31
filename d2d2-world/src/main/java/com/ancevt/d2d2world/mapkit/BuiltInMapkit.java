@@ -31,7 +31,6 @@ import java.util.Set;
 
 public class BuiltInMapkit extends Mapkit {
 
-    public static final String UID = "builtin-mapkit";
     public static final String NAME = "builtin-mapkit";
     public static final String ATLAS = "tileset.png";
     public static final String CHARACTER_ATLAS = "character-tileset.png";
@@ -39,7 +38,7 @@ public class BuiltInMapkit extends Mapkit {
     private static BuiltInMapkit instance;
 
     public static BuiltInMapkit getInstance() {
-        return instance == null ? instance = (BuiltInMapkit) MapkitManager.getInstance().getByName(NAME) : instance;
+        return instance == null ? instance = (BuiltInMapkit) MapkitManager.getInstance().getMapkit(NAME) : instance;
     }
 
     public Set<MapkitItem> getCharacterMapkitItems() {
@@ -54,7 +53,7 @@ public class BuiltInMapkit extends Mapkit {
 
 
     BuiltInMapkit() {
-        super(UID, NAME);
+        super(NAME);
 
         List<String> dataEntries = new ArrayList<>() {
             {

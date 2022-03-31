@@ -38,20 +38,14 @@ public abstract class Mapkit {
 
     private final String name;
     private final Map<String, MapkitItem> items;
-    private final String uid;
     private final Map<String, TextureAtlas> textureAtlases;
     private final Map<String, Sound> sounds;
 
-    Mapkit(String uid, String name) {
-        this.uid = uid;
+    Mapkit(String name) {
         this.items = new HashMap<>();
         this.name = name;
         textureAtlases = new HashMap<>();
         sounds = new HashMap<>();
-    }
-
-    public String getUid() {
-        return uid;
     }
 
     public String getName() {
@@ -68,7 +62,7 @@ public abstract class Mapkit {
         }
 
         try {
-            InputStream inputStream = new FileInputStream(MapIO.mapkitsDirectory + uid + "/" + tilesetPngFilename);
+            InputStream inputStream = new FileInputStream(MapIO.mapkitsDirectory + name + "/" + tilesetPngFilename);
             TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas(inputStream);
             inputStream.close();
 
@@ -85,7 +79,7 @@ public abstract class Mapkit {
 
     public MapkitItem putItem(@NotNull MapkitItem item) {
         if (items.containsKey(item.getName())) {
-            throw new IllegalStateException("duplicate mapkit item id: " + item.getName());
+            throw new IllegalStateException("duplicate mapkit item name: " + item.getName());
         }
         items.put(item.getName(), item);
         return item;
@@ -97,7 +91,7 @@ public abstract class Mapkit {
 
     @SneakyThrows
     public void playSound(String filename) {
-        Sound.play(MapIO.mapkitsDirectory + uid + "/" + filename);
+        Sound.play(MapIO.mapkitsDirectory + name + "/" + filename);
     }
 
     public MapkitItem getItem(String mapkitItemName) {
@@ -121,7 +115,6 @@ public abstract class Mapkit {
         return "Mapkit{" +
                 "name='" + name + '\'' +
                 ", items=" + items.size() +
-                ", uid='" + uid + '\'' +
                 '}';
     }
 

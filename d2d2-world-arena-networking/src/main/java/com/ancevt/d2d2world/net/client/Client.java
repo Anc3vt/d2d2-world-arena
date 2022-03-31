@@ -108,20 +108,19 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
      */
     @Override
     public void dtoFromServer(@NotNull Dto dto) {
-        log.info("extraFromServer: {}", dto);
 
         // TODO: extract to separate handler, maybe it should be a class
-        if (dto instanceof ServerContentInfoDto d) {
+        if (dto instanceof MapContentInfoDto serverContentInfoDto) {
 
             Queue<String> queue = new ConcurrentLinkedDeque<>();
 
-            queue.add(sendFileRequest("data/maps/" + d.getFilename()));
-            d.getMapkits().forEach(
-                    mk -> mk.getFiles()
-                            .forEach(
-                                    filename -> queue.add(sendFileRequest("data/mapkits/" + mk.getUid() + "/" + filename))
-                            )
-            );
+            queue.add(sendFileRequest("data/maps/" + serverContentInfoDto.getFilename()));
+
+            serverContentInfoDto.getMapkits().forEach(
+                    mk -> mk.getFiles().forEach(filename -> {
+                                        queue.add(sendFileRequest("data/mapkits/" + mk.getDirname() + "/" + filename));
+                                    }
+                            ));
             FileReceiverManager.INSTANCE.addFileReceiverManagerListener(new FileReceiverManager.FileReceiverManagerListener() {
                 @Override
                 public void fileReceiverProgress(FileReceiver fileReceiver) {
@@ -131,8 +130,9 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                 @Override
                 public void fileReceiverComplete(FileReceiver fileReceiver) {
                     queue.remove(fileReceiver.getPath());
+
                     if (queue.isEmpty()) {
-                        clientListeners.forEach(l -> l.mapContentLoaded(d.getFilename()));
+                        clientListeners.forEach(l -> l.mapContentLoaded(serverContentInfoDto.getFilename()));
                         FileReceiverManager.INSTANCE.removeFileReceiverManagerListener(this);
                     }
                 }

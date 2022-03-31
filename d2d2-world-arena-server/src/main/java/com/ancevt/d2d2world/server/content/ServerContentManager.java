@@ -17,13 +17,15 @@
  */
 package com.ancevt.d2d2world.server.content;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.file.FileDataUtils;
+import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.transfer.FileSender;
 import com.ancevt.d2d2world.server.service.GeneralService;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,10 +35,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.nio.file.Files.newBufferedReader;
 import static com.ancevt.d2d2world.data.DataKey.*;
 import static com.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
 import static com.ancevt.d2d2world.server.ServerConfig.MODULE_SERVER_CONFIG;
+import static java.nio.file.Files.newBufferedReader;
 
 @Slf4j
 public class ServerContentManager {
@@ -59,7 +61,7 @@ public class ServerContentManager {
                 .filter(mapkit -> mapkit.name().equals(mapkitName))
                 .findAny()
                 .ifPresent(
-                        mapkit -> syncSendDirectoryToPlayer("data/mapkits/" + mapkit.uid(), playerId)
+                        mapkit -> syncSendDirectoryToPlayer("data/mapkits/" + mapkit.name(), playerId)
                 );
     }
 
@@ -82,7 +84,7 @@ public class ServerContentManager {
 
             Files.walk(Paths.get(path))
                     .filter(Files::isRegularFile)
-                    .filter(p->!p.toFile().getName().endsWith("d.xcf"))
+                    .filter(p -> !p.toFile().getName().endsWith(".xcf"))
                     .forEach(p -> {
                         syncSendFileToPlayer(p.toFile().getPath(), playerId);
                     });
@@ -113,7 +115,8 @@ public class ServerContentManager {
         }
     }
 
-    private Map getMap(Path path) {
+    @Contract("_ -> new")
+    private @NotNull Map getMap(Path path) {
         try {
             String name = null;
             long size = 0L;
@@ -124,10 +127,10 @@ public class ServerContentManager {
                 if (dataEntry.containsKey(MAP)) {
                     name = dataEntry.getString(NAME);
 
-                    String mapkitUids = dataEntry.getString(MAPKIT_UIDS);
+                    String mapkitNames = dataEntry.getString(MAPKIT_NAMES);
 
-                    for (String mapkitUid : mapkitUids.split(",")) {
-                        mapkits.add(getMapkitByIndexFile(Path.of("data/mapkits/" + mapkitUid + "/index.mk")));
+                    for (String mapkitName : mapkitNames.split(",")) {
+                        mapkits.add(getMapkitByIndexFile(Path.of("data/mapkits/" + MapkitManager.getMapkitDirNameByMapkitName(mapkitName) + "/index.mk")));
                     }
 
                     size = path.toFile().length();
@@ -158,35 +161,41 @@ public class ServerContentManager {
         }
     }
 
-    private Mapkit getMapkitByIndexFile(Path path) {
+    @Contract("_ -> new")
+    private @NotNull Mapkit getMapkitByIndexFile(Path path) {
+
+
+        // Get mapkit dirname of data/mapkits/!/index.mk path
+        String pathString = path.toString();
+        String dirname = pathString.substring(0, pathString.lastIndexOf('/'));
+        dirname = Path.of(dirname).getFileName().toString();
+
         try {
             String name = null;
-            String uid = null;
 
             String line;
             while ((line = newBufferedReader(path).readLine()) != null) {
                 DataEntry dataEntry = DataEntry.newInstance(line);
                 if (dataEntry.containsKey(MAPKIT)) {
                     name = dataEntry.getString(NAME);
-                    uid = dataEntry.getString(UID);
                     break;
                 }
             }
 
             int totalFilesize = countTotalMapkitFilesize(path.toFile().getPath());
 
-            if (uid == null || name == null) {
-                throw new IllegalStateException("mapkit uid or name can not be a null (" + uid + "," + name + ")");
+            if (name == null) {
+                throw new IllegalStateException("mapkit name cannot be null");
             }
 
             Set<String> files = new HashSet<>();
 
-            Files.walk(Path.of("data/mapkits/" + uid + "/"))
+            Files.walk(Path.of("data/mapkits/" + name + "/"))
                     .filter(Files::isRegularFile)
-                    .filter(p->!p.toFile().getName().endsWith(".xcf"))
+                    .filter(p -> !p.toFile().getName().endsWith(".xcf"))
                     .forEach(p -> files.add(p.getFileName().toString()));
 
-            return new Mapkit(uid, name, totalFilesize, files);
+            return new Mapkit(name, dirname, totalFilesize, files);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -201,12 +210,13 @@ public class ServerContentManager {
         return result.getValue();
     }
 
-    public record Mapkit(@NotNull String uid, @NotNull String name, long totalSize, @NotNull Set<String> files) {
+    public record Mapkit(@NotNull String name, @NotNull String dirname, long totalSize, @NotNull Set<String> files) {
+        @Contract(pure = true)
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "Mapkit{" +
-                    "uid='" + uid + '\'' +
                     ", name='" + name + '\'' +
+                    ", dirname=" + dirname +
                     ", totalSize=" + totalSize +
                     ", files=" + files +
                     '}';
@@ -215,7 +225,7 @@ public class ServerContentManager {
 
     public record Map(@NotNull String name, @NotNull String filename, long size, @NotNull Set<Mapkit> mapkits) {
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             StringBuilder s = new StringBuilder();
             mapkits.forEach(mapkit -> s.append("\n  ").append(mapkit.toString()));
 

@@ -19,14 +19,13 @@ public class AutomaticWeapon extends Weapon {
     public AutomaticWeapon() {
         super(createSprite());
         setMaxAmmunition(50);
-        setAmmunition(1);
     }
 
     @Contract(" -> new")
     public static @NotNull ISprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
-                        .getByName(BuiltInMapkit.NAME)
+                        .getMapkit(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
                         .createTexture(0, 32, 32, 16)
         );

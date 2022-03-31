@@ -19,14 +19,13 @@ public class ArrowWeapon extends Weapon {
     public ArrowWeapon() {
         super(createSprite());
         setMaxAmmunition(15);
-        setAmmunition(1);
     }
 
     @Contract(" -> new")
     public static @NotNull ISprite createSprite() {
         return new Sprite(
                 MapkitManager.getInstance()
-                        .getByName(BuiltInMapkit.NAME)
+                        .getMapkit(BuiltInMapkit.NAME)
                         .getTextureAtlas("tileset.png")
                         .createTexture(0, 64, 32, 16)
         );

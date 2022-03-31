@@ -18,7 +18,6 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
-import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.D2D2World;
@@ -28,6 +27,7 @@ import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
+import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -194,6 +194,14 @@ abstract public class Actor extends Animated implements
 
     public void attack() {
         fixBodyPartsY();
+
+
+        DebugPanel.createIfEnabled("weapons", () -> {
+            StringBuilder stringBuilder = new StringBuilder();
+            weapons.forEach(w -> stringBuilder.append(w).append('\n'));
+            return stringBuilder;
+        });
+
 
         attackTime = getCurrentWeapon().getAttackTime();
 
@@ -752,7 +760,7 @@ abstract public class Actor extends Animated implements
             return;
         }
 
-        if(weaponIndex == oldWeaponIndex) return;
+        if (weaponIndex == oldWeaponIndex) return;
 
         setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }
@@ -769,7 +777,7 @@ abstract public class Actor extends Animated implements
             return;
         }
 
-        if(weaponIndex == oldWeaponIndex) return;
+        if (weaponIndex == oldWeaponIndex) return;
 
         setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }
@@ -781,6 +789,7 @@ abstract public class Actor extends Animated implements
     public boolean addWeapon(@NotNull String weaponClassname, int ammunition) {
         Holder<Boolean> resultHolder = new Holder<>(false);
         Holder<Weapon> weaponHolder = new Holder<>();
+
         weapons.stream()
                 .filter(w -> w.getClass().getName().equals(weaponClassname))
                 .findAny()
@@ -791,7 +800,6 @@ abstract public class Actor extends Animated implements
                 }, () -> {
                     Weapon newWeapon = Weapon.createWeapon(weaponClassname);
                     boolean result = newWeapon.setAmmunition(ammunition);
-
                     weapons.add(newWeapon);
                     resultHolder.setValue(result);
                     weaponHolder.setValue(newWeapon);

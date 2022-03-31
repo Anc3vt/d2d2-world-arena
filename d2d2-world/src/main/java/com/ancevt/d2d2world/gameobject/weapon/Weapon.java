@@ -41,7 +41,7 @@ abstract public class Weapon {
 
     public Weapon(@NotNull ISprite sprite) {
         this.sprite = sprite;
-        mapkit = MapkitManager.getInstance().getByName(BuiltInMapkit.NAME);
+        mapkit = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME);
     }
 
     public @NotNull MapkitItem getBulletMapkitItem() {
@@ -69,14 +69,16 @@ abstract public class Weapon {
     }
 
     public boolean setAmmunition(int value) {
-        if(value > maxAmmunition) value = maxAmmunition;
-        if(ammunition == value) return false;
+        var oldAmmunition = ammunition;
+
         ammunition = value;
         if (ammunition > maxAmmunition) {
             ammunition = maxAmmunition;
         } else if (ammunition <= 0) {
             this.ammunition = 0;
         }
+
+        if (ammunition == oldAmmunition) return false;
 
         return true;
     }
@@ -164,7 +166,7 @@ abstract public class Weapon {
 
         @Property
         public int getOwnerGameObjectId() {
-            if(owner == null) return 0;
+            if (owner == null) return 0;
             return owner.getGameObjectId();
         }
 

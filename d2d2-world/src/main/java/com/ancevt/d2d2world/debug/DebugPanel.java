@@ -11,6 +11,7 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.touch.TouchButton;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static com.ancevt.d2d2.input.KeyCode.isShift;
 import static java.nio.file.StandardOpenOption.*;
@@ -182,6 +184,10 @@ public class DebugPanel extends DisplayObjectContainer {
             return Optional.of(debugPanel);
         }
         return Optional.empty();
+    }
+
+    public static Optional<DebugPanel> createIfEnabled(String propertyName, @NotNull Supplier<Object> supplier) {
+        return createIfEnabled(propertyName, supplier.get());
     }
 
     public static void setProperty(String key, Object value) {
