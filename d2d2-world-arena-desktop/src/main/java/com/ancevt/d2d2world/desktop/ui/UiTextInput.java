@@ -28,28 +28,24 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Clipboard;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.starter.norender.NoRenderStarter;
+import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.touch.TouchButton;
 import org.jetbrains.annotations.NotNull;
 
 public class UiTextInput extends DisplayObjectContainer implements EventListener {
 
     public static void main(String[] args) {
-        D2D2.init(new NoRenderStarter(800, 600));
-        //D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
         Root root = D2D2.getStage().getRoot();
+        root.setBackgroundColor(Color.WHITE);
 
-        UiTextInput uiTextInput = new UiTextInput() {
-            @Override
-            public void onEachFrame() {
-                moveX(0.5f);
-                System.out.println(getX());
-            }
-        };
+        UiTextInput uiTextInput = new UiTextInput();
         root.add(uiTextInput, 100, 100);
+        uiTextInput.setText("AAAAAAAAAAAAAAAAAAA");
 
         UiTextInput uiTextInput1 = new UiTextInput();
         root.add(uiTextInput1, 100, 140);
+        uiTextInput1.setText("AAAAAAAAAAAAAAAAAAA");
 
         UiTextInputProcessor.enableRoot(root);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
@@ -82,7 +78,6 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     private int selectionToIndex;
     private int selectionStartIndex;
     private String text;
-    private int scroll;
 
     public UiTextInput() {
         background = new PlainRect(DEFAULT_WIDTH, DEFAULT_HEIGHT, BACKGROUND_COLOR);
@@ -246,8 +241,12 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             case TouchButtonEvent.TOUCH_DOWN -> {
                 TouchButtonEvent touchButtonEvent = (TouchButtonEvent) event;
                 UiTextInputProcessor.INSTANCE.focus(this);
-                // TODO: repair caret position when scale mode is extended
-                setCaretPosition((int) (touchButtonEvent.getX() / uiText.getCharWidth()));
+
+                float x = touchButtonEvent.getX();
+                float c = uiText.getCharWidth();
+                float s = uiText.getAbsoluteScaleX();
+
+                setCaretPosition((int) ((x / c) / s));
             }
         }
     }
