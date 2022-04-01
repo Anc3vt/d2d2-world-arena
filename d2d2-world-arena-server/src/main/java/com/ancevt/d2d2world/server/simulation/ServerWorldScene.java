@@ -95,9 +95,8 @@ public class ServerWorldScene {
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             }
-
-
         }
+
     }
 
     private synchronized void this_eachFrame(Event event) {
@@ -146,6 +145,7 @@ public class ServerWorldScene {
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.getController().setEnabled(true);
         playerActor.setXY(64, 64);
+        playerActor.setPlayerColorValue(player.getColor());
         world.addGameObject(playerActor, 5, false);
         playerActor.setVisible(false);
         playerActorMap.put(player.getId(), playerActor);

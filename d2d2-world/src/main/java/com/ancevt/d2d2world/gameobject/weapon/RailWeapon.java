@@ -5,6 +5,7 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -55,11 +56,6 @@ public class RailWeapon extends Weapon {
     }
 
     @Override
-    public void playShootSound() {
-        getBulletMapkitItem().getMapkit().playSound("rail.ogg");
-    }
-
-    @Override
     public void playBulletDestroySound() {
 
     }
@@ -86,6 +82,12 @@ public class RailWeapon extends Weapon {
         }
 
         @Override
+        public void onAddToWorld(World world) {
+            super.onAddToWorld(world);
+            getMapkitItem().getMapkit().playSound("rail.ogg");
+        }
+
+        @Override
         public void process() {
             float[] xy = RotationUtils.xySpeedOfDegree(getDegree());
             move(getSpeed() * xy[0], getSpeed() * xy[1]);
@@ -100,6 +102,10 @@ public class RailWeapon extends Weapon {
                         if (getAlpha() < 0.01f) removeFromParent();
                     }
                 };
+                if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+                    sprite.setColor(playerActor.getPlayerColor());
+                }
+
                 doc.add(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
                 doc.setRotation(getRotation());
                 doc.setXY(getX(), getY());

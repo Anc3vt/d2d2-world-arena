@@ -1,4 +1,4 @@
-map | name = Test map | startRoomName = start-room | mapkitNames = mapkit0,ance | gravity = 1.0
+map | name = Test map | startRoomName = start-room | mapkitUids =  | mapkitNames = mapkit0,ance | gravity = 1.0 
 
 room | name = start-room | width = 992 | height = 340 | backgroundColor = 0 
 id = 1 | mapkit = ance | item = _ance1_36 | layer = 0 | name = _1 | x = 0.0 | y = 0.0 | repeatX = 62 | repeatY = 8 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
@@ -66,6 +66,8 @@ id = 74 | mapkit = builtin-mapkit | item = pickup_HealthPickup | layer = 3 | col
 id = 75 | mapkit = builtin-mapkit | item = pickup_HealthPickup | layer = 3 | collisionX = -8.0 | collisionY = -8.0 | collisionEnabled = true | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _46_47_49_74_75 | x = 672.0 | y = 256.0 | value = 5 | respawnTimeMillis = 30000 | pickUpSound = null 
 id = 93 | mapkit = builtin-mapkit | item = pickup_WeaponPickup | layer = 3 | collisionX = -8.0 | collisionY = -8.0 | collisionEnabled = true | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _28_93 | x = 256.0 | y = 192.0 | ammunition = 15 | weaponClassname = com.ancevt.d2d2world.gameobject.weapon.RailWeapon | respawnTimeMillis = 5000 | pickUpSound = null 
 id = 94 | mapkit = builtin-mapkit | item = pickup_WeaponPickup | layer = 3 | collisionX = -8.0 | collisionY = -8.0 | collisionEnabled = true | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _73_94 | x = 304.0 | y = 192.0 | ammunition = 15 | weaponClassname = com.ancevt.d2d2world.gameobject.weapon.ArrowWeapon | respawnTimeMillis = 30000 | pickUpSound = null 
+id = 108 | mapkit = builtin-mapkit | item = pickup_WeaponPickup | layer = 3 | collisionX = -8.0 | collisionY = -8.0 | collisionEnabled = true | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _28_93_108 | x = 256.0 | y = 144.0 | ammunition = 15 | weaponClassname = com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon | respawnTimeMillis = 5000 | pickUpSound = null 
+id = 109 | mapkit = builtin-mapkit | item = pickup_WeaponPickup | layer = 3 | collisionX = -8.0 | collisionY = -8.0 | collisionEnabled = true | collisionWidth = 16.0 | collisionHeight = 16.0 | name = _28_93_108_109 | x = 304.0 | y = 144.0 | ammunition = 15 | weaponClassname = com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon | respawnTimeMillis = 5000 | pickUpSound = null 
 id = 38 | mapkit = ance | item = _ance1_7 | layer = 7 | name = _8_38 | x = 480.0 | y = 288.0 | repeatX = 13 | repeatY = 14 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
 id = 55 | mapkit = ance | item = _ance1_7 | layer = 7 | name = _8_38_55 | x = 752.0 | y = 288.0 | repeatX = 15 | repeatY = 14 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 
 id = 82 | mapkit = ance | item = _ance1_5 | layer = 7 | name = _42_82 | x = 240.0 | y = 240.0 | repeatX = 1 | repeatY = 2 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 

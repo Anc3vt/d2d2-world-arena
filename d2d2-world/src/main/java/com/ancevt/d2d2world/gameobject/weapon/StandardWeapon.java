@@ -6,6 +6,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.ITight;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -35,11 +36,6 @@ public class StandardWeapon extends Weapon {
     @Override
     public int getAttackTime() {
         return 20;
-    }
-
-    @Override
-    public void playShootSound() {
-        getBulletMapkitItem().getMapkit().playSound("standard-bullet.ogg");
     }
 
     @Override
@@ -84,11 +80,21 @@ public class StandardWeapon extends Weapon {
             FramedSprite framedSprite = new FramedSprite(
                     a.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))
             );
+            if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+                framedSprite.setColor(playerActor.getPlayerColor());
+            }
+
             framedSprite.setFrame(0);
             framedSprite.setLoop(true);
             framedSprite.play();
             framedSprite.setXY(-framedSprite.getWidth() / 2, -framedSprite.getHeight() / 2);
             add(framedSprite);
+        }
+
+        @Override
+        public void onAddToWorld(World world) {
+            super.onAddToWorld(world);
+            getMapkitItem().getMapkit().playSound("standard-bullet.ogg");
         }
 
         @Override

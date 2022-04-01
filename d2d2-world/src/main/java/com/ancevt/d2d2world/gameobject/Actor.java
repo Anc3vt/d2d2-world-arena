@@ -209,8 +209,6 @@ abstract public class Actor extends Animated implements
             weapons.remove(getCurrentWeapon());
             nextWeapon();
             return;
-        } else {
-            getCurrentWeapon().playShootSound();
         }
 
         if (!D2D2World.isServer() || !isAlive() || damagingTime > 0) return;

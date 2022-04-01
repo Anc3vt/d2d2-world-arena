@@ -106,8 +106,6 @@ abstract public class Weapon {
         return true;
     }
 
-    abstract public void playShootSound();
-
     abstract public void playBulletDestroySound();
 
     public Actor getOwner() {

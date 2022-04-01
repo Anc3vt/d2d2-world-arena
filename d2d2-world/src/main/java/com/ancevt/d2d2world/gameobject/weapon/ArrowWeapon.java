@@ -5,6 +5,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.ITight;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -34,11 +35,6 @@ public class ArrowWeapon extends Weapon {
     @Override
     public int getAttackTime() {
         return 100;
-    }
-
-    @Override
-    public void playShootSound() {
-        getBulletMapkitItem().getMapkit().playSound("standard-bullet.ogg");
     }
 
     @Override
@@ -85,7 +81,16 @@ public class ArrowWeapon extends Weapon {
             removeEventListener(PlasmaWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
+            if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+                sprite.setColor(playerActor.getPlayerColor());
+            }
             add(sprite);
+        }
+
+        @Override
+        public void onAddToWorld(World world) {
+            super.onAddToWorld(world);
+            getMapkitItem().getMapkit().playSound("standard-bullet.ogg");
         }
 
         @Override

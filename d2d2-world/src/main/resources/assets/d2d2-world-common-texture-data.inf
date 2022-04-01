@@ -5,6 +5,23 @@
     d2d2-world-common-tileset-chat-hint  128 0 32 32
     d2d2-world-common-tileset-decor-door 160 0 16 48
     d2d2-world-common-tileset-screen-filter 96 32 32 32
+
+    d2d2-world-common-tileset-vrpanel1-left   176 0 16 32
+    d2d2-world-common-tileset-vrpanel1-middle 192 0 1 32
+    d2d2-world-common-tileset-vrpanel1-right  192 0 16 32
+
+    d2d2-world-common-tileset-vrpanel2-left   176 32 16 32
+    d2d2-world-common-tileset-vrpanel2-middle 192 32 1 32
+    d2d2-world-common-tileset-vrpanel2-right  192 32 16 32
+
+    d2d2-world-common-tileset-vrpanel3-left   176 64 16 32
+    d2d2-world-common-tileset-vrpanel3-middle 192 64 1 32
+    d2d2-world-common-tileset-vrpanel3-right  192 64 16 32
+
+    d2d2-world-common-tileset-vrpanel4-left   176 96 16 32
+    d2d2-world-common-tileset-vrpanel4-middle 192 96 1 32
+    d2d2-world-common-tileset-vrpanel4-right  192 96 16 32
+
     pickup-bubble    0 32 32 32
 
 :d2d2-world-particles.png

@@ -17,10 +17,12 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 
@@ -28,13 +30,30 @@ public class PlayerActor extends Actor {
 
     private boolean localPlayerActor;
     private boolean localAim;
+    private final Color playerColor;
 
     public PlayerActor(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
 
+        playerColor = new Color(0xFFFFFF);
+
         BitmapText playerNameBitmapText = new BitmapText();
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
+    }
+
+    @Property
+    public void setPlayerColorValue(int color) {
+        playerColor.setValue(color);
+    }
+
+    @Property
+    public int getPlayerColorValue() {
+        return playerColor.getValue();
+    }
+
+    public Color getPlayerColor() {
+        return playerColor;
     }
 
     public void setLocalPlayerActor(boolean localPlayerActor) {

@@ -5,6 +5,7 @@ import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -55,11 +56,6 @@ public class AutomaticWeapon extends Weapon {
     }
 
     @Override
-    public void playShootSound() {
-        getBulletMapkitItem().getMapkit().playSound("automatic.ogg");
-    }
-
-    @Override
     public void playBulletDestroySound() {
 
     }
@@ -82,9 +78,19 @@ public class AutomaticWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(AutomaticWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
-            sprite.setColor(Color.GRAY);
+            if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+                sprite.setColor(playerActor.getPlayerColor());
+            } else {
+                sprite.setColor(Color.GRAY);
+            }
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);
+        }
+
+        @Override
+        public void onAddToWorld(World world) {
+            super.onAddToWorld(world);
+            getMapkitItem().getMapkit().playSound("automatic.ogg");
         }
 
         @Override
