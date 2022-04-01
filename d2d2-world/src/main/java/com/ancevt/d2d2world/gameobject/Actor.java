@@ -528,8 +528,6 @@ abstract public class Actor extends Animated implements
     }
 
     public void go(final int direction) {
-        //setDirection(direction);
-
         goDirection = direction;
 
         if (!isGravityEnabled()) return;
@@ -557,10 +555,6 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void process() {
-        //if (!D2D2World.isServer()) return;
-
-        //setAnimation(AnimationKey.IDLE);
-
         if (attackTime > 0) {
             if (getVelocityY() == 0)
                 setAnimation(ATTACK);
@@ -718,6 +712,9 @@ abstract public class Actor extends Animated implements
                 .filter(w -> w.getClass().getName().equals(weaponClassname))
                 .findAny()
                 .ifPresent(w -> {
+
+                    getMapkitItem().getMapkit().playSound("weapon-switch.ogg");
+
                     currentWeapon = w;
                     currentWeapon.setOwner(this);
                     weaponContainer.setScale(2, 2);

@@ -81,7 +81,6 @@ public class RailWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(RailWeapon.class);
             Sprite sprite = new Sprite(getMapkitItem().getTexture());
-            sprite.setColor(Color.createRandomColor());
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);
         }

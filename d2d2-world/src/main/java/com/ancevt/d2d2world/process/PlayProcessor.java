@@ -76,7 +76,7 @@ public class PlayProcessor {
 
         tact++;
 
-        if (tact % 10 == 0) pushStates.clear();
+        if (tact % 100 == 0) pushStates.clear();
 
         for (int i = 0; i < world.getGameObjectCount(); i++) {
             final IGameObject o1 = world.getGameObject(i);
@@ -249,7 +249,8 @@ public class PlayProcessor {
     }
 
     private void processGravity(IGravitied o) {
-        if (!D2D2World.isServer() || !o.isGravityEnabled()) return;
+        //if (!D2D2World.isServer() || !o.isGravityEnabled()) return;
+        if (!o.isGravityEnabled()) return;
 
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);
