@@ -152,7 +152,10 @@ public class PlayProcessor {
     private void processDamage(@NotNull IDestroyable o, @NotNull IDamaging damaging) {
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
-        o.damage(damagingPower, damaging);
+
+        if (!(damaging.getDamagingOwnerActor() instanceof PlayerActor playerActor)) {
+            o.damage(damagingPower, damaging);
+        }
     }
 
     private void processHook(@NotNull IHookable o, AreaHook hook) {
@@ -235,8 +238,8 @@ public class PlayProcessor {
     }
 
     private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {
-        float x1 = o1.getX() + o1.getCollisionX() + 1;
-        float y1 = o1.getY() + o1.getCollisionY() + 1;
+        float x1 = o1.getX() + o1.getCollisionX();
+        float y1 = o1.getY() + o1.getCollisionY();
         float w1 = o1.getCollisionWidth() + 1;
         float h1 = o1.getCollisionHeight() + 1;
 
@@ -249,8 +252,8 @@ public class PlayProcessor {
     }
 
     private void processGravity(IGravitied o) {
-        //if (!D2D2World.isServer() || !o.isGravityEnabled()) return;
-        if (!o.isGravityEnabled()) return;
+        if (!D2D2World.isServer() || !o.isGravityEnabled()) return;
+        //if (!o.isGravityEnabled()) return;
 
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);

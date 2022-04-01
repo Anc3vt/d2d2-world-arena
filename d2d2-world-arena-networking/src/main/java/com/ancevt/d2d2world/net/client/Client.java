@@ -234,6 +234,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         );
     }
 
+    public void sendDamageReport(int damageValue, int damagingGameObjectId) {
+        sender.send(createMessageDamageReport(damageValue, damagingGameObjectId));
+    }
+
     public void sendAimXY(float aimX, float aimY) {
         sender.send(createMessagePlayerAimXY(aimX, aimY));
     }

@@ -23,8 +23,10 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.Property;
+import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
+import com.ancevt.d2d2world.world.WorldEvent;
 
 public class PlayerActor extends Actor {
 
@@ -64,6 +66,18 @@ public class PlayerActor extends Actor {
         return localPlayerActor;
     }
 
+    @Override
+    public void onCollide(ICollision collideWith) {
+        super.onCollide(collideWith);
+
+        if (collideWith instanceof Weapon.Bullet bullet && bullet.getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+            getWorld().dispatchEvent(WorldEvent.builder()
+                    .type(WorldEvent.PLAYER_ACTOR_TAKE_BULLET)
+                    .bullet(bullet)
+                    .build());
+        }
+    }
+
     public void setLocalAim(boolean value) {
         this.localAim = value;
         if (value) {
@@ -81,13 +95,13 @@ public class PlayerActor extends Actor {
     public void attack() {
         super.attack();
 
-        if(isLocalPlayerActor()) {
+        if (isLocalPlayerActor()) {
             D2D2World.getAim().attack();
         }
     }
 
     private void this_eachFrameLocalAim(Event event) {
-        if(isLocalPlayerActor()) {
+        if (isLocalPlayerActor()) {
             if (isOnWorld()) {
                 final World world = getWorld();
 

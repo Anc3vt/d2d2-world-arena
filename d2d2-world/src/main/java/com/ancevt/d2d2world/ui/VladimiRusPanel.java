@@ -62,25 +62,25 @@ public class VladimiRusPanel extends DisplayObjectContainer {
         final VladimiRusPanel panel1 = new VladimiRusPanel(TYPE_1);
         panel1.setWidth(64f);
         panel1.setColor(Color.YELLOW);
-        panel1.setScale(2f, 2f);
+        //panel1.setScale(2f, 2f);
         root.add(panel1, 0, 0);
 
         final VladimiRusPanel panel2 = new VladimiRusPanel(TYPE_2);
         panel2.setWidth(64f);
         panel2.setColor(Color.ORANGE);
-        panel2.setScale(2f, 2f);
+        //panel2.setScale(2f, 2f);
         root.add(panel2, 0, 100);
 
         final VladimiRusPanel panel3 = new VladimiRusPanel(TYPE_3);
         panel3.setWidth(96f);
         panel3.setColor(Color.LIGHT_GREEN);
-        panel3.setScale(2f, 2f);
+        //panel3.setScale(2f, 2f);
         root.add(panel3, 0, 200);
 
         final VladimiRusPanel panel4 = new VladimiRusPanel(TYPE_4);
         panel4.setWidth(128f);
         panel4.setColor(Color.WHITE);
-        panel4.setScale(2f, 2f);
+        //panel4.setScale(2f, 2f);
         root.add(panel4, 0, 300);
 
         D2D2.loop();

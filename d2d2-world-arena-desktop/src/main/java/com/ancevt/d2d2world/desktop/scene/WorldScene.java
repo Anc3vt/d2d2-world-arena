@@ -50,6 +50,7 @@ import com.ancevt.d2d2world.sync.SyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncMotion;
 import com.ancevt.d2d2world.world.Overlay;
 import com.ancevt.d2d2world.world.World;
+import com.ancevt.d2d2world.world.WorldEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,6 +91,9 @@ public class WorldScene extends DisplayObjectContainer {
         playerActorMap = new HashMap<>();
 
         world = new World();
+
+        world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
+
         gameObjectTexts = new GameObjectTexts(world);
 
         world.getPlayProcessor().setEnabled(false);
@@ -204,6 +208,11 @@ public class WorldScene extends DisplayObjectContainer {
                 }
         ));
         ammunitionHud = new AmmunitionHud();
+    }
+
+    private void world_playerActorTakeBullet(Event event) {
+        var e = (WorldEvent) event;
+        MODULE_CLIENT.sendDamageReport(e.getBullet().getDamagingPower(), e.getBullet().getGameObjectId());
     }
 
     private void config_configChangeListener(@NotNull String key, Object value) {

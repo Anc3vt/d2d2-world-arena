@@ -51,4 +51,9 @@ public class ServerProtocolImplListenerAdapter implements ServerProtocolImplList
     public void playerWeaponSwitch(int connectionId, int delta) {
 
     }
+
+    @Override
+    public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
+
+    }
 }

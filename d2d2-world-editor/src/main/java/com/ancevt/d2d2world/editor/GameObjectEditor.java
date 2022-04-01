@@ -26,7 +26,6 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.control.LocalPlayerController;
-import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.objects.GameObjectLayersMap;
 import com.ancevt.d2d2world.editor.objects.SelectArea;
 import com.ancevt.d2d2world.editor.objects.SelectRectangle;
@@ -700,11 +699,6 @@ public class GameObjectEditor {
         localPlayerController.setEnabled(true);
         playerActor.setController(localPlayerController);
 
-        //playerActor.addWeapon(RailWeapon.class, 100);
-        //playerActor.addWeapon(AutomaticWeapon.class, 100);
-        //playerActor.addWeapon(PlasmaWeapon.class, 100);
-        //playerActor.addWeapon(ArrowWeapon.class, 100);
-
         playerActor.addEventListener(Event.EACH_FRAME, event -> {
             StringBuilder s = new StringBuilder();
             playerActor.getWeapons().forEach(w -> {
@@ -714,10 +708,6 @@ public class GameObjectEditor {
 
                 s.append(w.toString()).append('\n');
             });
-
-
-            DebugPanel.setEnabled(true);
-            DebugPanel.createIfEnabled("playerActor", s.toString()).ifPresent(dp -> dp.setScale(1, 1));
         });
 
         getWorld().getCamera().setAttachedTo(playerActor);

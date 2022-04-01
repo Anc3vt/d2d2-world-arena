@@ -33,4 +33,6 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
     void playerAimXY(int playerId, float x, float y);
 
     void playerWeaponSwitch(int connectionId, int delta);
+
+    void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId);
 }

@@ -7,9 +7,7 @@ import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
-import com.ancevt.d2d2world.gameobject.DefaultMaps;
-import com.ancevt.d2d2world.gameobject.IdGenerator;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
@@ -150,7 +148,7 @@ public class ServerWorldScene {
         playerActor.setVisible(false);
         playerActorMap.put(player.getId(), playerActor);
 
-        //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
+        DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
 
         log.info("Add player actor {}", playerActor);
     }
@@ -216,6 +214,16 @@ public class ServerWorldScene {
         }
     }
 
+    public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
+        IDamaging damagingGameObject = (IDamaging) getWorld().getGameObjectById(damagingGameObjectId);
+
+        if(damagingGameObject != null) {
+            getPlayerActorByPlayerId(connectionId).ifPresent(
+                    playerActor -> playerActor.damage(damageValue, damagingGameObject)
+            );
+        }
+
+    }
 }
 
 

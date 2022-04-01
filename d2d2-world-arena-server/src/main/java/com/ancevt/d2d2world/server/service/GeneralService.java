@@ -131,6 +131,14 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
+    public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
+        MODULE_WORLD_SCENE.playerDamageReport(connectionId, damageValue, damagingGameObjectId);
+    }
+
+    /**
+     * {@link ServerProtocolImplListener} method
+     */
+    @Override
     public void ping(int playerId) {
         MODULE_SENDER.sendToPlayer(playerId, createMessagePing());
     }

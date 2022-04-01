@@ -42,6 +42,12 @@ public class MessageType {
      */
     public static final int CLIENT_REQUEST_FILE = 7;
 
+    /**
+     * b)t s)damageValue
+     */
+    public static final int CLIENT_DAMAGE_REPORT = 8;
+
+
     //                                           CLIENT <=== SERVER
 
     /**
