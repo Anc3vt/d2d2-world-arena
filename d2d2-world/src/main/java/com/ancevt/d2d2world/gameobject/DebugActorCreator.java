@@ -3,6 +3,7 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.constant.Direction;
+import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.World;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-public class DebugPlayerActorCreator {
+public class DebugActorCreator {
 
 
     public static synchronized @NotNull PlayerActor createTestPlayerActor(PlayerActor targetPlayerActor, @NotNull World world) {
@@ -23,8 +24,8 @@ public class DebugPlayerActorCreator {
         playerActor.setXY((float) (Math.random() * 900), (float) (Math.random() * 400));
         playerActor.setDirection(Direction.LEFT);
 
-        playerActor.setMaxHealth(25);
-        playerActor.setHealth(25);
+        playerActor.setMaxHealth(100);
+        playerActor.setHealth(100);
 
         world.addGameObject(playerActor, 5, false);
         playerActor.getController().setEnabled(true);
@@ -32,6 +33,7 @@ public class DebugPlayerActorCreator {
         playerActor.addEventListener(Event.EACH_FRAME, event -> {
             if (targetPlayerActor != null) {
                 playerActor.setAimXY(targetPlayerActor.getX(), targetPlayerActor.getY());
+                playerActor.addWeapon(RailWeapon.class, 1000);
             }
         });
 
@@ -39,7 +41,7 @@ public class DebugPlayerActorCreator {
             world.removeEventListener(playerActor);
             Async.runLater(2, TimeUnit.SECONDS,
                     () -> {
-                        createTestPlayerActor(targetPlayerActor, world);
+                        //createTestPlayerActor(targetPlayerActor, world);
                     }
             );
         });

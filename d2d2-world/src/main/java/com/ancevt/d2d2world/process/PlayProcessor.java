@@ -153,7 +153,7 @@ public class PlayProcessor {
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
 
-        if (!(damaging.getDamagingOwnerActor() instanceof PlayerActor playerActor)) {
+        if (!(damaging.getDamagingOwnerActor() instanceof PlayerActor playerActor && !playerActor.isHumanControllable())) {
             o.damage(damagingPower, damaging);
         }
     }

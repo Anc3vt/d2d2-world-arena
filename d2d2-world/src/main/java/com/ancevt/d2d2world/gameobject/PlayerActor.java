@@ -27,14 +27,16 @@ import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerActor extends Actor {
 
     private boolean localPlayerActor;
     private boolean localAim;
     private final Color playerColor;
+    private boolean humanControllable;
 
-    public PlayerActor(MapkitItem mapkitItem, int gameObjectId) {
+    public PlayerActor(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
 
         playerColor = new Color(0xFFFFFF);
@@ -42,6 +44,14 @@ public class PlayerActor extends Actor {
         BitmapText playerNameBitmapText = new BitmapText();
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
+    }
+
+    public void setHumanControllable(boolean humanControllable) {
+        this.humanControllable = humanControllable;
+    }
+
+    public boolean isHumanControllable() {
+        return humanControllable;
     }
 
     @Property
@@ -70,11 +80,16 @@ public class PlayerActor extends Actor {
     public void onCollide(ICollision collideWith) {
         super.onCollide(collideWith);
 
-        if (collideWith instanceof Weapon.Bullet bullet && bullet.getDamagingOwnerActor() instanceof PlayerActor playerActor) {
-            getWorld().dispatchEvent(WorldEvent.builder()
-                    .type(WorldEvent.PLAYER_ACTOR_TAKE_BULLET)
-                    .bullet(bullet)
-                    .build());
+        if (!D2D2World.isServer()) {
+            if (isLocalPlayerActor() && collideWith instanceof Weapon.Bullet bullet &&
+                    bullet.getDamagingOwnerActor() != this &&
+                    bullet.getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+
+                getWorld().dispatchEvent(WorldEvent.builder()
+                        .type(WorldEvent.PLAYER_ACTOR_TAKE_BULLET)
+                        .bullet(bullet)
+                        .build());
+            }
         }
     }
 

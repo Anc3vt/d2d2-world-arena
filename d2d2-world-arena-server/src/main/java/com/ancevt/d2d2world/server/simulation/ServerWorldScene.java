@@ -141,6 +141,7 @@ public class ServerWorldScene {
     public void addPlayer(@NotNull Player player, @NotNull String mapkitItemName) {
         MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemName);
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
+        playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);
         playerActor.setXY(64, 64);
         playerActor.setPlayerColorValue(player.getColor());
@@ -148,7 +149,7 @@ public class ServerWorldScene {
         playerActor.setVisible(false);
         playerActorMap.put(player.getId(), playerActor);
 
-        DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
+        DebugActorCreator.createTestPlayerActor(playerActor, world).setXY(50, 64);
 
         log.info("Add player actor {}", playerActor);
     }

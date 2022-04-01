@@ -25,6 +25,9 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import org.jetbrains.annotations.NotNull;
+
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 
 abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized {
 
@@ -34,7 +37,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     private boolean backward;
     private boolean animationsPrepared;
 
-    public Animated(MapkitItem mapKitItem, int gameObjectId) {
+    public Animated(@NotNull MapkitItem mapKitItem, int gameObjectId) {
         setMapkitItem(mapKitItem);
         setGameObjectId(gameObjectId);
         prepareAnimations();
@@ -110,6 +113,10 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
         for (int i = 0; i < animations.length; i++) {
             IFramedDisplayObject currentFrameSet;
             IFramedDisplayObject fs = currentFrameSet = animations[i];
+
+            if(getMapkitItem() == null) {
+                debug("Animated:115: <A>" + this);
+            }
 
             if (fs == null || !getMapkitItem().isAnimationKeyExists(animationKey)) continue;
 

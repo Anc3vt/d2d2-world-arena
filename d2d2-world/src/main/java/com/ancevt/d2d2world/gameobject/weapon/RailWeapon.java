@@ -126,6 +126,7 @@ public class RailWeapon extends Weapon {
             setToRemove = true;
             setCollisionEnabled(false);
 
+
             IDisplayObject displayObjectContainer = Particle.miniExplosion(5, Color.WHITE, 2f);
             displayObjectContainer.setScale(0.25f, 0.25f);
             if(getParent() != null) {
