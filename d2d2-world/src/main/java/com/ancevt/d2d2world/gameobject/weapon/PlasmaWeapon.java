@@ -114,9 +114,11 @@ public class PlasmaWeapon extends Weapon {
             setToRemove = true;
             setCollisionEnabled(false);
 
-            IDisplayObject displayObjectContainer = Particle.miniExplosion(5, sprite.getColor(), 5f);
-            displayObjectContainer.setScale(0.25f, 0.25f);
-            getParent().add(displayObjectContainer, getX(), getY());
+            if(hasParent()) {
+                IDisplayObject displayObjectContainer = Particle.miniExplosion(5, sprite.getColor(), 5f);
+                displayObjectContainer.setScale(0.25f, 0.25f);
+                getParent().add(displayObjectContainer, getX(), getY());
+            }
         }
 
         @Override
