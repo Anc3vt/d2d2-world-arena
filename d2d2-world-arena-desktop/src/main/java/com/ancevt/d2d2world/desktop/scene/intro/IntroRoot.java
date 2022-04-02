@@ -40,9 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
@@ -85,13 +82,9 @@ public class IntroRoot extends Root {
 
         uiTextInputServer.addEventListener(UiTextInputEvent.TEXT_ENTER, event -> uiTextInputPlayerName.requestFocus());
 
-        try {
-            if (Files.exists(Paths.get("playername.txt"))) {
-                String playerName = Files.readString(Paths.get("playername.txt"));
-                uiTextInputPlayerName.setText(playerName);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
+        String playername = MODULE_CONFIG.getString(PLAYERNAME);
+        if (!playername.equals("")) {
+            uiTextInputPlayerName.setText(playername);
         }
 
         panel = new DisplayObjectContainer();
@@ -125,7 +118,7 @@ public class IntroRoot extends Root {
             );
             add(plainRect);
 
-            add(new CityBgSprite(), 0, 200);
+            add(new CityBgSprite(), 0, 205);
 
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
@@ -154,8 +147,8 @@ public class IntroRoot extends Root {
 
             add(new UAFlag());
 
-            if(!MODULE_CONFIG.getString(PLAYER).equals("") && !MODULE_CONFIG.getString(SERVER).equals("")) {
-                enter(MODULE_CONFIG.getString(SERVER), MODULE_CONFIG.getString(PLAYER));
+            if (!MODULE_CONFIG.getString(PLAYERNAME).equals("") && !MODULE_CONFIG.getString(SERVER).equals("")) {
+                enter(MODULE_CONFIG.getString(SERVER), MODULE_CONFIG.getString(PLAYERNAME));
             }
 
         });
@@ -172,24 +165,21 @@ public class IntroRoot extends Root {
             }
         });
 
-        if(MODULE_CONFIG.getBoolean(FULLSCREEN)) {
+        if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
             D2D2.setFullscreen(true);
         }
     }
 
     private void keyEnter(Event event) {
-        var e = (UiTextInputEvent) event;
-        if (PatternMatcher.check(e.getText(), NAME_PATTERN))
-            enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+        enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
     }
 
     public void enter(String server, String localPlayerName) {
+        if (!PatternMatcher.check(uiTextInputPlayerName.getText(), NAME_PATTERN)) return;
+
         log.info("Enter try, server: {}, player name: {}", server, localPlayerName);
-        try {
-            Files.writeString(Paths.get("playername.txt"), localPlayerName);
-        } catch (IOException ex) {
-            throw new IllegalStateException(ex);
-        }
+
+        MODULE_CONFIG.setProperty(PLAYERNAME, localPlayerName);
 
         if (!server.contains(":")) {
             server = server.concat(":2245");

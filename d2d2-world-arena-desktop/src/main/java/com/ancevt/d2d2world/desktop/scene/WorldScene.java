@@ -292,7 +292,7 @@ public class WorldScene extends DisplayObjectContainer {
         charSelectScene.addEventListener(CharSelectScene.CharSelectSceneEvent.CHARACTER_SELECT, event -> {
             var e = (CharSelectScene.CharSelectSceneEvent) event;
             var mapkitName = e.getMapkitItem().getMapkit().getName();
-            var mapkitItemName = e.getMapkitItem().getName();
+            var mapkitItemId = e.getMapkitItem().getId();
 
             addRootAndChatEventsIfNotYet();
 
@@ -309,7 +309,7 @@ public class WorldScene extends DisplayObjectContainer {
 
             MODULE_CLIENT.sendDto(PlayerReadyToSpawnDto.builder()
                     .mapkitName(mapkitName)
-                    .mapkitItemName(mapkitItemName)
+                    .mapkitItemId(mapkitItemId)
                     .build()
             );
 

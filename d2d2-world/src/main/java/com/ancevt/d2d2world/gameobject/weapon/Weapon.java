@@ -106,8 +106,6 @@ abstract public class Weapon {
         return true;
     }
 
-    abstract public void playBulletDestroySound();
-
     public Actor getOwner() {
         return owner;
     }
@@ -116,7 +114,7 @@ abstract public class Weapon {
         this.owner = owner;
     }
 
-    public static Weapon createWeapon(String className) {
+    public static @NotNull Weapon createWeapon(String className) {
         try {
             return (Weapon) Class.forName(className).getConstructor().newInstance();
         } catch (ClassNotFoundException | InvocationTargetException |

@@ -78,15 +78,15 @@ public abstract class Mapkit {
     }
 
     public MapkitItem putItem(@NotNull MapkitItem item) {
-        if (items.containsKey(item.getName())) {
-            throw new IllegalStateException("duplicate mapkit item name: " + item.getName());
+        if (items.containsKey(item.getId())) {
+            throw new IllegalStateException("duplicate mapkit item id: " + item.getId());
         }
-        items.put(item.getName(), item);
+        items.put(item.getId(), item);
         return item;
     }
 
     public void removeItem(@NotNull MapkitItem item) {
-        items.remove(item.getName());
+        items.remove(item.getId());
     }
 
     @SneakyThrows
@@ -94,10 +94,10 @@ public abstract class Mapkit {
         Sound.play(MapIO.mapkitsDirectory + name + "/" + filename);
     }
 
-    public MapkitItem getItem(String mapkitItemName) {
-        MapkitItem mapkitItem = items.get(mapkitItemName);
+    public MapkitItem getItem(String mapkitItemId) {
+        MapkitItem mapkitItem = items.get(mapkitItemId);
 
-        if (mapkitItem == null) throw new IllegalStateException("Mapkit item not defined, name: " + mapkitItemName
+        if (mapkitItem == null) throw new IllegalStateException("Mapkit item not defined, id: " + mapkitItemId
                 + ". Mapkit: " + getName());
         return mapkitItem;
     }

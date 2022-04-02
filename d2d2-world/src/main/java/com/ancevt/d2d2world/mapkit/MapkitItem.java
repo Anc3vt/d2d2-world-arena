@@ -73,8 +73,8 @@ public class MapkitItem {
         }
     }
 
-    public String getName() {
-        return dataEntry.getString(DataKey.NAME);
+    public String getId() {
+        return dataEntry.getString(DataKey.ID);
     }
 
     public final DataEntry getDataEntry() {
@@ -121,6 +121,7 @@ public class MapkitItem {
         result[AnimationKey.FALL] = prepareTexturesOfKey(DataKey.FALL);
         result[AnimationKey.FALL_ATTACK] = prepareTexturesOfKey(DataKey.FALL_ATTACK);
         result[AnimationKey.EXTRA_ANIMATION] = prepareTexturesOfKey(DataKey.EXTRA_ANIMATION);
+        result[AnimationKey.DEATH] = prepareTexturesOfKey(DataKey.DEATH);
 
         return result;
     }

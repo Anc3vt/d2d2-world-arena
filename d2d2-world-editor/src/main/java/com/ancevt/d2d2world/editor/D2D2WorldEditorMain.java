@@ -114,8 +114,6 @@ public class D2D2WorldEditorMain {
             );
         }
 
-        //DebugPlayerActorCreator.createTestPlayerActor(playerActor, world);
-
         root.add(new FpsMeter(), 5, 0);
         D2D2.getStage().setScaleMode(ScaleMode.REAL);
         D2D2.loop();

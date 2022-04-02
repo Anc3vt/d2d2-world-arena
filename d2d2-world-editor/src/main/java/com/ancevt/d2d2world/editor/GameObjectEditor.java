@@ -739,5 +739,7 @@ public class GameObjectEditor {
                 playerActor.prevWeapon();
             }
         });
+
+        DebugActorCreator.createTestPlayerActor(playerActor, getWorld());
     }
 }

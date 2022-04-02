@@ -361,6 +361,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         MODULE_CHAT.dispose();
         new Lock().lock(1, SECONDS);
         DebugPanel.saveAll();
+        MODULE_CONFIG.save();
         System.exit(0);
     }
 }

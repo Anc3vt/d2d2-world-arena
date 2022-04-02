@@ -55,11 +55,6 @@ public class PlasmaWeapon extends Weapon {
     }
 
     @Override
-    public void playBulletDestroySound() {
-
-    }
-
-    @Override
     public String toString() {
         return super.toString();
     }

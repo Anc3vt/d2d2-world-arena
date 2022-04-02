@@ -39,11 +39,6 @@ public class StandardWeapon extends Weapon {
     }
 
     @Override
-    public void playBulletDestroySound() {
-
-    }
-
-    @Override
     public boolean shoot(@NotNull World world) {
         if(!super.shoot(world)) return false;
         Bullet bullet = getNextBullet(getOwner().getArmDegree());
@@ -125,24 +120,5 @@ public class StandardWeapon extends Weapon {
             super.process();
         }
 
-        @Override
-        public void setFloorOnly(boolean b) {
-
-        }
-
-        @Override
-        public boolean isFloorOnly() {
-            return false;
-        }
-
-        @Override
-        public void setPushable(boolean b) {
-
-        }
-
-        @Override
-        public boolean isPushable() {
-            return false;
-        }
     }
 }

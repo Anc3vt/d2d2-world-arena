@@ -138,8 +138,8 @@ public class ServerWorldScene {
         return Optional.ofNullable(playerActorMap.get(playerId));
     }
 
-    public void addPlayer(@NotNull Player player, @NotNull String mapkitItemName) {
-        MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemName);
+    public void addPlayer(@NotNull Player player, @NotNull String mapkitItemId) {
+        MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemId);
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);

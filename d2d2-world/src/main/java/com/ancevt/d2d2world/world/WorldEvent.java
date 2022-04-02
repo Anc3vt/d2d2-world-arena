@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.world;
 
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.Room;
 import lombok.Data;
@@ -30,11 +31,12 @@ import lombok.experimental.SuperBuilder;
 public class WorldEvent extends Event<World> {
 
     public static final String CHANGE_ROOM = "changeRoom";
-    public static final String ACTOR_DEATH = "actorDeath";
+    public static final String ACTOR_DEATH = "worldActorDeath";
     public static final String WORLD_PROCESS = "worldProcess";
     public static final String PLAYER_ACTOR_TAKE_BULLET = "playerActorTakeBullet";
 
     private final Weapon.Bullet bullet;
+    private final Actor actor;
     private final int deadActorGameObjectId;
     private final int killerGameObjectId;
     private final Room room;

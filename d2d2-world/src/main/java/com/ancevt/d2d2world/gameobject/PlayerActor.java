@@ -93,6 +93,15 @@ public class PlayerActor extends Actor {
         }
     }
 
+    @Override
+    public void attack() {
+        super.attack();
+
+        if (isLocalPlayerActor()) {
+            D2D2World.getAim().attack();
+        }
+    }
+
     public void setLocalAim(boolean value) {
         this.localAim = value;
         if (value) {
@@ -104,15 +113,6 @@ public class PlayerActor extends Actor {
 
     public boolean isLocalAim() {
         return localAim;
-    }
-
-    @Override
-    public void attack() {
-        super.attack();
-
-        if (isLocalPlayerActor()) {
-            D2D2World.getAim().attack();
-        }
     }
 
     private void this_eachFrameLocalAim(Event event) {

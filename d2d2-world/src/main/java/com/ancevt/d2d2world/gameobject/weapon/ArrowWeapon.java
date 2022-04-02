@@ -3,9 +3,12 @@ package com.ancevt.d2d2world.gameobject.weapon;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.area.AreaCollision;
+import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -38,13 +41,8 @@ public class ArrowWeapon extends Weapon {
     }
 
     @Override
-    public void playBulletDestroySound() {
-
-    }
-
-    @Override
     public boolean shoot(@NotNull World world) {
-        if(!super.shoot(world)) return false;
+        if (!super.shoot(world)) return false;
         Bullet bullet = getNextBullet(getOwner().getArmDegree());
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
@@ -81,7 +79,7 @@ public class ArrowWeapon extends Weapon {
             removeEventListener(PlasmaWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
-            if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+            if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
                 sprite.setColor(playerActor.getPlayerColor());
             }
             add(sprite);
@@ -104,7 +102,7 @@ public class ArrowWeapon extends Weapon {
             setToRemove = true;
             setDamagingOwnerActor(null);
             setDamagingPower(0);
-            //setCollisionEnabled(true);
+            sprite.setTexture(getMapkitItem().getTexture(AnimationKey.DEATH, 0));
         }
 
         @Override
@@ -112,7 +110,7 @@ public class ArrowWeapon extends Weapon {
             if (setToRemove && isOnWorld()) {
                 destroyTime--;
 
-                if(destroyTime <= 0) {
+                if (destroyTime <= 0) {
                     toAlpha(0.99f);
                 }
 
@@ -129,6 +127,9 @@ public class ArrowWeapon extends Weapon {
         @Override
         public void onCollide(ICollision collideWith) {
             super.onCollide(collideWith);
+            if (!setToRemove && !(collideWith instanceof AreaCollision) && !(collideWith instanceof Pickup)) {
+                getWorld().removeGameObject(this, false);
+            }
         }
 
     }

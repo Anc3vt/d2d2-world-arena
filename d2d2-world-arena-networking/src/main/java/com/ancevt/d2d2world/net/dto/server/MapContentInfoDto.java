@@ -31,7 +31,7 @@ public class MapContentInfoDto implements Dto {
     @Builder
     @RequiredArgsConstructor
     public static class Character {
-        private final String mapkitItemName;
+        private final String mapkitItemId;
         private final String mapkitName;
     }
 }

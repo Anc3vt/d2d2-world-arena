@@ -18,8 +18,10 @@
 package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2world.data.DataEntry;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
+import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.*;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -43,9 +45,9 @@ public class BuiltInMapkit extends Mapkit {
 
     public Set<MapkitItem> getCharacterMapkitItems() {
         final Set<MapkitItem> items = new HashSet<>();
-        keySet().forEach(mapkitItemName->{
-            if(mapkitItemName.startsWith("character_")) {
-                items.add(getItem(mapkitItemName));
+        keySet().forEach(mapkitItemId->{
+            if(mapkitItemId.startsWith("character_")) {
+                items.add(getItem(mapkitItemId));
             }
         });
         return items;
@@ -63,7 +65,7 @@ public class BuiltInMapkit extends Mapkit {
                 for (Class<?> pickupClass : pickupClasses) {
                     try {
                         add("""
-                                name = pickup_""" + pickupClass.getSimpleName() + """
+                                id = pickup_""" + pickupClass.getSimpleName() + """
                                 | class = """ + pickupClass.getName() + """
                                 | collisionX =-8|collisionY =-8|collisionWidth =16|collisionHeight =16
                                 | atlas =$ATLAS$
@@ -80,7 +82,7 @@ public class BuiltInMapkit extends Mapkit {
                 }
 
                 add("""
-                        name = character_blake
+                        id = character_blake
                         | readableName = Blake
                         | class =""" + PlayerActor.class.getName() + """
                         | damagePower = 1
@@ -98,10 +100,10 @@ public class BuiltInMapkit extends Mapkit {
                         | atlas=$CHARACTER_ATLAS$
                         | idle = 96,0,48,48; 144,0,48,48
                         | attack = 96,0,48,48; 144,0,48,48
-                        | walk = 192,0,48,48; 240,0,48,48; 288,0,48,48; 336,0,48,48
+                        | walk = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48
                         | walkAttack = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48
-                        | jump = 192,48,48,48
-                        | fall = 240,48,48,48
+                        | jump = 288,48,48,48
+                        | fall = 336,48,48,48
                         | jumpAttack = 288,48,48,48
                         | fallAttack = 336,48,48,48
                         | hook = 288,96,48,48
@@ -114,7 +116,7 @@ public class BuiltInMapkit extends Mapkit {
                         """);
 
                 add("""
-                        name = character_ava
+                        id = character_ava
                         | readableName = Ava
                         | class =""" + PlayerActor.class.getName() + """
                         | damagePower = 1
@@ -132,10 +134,10 @@ public class BuiltInMapkit extends Mapkit {
                         | atlas=$CHARACTER_ATLAS$
                         | idle = 96,192,48,48; 144,192,48,48
                         | attack = 96,192,48,48; 144,192,48,48
-                        | walk = 192,192,48,48; 240,192,48,48; 288,192,48,48; 336,192,48,48
+                        | walk = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48
                         | walkAttack = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48
-                        | jump = 192,240,48,48
-                        | fall = 240,240,48,48
+                        | jump = 288,240,48,48
+                        | fall = 336,240,48,48
                         | jumpAttack = 288,240,48,48
                         | fallAttack = 336,240,48,48
                         | hook = 288,288,48,48
@@ -143,12 +145,46 @@ public class BuiltInMapkit extends Mapkit {
                         | damage = 48,336,48,48 
                         | head = 240,336,16,24; 256,336,16,24
                         | headFall = 272,336,16,24
-                        | arm = 240,368,16,16
+                        | arm = 240,384,16,16
                         | damageSound=character-damage.ogg
                         """);
 
                 add("""
-                        name = bullet_of_""" + StandardWeapon.class.getSimpleName() + """
+                        id = character_ava2
+                        | readableName = Ava
+                        | class =""" + PlayerActor.class.getName() + """
+                        | damagePower = 1
+                        | weight = 0.4
+                        | maxHealth = 100
+                        | health = 100
+                        | speed = 0.75
+                        | jumpPower = 3.5
+                        | collisionX = -6
+                        | collisionY = -12
+                        | collisionWidth = 12
+                        | collisionHeight = 28
+                        | weaponX=14
+                        | weaponY=-3
+                        | atlas=$CHARACTER_ATLAS$
+                        | idle = 96,384,48,48; 144,384,48,48
+                        | attack = 96,384,48,48; 144,384,48,48
+                        | walk = 0,432,48,48; 48,432,48,48; 96,432,48,48; 144,432,48,48
+                        | walkAttack = 0,432,48,48; 48,432,48,48; 96,432,48,48; 144,432,48,48
+                        | jump = 288,432,48,48
+                        | fall = 336,432,48,48
+                        | jumpAttack = 288,432,48,48
+                        | fallAttack = 336,432,48,48
+                        | hook = 288,480,48,48
+                        | hookAttack = 336,480,48,48
+                        | damage = 48,528,48,48 
+                        | head = 240,528,16,24; 256,528,16,24
+                        | headFall = 272,528,16,24
+                        | arm = 240,560,16,16
+                        | damageSound=character-damage.ogg
+                        """);
+
+                add("""
+                        id = bullet_of_""" + StandardWeapon.class.getSimpleName() + """
                         | class =""" + StandardWeapon.StandardBullet.class.getName() + """
                         | damagingPower = 15
                         | speed = 5
@@ -158,17 +194,18 @@ public class BuiltInMapkit extends Mapkit {
                         """);
 
                 add("""
-                        name = bullet_of_""" + ArrowWeapon.class.getSimpleName() + """
+                        id = bullet_of_""" + ArrowWeapon.class.getSimpleName() + """
                         | class =""" + ArrowWeapon.ArrowBullet.class.getName() + """
                         | damagingPower = 20
                         | speed = 8
                         | collisionX = -5 | collisionY = -1 | collisionWidth = 10 | collisionHeight = 3
                         | atlas = $ATLAS$
                         | idle = 32,64,32,16
+                        | death = 64,64,32,16
                         """);
 
                 add("""
-                        name = bullet_of_""" + RailWeapon.class.getSimpleName() + """
+                        id = bullet_of_""" + RailWeapon.class.getSimpleName() + """
                         | class =""" + RailWeapon.RailBullet.class.getName() + """
                         | damagingPower = 49
                         | speed = 31
@@ -177,7 +214,7 @@ public class BuiltInMapkit extends Mapkit {
                         | idle = 32,48,32,16
                         """);
                 add("""
-                        name = bullet_of_""" + AutomaticWeapon.class.getSimpleName() + """
+                        id = bullet_of_""" + AutomaticWeapon.class.getSimpleName() + """
                         | class =""" + AutomaticWeapon.AutomaticBullet.class.getName() + """
                         | damagingPower = 15
                         | speed = 15
@@ -186,7 +223,7 @@ public class BuiltInMapkit extends Mapkit {
                         | idle = 32,32,32,16
                         """);
                 add("""
-                        name = bullet_of_""" + PlasmaWeapon.class.getSimpleName() + """
+                        id = bullet_of_""" + PlasmaWeapon.class.getSimpleName() + """
                         | class =""" + PlasmaWeapon.PlasmaBullet.class.getName() + """
                         | damagingPower = 10
                         | speed = 15
@@ -206,6 +243,14 @@ public class BuiltInMapkit extends Mapkit {
             );
             createItem(mapkitDataEntry);
         }
+    }
+
+    public static WeaponPickup createWeaponPickupMapkitItem(Weapon weapon) {
+        WeaponPickup weaponPickup = (WeaponPickup) getInstance().getItem("pickup_" + WeaponPickup.class.getSimpleName()).createGameObject(IdGenerator.INSTANCE.getNewId());
+        weaponPickup.setWeaponClassname(weapon.getClass().getName());
+        weaponPickup.setAmmunition(weapon.getAmmunition());
+        weaponPickup.setRespawnTimeMillis(0);
+        return weaponPickup;
     }
 
     public Set<Class<? extends Pickup>> findAllSubclassesOfPickup() {

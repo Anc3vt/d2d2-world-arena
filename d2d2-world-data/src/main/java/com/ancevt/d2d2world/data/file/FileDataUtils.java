@@ -95,6 +95,15 @@ public class FileDataUtils {
         }
     }
 
+    public static void save(String path, String text) {
+        try {
+            directory(path);
+            Files.writeString(Path.of(path), text, WRITE, CREATE, TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     public static void truncate(String path) {
         save(path, new byte[]{});
     }

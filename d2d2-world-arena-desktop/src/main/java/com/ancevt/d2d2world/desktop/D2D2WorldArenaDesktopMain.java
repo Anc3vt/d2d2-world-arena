@@ -73,7 +73,7 @@ public class D2D2WorldArenaDesktopMain {
         log.info(projectName);
         log.info(version);
 
-        String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYER);
+        String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYERNAME);
 
         //D2D2.init(new NoRenderStarter(900, 600));
         var screenDimension = ScreenUtils.getDimension();

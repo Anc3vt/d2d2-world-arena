@@ -55,9 +55,9 @@ public class AreaMapkit extends Mapkit {
             icon = new PlainRect(1.0f, 1.0f, color);
         }
 
-        private static @NotNull DataEntry createDataEntry(String name, @NotNull Class<?> gameObjectClass) {
+        private static @NotNull DataEntry createDataEntry(String id, @NotNull Class<?> gameObjectClass) {
             DataEntry dataEntry = DataEntry.newInstance();
-            dataEntry.add(DataKey.NAME, name);
+            dataEntry.add(DataKey.ID, id);
             dataEntry.add(DataKey.CLASS, gameObjectClass.getName());
             return dataEntry;
         }

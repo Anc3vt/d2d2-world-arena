@@ -259,11 +259,10 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                 if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
             });
 
-            playerMapkitItemMap.put(playerId, d.getMapkitItemName());
+            playerMapkitItemMap.put(playerId, d.getMapkitItemId());
 
             MODULE_WORLD_SCENE.addPlayer(
-                    MODULE_PLAYER_MANAGER.getPlayerById(playerId).orElseThrow(),
-                    d.getMapkitItemName()
+                    MODULE_PLAYER_MANAGER.getPlayerById(playerId).orElseThrow(), d.getMapkitItemId()
             );
 
             MODULE_WORLD_SCENE.getPlayerActorByPlayerId(playerId).ifPresent(pa -> pa.setVisible(true));
@@ -497,12 +496,12 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
         characters.add(MapContentInfoDto.Character.builder()
                 .mapkitName("builtin-mapkit")
-                .mapkitItemName("character_blake")
+                .mapkitItemId("character_blake")
                 .build()
         );
         characters.add(MapContentInfoDto.Character.builder()
                 .mapkitName("builtin-mapkit")
-                .mapkitItemName("character_ava")
+                .mapkitItemId("character_ava")
                 .build()
         );
 

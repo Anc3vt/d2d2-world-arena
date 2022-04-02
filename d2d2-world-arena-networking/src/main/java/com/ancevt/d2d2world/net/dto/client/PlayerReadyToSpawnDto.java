@@ -12,5 +12,5 @@ import lombok.RequiredArgsConstructor;
 public class PlayerReadyToSpawnDto implements Dto {
 
     private final String mapkitName;
-    private final String mapkitItemName;
+    private final String mapkitItemId;
 }

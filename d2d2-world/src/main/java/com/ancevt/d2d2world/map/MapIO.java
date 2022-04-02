@@ -88,7 +88,7 @@ public class MapIO {
 
             if (gameObjectId == 0) gameObjectId = IdGenerator.INSTANCE.getNewId();
 
-            String mapkitItemName = dataEntry.getString(DataKey.ITEM);
+            String mapkitItemId = dataEntry.getString(DataKey.ITEM);
             int layer = dataEntry.getInt(DataKey.LAYER);
 
             String mapkitName = dataEntry.getString(DataKey.MAPKIT);
@@ -96,7 +96,7 @@ public class MapIO {
             Mapkit mapkit = MapkitManager.getInstance().getMapkit(mapkitName);
 
             if (room == null) throw new IllegalStateException("room undefined");
-            IGameObject gameObject = (IGameObject) setProperties(mapkit.getItem(mapkitItemName).createGameObject(gameObjectId), dataEntry);
+            IGameObject gameObject = (IGameObject) setProperties(mapkit.getItem(mapkitItemId).createGameObject(gameObjectId), dataEntry);
             room.addGameObject(layer, gameObject);
         }
 
@@ -133,7 +133,7 @@ public class MapIO {
 
                     gameObjectDataEntry.add(DataKey.MAPKIT, gameObject.getMapkitItem().getMapkit().getName());
 
-                    gameObjectDataEntry.add(DataKey.ITEM, gameObject.getMapkitItem().getName());
+                    gameObjectDataEntry.add(DataKey.ITEM, gameObject.getMapkitItem().getId());
                     gameObjectDataEntry.add(DataKey.LAYER, String.valueOf(layer));
 
                     getProperties(gameObject, gameObjectDataEntry);

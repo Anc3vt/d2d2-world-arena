@@ -91,6 +91,10 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
                 setCollisionEnabled(false);
                 pickUpTimeMillis = System.currentTimeMillis();
 
+                if(respawnTimeMillis <= 0) {
+                    world.removeEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId());
+                    world.removeGameObject(this, false);
+                }
                 if(playerActor.isOnWorld()) {
                     playerActor.getWorld().getSyncDataAggregator().pickUp(playerActor, getGameObjectId());
                 }

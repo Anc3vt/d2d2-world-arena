@@ -212,7 +212,7 @@ public class MapkitToolsPanel extends TitledPanel {
                 MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
 
                 if (mapkitItem.getGameObjectClass() == PlayerActor.class ||
-                        mapkitItem.getName().startsWith("bullet_of_")) continue;
+                        mapkitItem.getId().startsWith("bullet_of_")) continue;
 
                 if ((dropListClass.getSelectedKey() == ALL ||
                         dropListClass.getSelectedKey() == mapkitItem.getGameObjectClass())
@@ -277,7 +277,7 @@ public class MapkitToolsPanel extends TitledPanel {
     }
 
     public void setMapkitItem(@NotNull MapkitItem mapkitItem) {
-        label.setText(mapkitItem.getName());
+        label.setText(mapkitItem.getId());
     }
 
     public void onMapkitItemSelected(MapkitItem mapkitItem) {

@@ -20,9 +20,7 @@ package com.ancevt.d2d2world.desktop;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +38,7 @@ public class DesktopConfig {
     public static final String FILE_NAME = "d2d2-world-arena-desktop.conf";
 
     public static final String SERVER = "server";
-    public static final String PLAYER = "player";
+    public static final String PLAYERNAME = "playername";
     public static final String RCON_PASSWORD = "rcon-password";
     public static final String DEBUG_WORLD_ALPHA = "debug.world-alpha";
     public static final String DEBUG_GAME_OBJECT_IDS = "debug.game-object-ids";
@@ -73,6 +71,14 @@ public class DesktopConfig {
 
     public void removeConfigChangeListener(ConfigChangeListener listener) {
         changeListeners.remove(listener);
+    }
+
+    public void save() {
+        try {
+            properties.store(new FileOutputStream("d2d2-world-arena-desktop.conf"), null);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public void load() throws IOException {

@@ -28,8 +28,10 @@ import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.debug.DebugPanel;
+import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.scene.Particle;
@@ -56,6 +58,7 @@ abstract public class Actor extends Animated implements
 
     private static final int JUMP_TIME = 4;
     private static final int DAMAGING_TIME = 14;
+    private static final int WEAPON_SWITCH_TIME = 4;
     private final FramedSprite framedDoHead;
     private final List<Weapon> weapons;
     private float weaponLocationX, weaponLocationY;
@@ -65,6 +68,7 @@ abstract public class Actor extends Animated implements
     private int attackTime;
     private int jumpTime;
     private int damagingTime;
+    private int weaponSwitchTime;
     private boolean onJump;
 
     private int health, maxHealth;
@@ -94,8 +98,7 @@ abstract public class Actor extends Animated implements
         weapons = new ArrayList<>();
 
         weaponContainer = new DisplayObjectContainer();
-        addWeapon(StandardWeapon.class, 100);
-        setCurrentWeaponClass(StandardWeapon.class);
+        resetWeapons();
 
         framedDoHead = new FramedSprite(mapkitItem
                 .getTextureAtlas()
@@ -128,6 +131,12 @@ abstract public class Actor extends Animated implements
         setDirection(Direction.RIGHT);
         setController(new Controller());
         getController().setControllerChangeListener(c -> setAnimation(IDLE));
+    }
+
+    private void resetWeapons() {
+        weapons.clear();
+        addWeapon(StandardWeapon.class, 100);
+        setCurrentWeaponClass(StandardWeapon.class);
     }
 
     @Override
@@ -185,16 +194,12 @@ abstract public class Actor extends Animated implements
         }
 
         if (weaponContainer != null) {
-            switch (getAnimation()) {
-                case WALK, JUMP, FALL, DAMAGE -> weaponContainer.setVisible(false);
-                default -> weaponContainer.setVisible(true);
-            }
+            weaponContainer.setVisible(getAnimation() != DAMAGE);
         }
     }
 
     public void attack() {
         fixBodyPartsY();
-
 
         DebugPanel.createIfEnabled("weapons", () -> {
             StringBuilder stringBuilder = new StringBuilder();
@@ -441,14 +446,24 @@ abstract public class Actor extends Animated implements
 
         dispatchEvent(ActorEvent.builder().type(ActorEvent.ACTOR_DEATH).build());
 
-        getWorld().dispatchEvent(WorldEvent.builder()
-                .type(WorldEvent.ACTOR_DEATH)
-                .deadActorGameObjectId(getGameObjectId())
-                .killerGameObjectId(
-                        damaging != null && damaging.getDamagingOwnerActor() != null ?
-                                damaging.getDamagingOwnerActor().getGameObjectId()
-                                : 0)
-                .build());
+        if (D2D2World.isServer()) {
+            getWorld().dispatchEvent(WorldEvent.builder()
+                    .type(WorldEvent.ACTOR_DEATH)
+                    .deadActorGameObjectId(getGameObjectId())
+                    .actor(this)
+                    .killerGameObjectId(
+                            damaging != null && damaging.getDamagingOwnerActor() != null ?
+                                    damaging.getDamagingOwnerActor().getGameObjectId() : 0)
+                    .build());
+
+            if (getCurrentWeapon().getClass() != StandardWeapon.class) {
+                WeaponPickup weaponPickup = BuiltInMapkit.createWeaponPickupMapkitItem(getCurrentWeapon());
+                weaponPickup.setXY(getX(), getY());
+                getWorld().addGameObject(weaponPickup, 5, false);
+            }
+        }
+
+        resetWeapons();
     }
 
     @Override
@@ -621,6 +636,10 @@ abstract public class Actor extends Animated implements
 
         setMovingSpeedX(0f);
         setMovingSpeedY(0f);
+
+        if(weaponSwitchTime > 0) {
+            weaponSwitchTime--;
+        }
     }
 
     public boolean isOnJump() {
@@ -702,9 +721,13 @@ abstract public class Actor extends Animated implements
     }
 
     public void setCurrentWeaponClassname(@NotNull String weaponClassname) {
+        if(weaponSwitchTime > 0) return;
+        weaponSwitchTime = WEAPON_SWITCH_TIME;
+
         if (this.currentWeapon != null) {
             this.currentWeapon.getSprite().removeFromParent();
         }
+
 
         weapons.stream()
                 .filter(w -> w.getClass().getName().equals(weaponClassname))
