@@ -43,8 +43,9 @@ public class Preloader extends DisplayObjectContainer {
 
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        D2D2.setSmoothMode(true);
         D2D2World.init(false);
-        root.add(new Preloader(), 32, 32);
+        root.add(new Preloader(), 100, 100);
         D2D2.loop();
     }
 }

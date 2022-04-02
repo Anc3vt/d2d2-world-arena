@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.*;
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;

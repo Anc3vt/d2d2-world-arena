@@ -55,6 +55,7 @@ public class ServerWorldScene {
         Root root = D2D2.init(new NoRenderStarter(900, 600));
 
         world = new World(syncDataAggregator);
+        world.addEventListener(hashCode() + Event.EACH_FRAME, Event.EACH_FRAME, this::world_eachFrame);
         world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
         root.add(world);
 
@@ -73,8 +74,7 @@ public class ServerWorldScene {
     }
 
     public void loadMap(String mapName) {
-        DefaultMaps.clear();
-
+        world.setPlaying(false);
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             ServerContentManager.Map scmMap = MODULE_CONTENT_MANAGER.getMaps()
                     .stream()
@@ -85,19 +85,20 @@ public class ServerWorldScene {
             try {
                 long timeBefore = System.currentTimeMillis();
                 world.clear();
+                DefaultMaps.clear();
                 GameMap map = MapIO.load(scmMap.filename());
                 world.setMap(map);
                 world.setPlaying(true);
-                world.addEventListener(Event.EACH_FRAME, this::this_eachFrame);
                 log.info("Map '" + mapName + "' loaded {}ms", (System.currentTimeMillis() - timeBefore));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             }
         }
 
+        //DefaultMaps.clear();
     }
 
-    private synchronized void this_eachFrame(Event event) {
+    private synchronized void world_eachFrame(Event event) {
         if (syncDataAggregator.hasData()) {
             MODULE_SENDER.sendToAll(syncDataAggregator.pullSyncDataMessage());
         }
@@ -149,7 +150,7 @@ public class ServerWorldScene {
         playerActor.setVisible(false);
         playerActorMap.put(player.getId(), playerActor);
 
-        DebugActorCreator.createTestPlayerActor(playerActor, world).setXY(50, 64);
+        //DebugActorCreator.createTestPlayerActor(playerActor, world).setXY(50, 64);
 
         log.info("Add player actor {}", playerActor);
     }

@@ -101,7 +101,10 @@ public class PlayProcessor {
                 if (o1 instanceof ICollision collision1 && o2 instanceof ICollision collision2) {
                     if (hitTest(collision1, collision2)) {
                         processCollisionsHits(collision1, collision2);
-                        collideWithFloor = true;
+
+                        if (collision2 instanceof ITight) {
+                            collideWithFloor = true;
+                        }
                     }
                 }
             }
@@ -217,7 +220,7 @@ public class PlayProcessor {
             boolean floorUnderObject = cy1 < cy2 && y1 + h1 < y2 + 11; // 11
 
             if (floorUnderObject) {
-                if ((o2 instanceof IMovable moveable && moveable.getMovingSpeedY() < 5) || g.getVelocityY() > 0) {
+                if ((o2 instanceof IMovable movable && movable.getMovingSpeedY() < 5) || g.getVelocityY() > 0) {
                     o1.setY(y2 - h1 - ty1);
                     setFloorTo(g, o2);
                 }
@@ -238,8 +241,8 @@ public class PlayProcessor {
     }
 
     private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {
-        float x1 = o1.getX() + o1.getCollisionX();
-        float y1 = o1.getY() + o1.getCollisionY();
+        float x1 = o1.getX() + o1.getCollisionX() + 1;
+        float y1 = o1.getY() + o1.getCollisionY() + 1;
         float w1 = o1.getCollisionWidth() + 1;
         float h1 = o1.getCollisionHeight() + 1;
 

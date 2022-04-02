@@ -86,7 +86,7 @@ public class LWJGLRenderer implements IRenderer {
 
         textureEngine.unloadTextureAtlases();
 
-        GLFW.glfwGetCursorPos(lwjglStarter.windowId ,mouseX, mouseY);
+        GLFW.glfwGetCursorPos(lwjglStarter.windowId, mouseX, mouseY);
         Mouse.setXY((int) mouseX[0], (int) mouseY[0]);
     }
 
@@ -203,10 +203,10 @@ public class LWJGLRenderer implements IRenderer {
 
                 GL30.glBegin(GL30.GL_QUADS);
 
-                final double bleedingFix = 0.0005;
+                final double bleedingFix = 0.001;
 
                 // L
-                GL30.glTexCoord2d(x + bleedingFix,(h + y) - bleedingFix);
+                GL30.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);
                 GL30.glVertex2d(px, py + tH * scaleY);
 
                 // _|
@@ -215,13 +215,11 @@ public class LWJGLRenderer implements IRenderer {
 
                 // ^|
                 GL30.glTexCoord2d((w + x) - bleedingFix, y + bleedingFix);
-                GL30.glVertex2d(px + tW * scaleX,py + 0);
+                GL30.glVertex2d(px + tW * scaleX, py + 0);
 
                 // Г
-                GL30.glTexCoord2d(x+bleedingFix, y+bleedingFix);
+                GL30.glTexCoord2d(x + bleedingFix, y + bleedingFix);
                 GL30.glVertex2d(round(px + 0), round(py + 0));
-
-
 
 
                 GL30.glEnd();
@@ -232,7 +230,7 @@ public class LWJGLRenderer implements IRenderer {
         D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
     }
 
-    private void renderBitmapText(BitmapText bitmapText, float alpha, float scaleX, float scaleY) {
+    private void renderBitmapText(@NotNull BitmapText bitmapText, float alpha, float scaleX, float scaleY) {
         if (bitmapText.isEmpty()) return;
 
         BitmapFont bitmapFont = bitmapText.getBitmapFont();

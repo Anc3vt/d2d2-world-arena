@@ -446,8 +446,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             MODULE_SERVER_STATE.setMap(mapName);
             MODULE_WORLD_SCENE.loadMap(mapName);
-            MODULE_PLAYER_MANAGER.getPlayerList().forEach(
-                    player -> MODULE_WORLD_SCENE.addPlayer(player, playerMapkitItemMap.get(player.getId())));
             sendCurrentMapContentInfoToAll();
         } else {
             throw new IllegalStateException("no such map '" + mapName + "'");

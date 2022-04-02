@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.desktop.ui.chat;
 
 import com.ancevt.commons.Holder;
+import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.event.Event;
@@ -36,6 +37,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class Chat extends DisplayObjectContainer {
 
@@ -237,12 +239,14 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void openInput() {
-        setAlpha(1.0f);
-        alphaTime = ALPHA_TIME;
-        add(input);
-        dispatchEvent(ChatEvent.builder()
-                .type(ChatEvent.CHAT_INPUT_OPEN)
-                .build());
+        Async.runLater(100, TimeUnit.MILLISECONDS, () -> {
+            setAlpha(1.0f);
+            alphaTime = ALPHA_TIME;
+            add(input);
+            dispatchEvent(ChatEvent.builder()
+                    .type(ChatEvent.CHAT_INPUT_OPEN)
+                    .build());
+        });
     }
 
     public void closeInput() {
@@ -346,7 +350,7 @@ public class Chat extends DisplayObjectContainer {
         super.onEachFrame();
 
         alphaTime--;
-        if(alphaTime <= 0) {
+        if (alphaTime <= 0) {
             setAlpha(0.25f);
             alphaTime = 0;
         }

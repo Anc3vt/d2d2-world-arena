@@ -43,10 +43,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class GameObjectEditor {
 
@@ -385,18 +382,20 @@ public class GameObjectEditor {
     }
 
     private void copy() {
-        if (getSelectedGameObject() instanceof PlayerActor || getSelectedGameObject() == null) return;
+        getSelectedGameObject().ifPresent(gameObject -> {
+            if (gameObject instanceof PlayerActor) return;
 
-        copyBuffer.clear();
-        copyBuffer.addAll(selectedGameObjects);
+            copyBuffer.clear();
+            copyBuffer.addAll(selectedGameObjects);
 
-        gameObjectLayersMap.clear();
+            gameObjectLayersMap.clear();
 
-        copyBuffer.forEach(gameObject ->
-                gameObjectLayersMap.put(gameObject.getGameObjectId(), GameObjectUtils.getLayerIndex(gameObject))
-        );
+            copyBuffer.forEach(gameObjectToCopy ->
+                    gameObjectLayersMap.put(gameObjectToCopy.getGameObjectId(), GameObjectUtils.getLayerIndex(gameObjectToCopy))
+            );
 
-        setInfoText("Copied " + copyBuffer.size() + " objects");
+            setInfoText("Copied " + copyBuffer.size() + " objects");
+        });
     }
 
     private void paste() {
@@ -415,26 +414,31 @@ public class GameObjectEditor {
     }
 
     public void delete() {
-        if (getSelectedGameObject() instanceof PlayerActor || getSelectedGameObject() == null) return;
-        int count = selectedGameObjects.size();
-        if (count == 0) return;
+        getSelectedGameObject().ifPresent(
+                gameObject -> {
+                    if (gameObject instanceof PlayerActor) return;
 
-        IGameObject gameObject = getSelectedGameObject();
+                    int count = selectedGameObjects.size();
+                    if (count == 0) return;
 
-        clearSelections();
+                    clearSelections();
 
-        for (IGameObject o : selectedGameObjects)
-            getWorld().removeGameObject(o, true);
+                    for (IGameObject o : selectedGameObjects)
+                        getWorld().removeGameObject(o, true);
 
-        selectedGameObjects.clear();
+                    selectedGameObjects.clear();
 
-        updateSelecting();
+                    updateSelecting();
 
-        if (count == 1) {
-            setInfoText("Deleted " + gameObject);
-        } else {
-            setInfoText("Deleted " + count + " objects");
-        }
+                    if (count == 1) {
+                        setInfoText("Deleted " + gameObject);
+                    } else {
+                        setInfoText("Deleted " + count + " objects");
+                    }
+
+                });
+
+
     }
 
 
@@ -550,10 +554,10 @@ public class GameObjectEditor {
         return !selectedGameObjects.isEmpty();
     }
 
-    public IGameObject getSelectedGameObject() {
-        if (selectedGameObjects.size() > 0) return selectedGameObjects.get(0);
+    public Optional<IGameObject> getSelectedGameObject() {
+        if (selectedGameObjects.size() > 0) return Optional.of(selectedGameObjects.get(0));
 
-        throw new IllegalStateException("no selected game objects");
+        return Optional.empty();
     }
 
     public final void select(IGameObject o) {
@@ -670,7 +674,7 @@ public class GameObjectEditor {
 
     public void enter() {
         if (isSomethingSelected() && selections.size() == 1) {
-            JPropertiesEditor.create(getWorld(), getSelectedGameObject());
+            JPropertiesEditor.create(getWorld(), getSelectedGameObject().orElseThrow());
         }
     }
 

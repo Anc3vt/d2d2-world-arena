@@ -121,7 +121,7 @@ public class NoRenderStarter implements D2D2Starter {
     private void startNoRenderLoop() {
         while (alive) {
             try {
-                sleep(1000/60);
+                sleep(1000 / 70);//1000/60);
                 renderer.renderFrame();
             } catch (InterruptedException e) {
                 e.printStackTrace();

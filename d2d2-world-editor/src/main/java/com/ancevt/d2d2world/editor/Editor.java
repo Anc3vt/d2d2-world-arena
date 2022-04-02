@@ -63,7 +63,7 @@ public class Editor {
 
         gameObjectEditor.key(keyCode, keyChar, down);
 
-        if(keyChar == ' ') spaceDown = down;
+        if (keyChar == ' ') spaceDown = down;
 
         if (!isEnabled()) return;
 
@@ -78,8 +78,8 @@ public class Editor {
                 if (down) gameObjectEditor.enter();
             }
             case KeyCode.BACKSPACE -> {
-                if (down) gameObjectEditor.getSelectedGameObject().setScaleX(
-                        gameObjectEditor.getSelectedGameObject().getScaleX() * -1f
+                if (down) gameObjectEditor.getSelectedGameObject().ifPresent(
+                        gameObject -> gameObject.setScaleX(gameObject.getScaleX() * -1f)
                 );
             }
             case KeyCode.PAGE_UP -> {

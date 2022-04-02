@@ -51,7 +51,7 @@ import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
-public class GameRoot extends Root implements ClientListener, FileReceiverManager. FileReceiverManagerListener {
+public class GameRoot extends Root implements ClientListener, FileReceiverManager.FileReceiverManagerListener {
 
     public static final int DEFAULT_PORT = 2245;
 
@@ -108,6 +108,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 case KeyCode.S -> {
                     if (e.isAlt()) D2D2.setSmoothMode(!D2D2.isSmoothMode());
                 }
+                case KeyCode.T -> {
+                    if (!MODULE_CHAT.isInputOpened()) {
+                        MODULE_CHAT.openInput();
+                    }
+                }
             }
         });
 
@@ -118,6 +123,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                     MODULE_CHAT.setVisible(true);
                     setTabWindowVisible(false);
                 }
+
             }
         });
 

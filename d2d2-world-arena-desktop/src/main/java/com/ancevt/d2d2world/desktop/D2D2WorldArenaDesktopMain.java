@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
@@ -38,8 +39,6 @@ import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
 public class D2D2WorldArenaDesktopMain {
 
     public static void main(String[] args) throws IOException {
-        //System.setProperty("receive", "true");
-        // Load desktopConfig properties
         MODULE_CONFIG.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
@@ -77,10 +76,18 @@ public class D2D2WorldArenaDesktopMain {
 
         //D2D2.init(new NoRenderStarter(900, 600));
         var screenDimension = ScreenUtils.getDimension();
-        D2D2.init(new LWJGLStarter(screenDimension.width() /2 + 100,
+        D2D2.init(new LWJGLStarter(screenDimension.width() / 2 + 100,
                 screenDimension.height() / 2 + 100,
                 "(floating) D2D2 World Arena " + autoEnterPlayerName));
         D2D2World.init(false);
+
+        String debugScreenSize = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
+        if (!debugScreenSize.equals("")) {
+            StringTokenizer tokenizer = new StringTokenizer(debugScreenSize, "x");
+            int width = Integer.parseInt(tokenizer.nextToken());
+            int height = Integer.parseInt(tokenizer.nextToken());
+            D2D2.getStarter().setSize(width, height);
+        }
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version);
 

@@ -45,6 +45,7 @@ public class DesktopConfig {
     public static final String DEBUG_CHARACTER = "debug.character-mapkit-item";
     public static final String AUTO_ENTER = "auto-enter";
     public static final String FULLSCREEN = "fullscreen";
+    public static final String DEBUG_WINDOW_SIZE = "debug.window-size";
     public static final String SOUND_ENABLED = "sound-enabled";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
