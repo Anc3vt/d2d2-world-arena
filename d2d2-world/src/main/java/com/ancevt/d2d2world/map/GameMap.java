@@ -31,23 +31,11 @@ public class GameMap {
     private String startRoomName;
     private String name;
     private float gravity;
-    private String mapkitUids;
     private String mapkitNames;
     private Music music;
 
     public GameMap() {
         rooms = new TreeMap<>();
-        mapkitUids = "";
-    }
-
-    @Property
-    public String getMapkitUids() {
-        return mapkitUids;
-    }
-
-    @Property
-    public void setMapkitUids(String mapkits) {
-        this.mapkitUids = mapkits;
     }
 
     @Property
@@ -120,6 +108,18 @@ public class GameMap {
         return rooms.get(roomId);
     }
 
+    public Optional<Room> getRoomByGameObject(IGameObject gameObject) {
+        for (Room room : rooms.values()) {
+            for (IGameObject o : room.getGameObjects()) {
+                if(o == gameObject) return Optional.of(room);
+            }
+        }
+
+        System.err.println("WARNING: No room of gameObject " + gameObject);
+
+        return Optional.empty();
+    }
+
     public Room[] getRooms() {
         return rooms.values().toArray(new Room[0]);
     }
@@ -147,10 +147,8 @@ public class GameMap {
         return "GameMap{" +
                 "rooms=" + rooms +
                 ", startRoom=" + startRoomName +
-                ", mapkits='" + mapkitUids + '\'' +
                 ", name='" + name + '\'' +
                 ", gravity=" + gravity +
-                ", mapkits=" + mapkitUids +
                 ", music=" + music +
                 '}';
     }

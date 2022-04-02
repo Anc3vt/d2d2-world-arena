@@ -22,6 +22,7 @@ import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
+import com.ancevt.d2d2world.gameobject.area.AreaTarget;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -275,11 +276,17 @@ public class PlayProcessor {
     private void processDoorTeleport(Actor actor, AreaDoorTeleport area) {
         if (world.isSwitchingRoomsNow()) return;
 
-        String targetRoomId = area.getTargetRoomId();
-        float targetX = area.getTargetX();
-        float targetY = area.getTargetY();
+        String targetAreaName = area.getTargetAreaName();
 
-        world.switchRoom(targetRoomId, targetX, targetY);
+        AreaTarget areaTarget = (AreaTarget) world.getMap().getAllGameObjectsFromAllRooms().stream()
+                .filter(gameObject -> gameObject instanceof AreaTarget)
+                .filter(gameObject -> gameObject.getName().equals(targetAreaName))
+                .findAny()
+                .orElseThrow();
+
+        world.getMap().getRoomByGameObject(areaTarget).ifPresent(
+                room -> world.switchRoom(room.getName(), actor, areaTarget.getX(), areaTarget.getY())
+        );
     }
 
     // Push states:

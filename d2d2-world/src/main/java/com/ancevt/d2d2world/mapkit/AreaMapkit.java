@@ -17,17 +17,13 @@
  */
 package com.ancevt.d2d2world.mapkit;
 
+import com.ancevt.d2d2world.gameobject.area.*;
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.DataEntry;
-import com.ancevt.d2d2world.gameobject.area.AreaCheckpoint;
-import com.ancevt.d2d2world.gameobject.area.AreaCollision;
-import com.ancevt.d2d2world.gameobject.area.AreaDamaging;
-import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
-import com.ancevt.d2d2world.gameobject.area.AreaHook;
 
 public class AreaMapkit extends Mapkit {
 
@@ -44,6 +40,7 @@ public class AreaMapkit extends Mapkit {
         putItem(new AreaMapkitItem(this, "damaging", AreaDamaging.class, AreaDamaging.FILL_COLOR));
         putItem(new AreaMapkitItem(this, "door-teleport", AreaDoorTeleport.class, AreaDoorTeleport.FILL_COLOR));
         putItem(new AreaMapkitItem(this, "hook", AreaHook.class, AreaHook.FILL_COLOR));
+        putItem(new AreaMapkitItem(this, "target", AreaTarget.class, AreaTarget.FILL_COLOR));
     }
 
     private static class AreaMapkitItem extends MapkitItem {

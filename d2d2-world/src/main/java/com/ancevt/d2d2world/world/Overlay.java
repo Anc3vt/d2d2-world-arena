@@ -43,14 +43,12 @@ public class Overlay extends PlainRect {
     public void startIn() {
         if(state == STATE_BLACK) return;
         state = STATE_IN;
-        removeEventListener(getClass());
         addEventListener(getClass(), Event.EACH_FRAME, this::eachFrame);
     }
 
     public void startOut() {
         if(state == STATE_DONE) return;
         state = STATE_OUT;
-        removeEventListener(getClass());
         addEventListener(getClass(), Event.EACH_FRAME, this::eachFrame);
     }
 

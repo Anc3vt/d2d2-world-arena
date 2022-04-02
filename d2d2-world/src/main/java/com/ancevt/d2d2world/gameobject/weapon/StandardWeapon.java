@@ -35,7 +35,7 @@ public class StandardWeapon extends Weapon {
 
     @Override
     public int getAttackTime() {
-        return 20;
+        return 40;
     }
 
     @Override

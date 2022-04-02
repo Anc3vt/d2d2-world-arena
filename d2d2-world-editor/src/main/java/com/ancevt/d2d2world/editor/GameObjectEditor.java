@@ -68,7 +68,6 @@ public class GameObjectEditor {
     private float oldMouseY = 64;
     private boolean selecting;
     private MapkitItem lastPlacingMapkitItem;
-    private float worldMouseX = 64, worldMouseY = 64;
     private PlayerActor playerActor;
 
     public GameObjectEditor(Editor editor) {
@@ -102,14 +101,12 @@ public class GameObjectEditor {
                 case KeyCode.E -> setPlayerXYToCursor();
             }
 
-
             if (editor.isControlDown()) {
                 switch (keyChar) {
                     case 'C' -> copy();
                     case 'V' -> paste();
                     case 'X' -> cut();
                     case 'L' -> toggleLockCurrentLayer();
-
                     case 'R' -> {
                         if (editor.isControlDown()) {
                             JPropertiesEditor.create(getWorld().getRoom(), text -> {
@@ -119,7 +116,6 @@ public class GameObjectEditor {
                             });
                         }
                     }
-
                     case 'S' -> {
                         getWorld().reset();
                         setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.mapFileName));
@@ -270,9 +266,6 @@ public class GameObjectEditor {
 
         oldMouseX = x;
         oldMouseY = y;
-
-        worldMouseX = worldX;
-        worldMouseY = worldY;
     }
 
     private void setCollisionsVisible(boolean visible) {
@@ -306,11 +299,11 @@ public class GameObjectEditor {
                 .stream()
                 .filter(o -> o instanceof PlayerActor)
                 .findAny()
-                .ifPresent(p -> {
+                .ifPresentOrElse(p -> {
                     playerActor = (PlayerActor) p;
                     playerActor.repair();
                     playerActor.setXY(playerActor.getAimX(), playerActor.getAimY());
-                });
+                }, this::addPlayerActor);
     }
 
     private void toggleLockCurrentLayer() {

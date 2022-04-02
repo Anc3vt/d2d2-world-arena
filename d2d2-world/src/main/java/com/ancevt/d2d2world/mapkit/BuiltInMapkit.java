@@ -150,8 +150,8 @@ public class BuiltInMapkit extends Mapkit {
                         """);
 
                 add("""
-                        id = character_ava2
-                        | readableName = Ava
+                        id = character_stranger
+                        | readableName = Stranger
                         | class =""" + PlayerActor.class.getName() + """
                         | damagePower = 1
                         | weight = 0.4

@@ -25,6 +25,7 @@ import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
+import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanelEvent;
 import com.ancevt.d2d2world.ui.Grid;
@@ -63,12 +64,12 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
         add(infoBitmapTextShadow, 4, 12);
         add(infoBitmapText, 5, 12);
 
-
         root.addEventListener(InputEvent.MOUSE_DOWN, this);
         root.addEventListener(InputEvent.MOUSE_UP, this);
         root.addEventListener(InputEvent.MOUSE_MOVE, this);
         root.addEventListener(InputEvent.KEY_DOWN, this);
         root.addEventListener(InputEvent.KEY_UP, this);
+        root.addEventListener(InputEvent.MOUSE_WHEEL, this);
 
         add(MapkitToolsPanel.getInstance(), 100, 100);
         MapkitToolsPanel.getInstance().addEventListener(MapkitToolsPanelEvent.MAPKIT_ITEM_SELECT, e -> {
@@ -118,12 +119,16 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
                     if (!isMouseAtPanels(x, y) || world.isPlaying())
                         editor.mouseMove(x, y, worldX, worldY, inputEvent.isDrag());
                 }
-
+                case InputEvent.MOUSE_WHEEL -> {
+                    if(isMouseAtPanels(Mouse.getX(), Mouse.getY())) {
+                        MapkitToolsPanel.getInstance().moveY(inputEvent.getDelta() * 100);
+                    }
+                }
             }
         }
     }
 
-    private boolean isMouseAtPanels(float mouseX, float mouseY) {
+    public boolean isMouseAtPanels(float mouseX, float mouseY) {
         return panels.stream().filter(p->isOnScreen() && p.isVisible()).anyMatch(panel ->
                 isMouseAtArea(mouseX, mouseY, panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight()));
     }

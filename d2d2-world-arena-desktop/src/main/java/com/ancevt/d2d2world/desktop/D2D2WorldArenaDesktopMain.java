@@ -100,5 +100,4 @@ public class D2D2WorldArenaDesktopMain {
         DebugPanel.saveAll();
         System.exit(0);
     }
-
 }

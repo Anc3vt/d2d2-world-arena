@@ -25,6 +25,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
+import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
@@ -52,7 +53,7 @@ public class D2D2WorldEditorMain {
         MapIO.mapsDirectory = a.get("--maps-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/maps/");
         MapIO.mapFileName = a.get("--map-filename", "map0.wam");
 
-        D2D2.init(new LWJGLStarter(1000, 700, "D2D2 World (floating)"));
+        D2D2.init(new LWJGLStarter(1000, 700, "D2D2 World Editor"));
         D2D2World.init(true);
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");
@@ -90,6 +91,8 @@ public class D2D2WorldEditorMain {
         cameraLayer.setScale(2f, 2f);
 
         root.addEventListener(InputEvent.MOUSE_WHEEL, e -> {
+            if(editorContainer.isMouseAtPanels(Mouse.getX(), Mouse.getY())) return;
+
             InputEvent inputEvent = (InputEvent) e;
 
             float scale = cameraLayer.getScaleX();

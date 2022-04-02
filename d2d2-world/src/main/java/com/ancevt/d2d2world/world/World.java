@@ -282,7 +282,7 @@ public class World extends DisplayObjectContainer {
         }
     }
 
-    public void switchRoom(String roomIdSwitchTo, float actorX, float actorY) {
+    public void switchRoom(String roomNameSwitchTo, Actor actor, float actorX, float actorY) {
         if (switchingRoomsNow) return;
 
         final Room oldRoom = currentRoom;
@@ -290,8 +290,14 @@ public class World extends DisplayObjectContainer {
         Overlay overlay = new Overlay(oldRoom.getWidth(), oldRoom.getHeight());
         overlay.addEventListener(Event.CHANGE, e -> {
             if (overlay.getState() == Overlay.STATE_BLACK) {
-                setRoom(currentMap.getRoom(roomIdSwitchTo));
+                Room targetRoom = currentMap.getRoom(roomNameSwitchTo);
+                setRoom(targetRoom);
+                overlay.setSize(targetRoom.getWidth(), targetRoom.getHeight());
                 overlay.startOut();
+                actor.setXY(actorX, actorY);
+                addGameObject(actor, 5, false);
+                camera.setXY(actorX, actorY);
+                camera.setAttachedTo(actor);
             } else if (overlay.getState() == Overlay.STATE_DONE) {
                 overlay.removeFromParent();
                 switchingRoomsNow = false;
@@ -299,11 +305,13 @@ public class World extends DisplayObjectContainer {
         });
 
         add(overlay);
+        removeGameObject(actor, false);
         switchingRoomsNow = true;
+        camera.setAttachedTo(null);
         overlay.startIn();
     }
 
-    public void addGameObject(IGameObject gameObject, int layerIndex, boolean updateRoom) {
+    public void addGameObject(@NotNull IGameObject gameObject, int layerIndex, boolean updateRoom) {
         gameObjects.forEach(o -> {
             if (o.getGameObjectId() == gameObject.getGameObjectId())
                 throw new IllegalStateException("duplicate game object id: " + gameObject.getGameObjectId() + " " + gameObject + " and  " + o);

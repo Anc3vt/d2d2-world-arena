@@ -45,7 +45,7 @@ public class MapkitToolsPanel extends TitledPanel {
     private final static Object ALL = new Object();
 
     private static final String TITLE = "Mapkit tools";
-    private static final int ICON_SIZE = 32;
+    private static final int ICON_SIZE = 48;
 
     private final Label label;
     private final DropList dropListClass;
@@ -63,7 +63,7 @@ public class MapkitToolsPanel extends TitledPanel {
         buttons = new ArrayList<>();
 
         setTitleText(TITLE);
-        setSize(270, 400);
+        setSize(270, 65536);
 
         palette = new BorderedRect(260, getHeight() - 100, Color.WHITE, Color.BLACK);
         palette.setXY(5, 50);
@@ -227,10 +227,10 @@ public class MapkitToolsPanel extends TitledPanel {
         float w = palette.getWidth() / ICON_SIZE;
         float h = palette.getHeight() / ICON_SIZE;
 
-        int PAGE_SIZE = (int) (w * h) - 20;
+        int PAGE_SIZE = (int) (w * h);
         int x = 5, y = 5;
 
-        for (int i = PAGE_SIZE * currentPage; i < items.size() && i < currentPage * PAGE_SIZE + PAGE_SIZE; i++) {
+        for (int i = PAGE_SIZE * currentPage; i < items.size() && i < currentPage * PAGE_SIZE + PAGE_SIZE * 2; i++) {
             MapkitItem mapkitItem = items.get(i);
 
             Sprite icon = mapkitItem.getIcon().cloneSprite();
@@ -255,7 +255,7 @@ public class MapkitToolsPanel extends TitledPanel {
             if (x >= palette.getWidth() - ICON_SIZE) {
                 x = 5;
                 y += button.getHeight() + 2;
-                if (y >= 300) break;
+                //if (y >= 300) break;
             }
         }
     }
