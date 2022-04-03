@@ -100,7 +100,9 @@ public class ServerWorldScene {
 
     private synchronized void world_eachFrame(Event event) {
         if (syncDataAggregator.hasData()) {
+            //long t = System.currentTimeMillis();
             MODULE_SENDER.sendToAll(syncDataAggregator.pullSyncDataMessage());
+            //System.out.println(System.currentTimeMillis() - t);
         }
     }
 
