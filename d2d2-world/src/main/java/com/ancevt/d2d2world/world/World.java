@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -110,7 +110,13 @@ public class World extends DisplayObjectContainer {
         if (!isPlaying()) return;
 
         dispatchEvent(WorldEvent.builder().type(WorldEvent.WORLD_PROCESS).build());
+
+        //long oldTime = System.currentTimeMillis();
         playProcessor.process();
+        //long newTime = System.currentTimeMillis() - oldTime;
+        //System.out.println(">> " + newTime);
+
+
         camera.process();
     }
 

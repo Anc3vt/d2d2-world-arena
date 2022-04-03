@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import static com.ancevt.commons.unix.UnixDisplay.debug;
 
 abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized {
 
+    private final MapkitItem mapkitItem;
     private int direction;
     private int currentAnimationKey = -1;
     private IFramedDisplayObject[] animations;
@@ -38,10 +39,15 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     private boolean animationsPrepared;
 
     public Animated(@NotNull MapkitItem mapKitItem, int gameObjectId) {
-        setMapkitItem(mapKitItem);
+        this.mapkitItem = mapKitItem;
         setGameObjectId(gameObjectId);
         prepareAnimations();
         setPermanentSync(true);
+    }
+
+    @Override
+    public MapkitItem getMapkitItem() {
+        return mapkitItem;
     }
 
     public void setBackward(boolean backward) {

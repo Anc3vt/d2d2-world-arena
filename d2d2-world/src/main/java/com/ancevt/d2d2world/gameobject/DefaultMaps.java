@@ -2,7 +2,6 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
-import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 
 import java.lang.reflect.Field;
@@ -32,7 +31,7 @@ public class DefaultMaps {
     static Map<IGameObject, Map<String, Object>> extraMap = new HashMap<>();
     static Map<IGameObject, World> worldMap = new HashMap<>();
     static Map<IGameObject, Integer> gameObjectIdMap = new HashMap<>();
-    static Map<IGameObject, MapkitItem> mapkitItemMap = new HashMap<>();
+    //static Map<IGameObject, MapkitItem> mapkitItemMap = new HashMap<>();
 
     // ICollision
     static Map<ICollision, Boolean> collisionEnabledMap = new HashMap<>();

@@ -1,6 +1,6 @@
 /*
  *   D2D2 World Arena Desktop
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -440,6 +440,8 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.addEventListener(ActorEvent.ACTOR_REPAIR, event -> {
             world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
             overlay.startOut();
+
+            Async.runLater(100, TimeUnit.MILLISECONDS, localPlayerActor::doSpawnEffect);
         });
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
 

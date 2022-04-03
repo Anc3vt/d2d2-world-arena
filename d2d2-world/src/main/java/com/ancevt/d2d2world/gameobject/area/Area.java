@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,10 +34,11 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
     protected BitmapText bitmapText;
 
     private boolean collisionEnabled;
+    private final MapkitItem mapkitItem;
 
     protected Area(MapkitItem mapkitItem, int gameObjectId) {
         super(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        setMapkitItem(mapkitItem);
+        this.mapkitItem = mapkitItem;
         setGameObjectId(gameObjectId);
 
         this.collisionEnabled = true;
@@ -46,6 +47,11 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
 
         setAlpha(ALPHA);
         setTextVisible(true);
+    }
+
+    @Override
+    public MapkitItem getMapkitItem() {
+        return mapkitItem;
     }
 
     @Override

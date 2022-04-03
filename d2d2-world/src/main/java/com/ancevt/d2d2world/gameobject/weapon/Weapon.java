@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -139,15 +139,21 @@ abstract public class Weapon {
             IDamaging,
             ISynchronized {
 
+        private final MapkitItem mapkitItem;
         private Actor owner;
         private int direction;
         private int damagingPower;
         private float degree;
 
         public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
-            setMapkitItem(mapkitItem);
+            this.mapkitItem = mapkitItem;
             setGameObjectId(gameObjectId);
             setCollisionEnabled(true);
+        }
+
+        @Override
+        public MapkitItem getMapkitItem() {
+            return mapkitItem;
         }
 
         @Override

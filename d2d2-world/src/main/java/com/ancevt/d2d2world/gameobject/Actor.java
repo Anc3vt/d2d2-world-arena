@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@ import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.debug.DebugPanel;
+import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.math.RotationUtils;
-import com.ancevt.d2d2world.scene.Particle;
 import com.ancevt.d2d2world.ui.HealthBar;
 import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;

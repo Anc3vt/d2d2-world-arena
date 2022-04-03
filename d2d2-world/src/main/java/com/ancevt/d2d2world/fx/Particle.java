@@ -1,4 +1,4 @@
-package com.ancevt.d2d2world.scene;
+package com.ancevt.d2d2world.fx;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.*;

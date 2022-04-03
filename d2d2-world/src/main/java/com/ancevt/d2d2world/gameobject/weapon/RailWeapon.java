@@ -10,7 +10,7 @@ import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.math.RotationUtils;
-import com.ancevt.d2d2world.scene.Particle;
+import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ public class BuiltInMapkit extends Mapkit {
 
     public static final String NAME = "builtin-mapkit";
     public static final String ATLAS = "tileset.png";
-    public static final String CHARACTER_ATLAS = "character-tileset.png";
+    public static final String CHARACTER_ATLAS = "character-tileset-1.png";
 
     private static BuiltInMapkit instance;
 
@@ -98,20 +98,20 @@ public class BuiltInMapkit extends Mapkit {
                         | weaponX=15
                         | weaponY=-3
                         | atlas=$CHARACTER_ATLAS$
-                        | idle = 96,0,48,48; 144,0,48,48
-                        | attack = 96,0,48,48; 144,0,48,48
-                        | walk = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48
-                        | walkAttack = 0,48,48,48; 48,48,48,48; 96,48,48,48; 144,48,48,48
-                        | jump = 288,48,48,48
-                        | fall = 336,48,48,48
-                        | jumpAttack = 288,48,48,48
-                        | fallAttack = 336,48,48,48
-                        | hook = 288,96,48,48
-                        | hookAttack = 336,96,48,48
-                        | damage = 48,144,48,48
-                        | head = 240,144,16,24; 256,144,16,24
-                        | headFall = 272,144,16,24
-                        | arm = 240,176,16,16
+                        | idle = 0,0,48,48; 48,0,48,48
+                        | attack = 0,0,48,48; 48,0,48,48
+                        | walk = 96,0,48,48; 144,0,48,48; 192,0,48,48; 240,0,48,48
+                        | walkAttack = 96,0,48,48; 144,0,48,48; 192,0,48,48; 240,0,48,48
+                        | jump = 288,0,48,48
+                        | fall = 336,0,48,48
+                        | jumpAttack = 288,0,48,48
+                        | fallAttack = 336,0,48,48
+                        | hook = 384,0,48,48
+                        | hookAttack = 384,0,48,48
+                        | damage = 432,0,48,48
+                        | head = 576,0,16,24; 592,0,16,24
+                        | headFall = 608,0,16,24
+                        | arm = 576,32,16,16
                         | damageSound = character-damage.ogg
                         """);
 
@@ -132,20 +132,20 @@ public class BuiltInMapkit extends Mapkit {
                         | weaponX=14
                         | weaponY=-3
                         | atlas=$CHARACTER_ATLAS$
-                        | idle = 96,192,48,48; 144,192,48,48
-                        | attack = 96,192,48,48; 144,192,48,48
-                        | walk = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48
-                        | walkAttack = 0,240,48,48; 48,240,48,48; 96,240,48,48; 144,240,48,48
-                        | jump = 288,240,48,48
-                        | fall = 336,240,48,48
-                        | jumpAttack = 288,240,48,48
-                        | fallAttack = 336,240,48,48
-                        | hook = 288,288,48,48
-                        | hookAttack = 336,288,48,48
-                        | damage = 48,336,48,48 
-                        | head = 240,336,16,24; 256,336,16,24
-                        | headFall = 272,336,16,24
-                        | arm = 240,384,16,16
+                        | idle = 0,48,48,48; 48,48,48,48
+                        | attack = 0,48,48,48; 48,48,48,48
+                        | walk = 96,48,48,48; 144,48,48,48; 192,48,48,48; 240,48,48,48
+                        | walkAttack = 96,48,48,48; 144,48,48,48; 192,48,48,48; 240,48,48,48
+                        | jump = 288,48,48,48
+                        | fall = 336,48,48,48
+                        | jumpAttack = 288,48,48,48
+                        | fallAttack = 336,48,48,48
+                        | hook = 384,48,48,48
+                        | hookAttack = 384,48,48,48
+                        | damage = 432,48,48,48
+                        | head = 576,48,16,24; 592,48,16,24
+                        | headFall = 608,48,16,24
+                        | arm = 576,80,16,16
                         | damageSound=character-damage.ogg
                         """);
 
@@ -166,20 +166,20 @@ public class BuiltInMapkit extends Mapkit {
                         | weaponX=14
                         | weaponY=-3
                         | atlas=$CHARACTER_ATLAS$
-                        | idle = 96,384,48,48; 144,384,48,48
-                        | attack = 96,384,48,48; 144,384,48,48
-                        | walk = 0,432,48,48; 48,432,48,48; 96,432,48,48; 144,432,48,48
-                        | walkAttack = 0,432,48,48; 48,432,48,48; 96,432,48,48; 144,432,48,48
-                        | jump = 288,432,48,48
-                        | fall = 336,432,48,48
-                        | jumpAttack = 288,432,48,48
-                        | fallAttack = 336,432,48,48
-                        | hook = 288,480,48,48
-                        | hookAttack = 336,480,48,48
-                        | damage = 48,528,48,48 
-                        | head = 240,528,16,24; 256,528,16,24
-                        | headFall = 272,528,16,24
-                        | arm = 240,560,16,16
+                        | idle = 0,96,48,48; 48,96,48,48
+                        | attack = 0,96,48,48; 48,96,48,48
+                        | walk = 96,96,48,48; 144,96,48,48; 192,96,48,48; 240,96,48,48
+                        | walkAttack = 96,96,48,48; 144,96,48,48; 192,96,48,48; 240,96,48,48
+                        | jump = 288,96,48,48
+                        | fall = 336,96,48,48
+                        | jumpAttack = 288,96,48,48
+                        | fallAttack = 336,96,48,48
+                        | hook = 384,96,48,48
+                        | hookAttack = 384,96,48,48
+                        | damage = 432,96,48,48
+                        | head = 576,96,16,24; 592,96,16,24
+                        | headFall = 608,96,16,24
+                        | arm = 576,128,16,16
                         | damageSound=character-damage.ogg
                         """);
 

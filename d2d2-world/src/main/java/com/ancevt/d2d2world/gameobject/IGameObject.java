@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
+ *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -59,13 +59,7 @@ public interface IGameObject extends IDisplayObject, IProcessable {
 
     boolean isSavable();
 
-    default void setMapkitItem(MapkitItem mapkitItem) {
-        DefaultMaps.mapkitItemMap.put(this, mapkitItem);
-    }
-
-    default MapkitItem getMapkitItem() {
-        return DefaultMaps.mapkitItemMap.get(this);
-    }
+    MapkitItem getMapkitItem();
 
     default void setWorld(World world) {
         DefaultMaps.worldMap.putIfAbsent(this, world);

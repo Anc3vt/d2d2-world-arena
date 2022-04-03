@@ -1,4 +1,7 @@
 :d2d2-world-common-tileset.png
+
+    d2d2-world-common-tileset-ring  64 32 96 96
+
     d2d2-world-common-tileset-aim  0  0 32 32
     d2d2-world-common-tileset-preloader  0  64 64 64
     d2d2-world-common-tileset-warning    96  0 32 32

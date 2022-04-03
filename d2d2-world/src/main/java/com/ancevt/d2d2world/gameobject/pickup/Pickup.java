@@ -21,6 +21,7 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
     private final Sprite bubbleSprite;
     private final DisplayObjectContainer container;
     private final Sprite image;
+    private final MapkitItem mapkitItem;
 
     private int counter = 0;
     private boolean ready;
@@ -30,7 +31,7 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
     private World world;
 
     public Pickup(MapkitItem mapkitItem, int gameObjectId) {
-        setMapkitItem(mapkitItem);
+        this.mapkitItem = mapkitItem;
         setGameObjectId(gameObjectId);
         container = new DisplayObjectContainer();
         bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture());
@@ -45,6 +46,11 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
         setScale(0.5f, 0.5f);
 
         setRespawnTimeMillis(DEFAULT_RESPAWN_MILLIS);
+    }
+
+    @Override
+    public MapkitItem getMapkitItem() {
+        return mapkitItem;
     }
 
     @Override
