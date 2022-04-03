@@ -17,9 +17,6 @@
  */
 package com.ancevt.d2d2world.server.service;
 
-import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.commons.regex.PatternMatcher;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
@@ -28,10 +25,10 @@ import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.PlayerDto;
 import com.ancevt.d2d2world.net.dto.client.*;
 import com.ancevt.d2d2world.net.dto.server.*;
+import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
 import com.ancevt.d2d2world.net.protocol.ExitCause;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
-import com.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import com.ancevt.d2d2world.net.transfer.FileSender;
 import com.ancevt.d2d2world.net.transfer.Headers;
 import com.ancevt.d2d2world.server.ServerConfig;
@@ -46,6 +43,8 @@ import com.ancevt.d2d2world.server.repl.ServerCommandProcessor;
 import com.ancevt.net.CloseStatus;
 import com.ancevt.net.connection.IConnection;
 import com.ancevt.net.server.IServer;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -55,9 +54,9 @@ import static com.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
 import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
-import static com.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
-import static com.ancevt.d2d2world.server.service.ServerSender.MODULE_SENDER;
-import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.MODULE_WORLD_SCENE;
+import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
+import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
+import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.WORLD_SCENE;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener {
@@ -69,8 +68,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerConfig serverConfig = ServerConfig.MODULE_SERVER_CONFIG;
     private final IServer serverUnit = ServerUnit.MODULE_SERVER_UNIT.server;
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
-    private final ServerSender serverSender = MODULE_SENDER;
-    private final ServerPlayerManager serverPlayerManager = MODULE_PLAYER_MANAGER;
+    private final ServerSender serverSender = SENDER;
+    private final ServerPlayerManager serverPlayerManager = PLAYER_MANAGER;
     private final ServerState serverStateInfo = MODULE_SERVER_STATE;
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 
@@ -108,7 +107,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void playerController(int playerId, int controllerState) {
-        MODULE_WORLD_SCENE.playerController(playerId, controllerState);
+        WORLD_SCENE.playerController(playerId, controllerState);
     }
 
     /**
@@ -116,7 +115,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void playerAimXY(int playerId, float x, float y) {
-        MODULE_WORLD_SCENE.playerAimXY(playerId, x, y);
+        WORLD_SCENE.playerAimXY(playerId, x, y);
     }
 
     /**
@@ -124,7 +123,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void playerWeaponSwitch(int playerId, int delta) {
-        MODULE_WORLD_SCENE.playerWeaponSwitch(playerId, delta);
+        WORLD_SCENE.playerWeaponSwitch(playerId, delta);
     }
 
     /**
@@ -132,7 +131,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
-        MODULE_WORLD_SCENE.playerDamageReport(connectionId, damageValue, damagingGameObjectId);
+        WORLD_SCENE.playerDamageReport(connectionId, damageValue, damagingGameObjectId);
     }
 
     /**
@@ -140,7 +139,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      */
     @Override
     public void ping(int playerId) {
-        MODULE_SENDER.sendToPlayer(playerId, createMessagePing());
+        SENDER.sendToPlayer(playerId, createMessagePing());
     }
 
     /**
@@ -150,6 +149,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     public void dtoFromPlayer(int playerId, Dto dto) {
 
         if (dto instanceof PlayerEnterRequestDto d) {
+            IConnection connection = getConnection(playerId).orElseThrow();
+
             String playerName = d.getName();
             String clientProtocolVersion = d.getProtocolVersion();
 
@@ -167,7 +168,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             if (!PatternMatcher.check(playerName, NAME_PATTERN)) {
                 // if invalid close connection and return
                 log.info("Invalid player name '{}', connection id:{}", playerName, playerId);
-                getConnection(playerId).ifPresent(IConnection::closeIfOpen);
+                connection.closeIfOpen();
                 return;
             }
 
@@ -178,19 +179,20 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             Optional<Player> player = oldPlayerList.stream()
                     .filter(p -> p.getName().equals(playerName))
                     .findAny();
+
             if (player.isPresent()) {
                 // if the same name is present close the connection and return
                 log.info("Invalid player name '{}' is already taken, connection id:{}", playerName, playerId);
-                getConnection(playerId).ifPresent(IConnection::closeIfOpen);
+                connection.closeIfOpen();
                 return;
             }
 
             // create new player in player manager
             Player newPlayer = serverPlayerManager.createPlayer(
+                    connection,
                     playerId,
                     playerName,
-                    clientProtocolVersion,
-                    getConnection(playerId).orElseThrow().getRemoteAddress()
+                    clientProtocolVersion
             );
 
             log.info("Player enter {}({})", playerName, playerId);
@@ -220,7 +222,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                                     .id(playerId)
                                     .name(newPlayer.getName())
                                     .color(newPlayer.getColor())
-                                    .playerActorGameObjectId(MODULE_WORLD_SCENE.getPlayerActorGameObjectId(playerId))
+                                    .playerActorGameObjectId(WORLD_SCENE.getPlayerActorGameObjectId(playerId))
                                     .build())
                             .build(),
                     playerId);
@@ -254,25 +256,19 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
 
         } else if (dto instanceof PlayerReadyToSpawnDto d) {
-            MODULE_WORLD_SCENE.getWorld().getSyncGameObjects().forEach(o -> {
-                byte[] bytes = SyncDataAggregator.createSyncMessageOf(o);
-                if (bytes.length > 0) MODULE_SENDER.sendToPlayer(playerId, bytes);
-            });
-
             playerMapkitItemMap.put(playerId, d.getMapkitItemId());
 
-            MODULE_WORLD_SCENE.addPlayer(
-                    MODULE_PLAYER_MANAGER.getPlayerById(playerId).orElseThrow(), d.getMapkitItemId()
+            int playerActorGameObjectId = WORLD_SCENE.spawnPlayer(
+                    PLAYER_MANAGER.getPlayerById(playerId).orElseThrow(),
+                    d.getMapkitItemId()
             );
 
-            MODULE_WORLD_SCENE.getPlayerActorByPlayerId(playerId).ifPresent(pa -> pa.setVisible(true));
-
-            serverSender.sendToPlayer(playerId,
-                    PlayerActorDto.builder()
-                            .playerActorGameObjectId(MODULE_WORLD_SCENE.getPlayerActorGameObjectId(playerId))
-                            .build());
-
             serverSender.sendToPlayer(playerId, getServerInfoDto());
+
+            SENDER.sendToPlayer(playerId,
+                    PlayerActorDto.builder()
+                            .playerActorGameObjectId(playerActorGameObjectId)
+                            .build());
 
         } else if (dto instanceof ServerInfoRequestDto) {
             serverSender.sendToPlayer(playerId, getServerInfoDto());
@@ -346,7 +342,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
         } else if (dto instanceof PlayerExitRequestDto) {
             serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
-                MODULE_WORLD_SCENE.removePlayer(player);
+                WORLD_SCENE.removePlayer(player);
 
                 serverChat.text("Player " + player.getName() + "(" + playerId + ") exit", 0x999999);
                 serverPlayerManager.removePlayer(player);
@@ -380,6 +376,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     exit();
                 }
             });
+        } else if (dto instanceof PlayerEnterRoomDto d) {
+            WORLD_SCENE.changePlayerRoom(playerId, d.getRoomId(), d.getX(), d.getY());
         }
 
     }
@@ -436,7 +434,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                         .color(player.getColor())
                         .ping(player.getPingValue())
                         .frags(player.getFrags())
-                        .playerActorGameObjectId(MODULE_WORLD_SCENE.getPlayerActorGameObjectId(player.getId()))
+                        .playerActorGameObjectId(WORLD_SCENE.getPlayerActorGameObjectId(player.getId()))
                         .build()
                 ));
         return players;
@@ -445,7 +443,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     public void setMap(String mapName) {
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             MODULE_SERVER_STATE.setMap(mapName);
-            MODULE_WORLD_SCENE.loadMap(mapName);
+            WORLD_SCENE.loadMap(mapName);
             sendCurrentMapContentInfoToAll();
         } else {
             throw new IllegalStateException("no such map '" + mapName + "'");
@@ -535,7 +533,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     public void connectionClosed(int playerId, CloseStatus status) {
         // if the player exists in the player manager and has not been deleted yet, it will be CONNECTION_LOST exit cause
         serverPlayerManager.getPlayerById(playerId).ifPresent(player -> {
-            MODULE_WORLD_SCENE.removePlayer(player);
+            WORLD_SCENE.removePlayer(player);
             serverPlayerManager.removePlayer(player);
             serverSender.sendToAll(PlayerExitDto.builder()
                     .player(PlayerDto.builder()

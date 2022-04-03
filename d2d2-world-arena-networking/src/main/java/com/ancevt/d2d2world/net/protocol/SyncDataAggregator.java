@@ -164,15 +164,6 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeInt(gameObject.getGameObjectId());
     }
 
-    public static synchronized byte[] createSyncMessageOf(IGameObject o) {
-        if (!(o instanceof ISynchronized)) return ISyncDataAggregator.EMPTY_ARRAY;
-        ISyncDataAggregator aggregator = new SyncDataAggregator();
-
-        aggregator.createSyncDataOf(o);
-
-        return aggregator.pullSyncDataMessage();
-    }
-
     @Override
     public synchronized byte[] pullSyncDataMessage() {
         byte[] data = buffer.toByteArray();
@@ -191,5 +182,14 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     @Override
     public synchronized boolean hasData() {
         return buffer.hasData();
+    }
+
+    public static synchronized byte[] createSyncMessageOf(IGameObject o) {
+        if (!(o instanceof ISynchronized)) return ISyncDataAggregator.EMPTY_ARRAY;
+        ISyncDataAggregator aggregator = new SyncDataAggregator();
+
+        aggregator.createSyncDataOf(o);
+
+        return aggregator.pullSyncDataMessage();
     }
 }

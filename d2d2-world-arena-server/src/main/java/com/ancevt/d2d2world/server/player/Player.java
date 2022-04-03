@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.server.player;
 
+import com.ancevt.net.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,23 +31,38 @@ public class Player {
     private final String clientProtocolVersion;
     private int frags;
     private String ip;
+    private String roomId;
+    private IConnection connection;
 
     private int lastSeenChatMessageId;
     private int ping;
 
     private boolean rconLoggedIn;
 
-    public Player(int id,
+    public Player(@NotNull IConnection connection,
+                  int id,
                   @NotNull String name,
                   int color,
-                  @NotNull String address,
                   @NotNull String clientProtocolVersion) {
 
+        this.connection = connection;
         this.name = name;
         this.id = id;
-        this.address = address;
+        this.address = connection.getRemoteAddress();
         this.color = color;
         this.clientProtocolVersion = clientProtocolVersion;
+    }
+
+    public IConnection getConnection() {
+        return connection;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public String getRoomId() {
+        return roomId;
     }
 
     public String getIp() {
@@ -124,6 +140,7 @@ public class Player {
                 ", lastSeenChatMessageId=" + lastSeenChatMessageId +
                 ", ping=" + ping +
                 ", rconLoggedIn=" + rconLoggedIn +
+                ", roomId=" + roomId +
                 '}';
     }
 

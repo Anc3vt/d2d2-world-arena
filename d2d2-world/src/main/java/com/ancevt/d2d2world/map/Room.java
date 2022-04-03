@@ -30,14 +30,14 @@ public class Room {
 
     private final List<IGameObject>[] gameObjects;
 
-    private String name;
+    private String id;
     private final GameMap map;
     private int width;
     private int height;
     private Color backgroundColor;
 
     public Room(String name, GameMap map) {
-        this.name = name;
+        this.id = name;
         this.map = map;
 
         gameObjects = new List[Layer.LAYER_COUNT];
@@ -48,13 +48,13 @@ public class Room {
     }
 
     @Property
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     @Property
-    public void setName(String newId) {
-        this.name = newId;
+    public void setId(String newId) {
+        this.id = newId;
     }
 
     public GameMap getMap() {
@@ -121,7 +121,7 @@ public class Room {
     @Override
     public String toString() {
         return "Room{" +
-                "id='" + name + '\'' +
+                "id='" + id + '\'' +
                 ", gameObjects=" + Arrays.toString(gameObjects) +
                 ", width=" + width +
                 ", height=" + height +

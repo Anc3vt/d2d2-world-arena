@@ -437,6 +437,10 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
         localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));
         localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> overlay.startIn());
+        localPlayerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
+            var e = (ActorEvent) event;
+            MODULE_CLIENT.sendPlayerEnterRoom(e.getRoomId(), e.getX(), e.getY());
+        });
         localPlayerActor.addEventListener(ActorEvent.ACTOR_REPAIR, event -> {
             world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
             overlay.startOut();

@@ -48,7 +48,7 @@ import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static com.ancevt.d2d2world.server.repl.ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
-import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.MODULE_WORLD_SCENE;
+import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.WORLD_SCENE;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
@@ -136,7 +136,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         log.info("<y>Version: <g>{}<>", getServerVersion());
         log.info("Server started at {}:{}", MODULE_SERVER_CONFIG.getString(SERVER_HOST), MODULE_SERVER_CONFIG.getInt(SERVER_PORT));
 
-        MODULE_WORLD_SCENE.start();
+        WORLD_SCENE.start();
         D2D2World.init(true);
         MODULE_GENERAL.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
     }

@@ -62,9 +62,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         String mapkitName = in.readUtf(byte.class);
                         String mapkitItemId = in.readUtf(byte.class);
                         String dataEntryText = in.readUtf(short.class);
-
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
-
                     }
                     case SyncDataType.ADD_WEAPON -> {
                         String weaponClassname = in.readUtf(byte.class);

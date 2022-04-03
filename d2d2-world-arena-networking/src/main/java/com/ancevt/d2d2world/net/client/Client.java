@@ -42,7 +42,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.*;
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.PROTOCOL_VERSION;
@@ -119,9 +118,9 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
             serverContentInfoDto.getMapkits().forEach(
                     mk -> mk.getFiles().forEach(filename -> {
-                                        queue.add(sendFileRequest("data/mapkits/" + mk.getDirname() + "/" + filename));
-                                    }
-                            ));
+                                queue.add(sendFileRequest("data/mapkits/" + mk.getDirname() + "/" + filename));
+                            }
+                    ));
             FileReceiverManager.INSTANCE.addFileReceiverManagerListener(new FileReceiverManager.FileReceiverManagerListener() {
                 @Override
                 public void fileReceiverProgress(FileReceiver fileReceiver) {
@@ -233,6 +232,14 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                 .protocolVersion(PROTOCOL_VERSION)
                 .build()
         );
+    }
+
+    public void sendPlayerEnterRoom(String roomId, float x, float y) {
+        sender.send(PlayerEnterRoomDto.builder()
+                .roomId(roomId)
+                .x(x)
+                .y(y)
+                .build());
     }
 
     public void sendDamageReport(int damageValue, int damagingGameObjectId) {

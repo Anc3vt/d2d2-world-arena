@@ -7,7 +7,9 @@ import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
-import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.IDamaging;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
@@ -18,92 +20,112 @@ import com.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import com.ancevt.d2d2world.server.content.ServerContentManager;
 import com.ancevt.d2d2world.server.player.Player;
 import com.ancevt.d2d2world.server.service.GeneralService;
-import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
-import static com.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
-import static com.ancevt.d2d2world.server.service.ServerSender.MODULE_SENDER;
+import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
+import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
 
 @Slf4j
 public class ServerWorldScene {
 
-    public static final ServerWorldScene MODULE_WORLD_SCENE = new ServerWorldScene();
+    public static final ServerWorldScene WORLD_SCENE = new ServerWorldScene();
 
-    private World world;
+    /**
+     * roomId => world
+     */
+    private Map<String, World> worlds;
+    private GameMap gameMap;
     private FpsMeter fpsMeter;
-    private final ISyncDataAggregator syncDataAggregator;
 
     private final Map<Integer, PlayerActor> playerActorMap = new ConcurrentHashMap<>();
+    private Root root;
 
     private ServerWorldScene() {
-        syncDataAggregator = new SyncDataAggregator();
         MapIO.mapkitsDirectory = "data/mapkits/";
         MapIO.mapsDirectory = "data/maps/";
+
+        worlds = new HashMap<>();
+    }
+
+    private void clear() {
+        worlds.values().forEach(w -> {
+            w.setPlaying(false);
+            w.setSceneryPacked(false);
+            w.removeEventListener(hashCode() + Event.EACH_FRAME);
+            w.removeEventListener(this);
+            w.clear();
+            w.removeFromParent();
+        });
+        worlds.clear();
+    }
+
+    private void reset() {
+        worlds.values().forEach(World::reset);
     }
 
     public void start() {
-        Root root = D2D2.init(new NoRenderStarter(900, 600));
-
-        world = new World(syncDataAggregator);
-        world.addEventListener(hashCode() + Event.EACH_FRAME, Event.EACH_FRAME, this::world_eachFrame);
-        world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
-        root.add(world);
-
+        root = D2D2.init(new NoRenderStarter(900, 600));
+        root.addEventListener(hashCode() + Event.EACH_FRAME, Event.EACH_FRAME, this::root_eachFrame);
         fpsMeter = new FpsMeter();
         root.add(fpsMeter);
-
         Async.run(D2D2::loop);
     }
 
+    /*
     public World getWorld() {
         return world;
     }
+     */
 
     public int getFps() {
         return fpsMeter.getFramesPerSecond();
     }
 
+    @SneakyThrows(IOException.class)
     public void loadMap(String mapName) {
-        world.setPlaying(false);
+        reset();
+        clear();
+
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
-            ServerContentManager.Map scmMap = MODULE_CONTENT_MANAGER.getMaps()
-                    .stream()
-                    .filter(m -> m.name().equals(mapName))
-                    .findAny()
-                    .orElseThrow();
+            ServerContentManager.Map scmMap = MODULE_CONTENT_MANAGER.getMapByName(mapName);
+            long timeBefore = System.currentTimeMillis();
+            gameMap = MapIO.load(scmMap.filename());
+            log.info("Map '{}' loaded {}ms", mapName, System.currentTimeMillis() - timeBefore);
 
-            try {
-                long timeBefore = System.currentTimeMillis();
-                world.clear();
-                DefaultMaps.clear();
-                GameMap map = MapIO.load(scmMap.filename());
-                world.setMap(map);
+            gameMap.getRooms().forEach(room -> {
+                World world = new World(new SyncDataAggregator());
+                world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+                world.setMap(gameMap);
+                world.setRoom(room);
+                world.setSceneryPacked(true);
                 world.setPlaying(true);
-                log.info("Map '" + mapName + "' loaded {}ms", (System.currentTimeMillis() - timeBefore));
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
+                worlds.put(room.getId(), world);
+                root.add(world);
+            });
+        } else {
+            log.warn("No such map \"{}\"", mapName);
         }
-
-        //DefaultMaps.clear();
     }
 
-    private synchronized void world_eachFrame(Event event) {
-        if (syncDataAggregator.hasData()) {
-            //long t = System.currentTimeMillis();
-            MODULE_SENDER.sendToAll(syncDataAggregator.pullSyncDataMessage());
-            //System.out.println(System.currentTimeMillis() - t);
-        }
+    private synchronized void root_eachFrame(Event event) {
+        worlds.forEach((roomId, world) -> {
+            var agg = world.getSyncDataAggregator();
+            if (agg.hasData()) {
+                SENDER.sendToAllOfRoom(agg.pullSyncDataMessage(), roomId);
+            }
+        });
     }
 
     /**
@@ -137,30 +159,71 @@ public class ServerWorldScene {
         }
     }
 
+    /**
+     * Calls from {@link GeneralService}
+     */
+    public int spawnPlayer(@NotNull Player player, @NotNull String mapkitItemId) {
+        PlayerActor playerActor = WORLD_SCENE.addPlayerActorToWorld(player, mapkitItemId);
+        playerActor.setVisible(true);
+        sendObjectsSyncData(player.getId());
+        return playerActor.getGameObjectId();
+    }
+
+    /**
+     * Calls from {@link GeneralService}
+     */
+    public void changePlayerRoom(int playerId, String roomId, float x, float y) {
+        PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> player.setRoomId(roomId));
+        PlayerActor playerActor = playerActorMap.get(playerId);
+        playerActor.getWorld().removeGameObject(playerActor, false);
+
+        World worldToEnter = worlds.get(roomId);
+        playerActor.setXY(x, y);
+        worldToEnter.addGameObject(playerActor, 5, false);
+        sendObjectsSyncData(playerId);
+    }
+
+    public void sendObjectsSyncData(int playerId) {
+        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
+            World world = playerActor.getWorld();
+            world.getSyncGameObjects().forEach(o -> {
+                byte[] bytes = SyncDataAggregator.createSyncMessageOf(o);
+                if (bytes.length > 0) SENDER.sendToPlayer(playerId, bytes);
+            });
+        });
+    }
+
     public Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {
         return Optional.ofNullable(playerActorMap.get(playerId));
     }
 
-    public void addPlayer(@NotNull Player player, @NotNull String mapkitItemId) {
+    public PlayerActor addPlayerActorToWorld(@NotNull Player player, @NotNull String mapkitItemId) {
         MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemId);
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);
         playerActor.setXY(64, 64);
         playerActor.setPlayerColorValue(player.getColor());
-        world.addGameObject(playerActor, 5, false);
+
+        player.setRoomId(gameMap.getStartRoomName());
+
+        World startRoomWorld = worlds.get(gameMap.getStartRoomName());
+
+        startRoomWorld.addGameObject(playerActor, 5, false);
         playerActor.setVisible(false);
         playerActorMap.put(player.getId(), playerActor);
 
         //DebugActorCreator.createTestPlayerActor(playerActor, world).setXY(50, 64);
 
         log.info("Add player actor {}", playerActor);
+
+        return playerActor;
     }
 
     public void removePlayer(@NotNull Player player) {
         PlayerActor playerActor = playerActorMap.remove(player.getId());
-        if (playerActor != null) {
-            world.removeGameObject(playerActor, false);
+        if (playerActor != null && playerActor.isOnWorld()) {
+            playerActor.getWorld().removeGameObject(playerActor, false);
         }
 
         log.info("Remove player actor {}", playerActor);
@@ -172,8 +235,10 @@ public class ServerWorldScene {
         return gameObjectId.getValue();
     }
 
-    private void world_actorDeath(Event event) {
+    private void world_actorDeath(Event<World> event) {
         var e = (WorldEvent) event;
+
+        World world = e.getSource();
 
         final Holder<Integer> deadPlayerId = new Holder<>(0);
         final Holder<Integer> killerPlayerId = new Holder<>(0);
@@ -198,19 +263,20 @@ public class ServerWorldScene {
 
         if (deadPlayerId.getValue() != 0) {
             if (killerPlayerId.getValue() != 0)
-                MODULE_PLAYER_MANAGER.getPlayerById(killerPlayerId.getValue()).orElseThrow().incrementFrags();
+                PLAYER_MANAGER.getPlayerById(killerPlayerId.getValue()).orElseThrow().incrementFrags();
             else
-                MODULE_PLAYER_MANAGER.getPlayerById(deadPlayerId.getValue()).orElseThrow().decrementFrags();
+                PLAYER_MANAGER.getPlayerById(deadPlayerId.getValue()).orElseThrow().decrementFrags();
 
             DeathDto deathDto = DeathDto.builder()
                     .deadPlayerId(deadPlayerId.getValue())
                     .killerPlayerId(killerPlayerId.getValue())
                     .build();
-            MODULE_SENDER.sendToAll(deathDto);
+            SENDER.sendToAll(deathDto);
 
             PlayerActor deadPlayerActor = playerActorMap.get(deadPlayerId.getValue());
             if (deadPlayerActor != null) {
                 Async.runLater(5, TimeUnit.SECONDS, () -> {
+                    // TODO: extract to separate method
                     deadPlayerActor.setXY((float) (Math.random() * world.getRoom().getWidth()), 16);
                     deadPlayerActor.repair();
                 });
@@ -219,15 +285,18 @@ public class ServerWorldScene {
     }
 
     public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
-        IDamaging damagingGameObject = (IDamaging) getWorld().getGameObjectById(damagingGameObjectId);
+        World world = getPlayerActorByPlayerId(connectionId).orElseThrow().getWorld();
 
-        if(damagingGameObject != null) {
+        IDamaging damagingGameObject = (IDamaging) world.getGameObjectById(damagingGameObjectId);
+
+        if (damagingGameObject != null) {
             getPlayerActorByPlayerId(connectionId).ifPresent(
                     playerActor -> playerActor.damage(damageValue, damagingGameObject)
             );
         }
 
     }
+
 }
 
 

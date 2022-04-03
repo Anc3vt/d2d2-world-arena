@@ -163,6 +163,7 @@ public class World extends DisplayObjectContainer {
                 .type(WorldEvent.CHANGE_ROOM)
                 .room(room)
                 .build());
+        setSceneryPacked(true);
     }
 
     public void update() {

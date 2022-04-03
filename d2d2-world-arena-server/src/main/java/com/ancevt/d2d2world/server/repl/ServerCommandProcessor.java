@@ -29,10 +29,10 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
-import static com.ancevt.d2d2world.server.player.ServerPlayerManager.MODULE_PLAYER_MANAGER;
+import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
-import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.MODULE_WORLD_SCENE;
+import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.WORLD_SCENE;
 
 @Slf4j
 public class ServerCommandProcessor {
@@ -64,22 +64,11 @@ public class ServerCommandProcessor {
         repl.addCommand("ban", this::cmd_ban);
         repl.addCommand("unban", this::cmd_unban);
         repl.addCommand("fps", this::cmd_fps);
-        repl.addCommand("world", this::cmd_world);
-    }
-
-    private Object cmd_world(Args args) {
-        try {
-            String result = MODULE_WORLD_SCENE.getWorld().toString();
-            System.out.println(result);
-            return result;
-        } catch (Exception e) {
-            return e.getMessage();
-        }
     }
 
     private Object cmd_fps(Args args) {
         try {
-            int fps = MODULE_WORLD_SCENE.getFps();
+            int fps = WORLD_SCENE.getFps();
             System.out.println(fps);
             return fps;
         } catch (Exception e) {
@@ -204,7 +193,7 @@ public class ServerCommandProcessor {
                 "id", "hash", "name", "color", "clntProtVer", "address", "ping"
         });
 
-        MODULE_PLAYER_MANAGER.getPlayerList().forEach(p -> {
+        PLAYER_MANAGER.getPlayerList().forEach(p -> {
             table.addRow(
                     p.getId(),
                     p.hashCode(),

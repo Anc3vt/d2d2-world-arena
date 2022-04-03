@@ -17,18 +17,16 @@
  */
 package com.ancevt.d2d2world.server.player;
 
+import com.ancevt.net.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 public class ServerPlayerManager {
 
-    public static final ServerPlayerManager MODULE_PLAYER_MANAGER = new ServerPlayerManager();
+    public static final ServerPlayerManager PLAYER_MANAGER = new ServerPlayerManager();
 
     private final Map<Integer, Player> playerMap;
     private final List<Player> playerList;
@@ -38,17 +36,17 @@ public class ServerPlayerManager {
         playerList = new ArrayList<>();
     }
 
-    public Player createPlayer(int playerId,
+    public Player createPlayer(IConnection connection,
+                               int playerId,
                                String playerName,
-                               String clientProtocolVersion,
-                               String address) {
+                               String clientProtocolVersion) {
 
         return createPlayer(
                 new Player(
+                        connection,
                         playerId,
                         playerName,
                         generateColor(),
-                        address,
                         clientProtocolVersion
                 )
         );
@@ -97,5 +95,11 @@ public class ServerPlayerManager {
 
     public boolean containsPlayer(int playerId) {
         return getPlayerById(playerId).isPresent();
+    }
+
+    public List<Player> getPlayerListInRoom(@NotNull String roomId) {
+        return playerList.stream()
+                .filter(player->roomId.equals(player.getRoomId()))
+                .toList();
     }
 }

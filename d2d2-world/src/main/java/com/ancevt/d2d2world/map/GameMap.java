@@ -93,11 +93,11 @@ public class GameMap {
     }
 
     public void putRoom(Room room) {
-        rooms.put(room.getName(), room);
+        rooms.put(room.getId(), room);
     }
 
     public void removeRoom(Room room) {
-        rooms.remove(room.getName());
+        rooms.remove(room.getId());
     }
 
     public int getRoomCount() {
@@ -120,8 +120,8 @@ public class GameMap {
         return Optional.empty();
     }
 
-    public Room[] getRooms() {
-        return rooms.values().toArray(new Room[0]);
+    public List<Room> getRooms() {
+        return rooms.values().stream().toList();
     }
 
     public final IGameObject getGameObjectById(int gameObjectId) {

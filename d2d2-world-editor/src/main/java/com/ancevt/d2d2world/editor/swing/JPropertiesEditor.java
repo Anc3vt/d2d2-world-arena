@@ -191,9 +191,9 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
         DataEntry dataEntry = getProperties(room);
         dataEntry.add(DataKey.BACKGROUND_COLOR, room.getBackgroundColor().toHexString());
 
-        String oldName = room.getName();
+        String oldName = room.getId();
 
-        create("Room " + room.getName(), split(dataEntry.stringify()), text -> {
+        create("Room " + room.getId(), split(dataEntry.stringify()), text -> {
             DataEntry dataEntryToSet = DataEntry.newInstance(collect(text));
 
             String newName = dataEntryToSet.getString(DataKey.NAME);

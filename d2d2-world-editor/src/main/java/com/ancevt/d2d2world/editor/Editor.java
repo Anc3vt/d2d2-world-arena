@@ -134,11 +134,10 @@ public class Editor {
 
         s.append("Rooms:\n");
 
-        Room[] rooms = getWorld().getMap().getRooms();
-        for (Room room : rooms) {
+        for (Room room : getWorld().getMap().getRooms()) {
             String arrow = room == getWorld().getRoom() ? "> " : "  ";
             String startRoom = room == getWorld().getMap().getStartRoom() ? " <== start room" : "";
-            s.append(arrow).append(room.getName()).append(startRoom).append('\n');
+            s.append(arrow).append(room.getId()).append(startRoom).append('\n');
         }
 
         getEditorDisplayObject().setInfoText(s.toString());
@@ -147,7 +146,7 @@ public class Editor {
     private void prevRoom() {
         gameObjectEditor.unselect();
 
-        Room[] rooms = getWorld().getMap().getRooms();
+        Room[] rooms = getWorld().getMap().getRooms().toArray(new Room[]{});
         Room currentRoom = getWorld().getRoom();
 
         for (int i = 1; i < rooms.length; i++) {
@@ -163,7 +162,7 @@ public class Editor {
     private void nextRoom() {
         gameObjectEditor.unselect();
 
-        Room[] rooms = getWorld().getMap().getRooms();
+        Room[] rooms = getWorld().getMap().getRooms().toArray(new Room[]{});
         Room currentRoom = getWorld().getRoom();
 
         for (int i = 0; i < rooms.length - 1; i++) {

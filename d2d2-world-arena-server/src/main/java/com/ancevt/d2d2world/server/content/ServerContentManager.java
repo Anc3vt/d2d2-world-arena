@@ -20,6 +20,7 @@ package com.ancevt.d2d2world.server.content;
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.file.FileDataUtils;
+import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.transfer.FileSender;
 import com.ancevt.d2d2world.server.service.GeneralService;
@@ -102,21 +103,28 @@ public class ServerContentManager {
         try {
             Set<Map> result = new HashSet<>();
 
-            Set<Path> paths = Files.walk(Paths.get("data/maps/"))
+            Set<Path> paths = Files.walk(Paths.get(MapIO.mapsDirectory))
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toFile().getName().endsWith(".wam"))
                     .collect(Collectors.toSet());
 
-            paths.forEach(path -> result.add(getMap(path)));
-
+            paths.forEach(path -> result.add(getMapByPath(path)));
             return result;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
+    public Map getMapByName(String mapName) {
+        return getMaps()
+                .stream()
+                .filter(m -> m.name().equals(mapName))
+                .findAny()
+                .orElseThrow();
+    }
+
     @Contract("_ -> new")
-    private @NotNull Map getMap(Path path) {
+    private @NotNull Map getMapByPath(Path path) {
         try {
             String name = null;
             long size = 0L;
@@ -130,7 +138,7 @@ public class ServerContentManager {
                     String mapkitNames = dataEntry.getString(MAPKIT_NAMES);
 
                     for (String mapkitName : mapkitNames.split(",")) {
-                        mapkits.add(getMapkitByIndexFile(Path.of("data/mapkits/" + MapkitManager.getMapkitDirNameByMapkitName(mapkitName) + "/index.mk")));
+                        mapkits.add(getMapkitByIndexFile(Path.of(MapIO.mapkitsDirectory + MapkitManager.getMapkitDirNameByMapkitName(mapkitName) + "/index.mk")));
                     }
 
                     size = path.toFile().length();
@@ -148,7 +156,7 @@ public class ServerContentManager {
         try {
             Set<Mapkit> result = new HashSet<>();
 
-            Set<Path> paths = Files.walk(Paths.get("data/mapkits/"))
+            Set<Path> paths = Files.walk(Paths.get(MapIO.mapkitsDirectory))
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toFile().getName().endsWith(".mk"))
                     .collect(Collectors.toSet());
@@ -190,7 +198,7 @@ public class ServerContentManager {
 
             Set<String> files = new HashSet<>();
 
-            Files.walk(Path.of("data/mapkits/" + name + "/"))
+            Files.walk(Path.of(MapIO.mapkitsDirectory + name + "/"))
                     .filter(Files::isRegularFile)
                     .filter(p -> !p.toFile().getName().endsWith(".xcf"))
                     .forEach(p -> files.add(p.getFileName().toString()));

@@ -17,7 +17,6 @@
  */
 package com.ancevt.d2d2world.process;
 
-import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
@@ -29,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.ancevt.d2d2world.D2D2World.isServer;
 
 public class PlayProcessor {
 
@@ -46,7 +47,7 @@ public class PlayProcessor {
 
     private int tact;
 
-    public PlayProcessor(World world) {
+    public PlayProcessor(@NotNull World world) {
         this.world = world;
         gravity = DEFAULT_GRAVITY;
         setEnabled(true);
@@ -115,13 +116,13 @@ public class PlayProcessor {
             }
 
             if (o1 instanceof Actor actor) {
-                if (D2D2World.isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
+                if (isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
                     actor.setHealthBy(0, null, false);
                 }
             }
         }
 
-        if (D2D2World.isServer()) {
+        if (isServer()) {
             pushStates.values().forEach(PushState::process);
         }
     }
@@ -256,7 +257,7 @@ public class PlayProcessor {
     }
 
     private void processGravity(IGravitied o) {
-        if (!D2D2World.isServer() || !o.isGravityEnabled()) return;
+        if (!isServer() || !o.isGravityEnabled()) return;
         //if (!o.isGravityEnabled()) return;
 
         float velX = o.getVelocityX();
@@ -274,7 +275,7 @@ public class PlayProcessor {
     }
 
     private void processDoorTeleport(Actor actor, AreaDoorTeleport area) {
-        if (world.isSwitchingRoomsNow()) return;
+        if (world.isSwitchingRoomsNow() || isServer()) return;
 
         String targetAreaName = area.getTargetAreaName();
 
@@ -284,15 +285,22 @@ public class PlayProcessor {
                 .findAny()
                 .orElseThrow();
 
-        world.getMap().getRoomByGameObject(areaTarget).ifPresent(
-                room -> world.switchRoom(room.getName(), actor, areaTarget.getX(), areaTarget.getY())
+        world.getMap().getRoomByGameObject(areaTarget).ifPresent(room -> {
+                    world.switchRoom(room.getId(), actor, areaTarget.getX(), areaTarget.getY());
+                    actor.dispatchEvent(ActorEvent.builder()
+                            .type(ActorEvent.ACTOR_ENTER_ROOM)
+                            .roomId(room.getId())
+                            .x(areaTarget.getX())
+                            .y(areaTarget.getY())
+                            .build());
+                }
         );
     }
 
     // Push states:
     private final Map<ITight, PushState> pushStates = new HashMap<>();
 
-    private PushState getPushState(ITight tight) {
+    private @NotNull PushState getPushState(ITight tight) {
         var ps = pushStates.get(tight);
         if (ps == null) {
             ps = new PushState(world);

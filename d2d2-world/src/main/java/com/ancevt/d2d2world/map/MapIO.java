@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -113,7 +112,7 @@ public class MapIO {
 
         stringBuilder.append(mapDataEntry.stringify()).append('\n');
 
-        Arrays.stream(map.getRooms()).forEach(room -> {
+        map.getRooms().forEach(room -> {
             stringBuilder.append('\n');
             DataEntry roomDataEntry = DataEntry.newInstance();
             roomDataEntry.add(DataKey.ROOM);
