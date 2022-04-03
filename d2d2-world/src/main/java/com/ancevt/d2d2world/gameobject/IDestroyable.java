@@ -22,30 +22,16 @@ import com.ancevt.d2d2world.data.Property;
 public interface IDestroyable extends ICollision, IResettable {
 
     @Property
-    default void setMaxHealth(int health) {
-        DefaultMaps.maxHealthsMap.put(this, health);
-    }
+    void setMaxHealth(int health);
 
     @Property
-    default int getMaxHealth() {
-        return DefaultMaps.maxHealthsMap.getOrDefault(this, 0);
-    }
+    int getMaxHealth();
 
     @Property
-    default void setHealth(int health) {
-        if(health < 0) {
-            health = 0;
-        } else if(health > getMaxHealth()) {
-            health = getMaxHealth();
-        }
-
-        DefaultMaps.healthMap.put(this, health);
-    }
+    void setHealth(int health);
 
     @Property
-    default int getHealth() {
-        return DefaultMaps.healthMap.getOrDefault(this, 0);
-    }
+    int getHealth();
 
     void repair();
 

@@ -21,11 +21,7 @@ import com.ancevt.d2d2world.gameobject.area.AreaHook;
 
 public interface IHookable extends IGravitied, ICollision {
 
-    default void setHook(final AreaHook hook) {
-        DefaultMaps.hookMap.put(this, hook);
-    }
+    void setHook(final AreaHook hook);
 
-    default AreaHook getHook() {
-        return DefaultMaps.hookMap.get(this);
-    }
+    AreaHook getHook();
 }

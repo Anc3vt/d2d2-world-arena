@@ -63,6 +63,8 @@ public class StandardWeapon extends Weapon {
     public static class StandardBullet extends Bullet implements ITight {
 
         private boolean setToRemove;
+        private boolean floorOnly;
+        private boolean pushable;
 
         public StandardBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
@@ -120,5 +122,24 @@ public class StandardWeapon extends Weapon {
             super.process();
         }
 
+        @Override
+        public void setFloorOnly(boolean b) {
+            this.floorOnly = b;
+        }
+
+        @Override
+        public boolean isFloorOnly() {
+            return floorOnly;
+        }
+
+        @Override
+        public void setPushable(boolean b) {
+            this.pushable = b;
+        }
+
+        @Override
+        public boolean isPushable() {
+            return pushable;
+        }
     }
 }

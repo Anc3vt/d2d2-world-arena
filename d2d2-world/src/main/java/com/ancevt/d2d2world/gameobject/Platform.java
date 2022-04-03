@@ -6,7 +6,7 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Platform extends DisplayObjectContainer implements IPlatform, IActioned {
+abstract public class Platform extends DisplayObjectContainer implements IPlatform, IActioned {
 
     private final MapkitItem mapkitItem;
     private final int gameObjectId;
@@ -17,6 +17,7 @@ public abstract class Platform extends DisplayObjectContainer implements IPlatfo
     private float movingSpeedX, movingSpeedY;
     private float startX, startY;
     private boolean permanentSync;
+    private World world;
 
     public Platform(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
@@ -147,6 +148,16 @@ public abstract class Platform extends DisplayObjectContainer implements IPlatfo
     @Override
     public MapkitItem getMapkitItem() {
         return mapkitItem;
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 
     @Override

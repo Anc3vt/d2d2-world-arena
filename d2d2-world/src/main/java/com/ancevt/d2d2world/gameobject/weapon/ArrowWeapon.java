@@ -67,6 +67,8 @@ public class ArrowWeapon extends Weapon {
         private boolean setToRemove;
         private int destroyTime = 500;
         private Sprite sprite;
+        private boolean floorOnly;
+        private boolean pushable;
 
         public ArrowBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
@@ -132,5 +134,24 @@ public class ArrowWeapon extends Weapon {
             }
         }
 
+        @Override
+        public void setFloorOnly(boolean b) {
+            this.floorOnly = b;
+        }
+
+        @Override
+        public boolean isFloorOnly() {
+            return floorOnly;
+        }
+
+        @Override
+        public void setPushable(boolean b) {
+            pushable = b;
+        }
+
+        @Override
+        public boolean isPushable() {
+            return pushable;
+        }
     }
 }

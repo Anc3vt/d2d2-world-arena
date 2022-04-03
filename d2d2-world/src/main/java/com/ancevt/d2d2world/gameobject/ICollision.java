@@ -22,14 +22,10 @@ import com.ancevt.d2d2world.data.Property;
 public interface ICollision extends IGameObject {
 
     @Property
-    default void setCollisionEnabled(boolean value) {
-        DefaultMaps.collisionEnabledMap.put(this, value);
-    }
+    void setCollisionEnabled(boolean value);
 
     @Property
-    default boolean isCollisionEnabled() {
-        return DefaultMaps.collisionEnabledMap.getOrDefault(this, true);
-    }
+    boolean isCollisionEnabled();
 
     default void setCollision(float x, float y, float width, float height) {
         setCollisionX(x);
@@ -39,44 +35,28 @@ public interface ICollision extends IGameObject {
     }
 
     @Property
-    default void setCollisionWidth(float collisionWidth) {
-        DefaultMaps.collisionWidthMap.put(this, collisionWidth);
-    }
+    void setCollisionWidth(float collisionWidth);
 
     @Property
-    default float getCollisionWidth() {
-        return DefaultMaps.collisionWidthMap.getOrDefault(this, 0f);
-    }
+    float getCollisionWidth();
 
     @Property
-    default void setCollisionHeight(float collisionHeight) {
-        DefaultMaps.collisionHeightMap.put(this, collisionHeight);
-    }
+    void setCollisionHeight(float collisionHeight);
 
     @Property
-    default float getCollisionHeight() {
-        return DefaultMaps.collisionHeightMap.getOrDefault(this, 0f);
-    }
+    float getCollisionHeight();
 
     @Property
-    default void setCollisionX(float collisionX) {
-        DefaultMaps.collisionXMap.put(this, collisionX);
-    }
+    void setCollisionX(float collisionX);
 
     @Property
-    default float getCollisionX() {
-        return DefaultMaps.collisionXMap.getOrDefault(this, 0f);
-    }
+    float getCollisionX();
 
     @Property
-    default void setCollisionY(float collisionY) {
-        DefaultMaps.collisionYMap.put(this, collisionY);
-    }
+    void setCollisionY(float collisionY);
 
     @Property
-    default float getCollisionY() {
-        return DefaultMaps.collisionYMap.getOrDefault(this, 0f);
-    }
+    float getCollisionY();
 
     default void onCollide(ICollision collideWith) {
 

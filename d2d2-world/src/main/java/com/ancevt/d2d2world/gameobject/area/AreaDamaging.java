@@ -22,13 +22,14 @@ import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 
-        public class AreaDamaging extends Area implements IDamaging {
+public class AreaDamaging extends Area implements IDamaging {
     public static final Color FILL_COLOR = Color.DARK_RED;
     private static final Color STROKE_COLOR = Color.RED;
 
     public static final int DEFAULT_DAMAGING_POWER = 20;
 
     private int damagingPower;
+    private Actor damagingOwnerActor;
 
     public AreaDamaging(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -52,12 +53,12 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 
     @Override
     public void setDamagingOwnerActor(Actor actor) {
-
+        this.damagingOwnerActor = actor;
     }
 
     @Override
     public Actor getDamagingOwnerActor() {
-        return null;
+        return damagingOwnerActor;
     }
 
 

@@ -31,13 +31,7 @@ public interface IGameObject extends IDisplayObject, IProcessable {
         return DefaultMaps.extraMap.computeIfAbsent(this, k -> new HashMap<>());
     }
 
-    default void setGameObjectId(int id) {
-        DefaultMaps.gameObjectIdMap.put(this, id);
-    }
-
-    default int getGameObjectId() {
-        return DefaultMaps.gameObjectIdMap.getOrDefault(this, 0);
-    }
+    int getGameObjectId();
 
     @Property
     String getName();
@@ -61,13 +55,9 @@ public interface IGameObject extends IDisplayObject, IProcessable {
 
     MapkitItem getMapkitItem();
 
-    default void setWorld(World world) {
-        DefaultMaps.worldMap.putIfAbsent(this, world);
-    }
+    void setWorld(World world);
 
-    default World getWorld() {
-        return DefaultMaps.worldMap.get(this);
-    }
+    World getWorld();
 
     default boolean isOnWorld() {
         return getWorld() != null;

@@ -15,13 +15,15 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 
-public abstract class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized {
+abstract public class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized {
 
     private static final int DEFAULT_RESPAWN_MILLIS = 30000;
+
+    private final MapkitItem mapkitItem;
+    private final int gameObjectId;
     private final Sprite bubbleSprite;
     private final DisplayObjectContainer container;
     private final Sprite image;
-    private final MapkitItem mapkitItem;
 
     private int counter = 0;
     private boolean ready;
@@ -29,10 +31,16 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
     private long respawnTimeMillis;
     private long pickUpTimeMillis;
     private World world;
+    private float collisionY;
+    private float collisionX;
+    private float collisionHeight;
+    private float collisionWidth;
+    private boolean collisionEnabled;
+    private boolean permanentSync;
 
     public Pickup(MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
-        setGameObjectId(gameObjectId);
+        this.gameObjectId = gameObjectId;
         container = new DisplayObjectContainer();
         bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture());
         bubbleSprite.setAlpha(0.75f);
@@ -51,6 +59,16 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
     @Override
     public MapkitItem getMapkitItem() {
         return mapkitItem;
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 
     @Override
@@ -82,6 +100,56 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
 
     public Sprite getImage() {
         return image;
+    }
+
+    @Override
+    public void setCollisionEnabled(boolean value) {
+        this.collisionEnabled = value;
+    }
+
+    @Override
+    public boolean isCollisionEnabled() {
+        return collisionEnabled;
+    }
+
+    @Override
+    public void setCollisionWidth(float collisionWidth) {
+        this.collisionWidth = collisionWidth;
+    }
+
+    @Override
+    public float getCollisionWidth() {
+        return collisionWidth;
+    }
+
+    @Override
+    public void setCollisionHeight(float collisionHeight) {
+        this.collisionHeight = collisionHeight;
+    }
+
+    @Override
+    public float getCollisionHeight() {
+        return collisionHeight;
+    }
+
+    @Override
+    public void setCollisionX(float collisionX) {
+        this.collisionX = collisionX;
+    }
+
+    @Override
+    public float getCollisionX() {
+        return collisionX;
+    }
+
+    @Override
+    public void setCollisionY(float collisionY) {
+        this.collisionY = collisionY;
+    }
+
+    @Override
+    public float getCollisionY() {
+        return collisionY;
     }
 
     @Override
@@ -173,6 +241,11 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
     }
 
     @Override
+    public int getGameObjectId() {
+        return gameObjectId;
+    }
+
+    @Override
     public boolean isSavable() {
         return true;
     }
@@ -216,6 +289,16 @@ public abstract class Pickup extends DisplayObjectContainer implements ICollisio
                 container.setXY(0, 0);
             }
         }
+    }
+
+    @Override
+    public void setPermanentSync(boolean permanentSync) {
+        this.permanentSync = permanentSync;
+    }
+
+    @Override
+    public boolean isPermanentSync() {
+        return permanentSync;
     }
 }
 

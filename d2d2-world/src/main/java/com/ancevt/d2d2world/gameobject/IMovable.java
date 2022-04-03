@@ -22,14 +22,10 @@ import com.ancevt.d2d2world.data.Property;
 public interface IMovable extends IResettable {
 
     @Property
-    default void setStartX(float x) {
-        DefaultMaps.startXMap.put(this, x);
-    }
+    void setStartX(float x);
 
     @Property
-    default void setStartY(float y) {
-        DefaultMaps.startYMap.put(this, y);
-    }
+    void setStartY(float y);
 
     default void setStartXY(float x, float y) {
         setStartX(x);
@@ -37,28 +33,16 @@ public interface IMovable extends IResettable {
     }
 
     @Property
-    default float getStartX() {
-        return DefaultMaps.startXMap.getOrDefault(this, 0f);
-    }
+    float getStartX();
 
     @Property
-    default float getStartY() {
-        return DefaultMaps.startYMap.getOrDefault(this, 0f);
-    }
+    float getStartY();
 
-    default float getMovingSpeedX() {
-        return DefaultMaps.movingSpeedXMap.getOrDefault(this, 0f);
-    }
+    float getMovingSpeedX();
 
-    default float getMovingSpeedY() {
-        return DefaultMaps.movingSpeedYMap.getOrDefault(this, 0f);
-    }
+    float getMovingSpeedY();
 
-    default void setMovingSpeedX(float value) {
-        DefaultMaps.movingSpeedXMap.put(this, value);
-    }
+    void setMovingSpeedX(float value);
 
-    default void setMovingSpeedY(float value) {
-        DefaultMaps.movingSpeedYMap.put(this, value);
-    }
+    void setMovingSpeedY(float value);
 }

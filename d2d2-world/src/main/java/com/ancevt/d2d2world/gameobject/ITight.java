@@ -22,22 +22,14 @@ import com.ancevt.d2d2world.data.Property;
 public interface ITight extends ICollision {
 
     @Property
-    default void setFloorOnly(boolean b) {
-        DefaultMaps.floorOnlyMap.put(this, b);
-    }
+    void setFloorOnly(boolean b);
 
     @Property
-    default boolean isFloorOnly() {
-        return DefaultMaps.floorOnlyMap.getOrDefault(this, false);
-    }
+    boolean isFloorOnly() ;
 
     @Property
-    default void setPushable(boolean b) {
-        DefaultMaps.pushableMap.put(this, b);
-    }
+    void setPushable(boolean b) ;
 
     @Property
-    default boolean isPushable() {
-        return DefaultMaps.pushableMap.getOrDefault(this, false);
-    }
+    boolean isPushable() ;
 }

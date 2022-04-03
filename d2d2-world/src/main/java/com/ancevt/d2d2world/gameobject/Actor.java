@@ -91,6 +91,16 @@ abstract public class Actor extends Animated implements
     private int goDirection;
     private float aimX;
     private float aimY;
+    private boolean collisionEnabled;
+    private float collisionWidth;
+    private float collisionHeight;
+    private float collisionX;
+    private float collisionY;
+    private float speed;
+    private float movingSpeedY;
+    private float movingSpeedX;
+    private float startY;
+    private float startX;
 
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -850,6 +860,56 @@ abstract public class Actor extends Animated implements
     }
 
     @Override
+    public void setCollisionEnabled(boolean value) {
+        this.collisionEnabled = value;
+    }
+
+    @Override
+    public boolean isCollisionEnabled() {
+        return collisionEnabled;
+    }
+
+    @Override
+    public void setCollisionWidth(float collisionWidth) {
+        this.collisionWidth = collisionWidth;
+    }
+
+    @Override
+    public float getCollisionWidth() {
+        return collisionWidth;
+    }
+
+    @Override
+    public void setCollisionHeight(float collisionHeight) {
+        this.collisionHeight = collisionHeight;
+    }
+
+    @Override
+    public float getCollisionHeight() {
+        return collisionHeight;
+    }
+
+    @Override
+    public void setCollisionX(float collisionX) {
+        this.collisionX = collisionX;
+    }
+
+    @Override
+    public float getCollisionX() {
+        return collisionX;
+    }
+
+    @Override
+    public void setCollisionY(float collisionY) {
+        this.collisionY = collisionY;
+    }
+
+    @Override
+    public float getCollisionY() {
+        return collisionY;
+    }
+
+    @Override
     public void onCollide(ICollision collideWith) {
 
     }
@@ -895,6 +955,56 @@ abstract public class Actor extends Animated implements
 
     public boolean isHealthBarVisible() {
         return healthBar.isVisible();
+    }
+
+    @Override
+    public void setStartX(float x) {
+        this.startX = x;
+    }
+
+    @Override
+    public void setStartY(float y) {
+        this.startY = y;
+    }
+
+    @Override
+    public float getStartX() {
+        return startX;
+    }
+
+    @Override
+    public float getStartY() {
+        return startY;
+    }
+
+    @Override
+    public float getMovingSpeedX() {
+        return movingSpeedX;
+    }
+
+    @Override
+    public float getMovingSpeedY() {
+        return movingSpeedY;
+    }
+
+    @Override
+    public void setMovingSpeedX(float value) {
+        this.movingSpeedX = value;
+    }
+
+    @Override
+    public void setMovingSpeedY(float value) {
+        this.movingSpeedY = value;
+    }
+
+    @Override
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    @Override
+    public float getSpeed() {
+        return speed;
     }
 }
 

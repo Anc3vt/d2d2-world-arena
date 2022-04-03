@@ -22,51 +22,28 @@ import com.ancevt.d2d2world.data.Property;
 public interface IGravitied extends IMovable {
 
     @Property
-    default float getWeight() {
-        return DefaultMaps.weightMap.getOrDefault(this, 0f);
-    }
+    float getWeight();
 
     @Property
-    default void setWeight(float weight) {
-        DefaultMaps.weightMap.put(this, weight);
-    }
+    void setWeight(float weight);
 
-    default void setFloor(ICollision floor) {
-        DefaultMaps.floorMap.put(this, floor);
-    }
+    void setFloor(ICollision floor);
 
-    default ICollision getFloor() {
-        return DefaultMaps.floorMap.get(this);
-    }
+    ICollision getFloor();
 
-    default void setVelocityX(float velocityX) {
-        DefaultMaps.velocityXMap.put(this, velocityX);
-    }
+    void setVelocityX(float velocityX);
 
-    default void setVelocityY(float velocityY) {
-        DefaultMaps.velocityYMap.put(this, velocityY);
-    }
+    void setVelocityY(float velocityY);
 
-    default void setVelocity(float vX, float vY) {
-        setVelocityX(vX);
-        setVelocityY(vY);
-    }
+    void setVelocity(float vX, float vY);
 
-    default float getVelocityX() {
-        return DefaultMaps.velocityXMap.getOrDefault(this, 0f);
-    }
+    float getVelocityX();
 
-    default float getVelocityY() {
-        return DefaultMaps.velocityYMap.getOrDefault(this, 0f);
-    }
+    float getVelocityY();
 
     @Property
-    default void setGravityEnabled(boolean b) {
-        DefaultMaps.gravityEnabledMap.put(this, b);
-    }
+    void setGravityEnabled(boolean b);
 
     @Property
-    default boolean isGravityEnabled() {
-        return DefaultMaps.gravityEnabledMap.getOrDefault(this, false);
-    }
+    boolean isGravityEnabled();
 }

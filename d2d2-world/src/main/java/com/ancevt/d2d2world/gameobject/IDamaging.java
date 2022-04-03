@@ -21,21 +21,13 @@ import com.ancevt.d2d2world.data.Property;
 
 public interface IDamaging extends ICollision {
 
-	@Property
-	default void setDamagingPower(int damagingPower) {
-		DefaultMaps.damagingPowerMap.put(this, damagingPower);
-	}
+    @Property
+    void setDamagingPower(int damagingPower);
 
-	@Property
-	default int getDamagingPower() {
-		return DefaultMaps.damagingPowerMap.getOrDefault(this, 0);
-	}
+    @Property
+    int getDamagingPower();
 
-	default void setDamagingOwnerActor(Actor actor) {
-		DefaultMaps.damagingOwnerActorMap.put(this, actor);
-	}
+    void setDamagingOwnerActor(Actor actor);
 
-    default Actor getDamagingOwnerActor() {
-		return DefaultMaps.damagingOwnerActorMap.get(this);
-	}
+    Actor getDamagingOwnerActor();
 }

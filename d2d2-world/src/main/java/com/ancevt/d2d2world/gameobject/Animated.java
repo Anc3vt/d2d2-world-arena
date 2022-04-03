@@ -25,6 +25,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
@@ -32,15 +33,18 @@ import static com.ancevt.commons.unix.UnixDisplay.debug;
 abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized {
 
     private final MapkitItem mapkitItem;
+    private final int gameObjectId;
     private int direction;
     private int currentAnimationKey = -1;
     private IFramedDisplayObject[] animations;
     private boolean backward;
     private boolean animationsPrepared;
+    private boolean permanentSync;
+    private World world;
 
     public Animated(@NotNull MapkitItem mapKitItem, int gameObjectId) {
         this.mapkitItem = mapKitItem;
-        setGameObjectId(gameObjectId);
+        this.gameObjectId = gameObjectId;
         prepareAnimations();
         setPermanentSync(true);
     }
@@ -48,6 +52,16 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     @Override
     public MapkitItem getMapkitItem() {
         return mapkitItem;
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 
     public void setBackward(boolean backward) {
@@ -152,6 +166,11 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     }
 
     @Override
+    public int getGameObjectId() {
+        return gameObjectId;
+    }
+
+    @Override
     public void setX(float value) {
         if (value == getX()) return;
         super.setX(value);
@@ -219,4 +238,18 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
         return direction;
     }
 
+    @Override
+    public void process() {
+
+    }
+
+    @Override
+    public void setPermanentSync(boolean permanentSync) {
+        this.permanentSync = permanentSync;
+    }
+
+    @Override
+    public boolean isPermanentSync() {
+        return permanentSync;
+    }
 }

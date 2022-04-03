@@ -10,11 +10,7 @@ public interface ISynchronized extends IGameObject {
         }
     }
 
-    default void setPermanentSync(boolean permanentSync) {
-        DefaultMaps.permanentSyncMap.putIfAbsent(this, permanentSync);
-    }
+    void setPermanentSync(boolean permanentSync);
 
-    default boolean isPermanentSync() {
-        return DefaultMaps.permanentSyncMap.get(this);
-    }
+    boolean isPermanentSync();
 }

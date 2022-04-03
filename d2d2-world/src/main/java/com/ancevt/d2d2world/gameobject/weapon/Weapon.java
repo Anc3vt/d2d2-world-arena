@@ -140,20 +140,39 @@ abstract public class Weapon {
             ISynchronized {
 
         private final MapkitItem mapkitItem;
+        private final int gameObjectId;
         private Actor owner;
         private int direction;
         private int damagingPower;
         private float degree;
+        private World world;
+        private float collisionY;
+        private float collisionX;
+        private float collisionHeight;
+        private float collisionWidth;
+        private boolean collisionEnabled;
+        private float speed;
+        private boolean permanentSync;
 
         public Bullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             this.mapkitItem = mapkitItem;
-            setGameObjectId(gameObjectId);
+            this.gameObjectId = gameObjectId;
             setCollisionEnabled(true);
         }
 
         @Override
         public MapkitItem getMapkitItem() {
             return mapkitItem;
+        }
+
+        @Override
+        public void setWorld(World world) {
+            this.world = world;
+        }
+
+        @Override
+        public World getWorld() {
+            return world;
         }
 
         @Override
@@ -185,6 +204,11 @@ abstract public class Weapon {
         abstract public void prepare();
 
         abstract public void destroy();
+
+        @Override
+        public int getGameObjectId() {
+            return gameObjectId;
+        }
 
         @Override
         public boolean isSavable() {
@@ -221,6 +245,81 @@ abstract public class Weapon {
         @Property
         public float getDegree() {
             return degree;
+        }
+
+        @Override
+        public void setCollisionEnabled(boolean value) {
+            this.collisionEnabled = value;
+        }
+
+        @Override
+        public boolean isCollisionEnabled() {
+            return collisionEnabled;
+        }
+
+        @Override
+        public void setCollisionWidth(float collisionWidth) {
+            this.collisionWidth = collisionWidth;
+        }
+
+        @Override
+        public float getCollisionWidth() {
+            return collisionWidth;
+        }
+
+        @Override
+        public void setCollisionHeight(float collisionHeight) {
+            this.collisionHeight = collisionHeight;
+        }
+
+        @Override
+        public float getCollisionHeight() {
+            return collisionHeight;
+        }
+
+        @Override
+        public void setCollisionX(float collisionX) {
+            this.collisionX = collisionX;
+        }
+
+        @Override
+        public float getCollisionX() {
+            return collisionX;
+        }
+
+        @Override
+        public void setCollisionY(float collisionY) {
+            this.collisionY = collisionY;
+        }
+
+        @Override
+        public float getCollisionY() {
+            return collisionY;
+        }
+
+        @Override
+        public void onCollide(ICollision collideWith) {
+
+        }
+
+        @Override
+        public void setSpeed(float speed) {
+            this.speed = speed;
+        }
+
+        @Override
+        public float getSpeed() {
+            return speed;
+        }
+
+        @Override
+        public void setPermanentSync(boolean permanentSync) {
+            this.permanentSync = permanentSync;
+        }
+
+        @Override
+        public boolean isPermanentSync() {
+            return permanentSync;
         }
     }
 }

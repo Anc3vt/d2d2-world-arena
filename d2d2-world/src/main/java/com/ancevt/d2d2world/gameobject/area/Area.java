@@ -24,23 +24,30 @@ import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.ISizable;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.world.World;
 
-public abstract class Area extends BorderedRect implements IGameObject, ICollision, ISizable {
+abstract public class Area extends BorderedRect implements IGameObject, ICollision, ISizable {
 
     private static final float DEFAULT_WIDTH = 16.0f;
     private static final float DEFAULT_HEIGHT = 16.0f;
     private static final float ALPHA = 0.25f;
 
+    private final int gameObjectId;
+
     protected BitmapText bitmapText;
 
     private boolean collisionEnabled;
     private final MapkitItem mapkitItem;
+    private float collisionWidth;
+    private float collisionHeight;
+    private float collisionX;
+    private float collisionY;
+    private World world;
 
     protected Area(MapkitItem mapkitItem, int gameObjectId) {
         super(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.mapkitItem = mapkitItem;
-        setGameObjectId(gameObjectId);
-
+        this.gameObjectId = gameObjectId;
         this.collisionEnabled = true;
 
         bitmapText = new BitmapText();
@@ -52,6 +59,16 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
     @Override
     public MapkitItem getMapkitItem() {
         return mapkitItem;
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 
     @Override
@@ -70,6 +87,11 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
     public void setHeight(float height) {
         super.setHeight(height);
         setCollisionHeight(height);
+    }
+
+    @Override
+    public int getGameObjectId() {
+        return gameObjectId;
     }
 
     @Override
@@ -108,5 +130,54 @@ public abstract class Area extends BorderedRect implements IGameObject, ICollisi
     }
 
 
+    @Override
+    public void setCollisionEnabled(boolean value) {
+        this.collisionEnabled = value;
+    }
+
+    @Override
+    public boolean isCollisionEnabled() {
+        return collisionEnabled;
+    }
+
+    @Override
+    public void setCollisionWidth(float collisionWidth) {
+        this.collisionWidth = collisionWidth;
+    }
+
+    @Override
+    public float getCollisionWidth() {
+        return collisionWidth;
+    }
+
+    @Override
+    public void setCollisionHeight(float collisionHeight) {
+        this.collisionHeight = collisionHeight;
+    }
+
+    @Override
+    public float getCollisionHeight() {
+        return collisionHeight;
+    }
+
+    @Override
+    public void setCollisionX(float collisionX) {
+        this.collisionX = collisionX;
+    }
+
+    @Override
+    public float getCollisionX() {
+        return collisionX;
+    }
+
+    @Override
+    public void setCollisionY(float collisionY) {
+        this.collisionY = collisionY;
+    }
+
+    @Override
+    public float getCollisionY() {
+        return collisionY;
+    }
 
 }
