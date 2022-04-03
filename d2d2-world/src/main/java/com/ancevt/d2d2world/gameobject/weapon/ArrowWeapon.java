@@ -7,8 +7,6 @@ import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
-import com.ancevt.d2d2world.gameobject.area.AreaCollision;
-import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -129,7 +127,8 @@ public class ArrowWeapon extends Weapon {
         @Override
         public void onCollide(ICollision collideWith) {
             super.onCollide(collideWith);
-            if (!setToRemove && !(collideWith instanceof AreaCollision) && !(collideWith instanceof Pickup)) {
+            if (!setToRemove && collideWith instanceof PlayerActor playerActor &&
+                    getOwnerGameObjectId() != playerActor.getGameObjectId()) {
                 getWorld().removeGameObject(this, false);
             }
         }
