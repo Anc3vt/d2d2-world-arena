@@ -22,6 +22,7 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2.starter.norender.NoRenderStarter;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -37,6 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.ancevt.d2d2world.D2D2World.isServer;
+import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
 
 public class World extends DisplayObjectContainer {
 
@@ -163,7 +167,9 @@ public class World extends DisplayObjectContainer {
                 .type(WorldEvent.CHANGE_ROOM)
                 .room(room)
                 .build());
-        setSceneryPacked(true);
+        if (!isServer()) {
+            setSceneryPacked(true);
+        }
     }
 
     public void update() {
@@ -272,8 +278,8 @@ public class World extends DisplayObjectContainer {
         List<IGameObject> toRemove = new ArrayList<>();
 
         for (IGameObject gameObject : gameObjects) {
-            if (gameObject instanceof final Scenery s) {
-                s.removeFromParent();
+            if (gameObject instanceof final Scenery scenery && scenery.isStatic()) {
+                scenery.removeFromParent();
                 toRemove.add(gameObject);
             }
         }
@@ -283,7 +289,7 @@ public class World extends DisplayObjectContainer {
 
     private void addSceneries() {
         for (IGameObject gameObject : getRoom().getGameObjects()) {
-            if (!gameObject.hasParent() && gameObject instanceof Scenery scenery) {
+            if (!gameObject.hasParent() && gameObject instanceof Scenery scenery && scenery.isStatic()) {
                 addGameObject(scenery, getRoom().getLayerIndexOfGameObject(gameObject), false);
             }
         }
@@ -305,6 +311,7 @@ public class World extends DisplayObjectContainer {
                 addGameObject(actor, 5, false);
                 camera.setXY(actorX, actorY);
                 camera.setAttachedTo(actor);
+                actor.setAnimation(IDLE);
             } else if (overlay.getState() == Overlay.STATE_DONE) {
                 overlay.removeFromParent();
                 switchingRoomsNow = false;
@@ -324,8 +331,11 @@ public class World extends DisplayObjectContainer {
                 throw new IllegalStateException("duplicate game object id: " + gameObject.getGameObjectId() + " " + gameObject + " and  " + o);
         });
 
-
         IdGenerator.INSTANCE.addId(gameObject.getGameObjectId());
+
+        if (gameObject instanceof Parallax parallax && !(D2D2.getStarter() instanceof NoRenderStarter)) {
+            parallax.setCamera(getCamera());
+        }
 
         gameObjects.add(gameObject);
         gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
@@ -347,6 +357,11 @@ public class World extends DisplayObjectContainer {
         IdGenerator.INSTANCE.removeId(gameObject.getGameObjectId());
         gameObjects.remove(gameObject);
         gameObjectMap.remove(gameObject.getGameObjectId());
+
+        if (gameObject instanceof Parallax parallax && !(D2D2.getStarter() instanceof NoRenderStarter)) {
+            parallax.setCamera(null);
+        }
+
         for (int layerIndex = 0; layerIndex < layers.length; layerIndex++) {
             Layer layer = layers[layerIndex];
             if (layer == gameObject.getParent()) {

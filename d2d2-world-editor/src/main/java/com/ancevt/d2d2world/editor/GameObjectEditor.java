@@ -69,6 +69,7 @@ public class GameObjectEditor {
     private boolean selecting;
     private MapkitItem lastPlacingMapkitItem;
     private PlayerActor playerActor;
+    private boolean collisionVisible;
 
     public GameObjectEditor(Editor editor) {
         this.editor = editor;
@@ -125,7 +126,11 @@ public class GameObjectEditor {
 
                 switch (keyChar) {
                     case 'C' -> {
-                        setCollisionsVisible(down);
+                        setCollisionsVisible(!isCollisionsVisible());
+                    }
+
+                    case 'B' -> {
+                        getWorld().getCamera().setBoundsLock(!getWorld().getCamera().isBoundsLock());
                     }
 
                     case 'P' -> {
@@ -268,7 +273,12 @@ public class GameObjectEditor {
         oldMouseY = y;
     }
 
+    private boolean isCollisionsVisible() {
+        return this.collisionVisible;
+    }
+
     private void setCollisionsVisible(boolean visible) {
+        this.collisionVisible = visible;
         if (visible) {
             for (int i = 0; i < getWorld().getGameObjectCount(); i++) {
                 IGameObject gameObject = getWorld().getGameObject(i);

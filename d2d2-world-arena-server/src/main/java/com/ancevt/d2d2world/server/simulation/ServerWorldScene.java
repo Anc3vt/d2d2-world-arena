@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
@@ -165,6 +166,7 @@ public class ServerWorldScene {
     public int spawnPlayer(@NotNull Player player, @NotNull String mapkitItemId) {
         PlayerActor playerActor = WORLD_SCENE.addPlayerActorToWorld(player, mapkitItemId);
         playerActor.setVisible(true);
+        playerActor.setAnimation(IDLE);
         sendObjectsSyncData(player.getId());
         return playerActor.getGameObjectId();
     }
@@ -180,6 +182,7 @@ public class ServerWorldScene {
         World worldToEnter = worlds.get(roomId);
         playerActor.setXY(x, y);
         worldToEnter.addGameObject(playerActor, 5, false);
+        playerActor.setAnimation(IDLE);
         sendObjectsSyncData(playerId);
     }
 

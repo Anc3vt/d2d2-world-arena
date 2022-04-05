@@ -24,6 +24,10 @@ public class HealthPickup extends Pickup {
 
     public HealthPickup(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
+        //bubbleSprite.setTexture(D2D2World.getPickupBubbleTexture16());
+        //bubbleSprite.setAlpha(0.75f);
+        bubbleSprite.removeFromParent();
+        //bubbleSprite.setXY(-8, -8);
         setValue(100);
     }
 

@@ -17,8 +17,10 @@
  */
 package com.ancevt.d2d2world.server.player;
 
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.net.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -53,10 +55,11 @@ public class ServerPlayerManager {
     }
 
     private static int generateColor() {
-        return (int) (Math.random() * 0xFFFFFF);
+        return Color.createVisibleRandomColor().getValue();
     }
 
-    private Player createPlayer(Player player) {
+    @Contract("_ -> param1")
+    private @NotNull Player createPlayer(Player player) {
         playerMap.put(player.getId(), player);
         playerList.add(player);
         log.info("Add player: {}({}), ip: {}", player.getName(), player.getId(), player.getAddress());
@@ -67,7 +70,7 @@ public class ServerPlayerManager {
         getPlayerById(playerId).ifPresent(this::removePlayer);
     }
 
-    public void removePlayer(Player player) {
+    public void removePlayer(@NotNull Player player) {
         playerMap.remove(player.getId());
         playerList.remove(player);
         log.info("Remove player: {}({}), ip: {}", player.getName(), player.getId(), player.getAddress());
@@ -99,7 +102,7 @@ public class ServerPlayerManager {
 
     public List<Player> getPlayerListInRoom(@NotNull String roomId) {
         return playerList.stream()
-                .filter(player->roomId.equals(player.getRoomId()))
+                .filter(player -> roomId.equals(player.getRoomId()))
                 .toList();
     }
 }

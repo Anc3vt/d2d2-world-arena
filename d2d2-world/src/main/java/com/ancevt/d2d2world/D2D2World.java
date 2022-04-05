@@ -50,8 +50,12 @@ public class D2D2World {
         return aim == null ? aim = new Aim() : aim;
     }
 
-    public static Texture getPickupBubbleTexture() {
-        return D2D2.getTextureManager().getTexture("pickup-bubble");
+    public static Texture getPickupBubbleTexture32() {
+        return D2D2.getTextureManager().getTexture("pickup-bubble-32");
+    }
+
+    public static Texture getPickupBubbleTexture16() {
+        return D2D2.getTextureManager().getTexture("pickup-bubble-16");
     }
 
     public static class Aim extends DisplayObjectContainer {

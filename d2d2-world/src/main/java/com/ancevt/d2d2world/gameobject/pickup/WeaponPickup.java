@@ -24,7 +24,6 @@ public class WeaponPickup extends Pickup {
 
     public WeaponPickup(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
-        setScale(1f, 1f);
         setWeaponClassname(PlasmaWeapon.class.getName());
     }
 

@@ -18,6 +18,7 @@
 package com.ancevt.d2d2.display;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class Color {
 
@@ -165,6 +166,22 @@ public class Color {
 
     public static Color createRandomColor() {
         return new Color((int) (Math.random() * 0xFFFFFF));
+    }
+
+    public static Color createVisibleRandomColor() {
+        Random random = new Random();
+
+        final int[] values = new int[]{0x00, 0x40, 0x80, 0xC0, 0xFF};
+
+        int r, g, b;
+
+        do {
+            r = values[random.nextInt(values.length)];
+            g = values[random.nextInt(values.length)];
+            b = values[random.nextInt(values.length)];
+        } while (r <= 0x40 && g <= 0x40 && b <= 0x00);
+
+        return new Color(r, g, b);
     }
 
     public static Color of(int rgb) {

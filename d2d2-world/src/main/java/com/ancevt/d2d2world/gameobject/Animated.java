@@ -21,7 +21,6 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.FramedSprite;
 import com.ancevt.d2d2.display.IFramedDisplayObject;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -29,6 +28,7 @@ import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
+import static com.ancevt.d2d2world.D2D2World.isServer;
 
 abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized {
 
@@ -119,7 +119,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setAnimation(final int animationKey) {
-        if (D2D2World.isServer()) { // <== TODO: please refactor and remove it
+        if (isServer()) { // <== TODO: please refactor and remove it
             setAnimation(animationKey, true);
         }
     }

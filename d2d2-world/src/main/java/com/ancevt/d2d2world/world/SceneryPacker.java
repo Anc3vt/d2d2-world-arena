@@ -34,7 +34,7 @@ public class SceneryPacker {
         for (int layer = layerFrom; layer <= layerTo; layer++) {
             for (int i = 0; i < room.getGameObjectsCount(layer); i++) {
                 IGameObject o = room.getGameObject(layer, i);
-                if (o instanceof Scenery scenery) {
+                if (o instanceof Scenery scenery && scenery.isStatic()) {
                     Texture textureRegion = scenery.getTexture();
                     int x = (int) scenery.getX();
                     int y = (int) scenery.getY();

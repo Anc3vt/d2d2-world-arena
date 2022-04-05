@@ -14,6 +14,9 @@ import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
+import org.jetbrains.annotations.NotNull;
+
+import static com.ancevt.d2d2world.D2D2World.isServer;
 
 abstract public class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized {
 
@@ -21,9 +24,9 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
 
     private final MapkitItem mapkitItem;
     private final int gameObjectId;
-    private final Sprite bubbleSprite;
-    private final DisplayObjectContainer container;
-    private final Sprite image;
+    protected final Sprite image;
+    protected final DisplayObjectContainer container;
+    protected final Sprite bubbleSprite;
 
     private int counter = 0;
     private boolean ready;
@@ -38,20 +41,19 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     private boolean collisionEnabled;
     private boolean permanentSync;
 
-    public Pickup(MapkitItem mapkitItem, int gameObjectId) {
+    public Pickup(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
         this.gameObjectId = gameObjectId;
         container = new DisplayObjectContainer();
-        bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture());
+        bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture32());
         bubbleSprite.setAlpha(0.75f);
         image = new Sprite(mapkitItem.getTexture());
         container.add(image);
-        image.setXY(-image.getWidth() / 3, -image.getHeight() / 2);
+        image.setXY(-image.getWidth() / 2, -image.getHeight() / 2);
         container.add(bubbleSprite, -16, -16);
         container.setScale(0.01f, 0.01f);
         add(container);
         setCollision(-8f / 2f, -8f / 2f, 16f / 2f, 16f / 2f);
-        setScale(0.5f, 0.5f);
 
         setRespawnTimeMillis(DEFAULT_RESPAWN_MILLIS);
     }
@@ -154,7 +156,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
 
     @Override
     public void onCollide(ICollision collideWith) {
-        if (!D2D2World.isServer()) return;
+        if (!isServer()) return;
 
         if (collideWith instanceof PlayerActor playerActor && pickUpTimeMillis == 0) {
 
@@ -165,11 +167,11 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
                 setCollisionEnabled(false);
                 pickUpTimeMillis = System.currentTimeMillis();
 
-                if(respawnTimeMillis <= 0) {
+                if (respawnTimeMillis <= 0) {
                     world.removeEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId());
                     world.removeGameObject(this, false);
                 }
-                if(playerActor.isOnWorld()) {
+                if (playerActor.isOnWorld()) {
                     playerActor.getWorld().getSyncDataAggregator().pickUp(playerActor, getGameObjectId());
                 }
             }
@@ -266,7 +268,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
         } else {
             counter++;
             final float factor = 0.0025f;
-            if (counter < 20) {
+            if (counter <= 20) {
                 container.setScale(container.getScaleX() + factor, container.getScaleY() - factor);
                 image.moveY(-0.01f);
                 container.moveY(0.25f);

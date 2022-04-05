@@ -1,11 +1,11 @@
 package com.ancevt.d2d2world.gameobject;
 
-import com.ancevt.d2d2world.D2D2World;
+import static com.ancevt.d2d2world.D2D2World.isServer;
 
 public interface ISynchronized extends IGameObject {
 
     default void sync() {
-        if (!isPermanentSync() && isOnWorld() && D2D2World.isServer()) {
+        if (!isPermanentSync() && isOnWorld() && isServer()) {
             getWorld().getSyncDataAggregator().createSyncDataOf(this);
         }
     }

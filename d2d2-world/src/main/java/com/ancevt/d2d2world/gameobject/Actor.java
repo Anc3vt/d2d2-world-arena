@@ -20,7 +20,6 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.constant.SoundKey;
@@ -42,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.constant.AnimationKey.*;
 
 abstract public class Actor extends Animated implements
@@ -226,7 +226,7 @@ abstract public class Actor extends Animated implements
             return;
         }
 
-        if (!D2D2World.isServer() || !isAlive() || damagingTime > 0) return;
+        if (!isServer() || !isAlive() || damagingTime > 0) return;
 
         if (getCurrentWeapon() != null) {
             getCurrentWeapon().shoot(getWorld());
@@ -387,7 +387,7 @@ abstract public class Actor extends Animated implements
             getMapkitItem().playSound(SoundKey.DAMAGE);
         }
 
-        if (fromServer || D2D2World.isServer()) {
+        if (fromServer || isServer()) {
             this.health = health;
             if (health <= 0 && isAlive()) death(damaging);
             healthBar.setValue(health);
@@ -456,7 +456,7 @@ abstract public class Actor extends Animated implements
 
         dispatchEvent(ActorEvent.builder().type(ActorEvent.ACTOR_DEATH).build());
 
-        if (D2D2World.isServer()) {
+        if (isServer()) {
             getWorld().dispatchEvent(WorldEvent.builder()
                     .type(WorldEvent.ACTOR_DEATH)
                     .deadActorGameObjectId(getGameObjectId())

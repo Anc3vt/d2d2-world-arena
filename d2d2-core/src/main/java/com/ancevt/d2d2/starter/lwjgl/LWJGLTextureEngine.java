@@ -46,13 +46,15 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class LWJGLTextureEngine implements ITextureEngine {
 
-    private static final boolean TEXTURE_PREPROCESSING_ENABLED = false;
+    private static boolean texturePreprocessingEnabled = false;
     private final TextureLoadQueue loadQueue;
     private final Queue<TextureAtlas> unloadQueue;
     private final TextureMapping mapping;
     private int textureAtlasIdCounter;
 
     public LWJGLTextureEngine() {
+        texturePreprocessingEnabled = (boolean) System.getProperties().getOrDefault("d2d2.experimental.bloom", false);
+
         mapping = new TextureMapping();
         loadQueue = new TextureLoadQueue();
         unloadQueue = new LinkedList<>();
@@ -163,7 +165,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        if(TEXTURE_PREPROCESSING_ENABLED) {
+        if(texturePreprocessingEnabled) {
             var f = new GaussianFilter(1.5f);
             image = f.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 //            var f2 = new GlowFilter();

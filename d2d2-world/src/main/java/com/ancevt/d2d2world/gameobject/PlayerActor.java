@@ -30,6 +30,8 @@ import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 
+import static com.ancevt.d2d2world.D2D2World.isServer;
+
 public class PlayerActor extends Actor {
 
     private boolean localPlayerActor;
@@ -91,7 +93,7 @@ public class PlayerActor extends Actor {
     public void onCollide(ICollision collideWith) {
         super.onCollide(collideWith);
 
-        if (!D2D2World.isServer()) {
+        if (!isServer()) {
             if (isLocalPlayerActor() && collideWith instanceof Weapon.Bullet bullet &&
                     bullet.getDamagingOwnerActor() != this &&
                     bullet.getDamagingOwnerActor() instanceof PlayerActor playerActor) {

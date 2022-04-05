@@ -73,12 +73,9 @@ public class MapIO {
             }
 
             if (dataEntry.containsKey(DataKey.ROOM)) {
-                room = new Room(dataEntry.getString(DataKey.NAME), map);
-
+                room = new Room(dataEntry.getString(DataKey.ID), map);
                 setProperties(room, dataEntry);
-
                 room.setBackgroundColor(new Color(Objects.requireNonNull(dataEntry.getString(DataKey.BACKGROUND_COLOR))));
-
                 map.putRoom(room);
                 continue;
             }

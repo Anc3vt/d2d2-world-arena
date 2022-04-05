@@ -45,8 +45,8 @@ public class BuiltInMapkit extends Mapkit {
 
     public Set<MapkitItem> getCharacterMapkitItems() {
         final Set<MapkitItem> items = new HashSet<>();
-        keySet().forEach(mapkitItemId->{
-            if(mapkitItemId.startsWith("character_")) {
+        keySet().forEach(mapkitItemId -> {
+            if (mapkitItemId.startsWith("character_")) {
                 items.add(getItem(mapkitItemId));
             }
         });
@@ -73,9 +73,7 @@ public class BuiltInMapkit extends Mapkit {
                                 """);
 
                     } catch (NoSuchFieldException | IllegalAccessException e) {
-
-                        System.out.println(pickupClass);
-
+                        System.err.println(pickupClass);
                         e.printStackTrace();
                     }
 

@@ -24,6 +24,7 @@ import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.Room;
 import com.ancevt.d2d2world.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -125,7 +126,7 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(@NotNull ActionEvent e) {
         final JButton button = (JButton) e.getSource();
 
         if (button == buttonOK) {
@@ -155,20 +156,20 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
         return textArea.getText();
     }
 
-    public static JPropertiesEditor create(String title, String text, OkFunction okFunction) {
-        //SwingUtilities.invokeLater(() -> {
-        JPropertiesEditor textEditor = new JPropertiesEditor();
-        textEditor.setText(text);
-        textEditor.setTitle(title + " (floating)");
-        textEditor.setOkFunction(okFunction);
-        //textWindow.setLocationByPlatform(true);
-        textEditor.setVisible(true);
-        //});
+    public static @NotNull JPropertiesEditor create(String title, String text, OkFunction okFunction) {
+        JPropertiesEditor editor = new JPropertiesEditor();
 
-        return textEditor;
+        SwingUtilities.invokeLater(() -> {
+            editor.setText(text);
+            editor.setTitle(title + "(floating)");
+            editor.setOkFunction(okFunction);
+            editor.setVisible(true);
+        });
+
+        return editor;
     }
 
-    public static void create(World world, IGameObject gameObject) {
+    public static void create(World world, @NotNull IGameObject gameObject) {
         create(gameObject.toString(), split(getProperties(gameObject).stringify()), text -> {
             DataEntry dataEntry = DataEntry.newInstance(collect(text));
 
@@ -191,21 +192,21 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
         DataEntry dataEntry = getProperties(room);
         dataEntry.add(DataKey.BACKGROUND_COLOR, room.getBackgroundColor().toHexString());
 
-        String oldName = room.getId();
+        String oldId = room.getId();
 
         create("Room " + room.getId(), split(dataEntry.stringify()), text -> {
             DataEntry dataEntryToSet = DataEntry.newInstance(collect(text));
 
-            String newName = dataEntryToSet.getString(DataKey.NAME);
+            String newId = dataEntryToSet.getString(DataKey.ID);
 
             GameMap map = room.getMap();
 
-            if (map.getRoom(newName) != null && map.getRoom(newName) != room) {
-                JOptionPane.showMessageDialog(null, "Room with id " + newName + " is already exists");
-                throw new IllegalStateException("Room with id " + newName + " is already exists");
+            if (map.getRoom(newId) != null && map.getRoom(newId) != room) {
+                JOptionPane.showMessageDialog(null, "Room with id " + newId + " is already exists");
+                throw new IllegalStateException("Room with id " + newId + " is already exists");
             }
 
-            if (!newName.equals(oldName)) {
+            if (!newId.equals(oldId)) {
                 map.removeRoom(room);
             }
 
@@ -213,7 +214,7 @@ public class JPropertiesEditor extends JFrame implements ActionListener {
 
             room.setBackgroundColor(new Color(dataEntryToSet.getString(DataKey.BACKGROUND_COLOR)));
 
-            if (!newName.equals(oldName)) {
+            if (!newId.equals(oldId)) {
                 map.putRoom(room);
             }
 

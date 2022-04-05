@@ -73,7 +73,7 @@ public class AutomaticWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(AutomaticWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
-            if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+            if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
                 sprite.setColor(playerActor.getPlayerColor());
             } else {
                 sprite.setColor(Color.GRAY);
@@ -107,9 +107,11 @@ public class AutomaticWeapon extends Weapon {
             setToRemove = true;
             setCollisionEnabled(false);
 
-            IDisplayObject displayObjectContainer = Particle.miniExplosion(5, Color.DARK_GRAY, 2f);
-            displayObjectContainer.setScale(0.25f, 0.25f);
-            getParent().add(displayObjectContainer, getX(), getY());
+            if (hasParent()) {
+                IDisplayObject displayObjectContainer = Particle.miniExplosion(5, Color.DARK_GRAY, 2f);
+                displayObjectContainer.setScale(0.25f, 0.25f);
+                getParent().add(displayObjectContainer, getX(), getY());
+            }
         }
 
         @Override

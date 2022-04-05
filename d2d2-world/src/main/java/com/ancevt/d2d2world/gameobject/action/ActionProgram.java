@@ -1,6 +1,5 @@
 package com.ancevt.d2d2world.gameobject.action;
 
-import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.ISynchronized;
 import com.ancevt.util.args.Args;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
+import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.script.JavaScriptEngine.calculate;
 
 @Slf4j
@@ -37,7 +37,7 @@ public class ActionProgram {
     }
 
     public void process() {
-        if (!D2D2World.isServer() || actions.isEmpty()) return;
+        if (!isServer() || actions.isEmpty()) return;
 
         currentAction = actions.get(currentIndex);
 
@@ -48,7 +48,7 @@ public class ActionProgram {
             if (currentIndex >= actions.size()) {
                 currentIndex = 0;
             }
-            if(D2D2World.isServer() && currentAction.getGameObject() instanceof ISynchronized iSynchronized) {
+            if(isServer() && currentAction.getGameObject() instanceof ISynchronized iSynchronized) {
                 iSynchronized.sync();
             }
         }

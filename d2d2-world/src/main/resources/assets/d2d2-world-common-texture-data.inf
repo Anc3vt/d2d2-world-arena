@@ -25,7 +25,8 @@
     d2d2-world-common-tileset-vrpanel4-middle 192 96 1 32
     d2d2-world-common-tileset-vrpanel4-right  192 96 16 32
 
-    pickup-bubble    0 32 32 32
+    pickup-bubble-32    0   32  32  32
+    pickup-bubble-16    32  0   16  16
 
 :d2d2-world-particles.png
     d2d2-world-particles-default0 0 0 48 16

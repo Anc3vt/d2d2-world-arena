@@ -114,4 +114,8 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
             }
         }
     }
+
+    public boolean isStatic() {
+        return mapkitItem.getTextureCount(AnimationKey.IDLE) == 1;
+    }
 }
