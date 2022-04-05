@@ -24,6 +24,7 @@ import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.mapkit.Mapkit;
+import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.Layer;
 import org.slf4j.Logger;
@@ -92,8 +93,12 @@ public class MapIO {
             Mapkit mapkit = MapkitManager.getInstance().getMapkit(mapkitName);
 
             if (room == null) throw new IllegalStateException("room undefined");
-            IGameObject gameObject = (IGameObject) setProperties(mapkit.getItem(mapkitItemId).createGameObject(gameObjectId), dataEntry);
-            room.addGameObject(layer, gameObject);
+
+            MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
+            if(mapkitItem != null) {
+                IGameObject gameObject = (IGameObject) setProperties(mapkitItem.createGameObject(gameObjectId), dataEntry);
+                room.addGameObject(layer, gameObject);
+            }
         }
 
         return map;

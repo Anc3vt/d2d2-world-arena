@@ -121,6 +121,9 @@ public class GameObjectEditor {
                         getWorld().reset();
                         setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.mapFileName));
                     }
+
+                    case 'Z' -> undo();
+                    case 'Y' -> redo();
                 }
             } else {
 
@@ -173,6 +176,20 @@ public class GameObjectEditor {
         if (keyCode == KeyCode.LEFT_ALT || keyCode == KeyCode.RIGHT_ALT) {
             sightLayer(down ? editor.getCurrentLayerIndex() : -1);
         }
+
+        putState();
+    }
+
+    private void putState() {
+
+    }
+
+    private void undo() {
+
+    }
+
+    private void redo() {
+
     }
 
     public void mouseButton(float x, float y, float worldX, float worldY, boolean down) {
@@ -228,6 +245,8 @@ public class GameObjectEditor {
             moving = false;
             unselect();
         }
+
+        putState();
     }
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {

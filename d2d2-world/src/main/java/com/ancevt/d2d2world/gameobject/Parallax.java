@@ -69,7 +69,7 @@ public class Parallax extends Sprite implements IGameObject, ISpeedable, IScalab
         final float roomWidth = room.getWidth();
         final float width = getWidth();
 
-        setX(camera.getX() * speed + (roomWidth / width) - width / 4);
+        setX(camera.getX() * speed + (roomWidth / width) - width / 3);
     }
 
     @Override

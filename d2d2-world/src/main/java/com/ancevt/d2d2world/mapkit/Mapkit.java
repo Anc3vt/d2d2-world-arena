@@ -95,8 +95,7 @@ public abstract class Mapkit {
     public MapkitItem getItem(String mapkitItemId) {
         MapkitItem mapkitItem = items.get(mapkitItemId);
 
-        if (mapkitItem == null) throw new IllegalStateException("Mapkit item not defined, id: " + mapkitItemId
-                + ". Mapkit: " + getName());
+        if (mapkitItem == null) log.error("Mapkit item not defined, id {}, mapkit: {}", mapkitItemId, getName());
         return mapkitItem;
     }
 

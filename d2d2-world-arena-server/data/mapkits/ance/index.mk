@@ -75,9 +75,10 @@ id = _ance2_27_4 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = anc
 id = _ance2_web  | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,96,16,16; 224,96,16,16; 240,96,16,16
 id = _ance2_torch | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,112,16,32; 224,112,16,32
 id = _ance2_ss_0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=128,112,32,32
+id = _ance2_brkc_11 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,96,16,16
 
-id = _ance2_bgcity | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=0,144,512,112
+id = _ance_parallax_0 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = ance-tileset.png | idle=0,144,512,96 | speed = 0.5 
+id = _ance_parallax_1 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = ance-tileset.png | idle=0,240,512,48 | speed = 0.25
+id = _ance_parallax_2 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = ance-tileset.png | idle=0,288,512,16 | speed = 0.125
 
-id = _ance_parallax_0 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = ance-tileset.png | idle=0,144,512,96 | speed = 1 
-id = _ance_parallax_1 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = ance-tileset.png | idle=0,240,512,48 | speed = 2
 

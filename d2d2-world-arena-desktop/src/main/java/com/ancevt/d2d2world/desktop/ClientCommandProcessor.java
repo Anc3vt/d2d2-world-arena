@@ -19,6 +19,7 @@ package com.ancevt.d2d2world.desktop;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.hash.MD5;
+import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.net.client.PlayerManager;
 import com.ancevt.util.args.Args;
@@ -54,6 +55,14 @@ public class ClientCommandProcessor {
             case "/exit", "/q", "/quit" -> {
                 MODULE_CLIENT.sendExitRequest();
                 GameRoot.INSTANCE.exit();
+            }
+
+            case "//sound" -> {
+                if(tokens.getElements().length >= 2) {
+                    Sound.setEnabled(tokens.contains("on"));
+                }
+                MODULE_CHAT.addMessage(Sound.isEnabled() ? "Sound is on" : "Sound is off");
+                return true;
             }
 
             case "//getfile" -> {
