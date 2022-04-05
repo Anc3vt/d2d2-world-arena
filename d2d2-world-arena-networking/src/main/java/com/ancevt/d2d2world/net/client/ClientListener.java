@@ -59,4 +59,7 @@ public interface ClientListener {
     void playerDeath(int deadPlayerId, int killerPlayerId);
 
     void playerChatEvent(int playerId, String action);
+
+    void playerEnterRoomStartResponseReceived();
+
 }

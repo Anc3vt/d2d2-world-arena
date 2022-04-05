@@ -277,24 +277,19 @@ public class PlayProcessor {
     private void processDoorTeleport(Actor actor, AreaDoorTeleport area) {
         if (world.isSwitchingRoomsNow() || isServer()) return;
 
-        String targetAreaName = area.getTargetAreaName();
+        if (actor instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
+            String targetAreaName = area.getTargetAreaName();
 
-        AreaTarget areaTarget = (AreaTarget) world.getMap().getAllGameObjectsFromAllRooms().stream()
-                .filter(gameObject -> gameObject instanceof AreaTarget)
-                .filter(gameObject -> gameObject.getName().equals(targetAreaName))
-                .findAny()
-                .orElseThrow();
+            AreaTarget areaTarget = (AreaTarget) world.getMap().getAllGameObjectsFromAllRooms().stream()
+                    .filter(gameObject -> gameObject instanceof AreaTarget)
+                    .filter(gameObject -> gameObject.getName().equals(targetAreaName))
+                    .findAny()
+                    .orElseThrow();
 
-        world.getMap().getRoomByGameObject(areaTarget).ifPresent(room -> {
-                    world.switchRoom(room.getId(), actor, areaTarget.getX(), areaTarget.getY());
-                    actor.dispatchEvent(ActorEvent.builder()
-                            .type(ActorEvent.ACTOR_ENTER_ROOM)
-                            .roomId(room.getId())
-                            .x(areaTarget.getX())
-                            .y(areaTarget.getY())
-                            .build());
-                }
-        );
+            world.getMap().getRoomByGameObject(areaTarget).ifPresent(
+                    room -> world.switchRoom(room.getId(), actor, areaTarget.getX(), areaTarget.getY())
+            );
+        }
     }
 
     // Push states:

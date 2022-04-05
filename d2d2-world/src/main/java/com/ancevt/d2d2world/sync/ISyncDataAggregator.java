@@ -58,6 +58,7 @@ public interface ISyncDataAggregator {
 
         newGameObject(o);
         xy(o);
+        visibility(o);
         if (o instanceof IAnimated a) {
             animation(a, true);
         }

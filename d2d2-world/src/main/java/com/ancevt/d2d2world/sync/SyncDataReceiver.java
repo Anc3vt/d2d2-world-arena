@@ -186,7 +186,10 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     }
 
     private void setVisibility(int gameObjectId, boolean b) {
-        world.getGameObjectById(gameObjectId).setVisible(b);
+        IGameObject gameObject = world.getGameObjectById(gameObjectId);
+        if (gameObject != null) {
+            world.getGameObjectById(gameObjectId).setVisible(b);
+        }
     }
 
     private void newGameObject(int gameObjectId, int layer, float x, float y, String mapkitName, String mapkitItemId, String dataEntryText) {

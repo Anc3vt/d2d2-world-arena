@@ -45,6 +45,7 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
 import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
 import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
+import com.ancevt.d2d2world.net.dto.client.RoomSwitchCompleteDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncMotion;
@@ -93,6 +94,7 @@ public class WorldScene extends DisplayObjectContainer {
         world = new World();
 
         world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
+        world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
 
         gameObjectTexts = new GameObjectTexts(world);
 
@@ -208,6 +210,10 @@ public class WorldScene extends DisplayObjectContainer {
                 }
         ));
         ammunitionHud = new AmmunitionHud();
+    }
+
+    private void world_roomSwitchComplete(Event event) {
+        MODULE_CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
     }
 
     private void world_playerActorTakeBullet(Event event) {
@@ -393,7 +399,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Called from {@link GameRoot}
+     * Calls from {@link GameRoot}
      */
     public void playerChatEvent(int playerId, String action) {
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
@@ -423,7 +429,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Called from {@link GameRoot}
+     * Calls from {@link GameRoot}
      */
     public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
         localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
@@ -473,6 +479,13 @@ public class WorldScene extends DisplayObjectContainer {
         playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
     }
 
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void playerEnterRoomStartResponseReceived() {
+        world.roomSwitchOverlayStartOut();
+    }
+
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
         UiText uiText = new UiText(playerName + "(" + playerId + ")");
         uiText.setScale(0.5f, 0.5f);
@@ -511,6 +524,5 @@ public class WorldScene extends DisplayObjectContainer {
         world.clear();
         world.setVisible(false);
     }
-
 
 }

@@ -195,6 +195,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             String action = d.getAction();
             clientListeners.forEach(l -> l.playerChatEvent(playerId, action));
 
+        } else if (dto instanceof PlayerEnterRoomStartResponseDto d) {
+            clientListeners.forEach(l->l.playerEnterRoomStartResponseReceived());
         }
     }
 
@@ -235,7 +237,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     public void sendPlayerEnterRoom(String roomId, float x, float y) {
-        sender.send(PlayerEnterRoomDto.builder()
+        sender.send(PlayerEnterRoomStartDto.builder()
                 .roomId(roomId)
                 .x(x)
                 .y(y)

@@ -9,9 +9,5 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PlayerEnterRoomDto implements Dto {
-
-    private final String roomId;
-    private final float x;
-    private final float y;
+public class RoomSwitchCompleteDto implements Dto {
 }

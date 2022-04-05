@@ -73,10 +73,10 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
     private final ServerState serverStateInfo = MODULE_SERVER_STATE;
     private final ServerCommandProcessor commandProcessor = ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 
-    private final Map<Integer, String> playerMapkitItemMap;
+    private final Map<Integer, String> playerMapkitItemIdMap;
 
     private GeneralService() {
-        playerMapkitItemMap = new HashMap<>();
+        playerMapkitItemIdMap = new HashMap<>();
         serverChat.addServerChatListener(this);
     }
 
@@ -256,7 +256,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverChat.text("Player " + playerName + "(" + playerId + ") connected", 0xFFFF00);
 
         } else if (dto instanceof PlayerReadyToSpawnDto d) {
-            playerMapkitItemMap.put(playerId, d.getMapkitItemId());
+            playerMapkitItemIdMap.put(playerId, d.getMapkitItemId());
 
             int playerActorGameObjectId = WORLD_SCENE.spawnPlayer(
                     PLAYER_MANAGER.getPlayerById(playerId).orElseThrow(),
@@ -376,8 +376,11 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                     exit();
                 }
             });
-        } else if (dto instanceof PlayerEnterRoomDto d) {
+        } else if (dto instanceof PlayerEnterRoomStartDto d) {
             WORLD_SCENE.changePlayerRoom(playerId, d.getRoomId(), d.getX(), d.getY());
+        } else if (dto instanceof RoomSwitchCompleteDto) {
+            WORLD_SCENE.getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> playerActor.setVisible(true));
+            WORLD_SCENE.sendObjectsSyncData(playerId);
         }
 
     }

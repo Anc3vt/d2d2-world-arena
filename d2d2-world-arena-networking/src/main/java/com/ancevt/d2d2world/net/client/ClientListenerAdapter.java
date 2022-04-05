@@ -90,4 +90,9 @@ public class ClientListenerAdapter implements ClientListener{
     public void playerChatEvent(int playerId, String action) {
         
     }
+
+    @Override
+    public void playerEnterRoomStartResponseReceived() {
+
+    }
 }

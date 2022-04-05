@@ -60,6 +60,7 @@ public class World extends DisplayObjectContainer {
     private boolean playing;
     private boolean switchingRoomsNow;
     private ISyncDataAggregator syncDataAggregator;
+    private Overlay overlay;
 
     public World(@NotNull ISyncDataAggregator syncManager) {
         this.syncDataAggregator = syncManager;
@@ -295,23 +296,28 @@ public class World extends DisplayObjectContainer {
         }
     }
 
-    public void switchRoom(String roomNameSwitchTo, Actor actor, float actorX, float actorY) {
+    public void switchRoom(String roomIdSwitchTo, Actor actor, float actorX, float actorY) {
         if (switchingRoomsNow) return;
 
         final Room oldRoom = currentRoom;
 
-        Overlay overlay = new Overlay(oldRoom.getWidth(), oldRoom.getHeight());
+        overlay = new Overlay(oldRoom.getWidth(), oldRoom.getHeight());
         overlay.addEventListener(Event.CHANGE, e -> {
             if (overlay.getState() == Overlay.STATE_BLACK) {
-                Room targetRoom = currentMap.getRoom(roomNameSwitchTo);
+                Room targetRoom = currentMap.getRoom(roomIdSwitchTo);
                 setRoom(targetRoom);
                 overlay.setSize(targetRoom.getWidth(), targetRoom.getHeight());
-                overlay.startOut();
                 actor.setXY(actorX, actorY);
                 addGameObject(actor, 5, false);
                 camera.setXY(actorX, actorY);
                 camera.setAttachedTo(actor);
                 actor.setAnimation(IDLE);
+                actor.dispatchEvent(ActorEvent.builder()
+                        .type(ActorEvent.ACTOR_ENTER_ROOM)
+                        .roomId(roomIdSwitchTo)
+                        .x(actorX)
+                        .y(actorY)
+                        .build());
             } else if (overlay.getState() == Overlay.STATE_DONE) {
                 overlay.removeFromParent();
                 switchingRoomsNow = false;
@@ -323,6 +329,11 @@ public class World extends DisplayObjectContainer {
         switchingRoomsNow = true;
         camera.setAttachedTo(null);
         overlay.startIn();
+    }
+
+    public void roomSwitchOverlayStartOut() {
+        overlay.startOut();
+        dispatchEvent(WorldEvent.builder().type(WorldEvent.ROOM_SWITCH_COMPLETE).build());
     }
 
     public void addGameObject(@NotNull IGameObject gameObject, int layerIndex, boolean updateRoom) {
@@ -445,6 +456,7 @@ public class World extends DisplayObjectContainer {
                 ", switchingRoomsNow=" + switchingRoomsNow +
                 '}';
     }
+
 }
 
 
