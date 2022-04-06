@@ -119,7 +119,7 @@ public class GameObjectEditor {
                     }
                     case 'S' -> {
                         getWorld().reset();
-                        setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.mapFileName));
+                        setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.getMapFileName()));
                     }
 
                     case 'Z' -> undo();

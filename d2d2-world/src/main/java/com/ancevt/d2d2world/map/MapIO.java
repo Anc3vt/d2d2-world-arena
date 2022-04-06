@@ -27,9 +27,11 @@ import com.ancevt.d2d2world.mapkit.Mapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.world.Layer;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +46,34 @@ import static com.ancevt.d2d2world.data.Properties.setProperties;
 public class MapIO {
 
     private static final Logger log = LoggerFactory.getLogger(MapIO.class);
+
+    private static String mapsDirectory;
+    private static String mapFileName;
+    private static String mapkitsDirectory;
+
+    public static void setMapFileName(String mapFileName) {
+        MapIO.mapFileName = mapFileName.replace('/', File.separatorChar);
+    }
+
+    public static String getMapFileName() {
+        return mapFileName;
+    }
+
+    public static void setMapkitsDirectory(String mapkitsDirectory) {
+        MapIO.mapkitsDirectory = mapkitsDirectory.replace('/', File.separatorChar);
+    }
+
+    public static String getMapkitsDirectory() {
+        return mapkitsDirectory;
+    }
+
+    public static void setMapsDirectory(String mapsDirectory) {
+        MapIO.mapsDirectory = mapsDirectory.replace('/', File.separatorChar);
+    }
+
+    public static String getMapsDirectory() {
+        return mapsDirectory;
+    }
 
     public static GameMap load(String mapFileName) throws IOException {
         log.debug("load map: {}", mapFileName);
@@ -147,11 +177,7 @@ public class MapIO {
         return stringBuilder.toString();
     }
 
-    public static String mapsDirectory;
-    public static String mapFileName;
-    public static String mapkitsDirectory;
-
-    public static String save(GameMap map, String mapFileName) {
+    public static @NotNull String save(GameMap map, String mapFileName) {
         try {
             log.debug("Saving map " + mapFileName);
             Path path = Path.of(mapsDirectory + mapFileName);

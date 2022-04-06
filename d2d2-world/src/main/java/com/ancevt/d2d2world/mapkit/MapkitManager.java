@@ -41,7 +41,7 @@ public class MapkitManager {
 
     private static final Logger log = LoggerFactory.getLogger(MapkitManager.class);
 
-    private static final String INDEX = "/index.mk";
+    private static final String INDEX = "/index.mk".replace('/', File.separatorChar);
 
     private final Map<String, Mapkit> mapkits;
 
@@ -75,7 +75,7 @@ public class MapkitManager {
 
         String dirName = getMapkitDirNameByMapkitName(mapkitName);
 
-        DataEntry[] dataLines = DataEntryLoader.load(MapIO.mapkitsDirectory + dirName + INDEX);
+        DataEntry[] dataLines = DataEntryLoader.load(MapIO.getMapkitsDirectory() + dirName + INDEX);
 
         String name = dataLines[0].getString(DataKey.NAME);
 
@@ -108,7 +108,7 @@ public class MapkitManager {
 //            }
 
 
-            Files.walk(Path.of(MapIO.mapkitsDirectory), 1)
+            Files.walk(Path.of(MapIO.getMapkitsDirectory()), 1)
                     .forEach(path -> {
                         String indexPath = path.toFile().getAbsolutePath() + INDEX;
 

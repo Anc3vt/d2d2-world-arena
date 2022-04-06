@@ -25,6 +25,7 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.file.FileDataUtils;
 import com.ancevt.d2d2world.desktop.ui.Font;
 import com.ancevt.d2d2world.desktop.ui.UiTextInput;
@@ -39,9 +40,15 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
+
 public class Chat extends DisplayObjectContainer {
 
-    public static final Chat MODULE_CHAT = new Chat();
+    private static Chat instace;
+
+    public static Chat getInstance() {
+        return instace == null ? instace = new Chat() : instace;
+    }
 
     private static final int MAX_MESSAGES = 100;
 
@@ -239,6 +246,7 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void openInput() {
+        debug("Chat:249: <A>openInput");
         Async.runLater(100, TimeUnit.MILLISECONDS, () -> {
             setAlpha(1.0f);
             alphaTime = ALPHA_TIME;
@@ -358,8 +366,10 @@ public class Chat extends DisplayObjectContainer {
 
     public static void main(String[] args) {
         D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        D2D2World.init(false);
+
         Root root = D2D2.getStage().getRoot();
-        root.setBackgroundColor(Color.BLUE);
+        root.setBackgroundColor(Color.of(0x223344));
 
         Holder<Integer> idCounter = new Holder<>(1);
 
@@ -414,6 +424,8 @@ public class Chat extends DisplayObjectContainer {
                 }
 
                 case KeyCode.F6, KeyCode.T -> {
+                    debug("Chat:424: <A>F6,T");
+
                     if (!chat.isInputOpened()) chat.openInput();
                 }
             }

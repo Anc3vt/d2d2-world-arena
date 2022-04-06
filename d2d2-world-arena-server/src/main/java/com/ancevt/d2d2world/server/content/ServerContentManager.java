@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,7 +63,7 @@ public class ServerContentManager {
                 .filter(mapkit -> mapkit.name().equals(mapkitName))
                 .findAny()
                 .ifPresent(
-                        mapkit -> syncSendDirectoryToPlayer("data/mapkits/" + mapkit.name(), playerId)
+                        mapkit -> syncSendDirectoryToPlayer(MapIO.getMapkitsDirectory() + mapkit.name(), playerId)
                 );
     }
 
@@ -72,7 +73,7 @@ public class ServerContentManager {
                 .findAny()
                 .ifPresent(
                         map -> {
-                            syncSendFileToPlayer("data/maps/" + map.filename(), playerId);
+                            syncSendFileToPlayer(MapIO.getMapkitsDirectory() + map.filename(), playerId);
                             map.mapkits().forEach(mapkit -> {
                                 syncSendMapkit(mapkit.name(), playerId);
                             });
@@ -103,7 +104,7 @@ public class ServerContentManager {
         try {
             Set<Map> result = new HashSet<>();
 
-            Set<Path> paths = Files.walk(Paths.get(MapIO.mapsDirectory))
+            Set<Path> paths = Files.walk(Paths.get(MapIO.getMapsDirectory()))
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toFile().getName().endsWith(".wam"))
                     .collect(Collectors.toSet());
@@ -138,7 +139,7 @@ public class ServerContentManager {
                     String mapkitNames = dataEntry.getString(MAPKIT_NAMES);
 
                     for (String mapkitName : mapkitNames.split(",")) {
-                        mapkits.add(getMapkitByIndexFile(Path.of(MapIO.mapkitsDirectory + MapkitManager.getMapkitDirNameByMapkitName(mapkitName) + "/index.mk")));
+                        mapkits.add(getMapkitByIndexFile(Path.of(MapIO.getMapkitsDirectory() + MapkitManager.getMapkitDirNameByMapkitName(mapkitName) + File.separatorChar + "index.mk")));
                     }
 
                     size = path.toFile().length();
@@ -156,7 +157,7 @@ public class ServerContentManager {
         try {
             Set<Mapkit> result = new HashSet<>();
 
-            Set<Path> paths = Files.walk(Paths.get(MapIO.mapkitsDirectory))
+            Set<Path> paths = Files.walk(Paths.get(MapIO.getMapkitsDirectory()))
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toFile().getName().endsWith(".mk"))
                     .collect(Collectors.toSet());
@@ -170,12 +171,12 @@ public class ServerContentManager {
     }
 
     @Contract("_ -> new")
-    private @NotNull Mapkit getMapkitByIndexFile(Path path) {
+    private @NotNull Mapkit getMapkitByIndexFile(@NotNull Path path) {
 
 
         // Get mapkit dirname of data/mapkits/!/index.mk path
         String pathString = path.toString();
-        String dirname = pathString.substring(0, pathString.lastIndexOf('/'));
+        String dirname = pathString.substring(0, pathString.lastIndexOf(File.separatorChar));
         dirname = Path.of(dirname).getFileName().toString();
 
         try {
@@ -198,7 +199,7 @@ public class ServerContentManager {
 
             Set<String> files = new HashSet<>();
 
-            Files.walk(Path.of(MapIO.mapkitsDirectory + name + "/"))
+            Files.walk(Path.of(MapIO.getMapkitsDirectory() + name + File.separatorChar))
                     .filter(Files::isRegularFile)
                     .filter(p -> !p.toFile().getName().endsWith(".xcf"))
                     .forEach(p -> files.add(p.getFileName().toString()));

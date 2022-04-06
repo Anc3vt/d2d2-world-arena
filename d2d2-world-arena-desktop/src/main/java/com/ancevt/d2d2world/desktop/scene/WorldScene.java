@@ -34,6 +34,7 @@ import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
 import com.ancevt.d2d2world.desktop.ui.UiText;
+import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
@@ -64,7 +65,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
-import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
@@ -86,8 +86,8 @@ public class WorldScene extends DisplayObjectContainer {
     private final Map<Integer, PlayerActor> playerActorMap;
 
     public WorldScene() {
-        MapIO.mapsDirectory = "data/maps/";
-        MapIO.mapkitsDirectory = "data/mapkits/";
+        MapIO.setMapsDirectory("data/maps/");
+        MapIO.setMapkitsDirectory("data/mapkits/");
 
         playerActorMap = new HashMap<>();
 
@@ -150,14 +150,14 @@ public class WorldScene extends DisplayObjectContainer {
 
         config_configChangeListener(DEBUG_GAME_OBJECT_IDS, MODULE_CONFIG.getBoolean(DEBUG_GAME_OBJECT_IDS));
 
-        MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_OPEN, event -> {
+        Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_OPEN, event -> {
             MODULE_CLIENT.sendDto(PlayerChatEventDto.builder()
                     .playerId(MODULE_CLIENT.getLocalPlayerId())
                     .action(OPEN)
                     .build());
         });
 
-        MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_CLOSE, event -> {
+        Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_CLOSE, event -> {
             MODULE_CLIENT.sendDto(PlayerChatEventDto.builder()
                     .playerId(MODULE_CLIENT.getLocalPlayerId())
                     .action(CLOSE)
@@ -169,7 +169,7 @@ public class WorldScene extends DisplayObjectContainer {
                 args -> {
                     StringBuilder sb = new StringBuilder();
                     world.getGameObjects().forEach(o -> sb.append(o.getGameObjectId()).append(','));
-                    MODULE_CHAT.addMessage(sb.toString());
+                    Chat.getInstance().addMessage(sb.toString());
                     return true;
                 }
         ));
@@ -178,7 +178,7 @@ public class WorldScene extends DisplayObjectContainer {
                 args -> {
                     StringBuilder sb = new StringBuilder();
                     world.getGameObjects().forEach(o -> sb.append(o.getName()).append(','));
-                    MODULE_CHAT.addMessage(sb.toString());
+                    Chat.getInstance().addMessage(sb.toString());
                     return true;
                 }
         ));
@@ -188,14 +188,14 @@ public class WorldScene extends DisplayObjectContainer {
                     String key = args.get(String.class, "-k");
                     String value = args.get(String.class, "-v");
                     if (key != null) {
-                        MODULE_CHAT.addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GRAY);
+                        Chat.getInstance().addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GRAY);
                     }
                     if (key != null && value != null) {
                         MODULE_CONFIG.setProperty(key, value);
-                        MODULE_CHAT.addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GREEN);
+                        Chat.getInstance().addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GREEN);
                     }
                     if (key == null && value == null) {
-                        MODULE_CHAT.addMessage(MODULE_CONFIG.passwordSafeToString());
+                        Chat.getInstance().addMessage(MODULE_CONFIG.passwordSafeToString());
                     }
                     return true;
                 }
@@ -392,8 +392,8 @@ public class WorldScene extends DisplayObjectContainer {
                 }
             });
 
-            MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_OPEN, e -> localPlayerController.setEnabled(false));
-            MODULE_CHAT.addEventListener(ChatEvent.CHAT_INPUT_CLOSE, e -> localPlayerController.setEnabled(true));
+            Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_OPEN, e -> localPlayerController.setEnabled(false));
+            Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_CLOSE, e -> localPlayerController.setEnabled(true));
             eventsAdded = true;
         }
     }

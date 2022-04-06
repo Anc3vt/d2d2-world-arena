@@ -47,9 +47,9 @@ public class D2D2WorldEditorMain {
 
         UnixDisplay.setEnabled(a.contains("--colorize-logs"));
 
-        MapIO.mapkitsDirectory = a.get("--mapkits-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
-        MapIO.mapsDirectory = a.get("--maps-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/maps/");
-        MapIO.mapFileName = a.get("--map-filename", "map0.wam");
+        MapIO.setMapkitsDirectory(a.get("--mapkits-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/"));
+        MapIO.setMapsDirectory(a.get("--maps-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/maps/"));
+        MapIO.setMapFileName(a.get("--map-filename", "map0.wam"));
 
         D2D2.init(new LWJGLStarter(1000, 700, "D2D2 World Editor (floating)"));
         D2D2World.init(true);
@@ -60,7 +60,7 @@ public class D2D2WorldEditorMain {
 
         DisplayObjectContainer cameraLayer = new DisplayObjectContainer();
 
-        GameMap map = MapIO.load(MapIO.mapFileName);
+        GameMap map = MapIO.load(MapIO.getMapFileName());
 
         World world = new World();
         cameraLayer.add(world);

@@ -30,6 +30,7 @@ import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
+import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.net.client.ClientListener;
 import com.ancevt.d2d2world.net.client.Player;
@@ -44,7 +45,6 @@ import java.time.LocalDateTime;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
-import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static java.lang.String.format;
@@ -71,7 +71,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         MODULE_CLIENT.addClientListener(this);
 
-        MODULE_CHAT.addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
+        Chat.getInstance().addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
             var e = (ChatEvent) event;
             String text = e.getText();
             if (text.startsWith("/") || text.startsWith("\\")) {
@@ -88,18 +88,18 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             switch (e.getKeyCode()) {
-                case KeyCode.PAGE_UP -> MODULE_CHAT.setScroll(MODULE_CHAT.getScroll() - 10);
-                case KeyCode.PAGE_DOWN -> MODULE_CHAT.setScroll(MODULE_CHAT.getScroll() + 10);
-                case KeyCode.F8 -> MODULE_CHAT.setShadowEnabled(!MODULE_CHAT.isShadowEnabled());
+                case KeyCode.PAGE_UP -> Chat.getInstance().setScroll(Chat.getInstance().getScroll() - 10);
+                case KeyCode.PAGE_DOWN -> Chat.getInstance().setScroll(Chat.getInstance().getScroll() + 10);
+                case KeyCode.F8 -> Chat.getInstance().setShadowEnabled(!Chat.getInstance().isShadowEnabled());
                 case KeyCode.F6 -> {
-                    if (!MODULE_CHAT.isInputOpened()) {
-                        MODULE_CHAT.openInput();
+                    if (!Chat.getInstance().isInputOpened()) {
+                        Chat.getInstance().openInput();
                     } else {
-                        MODULE_CHAT.closeInput();
+                        Chat.getInstance().closeInput();
                     }
                 }
                 case KeyCode.TAB -> {
-                    MODULE_CHAT.setVisible(false);
+                    Chat.getInstance().setVisible(false);
                     setTabWindowVisible(true);
                 }
                 case KeyCode.F -> {
@@ -109,8 +109,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                     if (e.isAlt()) D2D2.setSmoothMode(!D2D2.isSmoothMode());
                 }
                 case KeyCode.T -> {
-                    if (!MODULE_CHAT.isInputOpened()) {
-                        MODULE_CHAT.openInput();
+                    if (!Chat.getInstance().isInputOpened()) {
+                        Chat.getInstance().openInput();
                     }
                 }
             }
@@ -120,7 +120,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             var e = (InputEvent) event;
             switch (e.getKeyCode()) {
                 case KeyCode.TAB -> {
-                    MODULE_CHAT.setVisible(true);
+                    Chat.getInstance().setVisible(true);
                     setTabWindowVisible(false);
                 }
 
@@ -130,7 +130,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         worldScene = new WorldScene();
         add(worldScene);
 
-        add(MODULE_CHAT, 10, 10);
+        add(Chat.getInstance(), 10, 10);
 
         FpsMeter fpsMeter = new FpsMeter();
         add(fpsMeter, D2D2.getStage().getStageWidth() - 50, 2);
@@ -155,7 +155,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void serverTextToPlayer(@NotNull String text, int textColor) {
-        MODULE_CHAT.addMessage(text, Color.of(textColor));
+        Chat.getInstance().addMessage(text, Color.of(textColor));
     }
 
     /**
@@ -171,7 +171,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void rconResponse(@NotNull String rconResponseData) {
-        rconResponseData.lines().forEach(MODULE_CHAT::addMessage);
+        rconResponseData.lines().forEach(Chat.getInstance()::addMessage);
     }
 
     /**
@@ -191,7 +191,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                                   @NotNull String serverProtocolVersion,
                                   @NotNull LocalDateTime serverStartTime) {
 
-        MODULE_CHAT.addMessage("Your id is " +
+        Chat.getInstance().addMessage("Your id is " +
                         localPlayerId +
                         ", server protocol version is "
                         + serverProtocolVersion +
@@ -212,7 +212,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor) {
-        MODULE_CHAT.addMessage("Server: " + chatMessageText, Color.of(chatMessageTextColor));
+        Chat.getInstance().addMessage("Server: " + chatMessageText, Color.of(chatMessageTextColor));
     }
 
     /**
@@ -226,7 +226,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                            @NotNull String chatMessageText,
                            int textColor) {
 
-        MODULE_CHAT.addPlayerMessage(chatMessageId, playerId, playerName, playerColor, chatMessageText, Color.of(textColor));
+        Chat.getInstance().addPlayerMessage(chatMessageId, playerId, playerName, playerColor, chatMessageText, Color.of(textColor));
     }
 
     /**
@@ -235,12 +235,12 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     @Override
     public void clientConnectionClosed(@NotNull CloseStatus status) {
         worldScene.stop();
-        MODULE_CHAT.addMessage(status.getErrorMessage(), Color.RED);
+        Chat.getInstance().addMessage(status.getErrorMessage(), Color.RED);
         new Lock().lock(5, SECONDS);
         if (attempts < 10) {
             start(server, MODULE_CLIENT.getLocalPlayerName());
         } else {
-            MODULE_CHAT.addMessage("Can't establish connection. Please try again later");
+            Chat.getInstance().addMessage("Can't establish connection. Please try again later");
             setBackgroundColor(Color.BLACK);
         }
         attempts++;
@@ -251,7 +251,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void clientConnectionEstablished() {
-        MODULE_CHAT.addMessage("Connection established", Color.GREEN);
+        Chat.getInstance().addMessage("Connection established", Color.GREEN);
         MODULE_CLIENT.sendPlayerEnterRequest();
     }
 
@@ -287,7 +287,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         Player deadPlayer = PLAYER_MANAGER.getPlayer(deadPlayerId).orElseThrow();
 
         PLAYER_MANAGER.getPlayer(killerPlayerId).ifPresentOrElse(killerPlayer -> {
-                    MODULE_CHAT.addMessage(
+                    Chat.getInstance().addMessage(
                             killerPlayer.getName() + "(" + killerPlayer.getId() + ") killed " +
                                     deadPlayer.getName() + "(" + deadPlayer.getId() + ")");
 
@@ -295,7 +295,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 },
 
                 () -> {
-                    MODULE_CHAT.addMessage(
+                    Chat.getInstance().addMessage(
                             deadPlayer.getName() + "(" + deadPlayer.getId() + ") knocked out");
 
                     PLAYER_MANAGER.getPlayer(deadPlayerId).orElseThrow().decrementFrags();
@@ -324,7 +324,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     @Override
     public void fileReceiverProgress(@NotNull FileReceiver fileReceiver) {
         int proc = (fileReceiver.bytesLoaded() / fileReceiver.bytesTotal()) * 100;
-        MODULE_CHAT.addMessage(format("%d%% content load %s", proc, fileReceiver.getPath()), Color.DARK_GRAY);
+        Chat.getInstance().addMessage(format("%d%% content load %s", proc, fileReceiver.getPath()), Color.DARK_GRAY);
     }
 
     /**
@@ -362,7 +362,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         MODULE_CLIENT.setLocalPlayerName(localPlayerName);
 
-        MODULE_CHAT.addMessage("Connecting to " + server + "...", Color.GRAY);
+        Chat.getInstance().addMessage("Connecting to " + server + "...", Color.GRAY);
         MODULE_CLIENT.connect(host, port);
     }
 
@@ -372,7 +372,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
     public void exit() {
         MODULE_CLIENT.sendExitRequest();
-        MODULE_CHAT.dispose();
+        Chat.getInstance().dispose();
         new Lock().lock(1, SECONDS);
         DebugPanel.saveAll();
         System.exit(0);

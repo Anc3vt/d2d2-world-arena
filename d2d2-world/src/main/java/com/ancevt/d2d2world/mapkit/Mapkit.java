@@ -26,6 +26,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +61,9 @@ public abstract class Mapkit {
         }
 
         try {
-            InputStream inputStream = new FileInputStream(MapIO.mapkitsDirectory + name + "/" + tilesetPngFilename);
+            InputStream inputStream = new FileInputStream(
+                    MapIO.getMapkitsDirectory() + name + File.separatorChar + tilesetPngFilename
+            );
             TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas(inputStream);
             inputStream.close();
 
@@ -89,7 +92,7 @@ public abstract class Mapkit {
 
     @SneakyThrows
     public void playSound(String filename) {
-        Media.playSound(MapIO.mapkitsDirectory + name + "/" + filename);
+        Media.playSound(MapIO.getMapkitsDirectory() + name + File.separatorChar + filename);
     }
 
     public MapkitItem getItem(String mapkitItemId) {

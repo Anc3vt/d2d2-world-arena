@@ -64,7 +64,7 @@ public class HealthPickup extends Pickup {
     }
 
     public static void main(String[] args) {
-        MapIO.mapkitsDirectory = "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/";
+        MapIO.setMapkitsDirectory("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
 
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
         D2D2World.init(true);

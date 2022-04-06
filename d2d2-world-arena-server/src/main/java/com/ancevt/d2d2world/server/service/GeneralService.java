@@ -368,7 +368,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverPlayerManager.getPlayerById(playerId).ifPresent(p -> p.setPingValue(d.getPing()));
 
         } else if (dto instanceof PlayerChatEventDto d) {
-            serverSender.sendToAll(d);
+            serverSender.sendToAllExcluding(d, playerId);
 
         } else if (dto instanceof LocalServerKillDto) {
             getConnection(playerId).ifPresent(c -> {

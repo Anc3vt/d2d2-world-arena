@@ -21,6 +21,7 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2.media.Sound;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
+import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.net.client.PlayerManager;
 import com.ancevt.util.args.Args;
 import com.ancevt.util.texttable.TextTable;
@@ -29,7 +30,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.ancevt.d2d2world.desktop.ui.chat.Chat.MODULE_CHAT;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
 
 public class ClientCommandProcessor {
@@ -61,7 +61,7 @@ public class ClientCommandProcessor {
                 if(tokens.getElements().length >= 2) {
                     Sound.setEnabled(tokens.contains("on"));
                 }
-                MODULE_CHAT.addMessage(Sound.isEnabled() ? "Sound is on" : "Sound is off");
+                Chat.getInstance().addMessage(Sound.isEnabled() ? "Sound is on" : "Sound is off");
                 return true;
             }
 
@@ -72,7 +72,7 @@ public class ClientCommandProcessor {
             }
 
             case "//connection" -> {
-                MODULE_CHAT.addMessage(MODULE_CLIENT.getConnection().toString());
+                Chat.getInstance().addMessage(MODULE_CLIENT.getConnection().toString());
                 return true;
             }
 
@@ -86,7 +86,7 @@ public class ClientCommandProcessor {
                 pm.getPlayerList().forEach(
                         p -> tt.addRow(p.getId(), p.getName(), p.getPing()));
 
-                MODULE_CHAT.addMessage(tt.render());
+                Chat.getInstance().addMessage(tt.render());
                 return true;
             }
 

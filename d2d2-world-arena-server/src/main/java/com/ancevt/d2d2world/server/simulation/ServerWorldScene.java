@@ -55,8 +55,8 @@ public class ServerWorldScene {
     private Root root;
 
     private ServerWorldScene() {
-        MapIO.mapkitsDirectory = "data/mapkits/";
-        MapIO.mapsDirectory = "data/maps/";
+        MapIO.setMapkitsDirectory("data/mapkits/");
+        MapIO.setMapsDirectory("data/maps/");
 
         worlds = new HashMap<>();
     }
