@@ -118,8 +118,8 @@ public class FileDataUtils {
     }
 
     public static @NotNull Pair<String, String> splitPath(@NotNull String path) {
-        String directory = path.substring(0, path.lastIndexOf("/") + 1);
-        String filename = path.substring(path.lastIndexOf("/") + 1);
+        String directory = path.substring(0, path.lastIndexOf(File.separatorChar) + 1);
+        String filename = path.substring(path.lastIndexOf(File.separatorChar) + 1);
         return Pair.of(directory, filename);
     }
 
