@@ -172,10 +172,8 @@ public class ServerContentManager {
 
     @Contract("_ -> new")
     private @NotNull Mapkit getMapkitByIndexFile(@NotNull Path path) {
-
-
         // Get mapkit dirname of data/mapkits/!/index.mk path
-        String pathString = path.toString();
+        String pathString = path.toString().replace('/', File.separatorChar);
         String dirname = pathString.substring(0, pathString.lastIndexOf(File.separatorChar));
         dirname = Path.of(dirname).getFileName().toString();
 
