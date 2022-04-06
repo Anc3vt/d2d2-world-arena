@@ -1,16 +1,14 @@
 package com.ancevt.d2d2world.net.dto.server;
 
+import com.ancevt.d2d2world.net.dto.Dto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import com.ancevt.d2d2world.net.dto.Dto;
-import com.ancevt.d2d2world.net.dto.PlayerDto;
 
 @Data
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PlayerEnterDto implements Dto {
-
-    private final PlayerDto player;
+public class PlayerSpawnDto implements Dto {
+    private final Integer playerActorGameObjectId;
 }

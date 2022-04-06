@@ -1,6 +1,8 @@
 package com.ancevt.d2d2.media;
 
 import com.ancevt.commons.concurrent.Lock;
+import com.ancevt.d2d2.asset.Assets;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +14,20 @@ public interface Media {
 
     void play();
 
-    static Media createSound(String path) {
+    static @NotNull Media createSound(String path) {
         Media media = medias.get(path);
         if (media == null) {
             media = new BlockingSound(path);
             medias.put(path, media);
+        }
+        return media;
+    }
+
+    static @NotNull Media createSoundAsset(String path) {
+        Media media = medias.get(path);
+        if (media == null) {
+            media = new BlockingSound(Assets.getAssetAsStream(path));
+            medias.put(':' + path, media);
         }
         return media;
     }

@@ -1,18 +1,16 @@
 package com.ancevt.d2d2world.fx;
 
 import com.ancevt.commons.concurrent.Async;
-import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-public class Ring extends DisplayObjectContainer {
+public class SpawnEffect extends DisplayObjectContainer {
 
     private final Sprite sprite;
 
-    public Ring() {
+    public SpawnEffect() {
         sprite = new Sprite("d2d2-world-common-tileset-ring");
         add(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
     }
@@ -25,14 +23,14 @@ public class Ring extends DisplayObjectContainer {
         return sprite.getColor();
     }
 
-    public static void ringEffect(IDisplayObject target, int count, Color color) {
-        if (!target.hasParent()) return;
+    public static void doSpawnEffect(@NotNull IDisplayObject target,
+                                     @NotNull IDisplayObjectContainer targetParent) {
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < 5; i++) {
             int finalI = i;
 
             Async.runLater(100L * i, TimeUnit.MILLISECONDS, () -> {
-                Ring ring = new Ring() {
+                SpawnEffect ring = new SpawnEffect() {
                     @Override
                     public void onEachFrame() {
                         setXY(target.getX(), target.getY());
@@ -47,8 +45,8 @@ public class Ring extends DisplayObjectContainer {
 
                 ring.setRotation(10f * finalI);
                 ring.setScale(finalI / 2f, finalI / 2f);
-                ring.setColor(color);
-                target.getParent().add(ring, target.getX(), target.getY());
+                ring.setColor(Color.WHITE);
+                targetParent.add(ring, target.getX(), target.getY());
             });
         }
     }

@@ -168,12 +168,6 @@ public class Chat extends DisplayObjectContainer {
         return scroll;
     }
 
-    /*public void addServerMessage(int chatMessageId, @NotNull String messageText, Color textColor) {
-        addMessage(new ChatMessage(chatMessageId, messageText, textColor));
-        redraw();
-    }*/
-
-
     public void addPlayerMessage(int id,
                                  int playerId,
                                  @NotNull String playerName,
@@ -246,7 +240,6 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public void openInput() {
-        debug("Chat:249: <A>openInput");
         Async.runLater(100, TimeUnit.MILLISECONDS, () -> {
             setAlpha(1.0f);
             alphaTime = ALPHA_TIME;
@@ -424,8 +417,6 @@ public class Chat extends DisplayObjectContainer {
                 }
 
                 case KeyCode.F6, KeyCode.T -> {
-                    debug("Chat:424: <A>F6,T");
-
                     if (!chat.isInputOpened()) chat.openInput();
                 }
             }

@@ -1,6 +1,7 @@
 package com.ancevt.d2d2.media;
 
 import com.ancevt.commons.concurrent.Lock;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Queue;
@@ -25,6 +26,17 @@ public class SoundMachine {
             Track track = new Track("sndtrk" + i);
             track.start();
             tracks[i] = track;
+        }
+    }
+
+    public void playAsset(String path) {
+        if (!SoundSystem.isEnabled()) return;
+
+        Track track = tracks[currentIndex];
+        track.play(Media.createSoundAsset(path));
+        currentIndex++;
+        if (currentIndex >= tracks.length) {
+            currentIndex = 0;
         }
     }
 
@@ -73,8 +85,9 @@ public class SoundMachine {
             }
         }
 
+        @Contract(pure = true)
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "Track{" +
                     "name=" + getName() +
                     ", alive=" + alive +

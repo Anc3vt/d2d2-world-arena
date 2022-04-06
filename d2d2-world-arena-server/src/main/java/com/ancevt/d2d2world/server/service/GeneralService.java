@@ -264,9 +264,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             );
 
             serverSender.sendToPlayer(playerId, getServerInfoDto());
-
-            SENDER.sendToPlayer(playerId,
-                    PlayerActorDto.builder()
+            serverSender.sendToPlayer(playerId, PlayerActorDto.builder()
                             .playerActorGameObjectId(playerActorGameObjectId)
                             .build());
 

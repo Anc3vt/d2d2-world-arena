@@ -66,7 +66,6 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 case MessageType.CLIENT_DAMAGE_REPORT -> {
                     int damageValue = in.readShort();
                     int damagingGameObjectId = in.readInt();
-
                     log.trace("received <b>CLIENT_DAMAGE_REPORT<> {} value:{}  damagingGameObjectId: {}",
                             connectionId, damageValue, damagingGameObjectId);
 
@@ -75,13 +74,14 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
                 case MessageType.CLIENT_PLAYER_WEAPON_SWITCH -> {
                     int delta = in.readByte() - 1;
+                    log.trace("received <b>CLIENT_DAMAGE_REPORT<> {} value: {}", connectionId, delta + 1);
                     serverProtocolImplListeners.forEach(l -> l.playerWeaponSwitch(connectionId, delta));
                 }
 
                 case MessageType.CLIENT_PLAYER_AIM_XY -> {
                     float x = in.readFloat();
                     float y = in.readFloat();
-                    log.trace("received <b>CLIENT_PLAYER_AIM_XY<> {} {} {}", connectionId, x, y);
+                    //log.trace("received <b>CLIENT_PLAYER_AIM_XY<> {} {} {}", connectionId, x, y);
                     serverProtocolImplListeners.forEach(l -> l.playerAimXY(connectionId, x, y));
                 }
 

@@ -22,7 +22,6 @@ public class Player {
     private final int id;
     private String name;
     private int color;
-    private int controllerState;
     private int ping;
     private int frags;
 
@@ -76,21 +75,12 @@ public class Player {
         this.name = name;
     }
 
-    public int getControllerState() {
-        return controllerState;
-    }
-
-    public void setControllerState(int controllerState) {
-        this.controllerState = controllerState;
-    }
-
     @Override
     public String toString() {
         return "RemotePlayer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color=" + color +
-                ", controllerState=" + controllerState +
                 ", ping=" + ping +
                 ", frags=" + frags +
                 '}';

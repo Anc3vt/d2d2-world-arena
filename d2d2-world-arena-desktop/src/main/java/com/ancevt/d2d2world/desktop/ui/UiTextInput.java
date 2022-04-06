@@ -52,15 +52,6 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         D2D2.loop();
     }
 
-    public static final int DOWN_DELAY = 30;
-
-    private boolean down;
-    private int downKeyCode;
-    private int downCounter = DOWN_DELAY;
-    private char downKeyChar;
-    private boolean shiftDown;
-    private boolean controlDown;
-
     private static final Color BACKGROUND_COLOR = Color.BLACK;
     private static final Color SELECTION_COLOR = Color.DARK_GRAY;
     private static final float BACKGROUND_ALPHA = 0.75f;
@@ -253,11 +244,6 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
 
     public void key(int keyCode, char keyChar, boolean control, boolean shift, boolean alt, boolean down) {
         if (down) {
-            this.down = true;
-            downKeyCode = keyCode;
-            downKeyChar = keyChar;
-            shiftDown = shift;
-            controlDown = control;
             if (KeyCode.isShift(keyCode)) {
                 selecting = true;
                 selectionStartIndex = getCaretPosition();
@@ -267,15 +253,9 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
 
             keyDown(keyCode, keyChar, control, shift);
         } else {
-            this.down = false;
             if (KeyCode.isShift(keyCode)) {
                 selecting = false;
             }
-            downKeyCode = 0;
-            downCounter = DOWN_DELAY;
-            downKeyChar = '\0';
-            shiftDown = !KeyCode.isShift(keyCode);
-            controlDown = !KeyCode.isControl(keyCode);
         }
     }
 
@@ -358,25 +338,12 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         if (text.length() * uiText.getCharWidth() < getWidth() - 10) insertText(keyType);
     }
 
-    @Override
-    public void onEachFrame() {
-        if (down) {
-            downCounter--;
-
-            if (downCounter <= 0) {
-                keyDown(downKeyCode, downKeyChar, controlDown, shiftDown);
-                downCounter = 3;
-            }
-        }
-    }
-
     void focus() {
         this.focused = true;
         add(caret);
     }
 
     void focusLost() {
-        down = false;
         focused = false;
         caret.removeFromParent();
     }

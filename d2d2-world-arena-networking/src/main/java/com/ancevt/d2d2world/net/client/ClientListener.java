@@ -25,41 +25,42 @@ import java.time.LocalDateTime;
 
 public interface ClientListener {
 
-    void playerExit(@NotNull Player remotePlayer);
+    default void playerExit(@NotNull Player remotePlayer){}
 
-    void playerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion, @NotNull LocalDateTime serverStartTime);
+    default void localPlayerEnterServer(int localPlayerId, int localPlayerColor, @NotNull String serverProtocolVersion, @NotNull LocalDateTime serverStartTime){}
 
-    void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor);
+    default void serverChat(int chatMessageId, @NotNull String chatMessageText, int chatMessageTextColor){}
 
-    void playerChat(int chatMessageId,
+    default void playerChat(int chatMessageId,
                     int playerId,
                     @NotNull String playerName,
                     int playerColor,
                     @NotNull String chatMessageText,
-                    int textColor);
+                    int textColor){}
 
-    void clientConnectionClosed(@NotNull CloseStatus status);
+    default void clientConnectionClosed(@NotNull CloseStatus status){}
 
-    void clientConnectionEstablished();
+    default void clientConnectionEstablished(){}
 
-    void playerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor);
+    default void serverInfo(@NotNull ServerInfoDto result){}
 
-    void serverInfo(@NotNull ServerInfoDto result);
+    default void serverTextToPlayer(@NotNull String text, int textColor){}
 
-    void serverTextToPlayer(@NotNull String text, int textColor);
+    default void fileData(@NotNull String headers, byte[] fileData){}
 
-    void fileData(@NotNull String headers, byte[] fileData);
+    default void rconResponse(@NotNull String rconResponseData){}
 
-    void rconResponse(String rconResponseData);
+    default void mapContentLoaded(@NotNull String mapFilename){}
 
-    void mapContentLoaded(String mapFilename);
+    default void localPlayerActorGameObjectId(int playerActorGameObjectId){}
 
-    void localPlayerActorGameObjectId(int playerActorGameObjectId);
+    default void playerDeath(int deadPlayerId, int killerPlayerId){}
 
-    void playerDeath(int deadPlayerId, int killerPlayerId);
+    default void playerChatEvent(int playerId, String action){}
 
-    void playerChatEvent(int playerId, String action);
+    default void playerEnterRoomStartResponseReceived(){}
 
-    void playerEnterRoomStartResponseReceived();
+    default void playerEnterServer(int id, @NotNull String name, int color){}
 
+    default void playerSpawn(int playerActorGameObjectId){}
 }

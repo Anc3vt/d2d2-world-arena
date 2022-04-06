@@ -33,17 +33,16 @@ import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
+import com.ancevt.d2d2world.desktop.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
-import com.ancevt.d2d2world.gameobject.ActorEvent;
-import com.ancevt.d2d2world.gameobject.DefaultMaps;
-import com.ancevt.d2d2world.gameobject.IdGenerator;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.fx.SpawnEffect;
+import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
-import com.ancevt.d2d2world.net.client.ClientListenerAdapter;
+import com.ancevt.d2d2world.net.client.ClientListener;
 import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
 import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
 import com.ancevt.d2d2world.net.dto.client.RoomSwitchCompleteDto;
@@ -65,6 +64,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
+import static com.ancevt.d2d2world.desktop.sound.D2D2WorldSound.PLAYER_SPAWN;
 import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
@@ -131,7 +131,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         addEventListener(getClass(), Event.ADD_TO_STAGE, this::this_addToStage);
 
-        MODULE_CLIENT.addClientListener(new ClientListenerAdapter() {
+        MODULE_CLIENT.addClientListener(new ClientListener() {
 
             @Override
             public void serverInfo(@NotNull ServerInfoDto result) {
@@ -334,7 +334,6 @@ public class WorldScene extends DisplayObjectContainer {
         if (!eventsAdded) {
 
             getRoot().addEventListener(this, InputEvent.MOUSE_DOWN, event -> {
-                var e = (InputEvent) event;
                 if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(true);
@@ -345,7 +344,6 @@ public class WorldScene extends DisplayObjectContainer {
             });
 
             getRoot().addEventListener(this, InputEvent.MOUSE_UP, event -> {
-                var e = (InputEvent) event;
                 if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(false);
@@ -450,8 +448,6 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.addEventListener(ActorEvent.ACTOR_REPAIR, event -> {
             world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
             overlay.startOut();
-
-            Async.runLater(100, TimeUnit.MILLISECONDS, localPlayerActor::doSpawnEffect);
         });
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
 
@@ -475,6 +471,8 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         localPlayerActor.setLocalAim(true);
+        SpawnEffect.doSpawnEffect(localPlayerActor, world);
+        D2D2WorldSound.playSound(PLAYER_SPAWN);
         world.getCamera().setAttachedTo(localPlayerActor);
         playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
     }
@@ -484,6 +482,26 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void playerEnterRoomStartResponseReceived() {
         world.roomSwitchOverlayStartOut();
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void playerSpawn(int playerActorGameObjectId) {
+        if (world.getGameObjectById(playerActorGameObjectId) instanceof PlayerActor playerActor) {
+            SpawnEffect.doSpawnEffect(playerActor, world);
+            D2D2WorldSound.playSound(PLAYER_SPAWN);
+        }
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void remotePlayerExit(int playerId) {
+        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
+            SpawnEffect.doSpawnEffect(playerActor, world);
+            D2D2WorldSound.playSound(PLAYER_SPAWN);
+        });
     }
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
@@ -524,5 +542,4 @@ public class WorldScene extends DisplayObjectContainer {
         world.clear();
         world.setVisible(false);
     }
-
 }

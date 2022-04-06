@@ -157,7 +157,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             setLocalPlayerId(playerDto.getId());
             setLocalPlayerColor(playerDto.getColor());
             setServerProtocolVersion(d.getProtocolVersion());
-            clientListeners.forEach(l -> l.playerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion, d.getServerStartTime()));
+            clientListeners.forEach(l -> l.localPlayerEnterServer(localPlayerId, localPlayerColor, serverProtocolVersion, d.getServerStartTime()));
 
         } else if (dto instanceof PlayerExitDto d) {
             PLAYER_MANAGER.removePlayer(d.getPlayer().getId()).ifPresent(
@@ -196,7 +196,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             clientListeners.forEach(l -> l.playerChatEvent(playerId, action));
 
         } else if (dto instanceof PlayerEnterRoomStartResponseDto d) {
-            clientListeners.forEach(l->l.playerEnterRoomStartResponseReceived());
+            clientListeners.forEach(l -> l.playerEnterRoomStartResponseReceived());
+
+        } else if (dto instanceof PlayerSpawnDto d) {
+            clientListeners.forEach(l -> l.playerSpawn(d.getPlayerActorGameObjectId()));
         }
     }
 

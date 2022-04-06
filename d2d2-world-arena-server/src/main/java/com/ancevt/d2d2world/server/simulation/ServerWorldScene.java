@@ -17,6 +17,7 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.dto.server.DeathDto;
 import com.ancevt.d2d2world.net.dto.server.PlayerEnterRoomStartResponseDto;
+import com.ancevt.d2d2world.net.dto.server.PlayerSpawnDto;
 import com.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import com.ancevt.d2d2world.server.content.ServerContentManager;
 import com.ancevt.d2d2world.server.player.Player;
@@ -206,7 +207,7 @@ public class ServerWorldScene {
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);
-        playerActor.setXY(800, 64);
+        playerActor.setXY(64, 64);
         playerActor.setPlayerColorValue(player.getColor());
 
         player.setRoomId(gameMap.getStartRoomName());
@@ -283,6 +284,10 @@ public class ServerWorldScene {
                     // TODO: extract to separate method
                     deadPlayerActor.setXY((float) (Math.random() * world.getRoom().getWidth()), 16);
                     deadPlayerActor.repair();
+                    SENDER.sendToAll(PlayerSpawnDto.builder()
+                            .playerActorGameObjectId(deadPlayerActor.getGameObjectId())
+                            .build()
+                    );
                 });
             }
         }

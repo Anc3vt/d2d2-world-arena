@@ -776,7 +776,6 @@ abstract public class Actor extends Animated implements
         }
         if (weapons.size() == 0) {
             addWeapon(StandardWeapon.class.getName(), 5);
-            nextWeapon();
             return;
         }
 
@@ -793,7 +792,6 @@ abstract public class Actor extends Animated implements
         }
         if (weapons.size() == 0) {
             addWeapon(StandardWeapon.class.getName(), 5);
-            prevWeapon();
             return;
         }
 

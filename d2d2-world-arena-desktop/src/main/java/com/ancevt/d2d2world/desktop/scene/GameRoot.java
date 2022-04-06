@@ -28,6 +28,7 @@ import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
+import com.ancevt.d2d2world.desktop.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -174,22 +175,28 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         rconResponseData.lines().forEach(Chat.getInstance()::addMessage);
     }
 
-    /**
-     * {@link ClientListener} method
-     */
     @Override
-    public void playerExit(@NotNull Player remotePlayer) {
-
+    public void playerEnterServer(int id, @NotNull String name, int color) {
+        D2D2WorldSound.playSound(D2D2WorldSound.PLAYER_ENTER);
     }
 
     /**
      * {@link ClientListener} method
      */
     @Override
-    public void playerEnterServer(int localPlayerId,
-                                  int localPlayerColor,
-                                  @NotNull String serverProtocolVersion,
-                                  @NotNull LocalDateTime serverStartTime) {
+    public void playerExit(@NotNull Player remotePlayer) {
+        D2D2WorldSound.playSound(D2D2WorldSound.PLAYER_EXIT);
+        worldScene.remotePlayerExit(remotePlayer.getId());
+    }
+
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void localPlayerEnterServer(int localPlayerId,
+                                       int localPlayerColor,
+                                       @NotNull String serverProtocolVersion,
+                                       @NotNull LocalDateTime serverStartTime) {
 
         Chat.getInstance().addMessage("Your id is " +
                         localPlayerId +
@@ -205,6 +212,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         if (!rconPassword.isEmpty()) {
             MODULE_CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
         }
+
+        D2D2WorldSound.playSound(D2D2WorldSound.PLAYER_ENTER);
     }
 
     /**
@@ -253,14 +262,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     public void clientConnectionEstablished() {
         Chat.getInstance().addMessage("Connection established", Color.GREEN);
         MODULE_CLIENT.sendPlayerEnterRequest();
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void playerEnterServer(int remotePlayerId, @NotNull String remotePlayerName, int remotePlayerColor) {
-
     }
 
     /**
@@ -316,6 +317,14 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     @Override
     public void playerEnterRoomStartResponseReceived() {
         worldScene.playerEnterRoomStartResponseReceived();
+    }
+
+    /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void playerSpawn(int playerActorGameObjectId) {
+        worldScene.playerSpawn(playerActorGameObjectId);
     }
 
     /**
