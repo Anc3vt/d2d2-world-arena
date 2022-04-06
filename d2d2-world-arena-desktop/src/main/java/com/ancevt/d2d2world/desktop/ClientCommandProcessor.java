@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.desktop;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.hash.MD5;
-import com.ancevt.d2d2.media.Sound;
+import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.net.client.PlayerManager;
@@ -59,9 +59,9 @@ public class ClientCommandProcessor {
 
             case "//sound" -> {
                 if(tokens.getElements().length >= 2) {
-                    Sound.setEnabled(tokens.contains("on"));
+                    SoundSystem.setEnabled(tokens.contains("on"));
                 }
-                Chat.getInstance().addMessage(Sound.isEnabled() ? "Sound is on" : "Sound is off");
+                Chat.getInstance().addMessage(SoundSystem.isEnabled() ? "Sound is on" : "Sound is off");
                 return true;
             }
 

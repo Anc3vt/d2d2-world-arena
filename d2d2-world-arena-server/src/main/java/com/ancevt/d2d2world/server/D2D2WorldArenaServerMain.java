@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.server;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.unix.UnixDisplay;
-import com.ancevt.d2d2.media.Sound;
+import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.net.client.ClientSender;
 import com.ancevt.d2d2world.net.dto.Dto;
@@ -55,7 +55,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class D2D2WorldArenaServerMain implements ServerListener, Thread.UncaughtExceptionHandler {
 
     public static void main(String @NotNull [] args) throws IOException {
-        Sound.setEnabled(false);
+        SoundSystem.setEnabled(false);
 
         // Load serverConfig properties
         MODULE_SERVER_CONFIG.load();

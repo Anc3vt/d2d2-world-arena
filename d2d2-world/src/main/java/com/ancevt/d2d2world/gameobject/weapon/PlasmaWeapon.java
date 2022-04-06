@@ -72,7 +72,7 @@ public class PlasmaWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(PlasmaWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
-            if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+            if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
                 sprite.setColor(playerActor.getPlayerColor());
             } else {
                 sprite.setColor(Color.of(0x00FFFF));
@@ -109,7 +109,7 @@ public class PlasmaWeapon extends Weapon {
             setToRemove = true;
             setCollisionEnabled(false);
 
-            if(hasParent()) {
+            if (hasParent()) {
                 IDisplayObject displayObjectContainer = Particle.miniExplosion(5, sprite.getColor(), 5f);
                 displayObjectContainer.setScale(0.25f, 0.25f);
                 getParent().add(displayObjectContainer, getX(), getY());

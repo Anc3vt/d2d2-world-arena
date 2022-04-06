@@ -67,6 +67,9 @@
         <ancevt-commons.version>1.0.0.2</ancevt-commons.version>
         <texttable.version>0.0.1</texttable.version>
 
+        <!-- Log -->
+        <logback.version>1.2.11</logback.version>
+
         <!-- JetBrains -->
         <annotations.version>23.0.0</annotations.version>
 
@@ -275,6 +278,12 @@
             <groupId>com.ancevt.util</groupId>
             <artifactId>texttable</artifactId>
             <version>${texttable.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
         <dependency>

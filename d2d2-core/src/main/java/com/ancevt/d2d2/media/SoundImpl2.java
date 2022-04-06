@@ -43,7 +43,7 @@ public class SoundImpl2 implements Media {
 
     @Override
     public void play() {
-        if (!Sound.isEnabled()) return;
+        if (!SoundSystem.isEnabled()) return;
 
         if (isPlaying()) stop();
 

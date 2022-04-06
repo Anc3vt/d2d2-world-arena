@@ -1,6 +1,6 @@
 package com.ancevt.d2d2.media;
 
-public class Sound {
+public class SoundSystem {
 
     private static boolean enabled = true;
 

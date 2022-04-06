@@ -26,7 +26,7 @@ import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2.media.Sound;
+import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
@@ -43,7 +43,7 @@ public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         Args a = new Args(args);
 
-        Sound.setEnabled(!a.contains("--disable-sound"));
+        SoundSystem.setEnabled(!a.contains("--disable-sound"));
 
         UnixDisplay.setEnabled(a.contains("--colorize-logs"));
 

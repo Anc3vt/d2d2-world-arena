@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
-import com.ancevt.d2d2.media.Media;
+import com.ancevt.d2d2.media.SoundMachine;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.map.MapIO;
 import lombok.SneakyThrows;
@@ -92,7 +92,7 @@ public abstract class Mapkit {
 
     @SneakyThrows
     public void playSound(String filename) {
-        Media.playSound(MapIO.getMapkitsDirectory() + name + File.separatorChar + filename);
+        SoundMachine.getInstance().play(MapIO.getMapkitsDirectory() + name + File.separatorChar + filename);
     }
 
     public MapkitItem getItem(String mapkitItemId) {

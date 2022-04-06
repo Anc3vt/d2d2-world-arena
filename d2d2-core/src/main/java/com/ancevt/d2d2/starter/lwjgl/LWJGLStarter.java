@@ -27,6 +27,7 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.touch.TouchProcessor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+@Slf4j
 public class LWJGLStarter implements D2D2Starter {
 
     private static final String DEMO_TEXTURE_DATA_INF_FILE = "d2d2-core-demo-texture-data.inf";
@@ -343,10 +345,10 @@ public class LWJGLStarter implements D2D2Starter {
     public void setFullscreen(boolean value) {
 
         if (!fullscreen) {
-            int x[] = new int[1];
-            int y[] = new int[1];
-            int w[] = new int[1];
-            int h[] = new int[1];
+            int[] x = new int[1];
+            int[] y = new int[1];
+            int[] w = new int[1];
+            int[] h = new int[1];
             glfwGetWindowPos(windowId, x, y);
             glfwGetWindowSize(windowId, w, h);
             windowX = x[0];
@@ -392,7 +394,13 @@ public class LWJGLStarter implements D2D2Starter {
     private void startRenderLoop() {
         while (!glfwWindowShouldClose(windowId)) {
             glfwPollEvents();
-            renderer.renderFrame();
+
+            try {
+                renderer.renderFrame();
+            } catch(Exception e) {
+                log.error(e.getMessage(), e);
+            }
+
             glfwSwapBuffers(windowId);
         }
 

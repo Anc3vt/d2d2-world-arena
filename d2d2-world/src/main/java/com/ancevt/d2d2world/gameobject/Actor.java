@@ -26,7 +26,6 @@ import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
-import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
@@ -210,13 +209,6 @@ abstract public class Actor extends Animated implements
 
     public void attack() {
         fixBodyPartsY();
-
-        DebugPanel.createIfEnabled("weapons", () -> {
-            StringBuilder stringBuilder = new StringBuilder();
-            weapons.forEach(w -> stringBuilder.append(w).append('\n'));
-            return stringBuilder;
-        });
-
 
         attackTime = getCurrentWeapon().getAttackTime();
 
