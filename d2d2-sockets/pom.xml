@@ -6,7 +6,7 @@
 
     <groupId>com.ancevt.d2d2</groupId>
     <artifactId>d2d2-sockets</artifactId>
-    <version>1.0.0.3-d2d2</version>
+    <version>1.0.0.4-d2d2-SNAPSHOT</version>
 
     <name>D2D2 TCP Protocol Tools</name>
     <url>https://github.com/Anc3vt/d2d2</url>

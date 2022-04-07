@@ -7,12 +7,12 @@
     <parent>
         <artifactId>d2d2</artifactId>
         <groupId>com.ancevt.d2d2</groupId>
-        <version>1.0.0.3-d2d2</version>
+        <version>1.0.0.4-d2d2-SNAPSHOT</version>
     </parent>
 
     <groupId>com.ancevt.d2d2world</groupId>
     <artifactId>d2d2-world-arena-networking</artifactId>
-    <version>1.0.0.3-d2d2</version>
+    <version>1.0.0.4-d2d2-SNAPSHOT</version>
 
     <name>D2D2 World Arena Networking</name>
     <url>https://github.com/Anc3vt/d2d2</url>
