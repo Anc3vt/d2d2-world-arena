@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.net.client;
 
+import com.ancevt.d2d2world.net.dto.client.PlayerPingReportDto;
 import lombok.extern.slf4j.Slf4j;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.net.connection.IConnection;
@@ -43,7 +44,10 @@ public class ClientSender {
     public void send(Dto dto) {
         String className = dto.getClass().getName();
         String json = gson().toJson(dto);
-        log.debug("send <y>{}\n{}<>", className, json);
+
+        if (log.isDebugEnabled() && !(dto instanceof PlayerPingReportDto)) {
+            log.debug("send <y>{}\n{}<>", className, json);
+        }
         send(createDtoMessage(className, json));
     }
 }

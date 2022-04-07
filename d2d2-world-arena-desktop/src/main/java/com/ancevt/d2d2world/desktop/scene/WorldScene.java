@@ -590,6 +590,9 @@ public class WorldScene extends DisplayObjectContainer {
 
         if (frameCounter % 1000 == 0) {
             CLIENT.sendServerInfoRequest();
+        }
+
+        if (frameCounter % 250 == 0) {
             CLIENT.sendPingRequest();
         }
 

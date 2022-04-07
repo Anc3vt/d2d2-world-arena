@@ -17,6 +17,9 @@
  */
 package com.ancevt.d2d2world.net.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
 
     private final int id;
@@ -25,10 +28,13 @@ public class Player {
     private int ping;
     private int frags;
 
+    private List<Integer> pingValues;
+
     public Player(int id, String name, int color) {
         this.id = id;
         this.name = name;
         this.color = color;
+        pingValues = new ArrayList<>();
     }
 
     public int getFrags() {

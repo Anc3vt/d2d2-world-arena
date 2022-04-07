@@ -36,9 +36,7 @@ import com.ancevt.net.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -60,13 +58,14 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     private int localPlayerId;
     private String localPlayerName;
     private int localPlayerFrags;
-    private int localPlayerPing;
     private int localPlayerColor;
     private final ISyncDataReceiver syncDataReceiver;
+    private List<Integer> pingValues;
 
     private Client() {
         this.syncDataReceiver = new SyncDataReceiver();
         clientListeners = new CopyOnWriteArrayList<>();
+        pingValues = new LinkedList<>();
 
         MODULE_CLIENT_PROTOCOL.addClientProtocolImplListener(this);
     }
@@ -209,9 +208,28 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     @Override
     public void playerPingResponse() {
         long pingResponseTime = System.currentTimeMillis();
-        localPlayerPing = (int) (pingResponseTime - pingRequestTime);
-        sender.send(PlayerPingReportDto.builder().ping(localPlayerPing).build());
-        PLAYER_MANAGER.getPlayer(localPlayerId).ifPresent(player -> player.setPing(localPlayerPing));
+        var pingValue = (int) (pingResponseTime - pingRequestTime) / 2; // devide by 2 because that is average of sending and receiving time values
+        pingValues.add(pingValue);
+        sender.send(PlayerPingReportDto.builder().ping(pingValue).build());
+        PLAYER_MANAGER.getPlayer(localPlayerId).ifPresent(player -> {
+            int pingAverage = getAveragePing();
+            player.setPing(pingAverage);
+            sender.send(PlayerPingReportDto.builder().ping(pingAverage).build());
+        });
+    }
+
+    private int getAveragePing() {
+        int sum = 0;
+        for (int p : pingValues) {
+            sum += p;
+        }
+        int result = sum / pingValues.size();
+
+        if (pingValues.size() > 10) {
+            pingValues = pingValues.subList(10 / 2, 10 - 1);
+        }
+
+        return result;
     }
 
     /**
@@ -372,7 +390,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     public int getLocalPlayerPing() {
-        return localPlayerPing;
+        // improve .get if error occurred
+        return PLAYER_MANAGER.getPlayer(localPlayerId).get().getPing();
     }
 
     public void setLocalPlayerFrags(int localPlayerFrags) {

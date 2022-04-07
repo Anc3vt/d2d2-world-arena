@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.net.protocol;
 
+import com.ancevt.d2d2world.net.dto.client.PlayerPingReportDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.io.ByteInputReader;
@@ -121,11 +122,11 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                 case MessageType.DTO -> {
                     String className = in.readUtf(short.class);
                     String json = in.readUtf(int.class);
-                    if (log.isDebugEnabled()) {
+                    Dto dto = (Dto) gson().fromJson(json, Class.forName(className));
+                    if (log.isDebugEnabled() && !(dto instanceof PlayerPingReportDto) ) {
                         log.debug("received <b>DTO<> from {} <g>{}\n{}<>", connectionId, className, json);
                     }
-                    Dto extraDto = (Dto) gson().fromJson(json, Class.forName(className));
-                    serverProtocolImplListeners.forEach(l -> l.dtoFromPlayer(connectionId, extraDto));
+                    serverProtocolImplListeners.forEach(l -> l.dtoFromPlayer(connectionId, dto));
                 }
 
 

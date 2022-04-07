@@ -20,7 +20,7 @@
         </encoder>
     </appender>
 
-    <root level="trace" additivity="false">
+    <root level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER_FILE"/>
     </root>
