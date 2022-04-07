@@ -50,7 +50,7 @@ import static com.ancevt.d2d2world.net.transfer.Headers.*;
 @Slf4j
 public class Client implements ConnectionListener, ClientProtocolImplListener {
 
-    public static final Client MODULE_CLIENT = new Client();
+    public static final Client CLIENT = new Client();
 
     private IConnection connection;
     private final List<ClientListener> clientListeners;
@@ -199,7 +199,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             clientListeners.forEach(l -> l.playerEnterRoomStartResponseReceived());
 
         } else if (dto instanceof PlayerSpawnDto d) {
-            clientListeners.forEach(l -> l.playerSpawn(d.getPlayerActorGameObjectId()));
+            clientListeners.forEach(l -> l.playerSpawn(d.getPlayerId(), d.getPlayerActorGameObjectId()));
         }
     }
 

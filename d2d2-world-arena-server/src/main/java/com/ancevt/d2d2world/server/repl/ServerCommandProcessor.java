@@ -17,6 +17,8 @@
  */
 package com.ancevt.d2d2world.server.repl;
 
+import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.world.World;
 import com.ancevt.net.connection.IConnection;
 import com.ancevt.util.args.Args;
 import com.ancevt.util.repl.ReplInterpreter;
@@ -27,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
@@ -64,6 +67,30 @@ public class ServerCommandProcessor {
         repl.addCommand("ban", this::cmd_ban);
         repl.addCommand("unban", this::cmd_unban);
         repl.addCommand("fps", this::cmd_fps);
+        repl.addCommand("tostring", this::cmd_tostring);
+        repl.addCommand("kill", this::cmd_kill);
+    }
+
+    private @Nullable Object cmd_kill(@NotNull Args args) {
+        WORLD_SCENE.getPlayerActorByPlayerId(args.get(int.class, 0)).ifPresent(playerActor -> playerActor.setHealth(0));
+        return "";
+    }
+
+    private @Nullable Object cmd_tostring(@NotNull Args args) {
+        int gameObjectId = args.get(int.class, 0);
+        if (gameObjectId == 0) return null;
+
+        World world = WORLD_SCENE.getWorldByGameObjectId(gameObjectId);
+        if (world == null) {
+            return null;
+        }
+
+        IGameObject gameObject = world.getGameObjectById(gameObjectId);
+        String result = world.toString() + "\n"
+                + gameObject.toString() + "\n"
+                + getProperties(gameObject) + "\n"
+                + gameObject.getMapkitItem().getDataEntry();
+        return result;
     }
 
     private Object cmd_fps(Args args) {

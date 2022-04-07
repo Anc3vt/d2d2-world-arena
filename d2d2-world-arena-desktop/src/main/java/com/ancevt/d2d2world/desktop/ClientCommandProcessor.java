@@ -30,11 +30,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
+import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 
 public class ClientCommandProcessor {
 
-    public static final ClientCommandProcessor MODULE_COMMAND_PROCESSOR = new ClientCommandProcessor();
+    public static final ClientCommandProcessor COMMAND_PROCESSOR = new ClientCommandProcessor();
 
     private final Set<Command> commands;
 
@@ -53,12 +53,12 @@ public class ClientCommandProcessor {
 
         switch (command) {
             case "/exit", "/q", "/quit" -> {
-                MODULE_CLIENT.sendExitRequest();
+                CLIENT.sendExitRequest();
                 GameRoot.INSTANCE.exit();
             }
 
             case "//sound" -> {
-                if(tokens.getElements().length >= 2) {
+                if (tokens.getElements().length >= 2) {
                     SoundSystem.setEnabled(tokens.contains("on"));
                 }
                 Chat.getInstance().addMessage(SoundSystem.isEnabled() ? "Sound is on" : "Sound is off");
@@ -67,12 +67,12 @@ public class ClientCommandProcessor {
 
             case "//getfile" -> {
                 String path = tokens.get(String.class, 1);
-                MODULE_CLIENT.sendFileRequest(path);
+                CLIENT.sendFileRequest(path);
                 return true;
             }
 
             case "//connection" -> {
-                Chat.getInstance().addMessage(MODULE_CLIENT.getConnection().toString());
+                Chat.getInstance().addMessage(CLIENT.getConnection().toString());
                 return true;
             }
 
@@ -94,10 +94,10 @@ public class ClientCommandProcessor {
                 // if the second (at index 1) token from command text is 'login'
                 if ("login".equals(tokens.get(String.class, 1, ""))) {
                     String passwordHash = MD5.hash(tokens.get(String.class, 2, ""));
-                    MODULE_CLIENT.sendRconLoginRequest(passwordHash);
+                    CLIENT.sendRconLoginRequest(passwordHash);
                 } else {
                     // send rcon command String beginning from 6 index
-                    MODULE_CLIENT.sendRconCommand(text.substring(6));
+                    CLIENT.sendRconCommand(text.substring(6));
                 }
                 return true;
             }
@@ -105,9 +105,9 @@ public class ClientCommandProcessor {
 
         Holder<Boolean> result = new Holder<>(false);
         commands.stream()
-                .filter(c->c.command.equals(command))
+                .filter(c -> c.command.equals(command))
                 .findAny()
-                .ifPresent(c->result.setValue(c.function().apply(tokens)));
+                .ifPresent(c -> result.setValue(c.function().apply(tokens)));
 
         return result.getValue();
     }

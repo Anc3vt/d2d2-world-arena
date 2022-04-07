@@ -361,6 +361,11 @@ public class World extends DisplayObjectContainer {
 
         if (updateRoom)
             currentRoom.addGameObject(layerIndex, gameObject);
+
+        dispatchEvent(WorldEvent.builder()
+                .type(WorldEvent.ADD_GAME_OBJECT)
+                .gameObject(gameObject)
+                .build());
     }
 
 
@@ -382,6 +387,11 @@ public class World extends DisplayObjectContainer {
                 if (updateRoom) currentRoom.removeGameObject(layerIndex, gameObject);
             }
         }
+
+        dispatchEvent(WorldEvent.builder()
+                .type(WorldEvent.REMOVE_GAME_OBJECT)
+                .gameObject(gameObject)
+                .build());
     }
 
     public Layer getLayer(int layerNumber) {
@@ -442,18 +452,9 @@ public class World extends DisplayObjectContainer {
     @Override
     public String toString() {
         return "World{" +
-                "gameObjects=" + gameObjects.size() +
-                ", gameObjectMap=" + gameObjectMap.size() +
-                ", layers=" + layers.length +
-                ", playProcessor=" + playProcessor.toString() +
-                ", camera=" + camera +
-                ", packedSceneryBack=" + packedSceneryBack +
-                ", packedSceneryFore=" + packedSceneryFore +
-                ", sceneryPacked=" + sceneryPacked +
-                ", areasVisible=" + areasVisible +
-                ", roomRect=" + roomRect +
+                "currentRoom=" + currentRoom.getId() +
+                ", gameObjects=" + gameObjects.size() +
                 ", playing=" + playing +
-                ", switchingRoomsNow=" + switchingRoomsNow +
                 '}';
     }
 

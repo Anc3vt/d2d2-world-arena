@@ -10,6 +10,9 @@ import com.ancevt.d2d2.starter.norender.NoRenderStarter;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
+import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
@@ -280,15 +283,31 @@ public class ServerWorldScene {
 
             PlayerActor deadPlayerActor = playerActorMap.get(deadPlayerId.getValue());
             if (deadPlayerActor != null) {
+
+                Async.runLater(2, TimeUnit.SECONDS, () -> {
+                    world.removeGameObject(deadPlayerActor, false);
+                });
+
                 Async.runLater(5, TimeUnit.SECONDS, () -> {
                     // TODO: extract to separate method
-                    deadPlayerActor.setXY((float) (Math.random() * world.getRoom().getWidth()), 16);
+                    deadPlayerActor.setXY(64, 64);
                     deadPlayerActor.repair();
+                    world.addGameObject(deadPlayerActor, 5,  false);
                     SENDER.sendToAll(PlayerSpawnDto.builder()
+                            .playerId(deadPlayerId.getValue())
                             .playerActorGameObjectId(deadPlayerActor.getGameObjectId())
                             .build()
                     );
                 });
+
+                // weapon pickup drop
+                Weapon weapon = deadPlayerActor.getCurrentWeapon();
+                if (weapon.getClass() != StandardWeapon.class) {
+                    WeaponPickup weaponPickup = BuiltInMapkit.createWeaponPickupMapkitItem(weapon);
+                    weaponPickup.setXY(deadPlayerActor.getX(), deadPlayerActor.getY());
+                    weaponPickup.setCollisionEnabled(true);
+                    world.addGameObject(weaponPickup, 5, false);
+                }
             }
         }
     }
@@ -306,6 +325,12 @@ public class ServerWorldScene {
 
     }
 
+    public World getWorldByGameObjectId(int gameObjectId) {
+        return worlds.values().stream()
+                .filter(w -> w.getGameObjectById(gameObjectId) != null)
+                .findAny()
+                .orElseThrow();
+    }
 }
 
 

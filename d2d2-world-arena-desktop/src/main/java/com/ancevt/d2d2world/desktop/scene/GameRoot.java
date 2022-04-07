@@ -44,9 +44,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
-import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
+import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
-import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
+import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -70,7 +70,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         setBackgroundColor(Color.BLACK);
 
-        MODULE_CLIENT.addClientListener(this);
+        CLIENT.addClientListener(this);
 
         Chat.getInstance().addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
             var e = (ChatEvent) event;
@@ -80,8 +80,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 text = text.replace('\\', '/');
                 if (clientCommand(text)) return;
             }
-            if (MODULE_CLIENT.isConnected()) {
-                MODULE_CLIENT.sendChatMessage(text);
+            if (CLIENT.isConnected()) {
+                CLIENT.sendChatMessage(text);
             }
         });
 
@@ -210,7 +210,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         String rconPassword = MODULE_CONFIG.getString(DesktopConfig.RCON_PASSWORD);
         if (!rconPassword.isEmpty()) {
-            MODULE_CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
+            CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
         }
 
         D2D2WorldSound.playSound(D2D2WorldSound.PLAYER_ENTER);
@@ -247,7 +247,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         Chat.getInstance().addMessage(status.getErrorMessage(), Color.RED);
         new Lock().lock(5, SECONDS);
         if (attempts < 10) {
-            start(server, MODULE_CLIENT.getLocalPlayerName());
+            start(server, CLIENT.getLocalPlayerName());
         } else {
             Chat.getInstance().addMessage("Can't establish connection. Please try again later");
             setBackgroundColor(Color.BLACK);
@@ -261,7 +261,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     @Override
     public void clientConnectionEstablished() {
         Chat.getInstance().addMessage("Connection established", Color.GREEN);
-        MODULE_CLIENT.sendPlayerEnterRequest();
+        CLIENT.sendPlayerEnterRequest();
     }
 
     /**
@@ -323,8 +323,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void playerSpawn(int playerActorGameObjectId) {
-        worldScene.playerSpawn(playerActorGameObjectId);
+    public void playerSpawn(int playerId, int playerActorGameObjectId) {
+        worldScene.playerSpawn(playerId, playerActorGameObjectId);
     }
 
     /**
@@ -354,13 +354,13 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     private boolean clientCommand(String text) {
-        return MODULE_COMMAND_PROCESSOR.process(text);
+        return COMMAND_PROCESSOR.process(text);
     }
 
     public void start(@NotNull String server, String localPlayerName) {
         log.debug("Staring... server: {}, player name: {}", server, localPlayerName);
-        if (MODULE_CLIENT.isConnected()) {
-            MODULE_CLIENT.close();
+        if (CLIENT.isConnected()) {
+            CLIENT.close();
         }
         worldScene.init();
 
@@ -369,10 +369,10 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         String host = server.contains(":") ? server.split(":")[0] : server;
         int port = server.contains(":") ? Integer.parseInt(server.split(":")[1]) : DEFAULT_PORT;
 
-        MODULE_CLIENT.setLocalPlayerName(localPlayerName);
+        CLIENT.setLocalPlayerName(localPlayerName);
 
         Chat.getInstance().addMessage("Connecting to " + server + "...", Color.GRAY);
-        MODULE_CLIENT.connect(host, port);
+        CLIENT.connect(host, port);
     }
 
     public void setServerName(String serverName) {
@@ -380,7 +380,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     public void exit() {
-        MODULE_CLIENT.sendExitRequest();
+        CLIENT.sendExitRequest();
         Chat.getInstance().dispose();
         new Lock().lock(1, SECONDS);
         DebugPanel.saveAll();

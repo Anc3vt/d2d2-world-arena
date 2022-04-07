@@ -1,5 +1,6 @@
 package com.ancevt.d2d2world.gameobject.pickup;
 
+import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
@@ -15,6 +16,8 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
 
@@ -158,19 +161,19 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     public void onCollide(ICollision collideWith) {
         if (!isServer()) return;
 
-        if (collideWith instanceof PlayerActor playerActor && pickUpTimeMillis == 0) {
-
+        if (collideWith instanceof PlayerActor playerActor && pickUpTimeMillis == 0 && playerActor.isAlive()) {
             var result = onPlayerActorPickUpPickup(playerActor);
             if (result) {
-                playPickUpSound();
                 setVisible(false);
                 setCollisionEnabled(false);
                 pickUpTimeMillis = System.currentTimeMillis();
 
                 if (respawnTimeMillis <= 0) {
                     world.removeEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId());
-                    world.removeGameObject(this, false);
+                    // delayed actually removing pickup game object from serverside world
+                    Async.runLater(1, TimeUnit.SECONDS, () -> world.removeGameObject(this, false));
                 }
+
                 if (playerActor.isOnWorld()) {
                     playerActor.getWorld().getSyncDataAggregator().pickUp(playerActor, getGameObjectId());
                 }

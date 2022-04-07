@@ -206,7 +206,7 @@ public class BuiltInMapkit extends Mapkit {
                         id = bullet_of_""" + RailWeapon.class.getSimpleName() + """
                         | class =""" + RailWeapon.RailBullet.class.getName() + """
                         | damagingPower = 49
-                        | speed = 31
+                        | speed = 32
                         | collisionX = -8 | collisionY = -8 | collisionWidth = 16 | collisionHeight = 16
                         | atlas = $ATLAS$
                         | idle = 32,48,32,16

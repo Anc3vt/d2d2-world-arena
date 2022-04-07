@@ -42,6 +42,10 @@ public class D2D2World {
         return D2D2.getTextureManager().getTexture("d2d2-world-common-tileset-aim");
     }
 
+    public static Texture getSpawnEffectTexture() {
+        return D2D2.getTextureManager().getTexture("d2d2-world-common-tileset-spawn-effect");
+    }
+
     public static boolean isServer() {
         return server;
     }

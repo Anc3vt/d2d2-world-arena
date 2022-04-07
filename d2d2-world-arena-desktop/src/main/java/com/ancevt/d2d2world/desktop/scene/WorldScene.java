@@ -62,10 +62,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.MODULE_COMMAND_PROCESSOR;
+import static com.ancevt.d2d2world.data.Properties.getProperties;
+import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
 import static com.ancevt.d2d2world.desktop.sound.D2D2WorldSound.PLAYER_SPAWN;
-import static com.ancevt.d2d2world.net.client.Client.MODULE_CLIENT;
+import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
@@ -95,6 +96,9 @@ public class WorldScene extends DisplayObjectContainer {
 
         world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
         world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
+        world.addEventListener(hashCode() + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
+        world.addEventListener(hashCode() + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
+
 
         gameObjectTexts = new GameObjectTexts(world);
 
@@ -123,7 +127,7 @@ public class WorldScene extends DisplayObjectContainer {
         //world.add(shadowRadial);
 
 
-        ((SyncDataReceiver) MODULE_CLIENT.getSyncDataReceiver()).setWorld(world);
+        ((SyncDataReceiver) CLIENT.getSyncDataReceiver()).setWorld(world);
 
         setScale(2f, 2f);
 
@@ -131,7 +135,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         addEventListener(getClass(), Event.ADD_TO_STAGE, this::this_addToStage);
 
-        MODULE_CLIENT.addClientListener(new ClientListener() {
+        CLIENT.addClientListener(new ClientListener() {
 
             @Override
             public void serverInfo(@NotNull ServerInfoDto result) {
@@ -151,38 +155,63 @@ public class WorldScene extends DisplayObjectContainer {
         config_configChangeListener(DEBUG_GAME_OBJECT_IDS, MODULE_CONFIG.getBoolean(DEBUG_GAME_OBJECT_IDS));
 
         Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_OPEN, event -> {
-            MODULE_CLIENT.sendDto(PlayerChatEventDto.builder()
-                    .playerId(MODULE_CLIENT.getLocalPlayerId())
+            CLIENT.sendDto(PlayerChatEventDto.builder()
+                    .playerId(CLIENT.getLocalPlayerId())
                     .action(OPEN)
                     .build());
         });
 
         Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_CLOSE, event -> {
-            MODULE_CLIENT.sendDto(PlayerChatEventDto.builder()
-                    .playerId(MODULE_CLIENT.getLocalPlayerId())
+            CLIENT.sendDto(PlayerChatEventDto.builder()
+                    .playerId(CLIENT.getLocalPlayerId())
                     .action(CLOSE)
                     .build());
         });
 
-        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//tostring",
+                args -> {
+                    IGameObject gameObject = world.getGameObjectById(args.get(int.class, 1));
+                    if (gameObject == null) {
+                        Chat.getInstance().addMessage("no such game object", Color.YELLOW);
+                        return true;
+                    }
+                    Chat.getInstance().addMessage(gameObject.toString() + "\n"
+                            + getProperties(gameObject) + "\n"
+                            + gameObject.getMapkitItem().getDataEntry().toString(), Color.YELLOW
+                    );
+                    return true;
+                }
+        ));
+
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//spawneffect",
+                args -> {
+                    SpawnEffect.doSpawnEffect(localPlayerActor, world, Color.of(CLIENT.getLocalPlayerColor()));
+                    D2D2WorldSound.playSound(PLAYER_SPAWN);
+                    return true;
+                }
+        ));
+
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//gameobjectids",
                 args -> {
                     StringBuilder sb = new StringBuilder();
                     world.getGameObjects().forEach(o -> sb.append(o.getGameObjectId()).append(','));
-                    Chat.getInstance().addMessage(sb.toString());
+                    Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
                     return true;
                 }
         ));
-        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//gameobjectnames",
                 args -> {
                     StringBuilder sb = new StringBuilder();
                     world.getGameObjects().forEach(o -> sb.append(o.getName()).append(','));
-                    Chat.getInstance().addMessage(sb.toString());
+                    Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
                     return true;
                 }
         ));
-        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//config",
                 args -> {
                     String key = args.get(String.class, "-k");
@@ -195,30 +224,48 @@ public class WorldScene extends DisplayObjectContainer {
                         Chat.getInstance().addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GREEN);
                     }
                     if (key == null && value == null) {
-                        Chat.getInstance().addMessage(MODULE_CONFIG.passwordSafeToString());
+                        Chat.getInstance().addMessage(MODULE_CONFIG.passwordSafeToString(), Color.YELLOW);
                     }
                     return true;
                 }
         ));
-        MODULE_COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//fullscreen",
                 args -> {
-
                     D2D2.setFullscreen(args.get(Boolean.class, 1));
-
                     return true;
                 }
         ));
         ammunitionHud = new AmmunitionHud();
     }
 
-    private void world_roomSwitchComplete(Event event) {
-        MODULE_CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
+    private void world_removeGameObject(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (e.getGameObject() instanceof PlayerActor playerActor) {
+            SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
+            D2D2WorldSound.playSound(PLAYER_SPAWN);
+        }
     }
 
-    private void world_playerActorTakeBullet(Event event) {
+    private void world_addGameObject(Event<World> event) {
         var e = (WorldEvent) event;
-        MODULE_CLIENT.sendDamageReport(e.getBullet().getDamagingPower(), e.getBullet().getGameObjectId());
+        if (e.getGameObject() instanceof PlayerActor playerActor) {
+            SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
+            D2D2WorldSound.playSound(PLAYER_SPAWN);
+
+            if(localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
+                setLocalPlayerActorGameObjectId(localPlayerActor.getGameObjectId());
+            }
+        }
+    }
+
+    private void world_roomSwitchComplete(Event<World> event) {
+        CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
+    }
+
+    private void world_playerActorTakeBullet(Event<World> event) {
+        var e = (WorldEvent) event;
+        CLIENT.sendDamageReport(e.getBullet().getDamagingPower(), e.getBullet().getGameObjectId());
     }
 
     private void config_configChangeListener(@NotNull String key, Object value) {
@@ -269,7 +316,7 @@ public class WorldScene extends DisplayObjectContainer {
         });
         lock.lock();
 
-        MODULE_CLIENT.getSyncDataReceiver().setEnabled(false);
+        CLIENT.getSyncDataReceiver().setEnabled(false);
 
         MapkitManager.getInstance().disposeExternalMapkits();
 
@@ -304,7 +351,7 @@ public class WorldScene extends DisplayObjectContainer {
 
             addRootAndChatEventsIfNotYet();
 
-            MODULE_CLIENT.getSyncDataReceiver().setEnabled(true);
+            CLIENT.getSyncDataReceiver().setEnabled(true);
 
             overlay.startOut();
             gameObjectTexts.clear();
@@ -315,7 +362,7 @@ public class WorldScene extends DisplayObjectContainer {
 
             start();
 
-            MODULE_CLIENT.sendDto(PlayerReadyToSpawnDto.builder()
+            CLIENT.sendDto(PlayerReadyToSpawnDto.builder()
                     .mapkitName(mapkitName)
                     .mapkitItemId(mapkitItemId)
                     .build()
@@ -338,7 +385,7 @@ public class WorldScene extends DisplayObjectContainer {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(true);
                     if (oldState != localPlayerController.getState()) {
-                        MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                        CLIENT.sendLocalPlayerController(localPlayerController.getState());
                     }
                 }
             });
@@ -348,7 +395,7 @@ public class WorldScene extends DisplayObjectContainer {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(false);
                     if (oldState != localPlayerController.getState()) {
-                        MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                        CLIENT.sendLocalPlayerController(localPlayerController.getState());
                     }
                 }
             });
@@ -356,7 +403,7 @@ public class WorldScene extends DisplayObjectContainer {
             getRoot().addEventListener(InputEvent.MOUSE_WHEEL, event -> {
                 var e = (InputEvent) event;
                 int delta = e.getDelta();
-                MODULE_CLIENT.sendLocalPlayerWeaponSwitch(delta);
+                CLIENT.sendLocalPlayerWeaponSwitch(delta);
             });
 
             getRoot().addEventListener(InputEvent.KEY_DOWN, event -> {
@@ -365,7 +412,7 @@ public class WorldScene extends DisplayObjectContainer {
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
 
                 if (oldState != localPlayerController.getState()) {
-                    MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                    CLIENT.sendLocalPlayerController(localPlayerController.getState());
                 }
                 if (e.getKeyCode() == KeyCode.F11) {
                     if (shadowRadial.getValue() == 0) return;
@@ -386,7 +433,7 @@ public class WorldScene extends DisplayObjectContainer {
                 final int oldState = localPlayerController.getState();
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
                 if (oldState != localPlayerController.getState()) {
-                    MODULE_CLIENT.sendLocalPlayerController(localPlayerController.getState());
+                    CLIENT.sendLocalPlayerController(localPlayerController.getState());
                 }
             });
 
@@ -440,15 +487,22 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.setName("lpa");
         localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
         localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));
-        localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> overlay.startIn());
+        localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn));
         localPlayerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
             var e = (ActorEvent) event;
-            MODULE_CLIENT.sendPlayerEnterRoom(e.getRoomId(), e.getX(), e.getY());
+            CLIENT.sendPlayerEnterRoom(e.getRoomId(), e.getX(), e.getY());
         });
+
         localPlayerActor.addEventListener(ActorEvent.ACTOR_REPAIR, event -> {
             world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
             overlay.startOut();
         });
+
+        if(overlay.getState() == Overlay.STATE_BLACK) {
+            world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
+            overlay.startOut();
+        }
+
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
 
             private float aimX;
@@ -460,7 +514,7 @@ public class WorldScene extends DisplayObjectContainer {
                 float currentAimY = localPlayerActor.getAimY();
 
                 if (currentAimX != aimX || currentAimY != aimY) {
-                    MODULE_CLIENT.sendAimXY(currentAimX, currentAimY);
+                    CLIENT.sendAimXY(currentAimX, currentAimY);
                 }
 
                 aimX = localPlayerActor.getAimX();
@@ -471,10 +525,8 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         localPlayerActor.setLocalAim(true);
-        SpawnEffect.doSpawnEffect(localPlayerActor, world);
-        D2D2WorldSound.playSound(PLAYER_SPAWN);
         world.getCamera().setAttachedTo(localPlayerActor);
-        playerActorUiText(localPlayerActor, MODULE_CLIENT.getLocalPlayerId(), MODULE_CLIENT.getLocalPlayerName());
+        playerActorUiText(localPlayerActor, CLIENT.getLocalPlayerId(), CLIENT.getLocalPlayerName());
     }
 
     /**
@@ -487,21 +539,19 @@ public class WorldScene extends DisplayObjectContainer {
     /**
      * Calls from {@link GameRoot}
      */
-    public void playerSpawn(int playerActorGameObjectId) {
-        if (world.getGameObjectById(playerActorGameObjectId) instanceof PlayerActor playerActor) {
-            SpawnEffect.doSpawnEffect(playerActor, world);
+    public void playerSpawn(int playerId, int playerActorGameObjectId) {
+        /*
+        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
+            SpawnEffect.doSpawnEffect(playerActor, world, Color.WHITE);
             D2D2WorldSound.playSound(PLAYER_SPAWN);
-        }
+        });
+        */
     }
 
     /**
      * Calls from {@link GameRoot}
      */
     public void remotePlayerExit(int playerId) {
-        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
-            SpawnEffect.doSpawnEffect(playerActor, world);
-            D2D2WorldSound.playSound(PLAYER_SPAWN);
-        });
     }
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
@@ -518,13 +568,13 @@ public class WorldScene extends DisplayObjectContainer {
     @Override
     public void onEachFrame() {
         super.onEachFrame();
-        if (!MODULE_CLIENT.isConnected() || !MODULE_CLIENT.isEnteredServer()) return;
+        if (!CLIENT.isConnected() || !CLIENT.isEnteredServer()) return;
 
         SyncMotion.process();
 
         if (frameCounter % 1000 == 0) {
-            MODULE_CLIENT.sendServerInfoRequest();
-            MODULE_CLIENT.sendPingRequest();
+            CLIENT.sendServerInfoRequest();
+            CLIENT.sendPingRequest();
         }
 
         if (localPlayerActor != null) {

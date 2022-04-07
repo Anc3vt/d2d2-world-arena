@@ -27,10 +27,8 @@ import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.fx.Particle;
-import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
-import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.math.RotationUtils;
 import com.ancevt.d2d2world.ui.HealthBar;
@@ -457,12 +455,6 @@ abstract public class Actor extends Animated implements
                             damaging != null && damaging.getDamagingOwnerActor() != null ?
                                     damaging.getDamagingOwnerActor().getGameObjectId() : 0)
                     .build());
-
-            if (getCurrentWeapon().getClass() != StandardWeapon.class) {
-                WeaponPickup weaponPickup = BuiltInMapkit.createWeaponPickupMapkitItem(getCurrentWeapon());
-                weaponPickup.setXY(getX(), getY());
-                getWorld().addGameObject(weaponPickup, 5, false);
-            }
         }
 
         resetWeapons();

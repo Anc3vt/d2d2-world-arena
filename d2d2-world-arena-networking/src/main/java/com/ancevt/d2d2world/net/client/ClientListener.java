@@ -62,5 +62,5 @@ public interface ClientListener {
 
     default void playerEnterServer(int id, @NotNull String name, int color){}
 
-    default void playerSpawn(int playerActorGameObjectId){}
+    default void playerSpawn(int playerId, int playerActorGameObjectId){}
 }

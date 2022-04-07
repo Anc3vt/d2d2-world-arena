@@ -9,6 +9,8 @@
     d2d2-world-common-tileset-decor-door 160 0 16 48
     d2d2-world-common-tileset-screen-filter 96 32 32 32
 
+    d2d2-world-common-tileset-spawn-effect 0 128 32 96
+
     d2d2-world-common-tileset-vrpanel1-left   176 0 16 32
     d2d2-world-common-tileset-vrpanel1-middle 192 0 1 32
     d2d2-world-common-tileset-vrpanel1-right  192 0 16 32

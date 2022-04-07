@@ -140,7 +140,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     }
 
     private void pickup(int gameObjectId, int pickupGameObjectId) {
-        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor actor &&
+        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor &&
                 world.getGameObjectById(pickupGameObjectId) instanceof Pickup pickup) {
             pickup.playPickUpSound();
         }
@@ -213,8 +213,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
             bullet.setDamagingOwnerActor((Actor) world.getGameObjectById(ownerGameObjectId));
         }
 
-        if (needAddToWorld)
+        if (needAddToWorld) {
             world.addGameObject(gameObject, layer, false);
+        }
     }
 
     private void removeGameObject(int gameObjectId) {

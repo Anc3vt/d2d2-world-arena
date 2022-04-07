@@ -78,4 +78,13 @@ public class WeaponPickup extends Pickup {
         Reflections reflections = new Reflections(Weapon.class.getPackage().getName(), Scanners.SubTypes);
         return new HashSet<>(reflections.getSubTypesOf(Weapon.class));
     }
+
+    @Override
+    public String toString() {
+        return "WeaponPickup{" +
+                "weaponClass=" + weaponClass +
+                ", ammunition=" + ammunition +
+                ", collisionEnabled=" + isCollisionEnabled() +
+                '}';
+    }
 }

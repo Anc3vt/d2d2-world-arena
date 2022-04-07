@@ -29,7 +29,7 @@ public class Overlay extends PlainRect {
     public static final int STATE_OUT = 2;
     public static final int STATE_DONE = 3;
 
-    private static final float ALPHA_SPEED = 0.05f;
+    private static final float ALPHA_SPEED = 0.1f;
 
     private int state;
     private float alpha;
