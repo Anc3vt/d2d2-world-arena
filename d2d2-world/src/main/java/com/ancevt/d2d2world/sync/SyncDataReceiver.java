@@ -248,7 +248,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     private synchronized void setXY(int gameObjectId, float x, float y) {
         IGameObject o = world.getGameObjectById(gameObjectId);
         if (o != null) {
-            if (o instanceof Weapon.Bullet) return;
+            if (o instanceof Weapon.Bullet || (o instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor())) return;
             SyncMotion.moveMotion(o, x, y);
         }
     }

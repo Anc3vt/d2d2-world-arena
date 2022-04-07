@@ -505,20 +505,36 @@ public class WorldScene extends DisplayObjectContainer {
 
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
 
-            private float aimX;
-            private float aimY;
+            private float oldX;
+            private float oldY;
+
+            private float oldAimX;
+            private float oldAimY;
 
             @Override
             public void onEvent(Event event) {
                 float currentAimX = localPlayerActor.getAimX();
                 float currentAimY = localPlayerActor.getAimY();
 
-                if (currentAimX != aimX || currentAimY != aimY) {
+                if (currentAimX != oldAimX || currentAimY != oldAimY) {
                     CLIENT.sendAimXY(currentAimX, currentAimY);
                 }
 
-                aimX = localPlayerActor.getAimX();
-                aimY = localPlayerActor.getAimY();
+                oldAimX = localPlayerActor.getAimX();
+                oldAimY = localPlayerActor.getAimY();
+
+
+                float currentX = localPlayerActor.getX();
+                float currentY = localPlayerActor.getY();
+
+                if(currentX != oldX || currentY != oldY) {
+                    CLIENT.sendXY(currentX, currentY);
+                }
+
+
+                oldX = localPlayerActor.getX();
+                oldY = localPlayerActor.getY();
+
             }
         });
 

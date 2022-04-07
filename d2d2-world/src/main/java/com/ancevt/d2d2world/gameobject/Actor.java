@@ -540,9 +540,9 @@ abstract public class Actor extends Animated implements
         if (!isGravityEnabled()) return;
 
         if (direction == Direction.RIGHT) {
-            setVelocityX(getVelocityX() + getSpeed());
+            if(!isServer()) setVelocityX(getVelocityX() + getSpeed());
         } else if (direction == Direction.LEFT) {
-            setVelocityX(getVelocityX() - getSpeed());
+            if(!isServer()) setVelocityX(getVelocityX() - getSpeed());
         }
     }
 

@@ -22,17 +22,19 @@ import com.ancevt.d2d2world.net.dto.Dto;
 
 public non-sealed interface ServerProtocolImplListener extends ProtocolImplListener {
 
-    void playerController(int playerId, int controllerState);
+    default void playerController(int playerId, int controllerState){}
 
-    void requestFile(int playerId, @NotNull String headers);
+    default void requestFile(int playerId, @NotNull String headers){}
 
-    void dtoFromPlayer(int playerId, Dto extraDto);
+    default void dtoFromPlayer(int playerId, Dto extraDto){}
 
-    void ping(int playerId);
+    default void ping(int playerId){}
 
-    void playerAimXY(int playerId, float x, float y);
+    default void playerAimXY(int playerId, float x, float y){}
 
-    void playerWeaponSwitch(int connectionId, int delta);
+    default void playerWeaponSwitch(int connectionId, int delta){}
 
-    void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId);
+    default void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId){}
+
+    default void playerXY(int connectionId, float x, float y){}
 }

@@ -28,7 +28,6 @@ import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
-import static com.ancevt.d2d2world.D2D2World.isServer;
 
 abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized {
 
@@ -119,9 +118,9 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
 
     @Override
     public void setAnimation(final int animationKey) {
-        if (isServer()) { // <== TODO: please refactor and remove it
+        //if (isServer()) { // <== TODO: please refactor and remove it
             setAnimation(animationKey, true);
-        }
+        //}
     }
 
     @Override

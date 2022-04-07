@@ -255,6 +255,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         sender.send(createMessagePlayerAimXY(aimX, aimY));
     }
 
+    public void sendXY(float x, float y) {
+        sender.send(createMessagePlayerXY(x, y));
+    }
+
     public void sendLocalPlayerWeaponSwitch(int delta) {
         sender.send(createMessagePlayerWeaponSwitch(delta));
     }

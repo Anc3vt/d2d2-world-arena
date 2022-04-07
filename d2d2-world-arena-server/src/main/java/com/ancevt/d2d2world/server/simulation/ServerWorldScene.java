@@ -147,6 +147,16 @@ public class ServerWorldScene {
     /**
      * Calls from {@link GeneralService}
      */
+    public void playerXY(int playerId, float x, float y) {
+        PlayerActor playerActor = playerActorMap.get(playerId);
+        if (playerActor != null) {
+            playerActor.setXY(x, y);
+        }
+    }
+
+    /**
+     * Calls from {@link GeneralService}
+     */
     public void playerAimXY(int playerId, float x, float y) {
         PlayerActor playerActor = playerActorMap.get(playerId);
         if (playerActor != null) {
@@ -284,22 +294,6 @@ public class ServerWorldScene {
             PlayerActor deadPlayerActor = playerActorMap.get(deadPlayerId.getValue());
             if (deadPlayerActor != null) {
 
-                Async.runLater(2, TimeUnit.SECONDS, () -> {
-                    world.removeGameObject(deadPlayerActor, false);
-                });
-
-                Async.runLater(5, TimeUnit.SECONDS, () -> {
-                    // TODO: extract to separate method
-                    deadPlayerActor.setXY(64, 64);
-                    deadPlayerActor.repair();
-                    world.addGameObject(deadPlayerActor, 5,  false);
-                    SENDER.sendToAll(PlayerSpawnDto.builder()
-                            .playerId(deadPlayerId.getValue())
-                            .playerActorGameObjectId(deadPlayerActor.getGameObjectId())
-                            .build()
-                    );
-                });
-
                 // weapon pickup drop
                 Weapon weapon = deadPlayerActor.getCurrentWeapon();
                 if (weapon.getClass() != StandardWeapon.class) {
@@ -308,6 +302,24 @@ public class ServerWorldScene {
                     weaponPickup.setCollisionEnabled(true);
                     world.addGameObject(weaponPickup, 5, false);
                 }
+
+
+                // resurrect player
+                Async.runLater(2, TimeUnit.SECONDS, () -> {
+                    world.removeGameObject(deadPlayerActor, false);
+                });
+
+                Async.runLater(5, TimeUnit.SECONDS, () -> {
+                    // TODO: extract to separate method
+                    deadPlayerActor.setXY(32, 128);
+                    deadPlayerActor.repair();
+                    world.addGameObject(deadPlayerActor, 5,  false);
+                    SENDER.sendToAll(PlayerSpawnDto.builder()
+                            .playerId(deadPlayerId.getValue())
+                            .playerActorGameObjectId(deadPlayerActor.getGameObjectId())
+                            .build()
+                    );
+                });
             }
         }
     }
@@ -331,6 +343,7 @@ public class ServerWorldScene {
                 .findAny()
                 .orElseThrow();
     }
+
 }
 
 

@@ -114,6 +114,14 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
+    public void playerXY(int connectionId, float x, float y) {
+       WORLD_SCENE.playerXY(connectionId, x, y);
+    }
+
+    /**
+     * {@link ServerProtocolImplListener} method
+     */
+    @Override
     public void playerAimXY(int playerId, float x, float y) {
         WORLD_SCENE.playerAimXY(playerId, x, y);
     }

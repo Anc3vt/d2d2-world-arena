@@ -78,6 +78,12 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     serverProtocolImplListeners.forEach(l -> l.playerWeaponSwitch(connectionId, delta));
                 }
 
+                case MessageType.CLIENT_PLAYER_XY -> {
+                    float x = in.readFloat();
+                    float y = in.readFloat();
+                    serverProtocolImplListeners.forEach(l -> l.playerXY(connectionId, x, y));
+                }
+
                 case MessageType.CLIENT_PLAYER_AIM_XY -> {
                     float x = in.readFloat();
                     float y = in.readFloat();

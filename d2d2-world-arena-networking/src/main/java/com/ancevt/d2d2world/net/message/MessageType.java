@@ -33,6 +33,11 @@ public class MessageType {
     public static final int CLIENT_PLAYER_WEAPON_SWITCH = 4;
 
     /**
+     * b)t f)x f)y
+     */
+    public static final int CLIENT_PLAYER_XY = 1;
+
+    /**
      * b)t f)aimX f)aimY
      */
     public static final int CLIENT_PLAYER_AIM_XY = 2;

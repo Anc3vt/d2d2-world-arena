@@ -27,7 +27,6 @@ import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
 import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
-import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListenerAdapter;
 import com.ancevt.net.CloseStatus;
 import com.ancevt.net.connection.ConnectionListenerAdapter;
 import com.ancevt.net.connection.IConnection;
@@ -151,7 +150,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         // Provide timeout closing connection:
         Holder<Boolean> playerEntered = new Holder<>(false);
 
-        ServerProtocolImplListener serverProtocolImplListener = new ServerProtocolImplListenerAdapter() {
+        ServerProtocolImplListener serverProtocolImplListener = new ServerProtocolImplListener() {
 
             @Override
             public void dtoFromPlayer(int playerId, Dto dto) {
