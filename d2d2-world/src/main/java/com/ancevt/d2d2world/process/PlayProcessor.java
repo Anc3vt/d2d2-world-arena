@@ -257,8 +257,8 @@ public class PlayProcessor {
     }
 
     private void processGravity(IGravitied o) {
-        if (!isServer() || !o.isGravityEnabled()) return;
-        //if (!o.isGravityEnabled()) return;
+        //if (!isServer() || !o.isGravityEnabled()) return;
+        if (!o.isGravityEnabled()) return;
 
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);

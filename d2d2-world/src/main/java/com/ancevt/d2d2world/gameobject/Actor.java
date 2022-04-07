@@ -612,8 +612,8 @@ abstract public class Actor extends Animated implements
                     getVelocityY() < 0 ?
                             (attackTime == 0 ? AnimationKey.JUMP : AnimationKey.JUMP_ATTACK) :
                             (attackTime == 0 ? AnimationKey.FALL : AnimationKey.FALL_ATTACK)
-
             );
+
         } else if (getFloor() instanceof final IMovable movableFloor) {
             final float toX = movableFloor.getMovingSpeedX();
             final float toY = movableFloor.getMovingSpeedY();
@@ -631,7 +631,7 @@ abstract public class Actor extends Animated implements
         setMovingSpeedX(0f);
         setMovingSpeedY(0f);
 
-        if(weaponSwitchTime > 0) {
+        if (weaponSwitchTime > 0) {
             weaponSwitchTime--;
         }
     }
@@ -715,7 +715,7 @@ abstract public class Actor extends Animated implements
     }
 
     public void setCurrentWeaponClassname(@NotNull String weaponClassname) {
-        if(weaponSwitchTime > 0) return;
+        if (weaponSwitchTime > 0) return;
         weaponSwitchTime = WEAPON_SWITCH_TIME;
 
         if (this.currentWeapon != null) {
