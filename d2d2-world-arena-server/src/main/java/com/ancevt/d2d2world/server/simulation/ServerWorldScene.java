@@ -89,12 +89,6 @@ public class ServerWorldScene {
         Async.run(D2D2::loop);
     }
 
-    /*
-    public World getWorld() {
-        return world;
-    }
-     */
-
     public int getFps() {
         return fpsMeter.getFramesPerSecond();
     }
@@ -178,8 +172,8 @@ public class ServerWorldScene {
     /**
      * Calls from {@link GeneralService}
      */
-    public int spawnPlayer(@NotNull Player player, @NotNull String mapkitItemId) {
-        PlayerActor playerActor = WORLD_SCENE.addPlayerActorToWorld(player, mapkitItemId);
+    public int spawnPlayerFirstTime(@NotNull Player player, @NotNull String mapkitItemId) {
+        PlayerActor playerActor = WORLD_SCENE.createPlayerActor(player, mapkitItemId);
         playerActor.setVisible(true);
         playerActor.setAnimation(IDLE);
         sendObjectsSyncData(player.getId());
@@ -215,13 +209,14 @@ public class ServerWorldScene {
         return Optional.ofNullable(playerActorMap.get(playerId));
     }
 
-    public PlayerActor addPlayerActorToWorld(@NotNull Player player, @NotNull String mapkitItemId) {
+    public PlayerActor createPlayerActor(@NotNull Player player, @NotNull String mapkitItemId) {
         MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemId);
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);
-        playerActor.setXY(64, 64);
+        playerActor.setXY(80, 64);
         playerActor.setPlayerColorValue(player.getColor());
+        playerActor.setName("playerActor_" + player.getName());
 
         player.setRoomId(gameMap.getStartRoomName());
 

@@ -1,6 +1,5 @@
 package com.ancevt.d2d2world.sync;
 
-import com.ancevt.commons.Pair;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Root;
@@ -8,18 +7,29 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import lombok.AllArgsConstructor;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.lang.Math.abs;
+
 public class SyncMotion {
 
-    private static final Map<IDisplayObject, Pair<Float, Float>> map = new ConcurrentHashMap<>();
+    private static final Map<IDisplayObject, MotionState> map = new ConcurrentHashMap<>();
+
+    private static int tact;
 
     public static void moveMotion(IDisplayObject o, float x, float y) {
-        map.put(o, Pair.of(x, y));
+        MotionState motionState = map.get(o);
+        if (motionState == null) {
+            motionState = new MotionState(x, y);
+            map.put(o, motionState);
+        }
+        motionState.targetX = x;
+        motionState.targetY = y;
 
         o.removeEventListener(SyncMotion.class);
         o.addEventListener(SyncMotion.class, Event.REMOVE_FROM_STAGE, event -> {
@@ -35,26 +45,31 @@ public class SyncMotion {
     public static void process() {
         List<IDisplayObject> toRemove = new LinkedList<>();
 
-        map.forEach((displayObject, targetXY) -> {
+        map.forEach((displayObject, state) -> {
             float oX = displayObject.getX();
             float oY = displayObject.getY();
 
-            float tX = targetXY.getFirst();
-            float tY = targetXY.getSecond();
+            float tX = state.targetX;
+            float tY = state.targetY;
 
-            final float factor = 3f;
-
-            float speedX = (tX - oX) / factor;
+            float speedX = (tX - oX) / 3;
             float speedY = (tY - oY) / 2;
 
             displayObject.move(speedX, speedY);
 
-            if (Math.abs(tX - oX) < 1f && Math.abs(tY - oY) < 1f) {
-                toRemove.add(displayObject);
+            if ((abs(tX - oX) < 1f && abs(tY - oY) < 1f)) {
+                displayObject.setXY(tX, tY);
+                //toRemove.add(displayObject);
             }
         });
 
         toRemove.forEach(map::remove);
+    }
+
+    @AllArgsConstructor
+    private static class MotionState {
+        private float targetX;
+        private float targetY;
     }
 
     public static void main(String[] args) {

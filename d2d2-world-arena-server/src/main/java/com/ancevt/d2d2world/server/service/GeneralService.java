@@ -266,7 +266,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
         } else if (dto instanceof PlayerReadyToSpawnDto d) {
             playerMapkitItemIdMap.put(playerId, d.getMapkitItemId());
 
-            int playerActorGameObjectId = WORLD_SCENE.spawnPlayer(
+            int playerActorGameObjectId = WORLD_SCENE.spawnPlayerFirstTime(
                     PLAYER_MANAGER.getPlayerById(playerId).orElseThrow(),
                     d.getMapkitItemId()
             );

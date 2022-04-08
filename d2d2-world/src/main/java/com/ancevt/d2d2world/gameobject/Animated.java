@@ -28,6 +28,7 @@ import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
+import static com.ancevt.d2d2world.D2D2World.isServer;
 
 abstract public class Animated extends DisplayObjectContainer implements IAnimated, ISynchronized {
 
@@ -119,7 +120,13 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     @Override
     public void setAnimation(final int animationKey) {
         //if (isServer()) { // <== TODO: please refactor and remove it
+
+        if (!isServer() && this instanceof PlayerActor playerActor) {
+            if(playerActor.isLocalPlayerActor()) setAnimation(animationKey, true);
+        } else {
             setAnimation(animationKey, true);
+        }
+
         //}
     }
 
@@ -133,7 +140,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             IFramedDisplayObject currentFrameSet;
             IFramedDisplayObject fs = currentFrameSet = animations[i];
 
-            if(getMapkitItem() == null) {
+            if (getMapkitItem() == null) {
                 debug("Animated:115: <A>" + this);
             }
 
@@ -145,7 +152,7 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
                 fs.setBackward(isBackward());
                 fs.setLoop(loop);
 
-                if(animationKey != AnimationKey.WALK_ATTACK) fs.setFrame(0);
+                if (animationKey != AnimationKey.WALK_ATTACK) fs.setFrame(0);
 
                 fs.play();
                 fs.setVisible(true);

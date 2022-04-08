@@ -78,7 +78,7 @@ public class PlayProcessor {
 
         tact++;
 
-        if (tact % 100 == 0) pushStates.clear();
+        if (tact % 250 == 0) pushStates.clear();
 
         for (int i = 0; i < world.getGameObjectCount(); i++) {
             final IGameObject o1 = world.getGameObject(i);
@@ -202,7 +202,7 @@ public class PlayProcessor {
 
         boolean wallHitTest = false;
 
-        if (!(o2 instanceof Weapon.Bullet) /*&& !(o2 instanceof PlayerActor)*/) {
+        if (!(o2 instanceof Weapon.Bullet)) {
             if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
                 o1.setX(x2 - w1 - tx1 - 1);
                 getPushState(o1).pushFromRight().tightFromRight = o2;
@@ -260,6 +260,8 @@ public class PlayProcessor {
         //if (!isServer() || !o.isGravityEnabled()) return;
         if (!o.isGravityEnabled()) return;
 
+        if(!isServer() && o instanceof PlayerActor playerActor && !playerActor.isLocalPlayerActor()) return;
+
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);
 
@@ -290,6 +292,10 @@ public class PlayProcessor {
                     room -> world.switchRoom(room.getId(), actor, areaTarget.getX(), areaTarget.getY())
             );
         }
+    }
+
+    private boolean isPlayerActor(IGameObject gameObject) {
+        return gameObject instanceof PlayerActor;
     }
 
     // Push states:

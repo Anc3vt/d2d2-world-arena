@@ -529,7 +529,7 @@ abstract public class Actor extends Animated implements
     public void jump() {
         if (floor != null) {
             onJump = true;
-            setVelocityY(getVelocityY() + -getJumpPower());
+            setVelocityY(getVelocityY() - getJumpPower());
             setFloor(null);
         }
     }
@@ -537,13 +537,7 @@ abstract public class Actor extends Animated implements
     public void go(final int direction) {
         goDirection = direction;
 
-        if (!isGravityEnabled()) return;
-
-        if (direction == Direction.RIGHT) {
-            if(!isServer()) setVelocityX(getVelocityX() + getSpeed());
-        } else if (direction == Direction.LEFT) {
-            if(!isServer()) setVelocityX(getVelocityX() - getSpeed());
-        }
+        if (isGravityEnabled()) setVelocityX(direction == Direction.RIGHT ? velocityX + speed : velocityX - speed);
     }
 
     public float getArmDegree() {
@@ -563,8 +557,7 @@ abstract public class Actor extends Animated implements
     @Override
     public void process() {
         if (attackTime > 0) {
-            if (getVelocityY() == 0)
-                setAnimation(ATTACK);
+            if (getVelocityY() == 0) setAnimation(ATTACK);
         }
 
         Controller c = getController();
@@ -670,10 +663,7 @@ abstract public class Actor extends Animated implements
     @Override
     public void setGravityEnabled(boolean b) {
         this.fallEnabled = b;
-
-        if (!fallEnabled)
-            setVelocity(0f, 0f);
-
+        if (!fallEnabled) setVelocity(0f, 0f);
     }
 
     @Override

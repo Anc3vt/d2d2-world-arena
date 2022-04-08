@@ -57,7 +57,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
 
-        <default-game-server>test.ancevt.com:2245</default-game-server>
+        <default-game-server>d2d2.ancevt.com:2245</default-game-server>
 
         <!-- Ancevt -->
         <ancevt-commons.version>1.0.0.3</ancevt-commons.version>

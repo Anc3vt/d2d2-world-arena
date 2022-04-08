@@ -62,6 +62,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
@@ -98,7 +99,6 @@ public class WorldScene extends DisplayObjectContainer {
         world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
         world.addEventListener(hashCode() + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
         world.addEventListener(hashCode() + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
-
 
         gameObjectTexts = new GameObjectTexts(world);
 
@@ -253,7 +253,7 @@ public class WorldScene extends DisplayObjectContainer {
             SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
             D2D2WorldSound.playSound(PLAYER_SPAWN);
 
-            if(localPlayerActor != null) {
+            if (localPlayerActor != null) {
                 if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
                     setLocalPlayerActorGameObjectId(localPlayerActor.getGameObjectId());
                 }
@@ -486,7 +486,6 @@ public class WorldScene extends DisplayObjectContainer {
             return;
         }
 
-        localPlayerActor.setName("lpa");
         localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
         localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));
         localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn));
@@ -500,13 +499,12 @@ public class WorldScene extends DisplayObjectContainer {
             overlay.startOut();
         });
 
-        if(overlay.getState() == Overlay.STATE_BLACK) {
+        if (overlay.getState() == Overlay.STATE_BLACK) {
             world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
             overlay.startOut();
         }
 
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
-
             private float oldX;
             private float oldY;
 
@@ -518,25 +516,18 @@ public class WorldScene extends DisplayObjectContainer {
                 float currentAimX = localPlayerActor.getAimX();
                 float currentAimY = localPlayerActor.getAimY();
 
-                if (currentAimX != oldAimX || currentAimY != oldAimY) {
-                    CLIENT.sendAimXY(currentAimX, currentAimY);
-                }
+                if (currentAimX != oldAimX || currentAimY != oldAimY) CLIENT.sendAimXY(currentAimX, currentAimY);
 
                 oldAimX = localPlayerActor.getAimX();
                 oldAimY = localPlayerActor.getAimY();
 
-
                 float currentX = localPlayerActor.getX();
                 float currentY = localPlayerActor.getY();
 
-                if(currentX != oldX || currentY != oldY) {
-                    CLIENT.sendXY(currentX, currentY);
-                }
-
+                if (currentX != oldX || currentY != oldY) CLIENT.sendXY(currentX, currentY);
 
                 oldX = localPlayerActor.getX();
                 oldY = localPlayerActor.getY();
-
             }
         });
 
