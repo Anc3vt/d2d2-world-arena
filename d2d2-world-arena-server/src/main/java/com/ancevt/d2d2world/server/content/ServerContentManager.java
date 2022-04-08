@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.server.content;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2world.data.DataEntry;
-import com.ancevt.d2d2world.data.file.FileDataUtils;
+import com.ancevt.d2d2world.data.file.FileSystem;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.transfer.FileSender;
@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -139,7 +138,7 @@ public class ServerContentManager {
                     String mapkitNames = dataEntry.getString(MAPKIT_NAMES);
 
                     for (String mapkitName : mapkitNames.split(",")) {
-                        mapkits.add(getMapkitByIndexFile(Path.of(MapIO.getMapkitsDirectory() + MapkitManager.getMapkitDirNameByMapkitName(mapkitName) + File.separatorChar + "index.mk")));
+                        mapkits.add(getMapkitByIndexFile(Path.of(MapIO.getMapkitsDirectory() + MapkitManager.getMapkitDirNameByMapkitName(mapkitName) + "/index.mk")));
                     }
 
                     size = path.toFile().length();
@@ -147,7 +146,7 @@ public class ServerContentManager {
                 }
             }
 
-            return new Map(name, FileDataUtils.splitPath(path.toString()).getSecond(), size, mapkits);
+            return new Map(name, FileSystem.splitPath(path.toString()).getSecond(), size, mapkits);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -173,8 +172,8 @@ public class ServerContentManager {
     @Contract("_ -> new")
     private @NotNull Mapkit getMapkitByIndexFile(@NotNull Path path) {
         // Get mapkit dirname of data/mapkits/!/index.mk path
-        String pathString = path.toString().replace('/', File.separatorChar);
-        String dirname = pathString.substring(0, pathString.lastIndexOf(File.separatorChar));
+        String pathString = path.toString();
+        String dirname = pathString.substring(0, pathString.lastIndexOf('/'));
         dirname = Path.of(dirname).getFileName().toString();
 
         try {
@@ -197,7 +196,7 @@ public class ServerContentManager {
 
             Set<String> files = new HashSet<>();
 
-            Files.walk(Path.of(MapIO.getMapkitsDirectory() + name + File.separatorChar))
+            Files.walk(Path.of(MapIO.getMapkitsDirectory() + name + '/'))
                     .filter(Files::isRegularFile)
                     .filter(p -> !p.toFile().getName().endsWith(".xcf"))
                     .forEach(p -> files.add(p.getFileName().toString()));

@@ -19,15 +19,13 @@ package com.ancevt.d2d2world.net.transfer;
 
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.hash.MD5;
-import com.ancevt.d2d2world.data.file.FileDataUtils;
+import com.ancevt.d2d2world.data.file.FileSystem;
 import com.ancevt.net.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 
 import static com.ancevt.d2d2world.data.GZIP.compress;
 import static com.ancevt.d2d2world.net.protocol.ProtocolImpl.createMessageFileData;
@@ -45,7 +43,6 @@ public class FileSender {
     private final String path;
     private final boolean compress;
     private final boolean hash;
-    private File file;
 
     private CompleteListener completeListener;
     private IConnection connection;
@@ -72,7 +69,6 @@ public class FileSender {
 
     public void send(IConnection connection) {
         this.connection = connection;
-        file = new File(path);
 
         if (hash) {
             hashValue = MD5.hashFile(path);
@@ -80,8 +76,8 @@ public class FileSender {
 
         log.trace("send {} to connection {}", path, connection.getId());
 
-        if (!file.exists()) {
-            throw new IllegalStateException("no such file " + file);
+        if (!FileSystem.exists(path)) {
+            throw new IllegalStateException("no such file " + path);
         }
 
         Async.run(this::run);
@@ -91,14 +87,14 @@ public class FileSender {
         boolean first = true;
 
         try {
-            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStream inputStream = FileSystem.getInputStream(path);
 
-            filesize = (int) Files.size(Path.of(file.getPath()));
+            filesize = (int) FileSystem.getSize(path);
 
             int left = filesize;
             while (left > 0) {
                 byte[] bytes = new byte[min(left, CHUNK_SIZE)];
-                fileInputStream.read(bytes);
+                inputStream.read(bytes);
                 sendChunk(bytes, first);
                 first = false;
                 left -= bytes.length;
@@ -126,7 +122,7 @@ public class FileSender {
 
         if (first) {
             headers.put(BEGIN, "true");
-            if(hash) {
+            if (hash) {
                 headers.put(HASH, hashValue);
             }
         }
@@ -149,32 +145,7 @@ public class FileSender {
 
     public static boolean isSecure(String path) {
         File data = new File("data/");
-        return FileDataUtils.isParent(data, new File(path));
+        return FileSystem.isParent(data, new File(path));
     }
 
-    public static void main(String[] args) throws IOException {
-        System.out.println(Path.of("d2d2-core/../../../").toAbsolutePath().toRealPath().toString());
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

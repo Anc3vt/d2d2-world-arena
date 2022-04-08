@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class SoundMachine {
 
-    private static int DEFAULT_TRACK_COUNT = 16;
+    private static final int DEFAULT_TRACK_COUNT = 8;
 
     private static SoundMachine instance;
 

@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.data;
 
+import com.ancevt.d2d2world.data.file.FileSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -28,7 +29,7 @@ public final class DataEntryLoader {
     public static DataEntry @NotNull [] load(String path) {
         try {
 
-            final InputStream inputStream = new FileInputStream(path);
+            final InputStream inputStream = FileSystem.getInputStream(path);
             final List<DataEntry> result = new ArrayList<>();
 
             try (final BufferedReader bufferedReader = new BufferedReader(

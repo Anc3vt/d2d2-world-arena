@@ -64,7 +64,7 @@
         <platform>linux</platform>
 
         <!-- Ancevt -->
-        <ancevt-commons.version>1.0.0.2</ancevt-commons.version>
+        <ancevt-commons.version>1.0.0.3</ancevt-commons.version>
         <texttable.version>0.0.1</texttable.version>
 
         <!-- Log -->

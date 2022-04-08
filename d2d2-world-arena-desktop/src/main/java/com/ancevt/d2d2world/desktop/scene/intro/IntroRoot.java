@@ -57,7 +57,7 @@ public class IntroRoot extends Root {
     private UiText labelVersion;
     private EventListener addToStageEventListener;
 
-    public IntroRoot(@NotNull String version) {
+    public IntroRoot(@NotNull String version, String defaultGameServer) {
         textureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
 
         setBackgroundColor(Color.BLACK);
@@ -69,7 +69,12 @@ public class IntroRoot extends Root {
         labelPlayerName.setText("Player name:");
 
         uiTextInputServer = new UiTextInput();
-        uiTextInputServer.setText(MODULE_CONFIG.getString(SERVER));
+
+        if (MODULE_CONFIG.getString(SERVER).isEmpty()) {
+            uiTextInputServer.setText(defaultGameServer);
+        } else {
+            uiTextInputServer.setText(MODULE_CONFIG.getString(SERVER));
+        }
 
         uiTextInputPlayerName = new UiTextInput();
         uiTextInputPlayerName.requestFocus();

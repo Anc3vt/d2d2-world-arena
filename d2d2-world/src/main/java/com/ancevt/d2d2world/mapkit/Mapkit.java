@@ -21,13 +21,12 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.media.SoundMachine;
 import com.ancevt.d2d2world.data.DataEntry;
+import com.ancevt.d2d2world.data.file.FileSystem;
 import com.ancevt.d2d2world.map.MapIO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -61,9 +60,7 @@ public abstract class Mapkit {
         }
 
         try {
-            InputStream inputStream = new FileInputStream(
-                    MapIO.getMapkitsDirectory() + name + File.separatorChar + tilesetPngFilename
-            );
+            InputStream inputStream = FileSystem.getInputStream(MapIO.getMapkitsDirectory() + name + "/" + tilesetPngFilename);
             TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas(inputStream);
             inputStream.close();
 
@@ -92,12 +89,11 @@ public abstract class Mapkit {
 
     @SneakyThrows
     public void playSound(String filename) {
-        SoundMachine.getInstance().play(MapIO.getMapkitsDirectory() + name + File.separatorChar + filename);
+        SoundMachine.getInstance().play(MapIO.getMapkitsDirectory() + name + "/" + filename);
     }
 
     public MapkitItem getItem(String mapkitItemId) {
         MapkitItem mapkitItem = items.get(mapkitItemId);
-
         if (mapkitItem == null) log.error("Mapkit item not defined, id {}, mapkit: {}", mapkitItemId, getName());
         return mapkitItem;
     }

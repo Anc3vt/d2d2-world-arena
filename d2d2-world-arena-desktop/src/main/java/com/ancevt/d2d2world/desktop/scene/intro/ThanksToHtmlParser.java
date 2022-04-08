@@ -46,7 +46,7 @@ public class ThanksToHtmlParser {
      * @param html
      * @return Map of _name_:_png_file_name_
      */
-    public static @NotNull Map<String, Line> parse(String html) {
+    public static @NotNull Map<String, Line> parse(@NotNull String html) {
         Map<String, Line> result = new HashMap<>();
 
         String[] lines = html.split("\n");
@@ -70,20 +70,4 @@ public class ThanksToHtmlParser {
     public record Line(String pngFileName, long fileSize) {
     }
 
-    public static void main(String[] args) {
-        var m = ThanksToHtmlParser.parse("""
-                <html>
-                     * <head><title>Index of /thanksto/</title></head>
-                <body>
-                <h1>Index of /thanksto/</h1><hr><pre><a href="../">../</a>
-                <a href="thanksto-Me.png">thanksto-Me.png</a>                                    20-Feb-2022 11:37               38396
-                <a href="thanksto-Qryptojesus.png">thanksto-Qryptojesus.png</a>                           20-Feb-2022 11:37               24558
-                <a href="thanksto-WhiteWorldBridger.png">thanksto-WhiteWorldBridger.png</a>                     20-Feb-2022 11:37               38455
-                <a href="thanksto-meeekup.png">thanksto-meeekup.png</a>                               20-Feb-2022 11:37               37730
-                </pre><hr></body>
-                     * </html>
-                """);
-
-        System.out.println(m);
-    }
 }

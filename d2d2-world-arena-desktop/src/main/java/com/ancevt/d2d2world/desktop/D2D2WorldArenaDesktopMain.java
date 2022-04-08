@@ -68,6 +68,7 @@ public class D2D2WorldArenaDesktopMain {
         properties.load(D2D2WorldArenaDesktopMain.class.getClassLoader().getResourceAsStream("project.properties"));
         String projectName = properties.getProperty("project.name");
         String version = properties.getProperty("project.version");
+        String defaultGameServer = properties.getProperty("default-game-server");
 
         log.info(projectName);
         log.info(version);
@@ -91,7 +92,7 @@ public class D2D2WorldArenaDesktopMain {
             D2D2.getStarter().setSize(width, height);
         }
 
-        IntroRoot introRoot = new IntroRoot(projectName + " " + version);
+        IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
 
         D2D2.getStage().setRoot(introRoot);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);

@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.sound.sampled.*;
 import java.io.*;
 
+import static com.ancevt.commons.util.Slash.slashSafe;
+
 public class BlockingSound implements Media {
     private final ByteArrayOutputStream byteArrayOutputStream;
     private boolean playing;
@@ -21,7 +23,7 @@ public class BlockingSound implements Media {
     @SneakyThrows
     public BlockingSound(String path) {
         byteArrayOutputStream = new ByteArrayOutputStream();
-        byteArrayOutputStream.write(new FileInputStream(path).readAllBytes());
+        byteArrayOutputStream.write(new FileInputStream(slashSafe(path)).readAllBytes());
     }
 
     public boolean isPlaying() {

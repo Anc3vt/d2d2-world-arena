@@ -17,11 +17,10 @@
  */
 package com.ancevt.d2d2world.server;
 
+import com.ancevt.d2d2world.data.file.FileSystem;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -73,9 +72,8 @@ public class ServerConfig {
 
     public void load() throws IOException {
         properties.clear();
-        File file = new File(FILE_NAME);
-        if (file.exists()) {
-            properties.load(new FileInputStream(file));
+        if (FileSystem.exists(FILE_NAME)) {
+            properties.load(FileSystem.getInputStream(FILE_NAME));
             log.info("ServerConfig loaded {}", passwordSafeToString());
         } else {
             log.warn("No config file detected, creating defaults");

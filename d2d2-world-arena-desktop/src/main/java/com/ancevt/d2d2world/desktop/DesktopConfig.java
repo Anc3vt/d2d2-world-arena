@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.desktop;
 
+import com.ancevt.d2d2world.data.file.FileSystem;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +50,7 @@ public class DesktopConfig {
     public static final String SOUND_ENABLED = "sound-enabled";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
-        put(SERVER, "test.ancevt.com:2245");
+        put(SERVER, "");
         put(DEBUG_WORLD_ALPHA, "1.0");
         put(DEBUG_GAME_OBJECT_IDS, "false");
         put(AUTO_ENTER, "false");
@@ -84,9 +85,8 @@ public class DesktopConfig {
 
     public void load() throws IOException {
         properties.clear();
-        File file = new File(FILE_NAME);
-        if (file.exists()) {
-            properties.load(new FileInputStream(file));
+        if (FileSystem.exists(FILE_NAME)) {
+            properties.load(FileSystem.getInputStream(FILE_NAME));
             log.info("DesktopConfig loaded");
         } else {
             log.warn("No config file detected, creating defaults");

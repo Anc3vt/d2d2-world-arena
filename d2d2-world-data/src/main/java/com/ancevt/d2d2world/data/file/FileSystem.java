@@ -26,12 +26,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.ancevt.commons.util.Slash.slashSafe;
 import static java.nio.file.StandardOpenOption.*;
 
-public class FileDataUtils {
+public class FileSystem {
 
     public static @NotNull File directory(@NotNull String path) {
-        if (path.endsWith("/")) {
+        path = slashSafe(path);
+        if (path.endsWith(File.separator)) {
             return createDirectoryIfNotExists(path);
         } else {
             return createDirectoryIfNotExists(splitPath(path).getFirst());
@@ -39,10 +41,12 @@ public class FileDataUtils {
     }
 
     public static boolean exists(String path) {
+        path = slashSafe(path);
         return new File(path).exists();
     }
 
     public static long getSize(String path) {
+        path = slashSafe(path);
         File file = new File(path);
         if (file.exists()) {
             return file.length();
@@ -53,6 +57,7 @@ public class FileDataUtils {
 
     @Contract("_ -> new")
     public static @NotNull InputStream getInputStream(String path) {
+        path = slashSafe(path);
         File file = new File(path);
         if (file.exists()) {
             try {
@@ -66,6 +71,7 @@ public class FileDataUtils {
     }
 
     private static @NotNull File createDirectoryIfNotExists(String path) {
+        path = slashSafe(path);
         File dir = new File(path);
         if (!dir.exists()) {
             boolean result = dir.mkdirs();
@@ -78,6 +84,7 @@ public class FileDataUtils {
     }
 
     public static String readString(String path) {
+        path = slashSafe(path);
         try {
             if (!exists(path)) return "";
             return Files.readString(Path.of(path), StandardCharsets.UTF_8);
@@ -87,6 +94,7 @@ public class FileDataUtils {
     }
 
     public static void save(String path, byte[] bytes) {
+        path = path.replace('/', File.separatorChar);
         try {
             directory(path);
             Files.write(Path.of(path), bytes, WRITE, CREATE, TRUNCATE_EXISTING);
@@ -96,6 +104,7 @@ public class FileDataUtils {
     }
 
     public static void save(String path, String text) {
+        path = slashSafe(path);
         try {
             directory(path);
             Files.writeString(Path.of(path), text, WRITE, CREATE, TRUNCATE_EXISTING);
@@ -109,6 +118,7 @@ public class FileDataUtils {
     }
 
     public static void append(String path, byte[] bytes) {
+        path = slashSafe(path);
         try {
             directory(path);
             Files.write(Path.of(path), bytes, WRITE, CREATE, APPEND);
@@ -118,6 +128,7 @@ public class FileDataUtils {
     }
 
     public static @NotNull Pair<String, String> splitPath(@NotNull String path) {
+        path = slashSafe(path);
         String directory = path.substring(0, path.lastIndexOf(File.separatorChar) + 1);
         String filename = path.substring(path.lastIndexOf(File.separatorChar) + 1);
         return Pair.of(directory, filename);

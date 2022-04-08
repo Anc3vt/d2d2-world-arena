@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.net.transfer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import com.ancevt.d2d2world.data.file.FileDataUtils;
+import com.ancevt.d2d2world.data.file.FileSystem;
 
 import static java.lang.Integer.parseInt;
 import static com.ancevt.d2d2world.data.GZIP.decompress;
@@ -67,9 +67,9 @@ public class FileReceiver {
         String pathToAppend = path.startsWith("data/") ? path : "data/" + path;
 
         if (headers.contains(BEGIN)) {
-            FileDataUtils.truncate(pathToAppend);
+            FileSystem.truncate(pathToAppend);
         }
-        FileDataUtils.append(pathToAppend, contentBytes);
+        FileSystem.append(pathToAppend, contentBytes);
 
         currentContentLength += contentBytes.length;
         FileReceiverManager.INSTANCE.progress(this);

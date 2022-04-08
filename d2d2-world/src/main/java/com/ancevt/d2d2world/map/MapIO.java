@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,7 +51,7 @@ public class MapIO {
     private static String mapkitsDirectory;
 
     public static void setMapFileName(String mapFileName) {
-        MapIO.mapFileName = mapFileName.replace('/', File.separatorChar);
+        MapIO.mapFileName = mapFileName;
     }
 
     public static String getMapFileName() {
@@ -60,7 +59,7 @@ public class MapIO {
     }
 
     public static void setMapkitsDirectory(String mapkitsDirectory) {
-        MapIO.mapkitsDirectory = mapkitsDirectory.replace('/', File.separatorChar);
+        MapIO.mapkitsDirectory = mapkitsDirectory;
     }
 
     public static String getMapkitsDirectory() {
@@ -68,7 +67,7 @@ public class MapIO {
     }
 
     public static void setMapsDirectory(String mapsDirectory) {
-        MapIO.mapsDirectory = mapsDirectory.replace('/', File.separatorChar);
+        MapIO.mapsDirectory = mapsDirectory;
     }
 
     public static String getMapsDirectory() {

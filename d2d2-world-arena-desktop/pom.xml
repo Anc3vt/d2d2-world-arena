@@ -57,8 +57,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
 
+        <default-game-server>test.ancevt.com:2245</default-game-server>
+
         <!-- Ancevt -->
-        <ancevt-commons.version>1.0.0.2</ancevt-commons.version>
+        <ancevt-commons.version>1.0.0.3</ancevt-commons.version>
         <texttable.version>0.0.1</texttable.version>
 
         <!-- LWJGL -->

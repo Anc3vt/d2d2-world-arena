@@ -26,7 +26,7 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.data.file.FileDataUtils;
+import com.ancevt.d2d2world.data.file.FileSystem;
 import com.ancevt.d2d2world.desktop.ui.Font;
 import com.ancevt.d2d2world.desktop.ui.UiTextInput;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
@@ -39,8 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 
 public class Chat extends DisplayObjectContainer {
 
@@ -338,11 +336,11 @@ public class Chat extends DisplayObjectContainer {
 
     public void dispose() {
         String toSave = history.stream().reduce("", (s1, s2) -> s1.concat('\n' + s2));
-        FileDataUtils.save("data/chat-history", toSave.getBytes(StandardCharsets.UTF_8));
+        FileSystem.save("data/chat-history", toSave.getBytes(StandardCharsets.UTF_8));
     }
 
     private void loadHistory() {
-        history.addAll(FileDataUtils.readString("data/chat-history").lines().toList());
+        history.addAll(FileSystem.readString("data/chat-history").lines().toList());
         historyIndex = history.size();
     }
 

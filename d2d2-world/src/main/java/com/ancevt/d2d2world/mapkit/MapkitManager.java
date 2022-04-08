@@ -41,7 +41,7 @@ public class MapkitManager {
 
     private static final Logger log = LoggerFactory.getLogger(MapkitManager.class);
 
-    private static final String INDEX = "/index.mk".replace('/', File.separatorChar);
+    private static final String INDEX = "/index.mk";
 
     private final Map<String, Mapkit> mapkits;
 
@@ -100,13 +100,6 @@ public class MapkitManager {
 
         Holder<String> dirName = new Holder<>();
         try {
-
-//            File mapkitsDir = new File(MapIO.mapkitsDirectory);
-//            File[] mapkitDirs = mapkitsDir.listFiles();
-//            for (File mapkitDir : mapkitDirs) {
-//                if(new File(indexPath).exists()) {
-//            }
-
 
             Files.walk(Path.of(MapIO.getMapkitsDirectory()), 1)
                     .forEach(path -> {

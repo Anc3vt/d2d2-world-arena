@@ -56,6 +56,9 @@ public class Headers {
     }
 
     public Headers put(@NotNull String key, @NotNull String value) {
+        if(key.equals(PATH)) {
+            value = value.replace('\\', '/');
+        }
         map.put(key, value);
         return this;
     }

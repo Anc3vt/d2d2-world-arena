@@ -253,8 +253,10 @@ public class WorldScene extends DisplayObjectContainer {
             SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
             D2D2WorldSound.playSound(PLAYER_SPAWN);
 
-            if(localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
-                setLocalPlayerActorGameObjectId(localPlayerActor.getGameObjectId());
+            if(localPlayerActor != null) {
+                if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
+                    setLocalPlayerActorGameObjectId(localPlayerActor.getGameObjectId());
+                }
             }
         }
     }
