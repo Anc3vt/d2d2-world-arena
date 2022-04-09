@@ -3,7 +3,7 @@ package com.ancevt.d2d2world.math;
 
 import static java.lang.Math.*;
 
-public class RotationUtils {
+public class RadialUtils {
 
 
     public static float[] xySpeedOfDegree(float deg) {

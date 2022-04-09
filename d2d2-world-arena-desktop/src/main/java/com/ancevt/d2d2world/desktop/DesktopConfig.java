@@ -17,7 +17,7 @@
  */
 package com.ancevt.d2d2world.desktop;
 
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,8 +85,8 @@ public class DesktopConfig {
 
     public void load() throws IOException {
         properties.clear();
-        if (FileSystem.exists(FILE_NAME)) {
-            properties.load(FileSystem.getInputStream(FILE_NAME));
+        if (FileSystemUtils.exists(FILE_NAME)) {
+            properties.load(FileSystemUtils.getInputStream(FILE_NAME));
             log.info("DesktopConfig loaded");
         } else {
             log.warn("No config file detected, creating defaults");

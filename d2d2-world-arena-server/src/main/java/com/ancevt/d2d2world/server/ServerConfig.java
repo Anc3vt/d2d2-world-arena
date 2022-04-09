@@ -17,7 +17,7 @@
  */
 package com.ancevt.d2d2world.server;
 
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,8 +72,8 @@ public class ServerConfig {
 
     public void load() throws IOException {
         properties.clear();
-        if (FileSystem.exists(FILE_NAME)) {
-            properties.load(FileSystem.getInputStream(FILE_NAME));
+        if (FileSystemUtils.exists(FILE_NAME)) {
+            properties.load(FileSystemUtils.getInputStream(FILE_NAME));
             log.info("ServerConfig loaded {}", passwordSafeToString());
         } else {
             log.warn("No config file detected, creating defaults");

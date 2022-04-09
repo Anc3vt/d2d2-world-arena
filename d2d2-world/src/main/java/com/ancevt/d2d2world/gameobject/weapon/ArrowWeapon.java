@@ -1,16 +1,19 @@
 package com.ancevt.d2d2world.gameobject.weapon;
 
+import com.ancevt.d2d2.display.Color;
+import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.constant.AnimationKey;
+import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
-import com.ancevt.d2d2world.math.RotationUtils;
+import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +48,8 @@ public class ArrowWeapon extends Weapon {
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
             float deg = getOwner().getArmDegree();
-            float[] toXY = RotationUtils.xySpeedOfDegree(deg);
-            float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
+            float[] toXY = RadialUtils.xySpeedOfDegree(deg);
+            float distance = RadialUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
             bullet.setXY(getOwner().getX(), getOwner().getY());
             bullet.move(toXY[0] * distance, toXY[1] * distance + getOwner().getWeaponY());
             bullet.setDirection(getOwner().getDirection());
@@ -79,16 +82,13 @@ public class ArrowWeapon extends Weapon {
             removeEventListener(PlasmaWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
-            if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
-                sprite.setColor(playerActor.getPlayerColor());
-            }
             add(sprite);
         }
 
         @Override
         public void onAddToWorld(World world) {
             super.onAddToWorld(world);
-            getMapkitItem().getMapkit().playSound("standard-bullet.ogg");
+            getMapkitItem().getMapkit().playSound("arrow-1.ogg");
         }
 
         @Override
@@ -98,11 +98,20 @@ public class ArrowWeapon extends Weapon {
 
         @Override
         public void destroy() {
+            if(setToRemove) return;
+
             setSpeed(0);
             setToRemove = true;
             setDamagingOwnerActor(null);
             setDamagingPower(0);
             sprite.setTexture(getMapkitItem().getTexture(AnimationKey.DEATH, 0));
+            getMapkitItem().getMapkit().playSound("arrow-2.ogg");
+
+            if (hasParent()) {
+                IDisplayObject displayObjectContainer = Particle.miniExplosion(10, Color.GRAY, 5f);
+                displayObjectContainer.setScale(0.25f, 0.25f);
+                getParent().add(displayObjectContainer, getX(), getY());
+            }
         }
 
         @Override
@@ -118,7 +127,7 @@ public class ArrowWeapon extends Weapon {
                     getWorld().removeGameObject(this, false);
                 }
             } else {
-                float[] xy = RotationUtils.xySpeedOfDegree(getDegree());
+                float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
                 move(getSpeed() * xy[0], getSpeed() * xy[1]);
             }
             super.process();

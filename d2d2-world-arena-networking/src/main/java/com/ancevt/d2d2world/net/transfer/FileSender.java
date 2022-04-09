@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.net.transfer;
 
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.hash.MD5;
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import com.ancevt.net.connection.IConnection;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,7 +76,7 @@ public class FileSender {
 
         log.trace("send {} to connection {}", path, connection.getId());
 
-        if (!FileSystem.exists(path)) {
+        if (!FileSystemUtils.exists(path)) {
             throw new IllegalStateException("no such file " + path);
         }
 
@@ -87,9 +87,9 @@ public class FileSender {
         boolean first = true;
 
         try {
-            InputStream inputStream = FileSystem.getInputStream(path);
+            InputStream inputStream = FileSystemUtils.getInputStream(path);
 
-            filesize = (int) FileSystem.getSize(path);
+            filesize = (int) FileSystemUtils.getSize(path);
 
             int left = filesize;
             while (left > 0) {
@@ -145,7 +145,7 @@ public class FileSender {
 
     public static boolean isSecure(String path) {
         File data = new File("data/");
-        return FileSystem.isParent(data, new File(path));
+        return FileSystemUtils.isParent(data, new File(path));
     }
 
 }

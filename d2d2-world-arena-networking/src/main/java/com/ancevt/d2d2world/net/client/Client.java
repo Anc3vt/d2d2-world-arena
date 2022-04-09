@@ -18,7 +18,7 @@
 package com.ancevt.d2d2world.net.client;
 
 import com.ancevt.commons.hash.MD5;
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.PlayerDto;
 import com.ancevt.d2d2world.net.dto.client.*;
@@ -297,7 +297,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public String sendFileRequest(@NotNull String path) {
         var h = newHeaders();
 
-        if (FileSystem.exists(path)) {
+        if (FileSystemUtils.exists(path)) {
             h.put(HASH, MD5.hashFile(path));
         }
 

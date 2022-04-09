@@ -9,7 +9,7 @@ import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
-import com.ancevt.d2d2world.math.RotationUtils;
+import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
@@ -44,8 +44,8 @@ public class PlasmaWeapon extends Weapon {
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
             float deg = getOwner().getArmDegree();
-            float[] toXY = RotationUtils.xySpeedOfDegree(deg);
-            float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
+            float[] toXY = RadialUtils.xySpeedOfDegree(deg);
+            float distance = RadialUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
             bullet.setXY(getOwner().getX(), getOwner().getY());
             bullet.move(toXY[0] * distance, toXY[1] * distance - 4);
             bullet.setDirection(getOwner().getDirection());
@@ -73,7 +73,7 @@ public class PlasmaWeapon extends Weapon {
             removeEventListener(PlasmaWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
             if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
-                sprite.setColor(playerActor.getPlayerColor());
+                sprite.setColor(Color.of(0x00FFFF));
             } else {
                 sprite.setColor(Color.of(0x00FFFF));
             }
@@ -89,7 +89,7 @@ public class PlasmaWeapon extends Weapon {
 
         @Override
         public void process() {
-            float[] xy = RotationUtils.xySpeedOfDegree(getDegree());
+            float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
 
             float random = (float) (Math.random() * 5 - 2.5f);
 

@@ -6,11 +6,10 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.ITight;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
-import com.ancevt.d2d2world.math.RotationUtils;
+import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +44,8 @@ public class StandardWeapon extends Weapon {
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
             float deg = getOwner().getArmDegree();
-            float[] toXY = RotationUtils.xySpeedOfDegree(deg);
-            float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
+            float[] toXY = RadialUtils.xySpeedOfDegree(deg);
+            float distance = RadialUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
             bullet.setXY(getOwner().getX(), getOwner().getY());
             bullet.move(toXY[0] * distance, toXY[1] * distance + getOwner().getWeaponY());
             bullet.setDirection(getOwner().getDirection());
@@ -77,10 +76,6 @@ public class StandardWeapon extends Weapon {
             FramedSprite framedSprite = new FramedSprite(
                     a.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))
             );
-            if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
-                framedSprite.setColor(playerActor.getPlayerColor());
-            }
-
             framedSprite.setFrame(0);
             framedSprite.setLoop(true);
             framedSprite.play();
@@ -101,8 +96,11 @@ public class StandardWeapon extends Weapon {
 
         @Override
         public void destroy() {
+            if(setToRemove) return;
+
             setSpeed(0);
             setToRemove = true;
+            getMapkitItem().getMapkit().playSound("standard-bullet-destroy.ogg");
         }
 
         @Override
@@ -117,7 +115,7 @@ public class StandardWeapon extends Weapon {
                 }
             }
 
-            float[] xy = RotationUtils.xySpeedOfDegree(getDegree());
+            float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
             move(getSpeed() * xy[0], getSpeed() * xy[1]);
             super.process();
         }

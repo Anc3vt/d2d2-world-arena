@@ -5,12 +5,11 @@ import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
-import com.ancevt.d2d2world.math.RotationUtils;
-import com.ancevt.d2d2world.fx.Particle;
+import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +44,8 @@ public class AutomaticWeapon extends Weapon {
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
             float deg = getOwner().getArmDegree();
-            float[] toXY = RotationUtils.xySpeedOfDegree(deg);
-            float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
+            float[] toXY = RadialUtils.xySpeedOfDegree(deg);
+            float distance = RadialUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
             bullet.setXY(getOwner().getX(), getOwner().getY());
             bullet.move(toXY[0] * distance, toXY[1] * distance - 3);
             bullet.setDirection(getOwner().getDirection());
@@ -73,11 +72,7 @@ public class AutomaticWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(AutomaticWeapon.class);
             sprite = new Sprite(getMapkitItem().getTexture());
-            if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
-                sprite.setColor(playerActor.getPlayerColor());
-            } else {
-                sprite.setColor(Color.GRAY);
-            }
+            sprite.setColor(Color.GRAY);
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);
         }
@@ -90,7 +85,7 @@ public class AutomaticWeapon extends Weapon {
 
         @Override
         public void process() {
-            float[] xy = RotationUtils.xySpeedOfDegree(getDegree());
+            float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
             move(getSpeed() * xy[0], getSpeed() * xy[1]);
 
             super.process();

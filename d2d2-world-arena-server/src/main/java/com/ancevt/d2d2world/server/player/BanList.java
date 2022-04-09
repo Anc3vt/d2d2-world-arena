@@ -1,7 +1,7 @@
 package com.ancevt.d2d2world.server.player;
 
 import org.jetbrains.annotations.NotNull;
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import com.ancevt.net.connection.IConnection;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class BanList {
     }
 
     private @NotNull List<String> loadIps() throws IOException {
-        if (FileSystem.exists(FILE)) {
+        if (FileSystemUtils.exists(FILE)) {
             return Files.readAllLines(Path.of(FILE), StandardCharsets.UTF_8);
         } else {
             return List.of();

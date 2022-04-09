@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import static com.ancevt.commons.util.Slash.slashSafe;
 import static java.nio.file.StandardOpenOption.*;
 
-public class FileSystem {
+public class FileSystemUtils {
 
     public static @NotNull File directory(@NotNull String path) {
         path = slashSafe(path);

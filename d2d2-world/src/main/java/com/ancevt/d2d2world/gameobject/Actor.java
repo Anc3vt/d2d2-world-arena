@@ -30,7 +30,7 @@ import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.math.RotationUtils;
+import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.ui.HealthBar;
 import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
@@ -284,7 +284,7 @@ abstract public class Actor extends Animated implements
             setAlpha((damagingTime / 2) % 2 == 0 ? 1.0f : 0.0f);
         }
 
-        float deg = RotationUtils.getDegreeBetweenPoints(getX(), getY(), aimX, aimY);
+        float deg = RadialUtils.getDegreeBetweenPoints(getX(), getY(), aimX, aimY);
 
         if (aimX < getX()) {
             setDirection(-1);

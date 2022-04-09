@@ -9,7 +9,7 @@ import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
-import com.ancevt.d2d2world.math.RotationUtils;
+import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
@@ -44,8 +44,8 @@ public class RailWeapon extends Weapon {
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
             float deg = getOwner().getArmDegree();
-            float[] toXY = RotationUtils.xySpeedOfDegree(deg);
-            float distance = RotationUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
+            float[] toXY = RadialUtils.xySpeedOfDegree(deg);
+            float distance = RadialUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
             bullet.setXY(getOwner().getX(), getOwner().getY() - 3);
             bullet.move(toXY[0], toXY[1]);
             bullet.setDirection(getOwner().getDirection());
@@ -84,7 +84,7 @@ public class RailWeapon extends Weapon {
 
         @Override
         public void process() {
-            float[] xy = RotationUtils.xySpeedOfDegree(getDegree());
+            float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
             move(getSpeed() * xy[0], getSpeed() * xy[1]);
 
             if (!setToRemove) {

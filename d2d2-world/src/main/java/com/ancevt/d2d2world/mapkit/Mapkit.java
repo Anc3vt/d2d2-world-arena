@@ -21,7 +21,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.media.SoundMachine;
 import com.ancevt.d2d2world.data.DataEntry;
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import com.ancevt.d2d2world.map.MapIO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +60,7 @@ public abstract class Mapkit {
         }
 
         try {
-            InputStream inputStream = FileSystem.getInputStream(MapIO.getMapkitsDirectory() + name + "/" + tilesetPngFilename);
+            InputStream inputStream = FileSystemUtils.getInputStream(MapIO.getMapkitsDirectory() + name + "/" + tilesetPngFilename);
             TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas(inputStream);
             inputStream.close();
 

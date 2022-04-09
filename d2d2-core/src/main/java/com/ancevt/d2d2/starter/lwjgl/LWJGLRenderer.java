@@ -203,7 +203,7 @@ public class LWJGLRenderer implements IRenderer {
 
                 GL30.glBegin(GL30.GL_QUADS);
 
-                final double bleedingFix = 0.0001;
+                final double bleedingFix = 0.0005;
 
                 // L
                 GL30.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);

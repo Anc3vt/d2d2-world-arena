@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.server.content;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2world.data.DataEntry;
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.transfer.FileSender;
@@ -146,7 +146,7 @@ public class ServerContentManager {
                 }
             }
 
-            return new Map(name, FileSystem.splitPath(path.toString()).getSecond(), size, mapkits);
+            return new Map(name, FileSystemUtils.splitPath(path.toString()).getSecond(), size, mapkits);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

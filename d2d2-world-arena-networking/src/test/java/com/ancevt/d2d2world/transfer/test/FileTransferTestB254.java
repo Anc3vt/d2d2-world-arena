@@ -1,7 +1,7 @@
 package com.ancevt.d2d2world.transfer.test;
 
 import com.ancevt.commons.concurrent.Lock;
-import com.ancevt.d2d2world.data.file.FileSystem;
+import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
@@ -34,10 +34,10 @@ public class FileTransferTestB254 {
 
     @Contract("_, _ -> new")
     private @NotNull File createFile(String path, int filesize) {
-        File dir = FileSystem.directory(path);
+        File dir = FileSystemUtils.directory(path);
 
         String filePath = dir.getPath() + "/";
-        String fileName = FileSystem.splitPath(path).getSecond();
+        String fileName = FileSystemUtils.splitPath(path).getSecond();
 
 
         byte[] bytes = new byte[filesize];
