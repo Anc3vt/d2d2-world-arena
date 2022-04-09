@@ -23,6 +23,7 @@ import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.ScreenUtils;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
@@ -74,11 +75,7 @@ public class D2D2WorldArenaDesktopMain {
         log.info(version);
 
         String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYERNAME);
-
-        //D2D2.init(new NoRenderStarter(900, 600));
         var screenDimension = ScreenUtils.getDimension();
-
-        // System.getProperties().put("d2d2.experimental.bloom", true);
 
         D2D2.init(new LWJGLStarter(screenDimension.width() / 2 + 100, screenDimension.height() / 2 + 100,
                 "(floating) D2D2 World Arena " + autoEnterPlayerName));

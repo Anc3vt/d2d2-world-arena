@@ -29,6 +29,7 @@ import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.ScreenUtils;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import com.ancevt.d2d2world.map.GameMap;
@@ -51,7 +52,8 @@ public class D2D2WorldEditorMain {
         MapIO.setMapsDirectory(a.get("--maps-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/maps/"));
         MapIO.setMapFileName(a.get("--map-filename", "map0.wam"));
 
-        D2D2.init(new LWJGLStarter(1000, 700, "D2D2 World Editor (floating)"));
+        var screenDimension = ScreenUtils.getDimension();
+        D2D2.init(new LWJGLStarter(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
         D2D2World.init(true);
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");

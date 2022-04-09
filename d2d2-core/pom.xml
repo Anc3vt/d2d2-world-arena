@@ -504,6 +504,26 @@
             </dependencies>
         </profile>
         <profile>
+            <id>macarm</id>
+            <activation>
+                <os>
+                    <family>Mac</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>macos</platform>
+            </properties>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-opengl</artifactId>
+                    <version>3.3.0</version>
+                    <classifier>natives-macos</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>mac</id>
             <activation>
                 <os>
