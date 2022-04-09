@@ -128,10 +128,19 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             }
         });
 
+
+
+
         worldScene = new WorldScene();
         add(worldScene);
 
         add(Chat.getInstance(), 10, 10);
+
+        ControlsHelp controlsHelp = new ControlsHelp();
+        add(controlsHelp,
+                (D2D2.getStage().getStageWidth() - controlsHelp.getWidth()) / 2,
+                (D2D2.getStage().getStageHeight() - controlsHelp.getHeight()) / 5
+        );
 
         FpsMeter fpsMeter = new FpsMeter();
         add(fpsMeter, D2D2.getStage().getStageWidth() - 50, 2);

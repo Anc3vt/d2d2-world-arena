@@ -17,13 +17,14 @@
  */
 package com.ancevt.d2d2world;
 
-import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.IGameObject;
 import org.jetbrains.annotations.NotNull;
+
+import static com.ancevt.d2d2.D2D2.getTextureManager;
 
 public class D2D2World {
 
@@ -35,15 +36,19 @@ public class D2D2World {
 
     public static void init(boolean server) {
         D2D2World.server = server;
-        D2D2.getTextureManager().loadTextureDataInfo("d2d2-world-common-texture-data.inf");
+        getTextureManager().loadTextureDataInfo("d2d2-world-common-texture-data.inf");
+    }
+
+    public static Texture getControlsHelpTexture() {
+        return getTextureManager().getTexture("d2d2-world-common-tileset-controls-help");
     }
 
     public static Texture getAimTexture() {
-        return D2D2.getTextureManager().getTexture("d2d2-world-common-tileset-aim");
+        return getTextureManager().getTexture("d2d2-world-common-tileset-aim");
     }
 
     public static Texture getSpawnEffectTexture() {
-        return D2D2.getTextureManager().getTexture("d2d2-world-common-tileset-spawn-effect");
+        return getTextureManager().getTexture("d2d2-world-common-tileset-spawn-effect");
     }
 
     public static boolean isServer() {
@@ -55,11 +60,11 @@ public class D2D2World {
     }
 
     public static Texture getPickupBubbleTexture32() {
-        return D2D2.getTextureManager().getTexture("pickup-bubble-32");
+        return getTextureManager().getTexture("pickup-bubble-32");
     }
 
     public static Texture getPickupBubbleTexture16() {
-        return D2D2.getTextureManager().getTexture("pickup-bubble-16");
+        return getTextureManager().getTexture("pickup-bubble-16");
     }
 
     public static class Aim extends DisplayObjectContainer {
