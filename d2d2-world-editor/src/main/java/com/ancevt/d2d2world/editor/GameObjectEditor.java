@@ -30,7 +30,7 @@ import com.ancevt.d2d2world.editor.objects.GameObjectLayersMap;
 import com.ancevt.d2d2world.editor.objects.SelectArea;
 import com.ancevt.d2d2world.editor.objects.SelectRectangle;
 import com.ancevt.d2d2world.editor.objects.Selection;
-import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
+import com.ancevt.d2d2world.editor.swing.JPropertiesEditor2;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.map.MapIO;
@@ -110,7 +110,7 @@ public class GameObjectEditor {
                     case 'L' -> toggleLockCurrentLayer();
                     case 'R' -> {
                         if (editor.isControlDown()) {
-                            JPropertiesEditor.create(getWorld().getRoom(), text -> {
+                            JPropertiesEditor2.create(getWorld().getRoom(), text -> {
                                 getWorld().setRoom(getWorld().getRoom());
                                 editor.showRoomInfo();
                                 addPlayerActor();
@@ -696,7 +696,7 @@ public class GameObjectEditor {
 
     public void enter() {
         if (isSomethingSelected() && selections.size() == 1) {
-            JPropertiesEditor.create(getWorld(), getSelectedGameObject().orElseThrow());
+            JPropertiesEditor2.create(getSelectedGameObject().orElseThrow());
         }
     }
 
