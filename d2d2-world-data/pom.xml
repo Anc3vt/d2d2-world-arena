@@ -69,6 +69,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.ancevt.d2d2</groupId>
+            <artifactId>d2d2-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>

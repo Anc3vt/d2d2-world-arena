@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2world.data.DataEntry;
+import com.ancevt.d2d2world.gameobject.Fire;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
@@ -80,10 +81,21 @@ public class BuiltInMapkit extends Mapkit {
                 }
 
                 add("""
+                        id = fire
+                        | class = """ + Fire.class.getName() + """
+                        | damagingPower = 5
+                        | idle = 288,80,16,16 h 4
+                        | collisionX = -8
+                        | collisionY = -16
+                        | collisionWidth = 16
+                        | collisionHeight = 16
+                        | atlas=$ATLAS$
+                        """);
+
+                add("""
                         id = character_blake
                         | readableName = Blake
                         | class =""" + PlayerActor.class.getName() + """
-                        | damagePower = 1
                         | weight = 0.4
                         | maxHealth = 100
                         | health = 100
@@ -96,10 +108,10 @@ public class BuiltInMapkit extends Mapkit {
                         | weaponX=15
                         | weaponY=-3
                         | atlas=$CHARACTER_ATLAS$
-                        | idle = 0,0,48,48; 48,0,48,48
-                        | attack = 0,0,48,48; 48,0,48,48
-                        | walk = 96,0,48,48; 144,0,48,48; 192,0,48,48; 240,0,48,48
-                        | walkAttack = 96,0,48,48; 144,0,48,48; 192,0,48,48; 240,0,48,48
+                        | idle = 0,0,48,48 h 2
+                        | attack = 0,0,48,48 h 2
+                        | walk = 96,0,48,48 h 4
+                        | walkAttack = 96,0,48,48 h 4
                         | jump = 288,0,48,48
                         | fall = 336,0,48,48
                         | jumpAttack = 288,0,48,48
@@ -107,7 +119,7 @@ public class BuiltInMapkit extends Mapkit {
                         | hook = 384,0,48,48
                         | hookAttack = 384,0,48,48
                         | damage = 432,0,48,48
-                        | head = 576,0,16,24; 592,0,16,24
+                        | head = 576,0,16,24 h 2
                         | headFall = 608,0,16,24
                         | arm = 576,32,16,16
                         | damageSound = character-damage.ogg
@@ -117,7 +129,6 @@ public class BuiltInMapkit extends Mapkit {
                         id = character_ava
                         | readableName = Ava
                         | class =""" + PlayerActor.class.getName() + """
-                        | damagePower = 1
                         | weight = 0.4
                         | maxHealth = 100
                         | health = 100
@@ -130,10 +141,10 @@ public class BuiltInMapkit extends Mapkit {
                         | weaponX=14
                         | weaponY=-3
                         | atlas=$CHARACTER_ATLAS$
-                        | idle = 0,48,48,48; 48,48,48,48
-                        | attack = 0,48,48,48; 48,48,48,48
-                        | walk = 96,48,48,48; 144,48,48,48; 192,48,48,48; 240,48,48,48
-                        | walkAttack = 96,48,48,48; 144,48,48,48; 192,48,48,48; 240,48,48,48
+                        | idle = 0,48,48,48 h 2
+                        | attack = 0,48,48,48 h 2
+                        | walk = 96,48,48,48 h 4
+                        | walkAttack = 96,48,48,48 h 4
                         | jump = 288,48,48,48
                         | fall = 336,48,48,48
                         | jumpAttack = 288,48,48,48
@@ -141,7 +152,7 @@ public class BuiltInMapkit extends Mapkit {
                         | hook = 384,48,48,48
                         | hookAttack = 384,48,48,48
                         | damage = 432,48,48,48
-                        | head = 576,48,16,24; 592,48,16,24
+                        | head = 576,48,16,24 h 2
                         | headFall = 608,48,16,24
                         | arm = 576,80,16,16
                         | damageSound=character-damage.ogg
@@ -151,7 +162,6 @@ public class BuiltInMapkit extends Mapkit {
                         id = character_stranger
                         | readableName = Stranger
                         | class =""" + PlayerActor.class.getName() + """
-                        | damagePower = 1
                         | weight = 0.4
                         | maxHealth = 100
                         | health = 100
@@ -164,10 +174,10 @@ public class BuiltInMapkit extends Mapkit {
                         | weaponX=14
                         | weaponY=-3
                         | atlas=$CHARACTER_ATLAS$
-                        | idle = 0,96,48,48; 48,96,48,48
-                        | attack = 0,96,48,48; 48,96,48,48
-                        | walk = 96,96,48,48; 144,96,48,48; 192,96,48,48; 240,96,48,48
-                        | walkAttack = 96,96,48,48; 144,96,48,48; 192,96,48,48; 240,96,48,48
+                        | idle = 0,96,48,48 h 2
+                        | attack = 0,96,48,48 h 2
+                        | walk = 96,96,48,48 h 4
+                        | walkAttack = 96,96,48,48 h 4
                         | jump = 288,96,48,48
                         | fall = 336,96,48,48
                         | jumpAttack = 288,96,48,48
@@ -175,7 +185,7 @@ public class BuiltInMapkit extends Mapkit {
                         | hook = 384,96,48,48
                         | hookAttack = 384,96,48,48
                         | damage = 432,96,48,48
-                        | head = 576,96,16,24; 592,96,16,24
+                        | head = 576,96,16,24 h 2
                         | headFall = 608,96,16,24
                         | arm = 576,128,16,16
                         | damageSound=character-damage.ogg
@@ -188,7 +198,7 @@ public class BuiltInMapkit extends Mapkit {
                         | speed = 5
                         | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
                         | atlas = $ATLAS$
-                        | idle = 32,0,16,16; 48,0,16,16; 32,0,16,16; 48,0,16,16
+                        | idle = 32,0,16,16 h 2
                         """);
 
                 add("""
@@ -228,6 +238,16 @@ public class BuiltInMapkit extends Mapkit {
                         | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
                         | atlas = $ATLAS$
                         | idle = 32,16,32,16
+                        """);
+
+                add("""
+                        id = bullet_of_""" + FireWeapon.class.getSimpleName() + """
+                        | class =""" + FireWeapon.FireBullet.class.getName() + """
+                        | damagingPower = 10
+                        | speed = 1f
+                        | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
+                        | atlas = $ATLAS$
+                        | idle = 32,80,64,64 h 4
                         """);
 
             }

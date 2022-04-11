@@ -17,6 +17,9 @@
  */
 package com.ancevt.d2d2world.data;
 
+import com.ancevt.d2d2.display.texture.TextureAtlas;
+import org.jetbrains.annotations.NotNull;
+
 public final class IntRectangle extends Rectangle<Integer> {
 
     public IntRectangle() {
@@ -26,7 +29,7 @@ public final class IntRectangle extends Rectangle<Integer> {
         setHeight(0);
     }
 
-    public IntRectangle(String source) {
+    public IntRectangle(@NotNull String source) {
         String[] split = source.split(DELIMITER);
         setX(Integer.parseInt(split[0]));
         setY(Integer.parseInt(split[1]));
@@ -34,7 +37,8 @@ public final class IntRectangle extends Rectangle<Integer> {
         setHeight(Integer.parseInt(split[3]));
     }
 
-    public static IntRectangle[] getIntRectangles(String source) {
+    public static IntRectangle @NotNull [] getIntRectangles(@NotNull String source) {
+        source = TextureAtlas.convertCoords(source);
         String[] split = source.split(";");
         IntRectangle[] result = new IntRectangle[split.length];
         for(int i = 0; i < result.length; i ++) {

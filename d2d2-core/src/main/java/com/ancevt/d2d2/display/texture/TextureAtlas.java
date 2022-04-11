@@ -17,6 +17,9 @@
  */
 package com.ancevt.d2d2.display.texture;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -69,14 +72,74 @@ public class TextureAtlas {
         );
     }
 
+    public static @NotNull String convertCoords(@NotNull String textureCoords) {
+        if (textureCoords.contains("h")) {
+            StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, "h");
+            String firstToken = stringTokenizer.nextToken().trim();
+            int count = parseInt(stringTokenizer.nextToken().trim());
+            int[] textureCoordsInts = get4Values(firstToken);
+            StringBuilder stringBuilder = new StringBuilder();
+            int x = textureCoordsInts[0];
+            int y = textureCoordsInts[1];
+            int width = textureCoordsInts[2];
+            int height = textureCoordsInts[3];
+
+            int currentX = 0;
+            for (int i = 0; i < count; i++) {
+                stringBuilder.append(x + currentX).append(',');
+                stringBuilder.append(y).append(',');
+                stringBuilder.append(width).append(',');
+                stringBuilder.append(height);
+
+                if (i != count - 1) {
+                    stringBuilder.append(';');
+                }
+
+                currentX += width;
+            }
+
+            textureCoords = stringBuilder.toString();
+        } else
+
+        if (textureCoords.contains("v")) {
+            StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, "v");
+            String firstToken = stringTokenizer.nextToken().trim();
+            int count = parseInt(stringTokenizer.nextToken().trim());
+            int[] textureCoordsInts = get4Values(firstToken);
+            StringBuilder stringBuilder = new StringBuilder();
+            int x = textureCoordsInts[0];
+            int y = textureCoordsInts[1];
+            int width = textureCoordsInts[2];
+            int height = textureCoordsInts[3];
+
+            int currentY = 0;
+            for (int i = 0; i < count; i++) {
+                stringBuilder.append(x).append(',');
+                stringBuilder.append(y + currentY).append(',');
+                stringBuilder.append(width).append(',');
+                stringBuilder.append(height);
+
+                if (i != count - 1) {
+                    stringBuilder.append(';');
+                }
+
+                currentY += height;
+            }
+
+            textureCoords = stringBuilder.toString();
+        }
+
+        return textureCoords;
+    }
+
     /**
-     * 16,16,48,48; 16,16,48,48; 16,16,48,48
-     * @param textureCoords
-     * @return
+     * 16,16,48,48; 32,16,48,48; 48,16,48,48
+     * or
+     * 16,16,48,48h3
      */
-    public Texture[] createTextures(String textureCoords) {
-        textureCoords = textureCoords.trim();
-        if(textureCoords.endsWith(";")) {
+    public Texture[] createTextures(@NotNull String textureCoords) {
+        textureCoords = convertCoords(textureCoords);
+        if (textureCoords.endsWith(";")) {
             textureCoords = textureCoords.substring(0, textureCoords.length() - 2);
         }
         StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, ";");
@@ -86,6 +149,17 @@ public class TextureAtlas {
         }
 
         return textures;
+    }
+
+    @Contract("_ -> new")
+    private static int @NotNull [] get4Values(@NotNull String coords) {
+        String[] split = coords.split(",");
+        return new int[]{
+                parseInt(split[0]),
+                parseInt(split[1]),
+                parseInt(split[2]),
+                parseInt(split[3]),
+        };
     }
 
     public int getId() {

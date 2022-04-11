@@ -48,6 +48,14 @@ abstract public class Weapon {
         return mapkit.getItem("bullet_of_" + getClass().getSimpleName());
     }
 
+    public float offsetX() {
+        return 0f;
+    }
+
+    public float offsetY() {
+        return 0f;
+    }
+
     public Texture getTexture() {
         return sprite.getTexture();
     }

@@ -161,6 +161,7 @@ abstract public class Actor extends Animated implements
                     IDisplayObject d = currentWeapon.getSprite();
                     d.setScaleX(-1);
                     d.setX(d.getWidth() - getWeaponX() - 32 + 4);
+                    d.setY(currentWeapon.offsetY());
                     armSprite.setScaleX(-1);
                     armSprite.setXY(-2, -8);
                 }
@@ -168,6 +169,7 @@ abstract public class Actor extends Animated implements
                     IDisplayObject d = currentWeapon.getSprite();
                     d.setScaleX(1);
                     d.setX(getWeaponX() - 4);
+                    d.setY(currentWeapon.offsetY());
                     armSprite.setScaleX(1);
                     armSprite.setXY(2, -8);
                 }
@@ -189,7 +191,8 @@ abstract public class Actor extends Animated implements
                 //weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             } else {
                 armSprite.setY(-8);
-                currentWeapon.getSprite().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
+                currentWeapon.getSprite().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0) + currentWeapon.offsetY());
+
             }
 
 
@@ -760,7 +763,7 @@ abstract public class Actor extends Animated implements
 
                     currentWeapon = w;
                     currentWeapon.setOwner(this);
-                    weaponContainer.add(currentWeapon.getSprite());
+                    weaponContainer.add(currentWeapon.getSprite(), currentWeapon.offsetX(), currentWeapon.offsetY());
 
                     fixXY();
 
