@@ -120,7 +120,7 @@ public class PlayerActor extends Actor {
     private void this_eachFrameLocalAim(Event event) {
         if (isLocalPlayerActor()) {
             if (isOnWorld()) {
-                final World world = getWorld();
+                World world = getWorld();
 
                 float scaleX = world.getAbsoluteScaleX();
                 float scaleY = world.getAbsoluteScaleY();

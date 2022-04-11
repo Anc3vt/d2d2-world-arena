@@ -61,7 +61,6 @@ public class AutomaticWeapon extends Weapon {
 
     public static class AutomaticBullet extends Bullet {
 
-        private Sprite sprite;
         private boolean setToRemove;
 
         public AutomaticBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
@@ -71,7 +70,7 @@ public class AutomaticWeapon extends Weapon {
 
         private void this_addToStage(Event event) {
             removeEventListener(AutomaticWeapon.class);
-            sprite = new Sprite(getMapkitItem().getTexture());
+            Sprite sprite = new Sprite(getMapkitItem().getTexture());
             sprite.setColor(Color.GRAY);
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);
@@ -87,7 +86,6 @@ public class AutomaticWeapon extends Weapon {
         public void process() {
             float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
             move(getSpeed() * xy[0], getSpeed() * xy[1]);
-
             super.process();
         }
 

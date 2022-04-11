@@ -89,7 +89,7 @@ public class PlayProcessor {
                 actioned.getActionProgram().process();
             }
 
-            if (o1 instanceof IGravitied g) {
+            if (o1 instanceof IGravitational g) {
                 processGravity(g);
             }
 
@@ -111,7 +111,7 @@ public class PlayProcessor {
                 }
             }
 
-            if (o1 instanceof IGravitied g && !collideWithFloor) {
+            if (o1 instanceof IGravitational g && !collideWithFloor) {
                 g.setFloor(null);
             }
 
@@ -164,10 +164,7 @@ public class PlayProcessor {
     }
 
     private void processHook(@NotNull IHookable o, AreaHook hook) {
-        if (o.getHook() != null &&
-                o.getY() + o.getCollisionY() > hook.getY() + hook.getCollisionY() / 2 &&
-                o.getVelocityY() > 0) {
-
+        if (o.getCollisionY() + o.getY() > hook.getY()) {
             o.setHook(hook);
         }
     }
@@ -215,7 +212,7 @@ public class PlayProcessor {
             }
         }
 
-        if (o1 instanceof IGravitied g) {
+        if (o1 instanceof IGravitational g) {
             if (wallHitTest) {
                 g.setMovingSpeedX(0);
             }
@@ -236,7 +233,7 @@ public class PlayProcessor {
         }
     }
 
-    private static void setFloorTo(@NotNull IGravitied target, ICollision floor) {
+    private static void setFloorTo(@NotNull IGravitational target, ICollision floor) {
         if (target.getFloor() == floor) return;
         target.setVelocityY(0);
         target.setFloor(floor);
@@ -256,11 +253,11 @@ public class PlayProcessor {
         return x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2;
     }
 
-    private void processGravity(IGravitied o) {
+    private void processGravity(@NotNull IGravitational o) {
         //if (!isServer() || !o.isGravityEnabled()) return;
         if (!o.isGravityEnabled()) return;
 
-        if(!isServer() && o instanceof PlayerActor playerActor && !playerActor.isLocalPlayerActor()) return;
+        if (!isServer() && o instanceof PlayerActor playerActor && !playerActor.isLocalPlayerActor()) return;
 
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);
@@ -272,7 +269,11 @@ public class PlayProcessor {
             if (o.getVelocityY() > MAX_VELOCITY_Y) o.setVelocityY(MAX_VELOCITY_Y);
         }
 
-        o.setVelocityX(Math.abs(velX) < 0.1f ? 0 : velX * 0.75f);
+        if (o.getFloor() != null) {
+            o.setVelocityX(Math.abs(velX) < 0.1f ? 0 : velX * 0.75f);
+        } else {
+            o.setVelocityX(Math.abs(velX) < 0.1f ? 0 : velX * 0.95f);
+        }
         o.move(o.getVelocityX(), o.getVelocityY());
     }
 

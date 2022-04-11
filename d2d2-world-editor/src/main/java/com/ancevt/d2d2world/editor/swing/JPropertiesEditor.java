@@ -20,7 +20,7 @@ import java.util.Objects;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
-public class JPropertiesEditor2 extends JFrame {
+public class JPropertiesEditor extends JFrame {
 
     private final JScrollPane scrollPane;
 
@@ -34,7 +34,7 @@ public class JPropertiesEditor2 extends JFrame {
     private final JButton buttonOk;
     private final JButton buttonCancel;
 
-    public JPropertiesEditor2() {
+    public JPropertiesEditor() {
         setSize(700, 700);
         setPreferredSize(new Dimension(700, 700));
 
@@ -52,10 +52,8 @@ public class JPropertiesEditor2 extends JFrame {
 
         pack();
 
-
         buttonOk.addActionListener(e -> ok());
         buttonCancel.addActionListener(e -> dispose());
-
 
         scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(textArea.getSize());
@@ -149,15 +147,15 @@ public class JPropertiesEditor2 extends JFrame {
         });
     }
 
-    public static @NotNull JPropertiesEditor2 create(String title, String text, OkFunction okFunction) {
-        JPropertiesEditor2 editor = new JPropertiesEditor2();
+    public static @NotNull JPropertiesEditor create(String title, String text, OkFunction okFunction) {
+        JPropertiesEditor editor = new JPropertiesEditor();
 
-        SwingUtilities.invokeLater(() -> {
+        //SwingUtilities.invokeLater(() -> {
             editor.setText(text);
             editor.setTitle(title + " (floating)");
             editor.setOkFunction(okFunction);
             editor.setVisible(true);
-        });
+        //});
 
         return editor;
     }

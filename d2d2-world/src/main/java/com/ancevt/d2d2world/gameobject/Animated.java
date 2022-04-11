@@ -134,6 +134,11 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
     public void setAnimation(int animationKey, boolean loop) {
         if (!animationsPrepared || animationKey == getAnimation()) return;
 
+        if(this instanceof Actor actor && actor.getHook() != null) {
+            //setAnimation(HOOK);
+            return;
+        }
+
         this.currentAnimationKey = animationKey;
 
         for (int i = 0; i < animations.length; i++) {

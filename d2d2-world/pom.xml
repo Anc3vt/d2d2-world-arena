@@ -66,6 +66,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.sipgate</groupId>
+            <artifactId>mp3-wav</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <dependency>
             <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-core</artifactId>
         </dependency>

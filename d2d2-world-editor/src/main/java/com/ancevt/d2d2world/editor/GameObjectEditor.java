@@ -30,7 +30,7 @@ import com.ancevt.d2d2world.editor.objects.GameObjectLayersMap;
 import com.ancevt.d2d2world.editor.objects.SelectArea;
 import com.ancevt.d2d2world.editor.objects.SelectRectangle;
 import com.ancevt.d2d2world.editor.objects.Selection;
-import com.ancevt.d2d2world.editor.swing.JPropertiesEditor2;
+import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.map.MapIO;
@@ -43,6 +43,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.*;
 
 public class GameObjectEditor {
@@ -110,7 +111,7 @@ public class GameObjectEditor {
                     case 'L' -> toggleLockCurrentLayer();
                     case 'R' -> {
                         if (editor.isControlDown()) {
-                            JPropertiesEditor2.create(getWorld().getRoom(), text -> {
+                            JPropertiesEditor.create(getWorld().getRoom(), text -> {
                                 getWorld().setRoom(getWorld().getRoom());
                                 editor.showRoomInfo();
                                 addPlayerActor();
@@ -169,6 +170,26 @@ public class GameObjectEditor {
                     }
 
                     case 'L' -> setLayerNumbersVisible(!LayerNumbers.isShow());
+
+                    case 'T' -> {
+                        JOptionPane.showConfirmDialog(null, "test");
+                    }
+
+                    case 'Ł' -> { // numpad 1
+                        getSelectedGameObject().ifPresent(gameObject -> {
+                            if(gameObject instanceof IRotatable rotatable) {
+                                rotatable.rotate(-1);
+                            }
+                        });
+                    }
+
+                    case 'Ń' -> { // numpad 3
+                        getSelectedGameObject().ifPresent(gameObject -> {
+                            if(gameObject instanceof IRotatable rotatable) {
+                                rotatable.rotate(+1);
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -179,6 +200,7 @@ public class GameObjectEditor {
 
         putState();
     }
+
 
     private void putState() {
 
@@ -686,17 +708,33 @@ public class GameObjectEditor {
     }
 
     public void moveSelected(float x, float y) {
-        for (IGameObject gameObject : selectedGameObjects) {
-            gameObject.move(x, y);
+        if (isCollisionsVisible()) {
+            getSelectedGameObject().ifPresent(gameObject -> {
+                if (gameObject instanceof ICollision collision) {
+                    if (editor.isControlDown()) {
+                        collision.setCollisionWidth(collision.getCollisionWidth() + x);
+                        collision.setCollisionHeight(collision.getCollisionHeight() + y);
+                    } else {
+                        collision.setCollisionX(collision.getCollisionX() + x);
+                        collision.setCollisionY(collision.getCollisionY() + y);
+                    }
+                    setCollisionsVisible(false);
+                    setCollisionsVisible(true);
+                }
+            });
+        } else {
+            for (IGameObject gameObject : selectedGameObjects) {
+                gameObject.move(x, y);
 
-            if (gameObject instanceof IMovable m)
-                m.setStartXY(gameObject.getX(), gameObject.getY());
+                if (gameObject instanceof IMovable m)
+                    m.setStartXY(gameObject.getX(), gameObject.getY());
+            }
         }
     }
 
     public void enter() {
         if (isSomethingSelected() && selections.size() == 1) {
-            JPropertiesEditor2.create(getSelectedGameObject().orElseThrow());
+            JPropertiesEditor.create(getSelectedGameObject().orElseThrow());
         }
     }
 
@@ -766,6 +804,6 @@ public class GameObjectEditor {
             }
         });
 
-        DebugActorCreator.createTestPlayerActor(playerActor, getWorld());
+        //DebugActorCreator.createTestPlayerActor(playerActor, getWorld());
     }
 }

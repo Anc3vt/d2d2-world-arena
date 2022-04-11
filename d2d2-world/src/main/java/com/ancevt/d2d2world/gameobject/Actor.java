@@ -27,6 +27,7 @@ import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.fx.Particle;
+import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -49,13 +50,16 @@ abstract public class Actor extends Animated implements
         IDestroyable,
         ITight,
         IResettable,
-        IGravitied,
+        IGravitational,
         IControllable,
-        ISpeedable {
+        ISpeedable,
+        IHookable {
 
     private static final int JUMP_TIME = 4;
     private static final int DAMAGING_TIME = 14;
     private static final int WEAPON_SWITCH_TIME = 4;
+    private static final int HOOK_TIME = 20;
+
     private final FramedSprite framedDoHead;
     private final List<Weapon> weapons;
     private float weaponLocationX, weaponLocationY;
@@ -65,6 +69,7 @@ abstract public class Actor extends Animated implements
     private int attackTime;
     private int jumpTime;
     private int damagingTime;
+    private int hookTime;
     private int weaponSwitchTime;
     private boolean onJump;
 
@@ -98,6 +103,7 @@ abstract public class Actor extends Animated implements
     private float movingSpeedX;
     private float startY;
     private float startX;
+    private AreaHook hook;
 
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -268,7 +274,7 @@ abstract public class Actor extends Animated implements
                     super.onEachFrame();
                 }
             };
-            bitmapTextDebug.setBounds(100, 30);
+            bitmapTextDebug.setBounds(1000, 1000);
         }
 
         bitmapTextDebug.setText(o != null ? o.toString() : null);
@@ -526,18 +532,16 @@ abstract public class Actor extends Animated implements
         return velocityY;
     }
 
-    public void jump() {
-        if (floor != null) {
-            onJump = true;
-            setVelocityY(getVelocityY() - getJumpPower());
-            setFloor(null);
-        }
-    }
-
     public void go(final int direction) {
         goDirection = direction;
 
-        if (isGravityEnabled()) setVelocityX(direction == Direction.RIGHT ? velocityX + speed : velocityX - speed);
+        if (isGravityEnabled()) {
+            if (floor != null) {
+                setVelocityX(direction == Direction.RIGHT ? velocityX + speed : velocityX - speed);
+            } else {
+                setVelocityX(direction == Direction.RIGHT ? velocityX + speed / 5f : velocityX - speed / 5f);
+            }
+        }
     }
 
     public float getArmDegree() {
@@ -552,6 +556,34 @@ abstract public class Actor extends Animated implements
     @Property
     public void setJumpPower(float jumpPower) {
         this.jumpPower = jumpPower;
+    }
+
+    @Override
+    public void setHook(AreaHook hook) {
+        if(hookTime == 0) {
+            setXY(hook.getX(), hook.getY() + 24);
+            setAnimation(HOOK, false);
+            setGravityEnabled(false);
+            this.hook = hook;
+            hookTime = HOOK_TIME;
+        }
+    }
+
+    @Override
+    public AreaHook getHook() {
+        return hook;
+    }
+
+    public void jump() {
+        if (floor != null || getHook() != null) {
+            hook = null;
+
+            setGravityEnabled(true);
+
+            onJump = true;
+            setVelocityY(-getJumpPower());
+            setFloor(null);
+        }
     }
 
     @Override
@@ -577,7 +609,6 @@ abstract public class Actor extends Animated implements
                     setAnimation(AnimationKey.WALK_ATTACK);
                 }
             }
-            //else if (attackTime == 0) setAnimation(AnimationKey.IDLE);
 
             if (c.isB()) {
                 if (attackTime == 0) attack();
@@ -588,11 +619,20 @@ abstract public class Actor extends Animated implements
                 jumpTime = JUMP_TIME;
             }
 
-            if (!c.isA() && getFloor() != null) onJump = false;
+            if (c.isA() && getHook() != null && !onJump) {
+                if (c.isDown()) {
+                    hook = null;
+                    setGravityEnabled(true);
+                } else {
+                    jump();
+                }
+                jumpTime = JUMP_TIME;
+            }
+
+            if (!c.isA() && (getFloor() != null || getHook() != null)) onJump = false;
         }
 
         if (attackTime >= 1) attackTime--;
-        //if (attackTime == 1 && !c.isB()) attackTime--;
 
         if (jumpTime > 0) {
             jumpTime--;
@@ -600,7 +640,6 @@ abstract public class Actor extends Animated implements
         }
 
         if (getFloor() == null) {
-
             setAnimation(
                     getVelocityY() < 0 ?
                             (attackTime == 0 ? AnimationKey.JUMP : AnimationKey.JUMP_ATTACK) :
@@ -624,9 +663,9 @@ abstract public class Actor extends Animated implements
         setMovingSpeedX(0f);
         setMovingSpeedY(0f);
 
-        if (weaponSwitchTime > 0) {
-            weaponSwitchTime--;
-        }
+        if (weaponSwitchTime > 0) weaponSwitchTime--;
+
+        if (hookTime > 0 && getHook() == null) hookTime--;
     }
 
     public boolean isOnJump() {
@@ -705,13 +744,12 @@ abstract public class Actor extends Animated implements
     }
 
     public void setCurrentWeaponClassname(@NotNull String weaponClassname) {
-        if (weaponSwitchTime > 0) return;
+        //if (weaponSwitchTime > 0) return;
         weaponSwitchTime = WEAPON_SWITCH_TIME;
 
         if (this.currentWeapon != null) {
             this.currentWeapon.getSprite().removeFromParent();
         }
-
 
         weapons.stream()
                 .filter(w -> w.getClass().getName().equals(weaponClassname))
@@ -722,8 +760,8 @@ abstract public class Actor extends Animated implements
 
                     currentWeapon = w;
                     currentWeapon.setOwner(this);
-                    weaponContainer.setScale(2, 2);
                     weaponContainer.add(currentWeapon.getSprite());
+
                     fixXY();
 
                     dispatchEvent(ActorEvent.builder()
@@ -977,6 +1015,11 @@ abstract public class Actor extends Animated implements
     @Override
     public float getSpeed() {
         return speed;
+    }
+
+    public void setWeapons(List<Weapon> weapons) {
+        this.weapons.clear();
+        this.weapons.addAll(weapons);
     }
 }
 

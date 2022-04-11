@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.editor;
 
+import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
@@ -32,6 +33,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.ScreenUtils;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
+import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -39,9 +41,16 @@ import com.ancevt.d2d2world.world.World;
 import com.ancevt.util.args.Args;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
+        //Hack to avoid BadAccess bug with JPropertiesEditor under i3wm
+        // <hack>
+        var hack = JPropertiesEditor.create("(floating))", "null", null);
+        Async.runLater(1, TimeUnit.MILLISECONDS, hack::dispose);
+        // </hack>
+
         Args a = new Args(args);
 
         SoundSystem.setEnabled(!a.contains("--disable-sound"));
@@ -54,6 +63,7 @@ public class D2D2WorldEditorMain {
 
         var screenDimension = ScreenUtils.getDimension();
         D2D2.init(new LWJGLStarter(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
+        D2D2.getStarter().setWindowXY(0, 40);
         D2D2World.init(true);
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");

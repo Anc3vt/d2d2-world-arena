@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 
-public interface IHookable extends IGravitied, ICollision {
+public interface IHookable extends IGravitational, ICollision {
 
     void setHook(final AreaHook hook);
 

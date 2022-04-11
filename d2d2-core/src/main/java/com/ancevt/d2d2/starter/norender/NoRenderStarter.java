@@ -138,4 +138,19 @@ public class NoRenderStarter implements D2D2Starter {
     public void setFullscreen(boolean value) {
 
     }
+
+    @Override
+    public void setWindowXY(int x, int y) {
+
+    }
+
+    @Override
+    public int getWindowX() {
+        return 0;
+    }
+
+    @Override
+    public int getWindowY() {
+        return 0;
+    }
 }

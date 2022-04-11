@@ -20,9 +20,12 @@ public class SyncMotion {
 
     private static final Map<IDisplayObject, MotionState> map = new ConcurrentHashMap<>();
 
-    private static int tact;
-
     public static void moveMotion(IDisplayObject o, float x, float y) {
+        if(abs(o.getX() - x) > 8f || abs(o.getY() - y) > 8f) {
+            o.setXY(x, y);
+            return;
+        }
+
         MotionState motionState = map.get(o);
         if (motionState == null) {
             motionState = new MotionState(x, y);

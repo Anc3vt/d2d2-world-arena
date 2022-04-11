@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-public interface IGravitied extends IMovable {
+public interface IGravitational extends IMovable {
 
     @Property
     float getWeight();

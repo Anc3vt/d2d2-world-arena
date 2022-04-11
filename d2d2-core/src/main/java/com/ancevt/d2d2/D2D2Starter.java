@@ -59,4 +59,9 @@ public interface D2D2Starter {
 
     default boolean isSmoothMode() { return false; }
 
+    void setWindowXY(int x, int y);
+
+    int getWindowX();
+
+    int getWindowY();
 }

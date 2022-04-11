@@ -406,4 +406,21 @@ public class LWJGLStarter implements D2D2Starter {
 
         glfwTerminate();
     }
+
+    @Override
+    public void setWindowXY(int x, int y) {
+        windowX = x;
+        windowY = y;
+        glfwSetWindowPos(windowId, x, y);
+    }
+
+    @Override
+    public int getWindowX() {
+        return windowX;
+    }
+
+    @Override
+    public int getWindowY() {
+        return windowY;
+    }
 }

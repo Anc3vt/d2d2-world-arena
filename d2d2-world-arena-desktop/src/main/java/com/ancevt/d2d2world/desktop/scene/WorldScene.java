@@ -40,6 +40,7 @@ import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.fx.SpawnEffect;
 import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.client.ClientListener;
@@ -56,10 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
@@ -86,6 +84,12 @@ public class WorldScene extends DisplayObjectContainer {
     private PlayerActor localPlayerActor;
     private final GameObjectTexts gameObjectTexts;
     private final Map<Integer, PlayerActor> playerActorMap;
+
+    /**
+     * game object id => weapon list
+     */
+    private List<Weapon> roomChangePlayerActorWeapons;
+    private Weapon roomChangePlayerActorCurrentWeapon;
 
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
@@ -125,7 +129,6 @@ public class WorldScene extends DisplayObjectContainer {
         shadowRadial.setColor(Color.YELLOW);
         shadowRadial.setScale(2f, 2f);
         //world.add(shadowRadial);
-
 
         ((SyncDataReceiver) CLIENT.getSyncDataReceiver()).setWorld(world);
 
@@ -491,6 +494,8 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn));
         localPlayerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
             var e = (ActorEvent) event;
+            roomChangePlayerActorWeapons = e.getSource().getWeapons();
+            roomChangePlayerActorCurrentWeapon = e.getSource().getCurrentWeapon();
             CLIENT.sendPlayerEnterRoom(e.getRoomId(), e.getX(), e.getY());
         });
 
@@ -530,6 +535,11 @@ public class WorldScene extends DisplayObjectContainer {
                 oldY = localPlayerActor.getY();
             }
         });
+
+        if (roomChangePlayerActorWeapons != null) {
+            localPlayerActor.setWeapons(roomChangePlayerActorWeapons);
+            localPlayerActor.setCurrentWeaponClass(roomChangePlayerActorCurrentWeapon.getClass());
+        }
 
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);

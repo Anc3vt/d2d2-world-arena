@@ -30,6 +30,7 @@ public class BlockingSound implements Media {
         return playing;
     }
 
+    @Override
     public void stop() {
         playing = false;
     }
@@ -90,14 +91,13 @@ public class BlockingSound implements Media {
 
         Async.run(() -> {
             BlockingSound sound = null;
-                sound = new BlockingSound("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/builtin-mapkit/character-damage.ogg");
+                sound = new BlockingSound("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/ance/IceSugar_Bounce.ogg");
 
             while (true) {
                 sound.play();
             }
         });
     }
-
 
 }
 

@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class SoundMachine {
 
-    private static final int DEFAULT_TRACK_COUNT = 8;
+    private static final int DEFAULT_TRACK_COUNT = 16;
 
     private static SoundMachine instance;
 
@@ -33,7 +33,7 @@ public class SoundMachine {
         if (!SoundSystem.isEnabled()) return;
 
         Track track = tracks[currentIndex];
-        track.play(Media.createSoundAsset(path));
+        track.play(Media.lookupSoundAsset(path));
         currentIndex++;
         if (currentIndex >= tracks.length) {
             currentIndex = 0;
@@ -44,11 +44,16 @@ public class SoundMachine {
         if (!SoundSystem.isEnabled()) return;
 
         Track track = tracks[currentIndex];
-        track.play(Media.createSound(path));
+        track.play(Media.lookupSound(path));
         currentIndex++;
         if (currentIndex >= tracks.length) {
             currentIndex = 0;
         }
+    }
+
+    public void stop(String path) {
+        if (!SoundSystem.isEnabled()) return;
+        Media.lookupSound(path).stop();
     }
 
     private static class Track extends Thread {

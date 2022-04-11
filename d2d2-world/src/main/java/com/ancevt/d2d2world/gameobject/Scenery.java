@@ -19,14 +19,13 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Slowing;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
-public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotatable, IScalable, IAlphable, EventListener {
+public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotatable, IScalable, IAlphable {
 
     private final int gameObjectId;
     private final MapkitItem mapkitItem;
@@ -41,7 +40,19 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
         setTexture(mapkitItem.getTexture());
 
         if (mapkitItem.getTextureCount(AnimationKey.IDLE) > 1) {
-            addEventListener(Event.EACH_FRAME, this);
+            addEventListener(Event.EACH_FRAME, e -> {
+                frameCounter++;
+                if (frameCounter >= Slowing.SLOWING) {
+                    frameCounter = 0;
+                    frameIndex++;
+
+                    if (frameIndex >= mapkitItem.getTextureCount(AnimationKey.IDLE)) {
+                        frameIndex = 0;
+                    }
+                    setTexture(mapkitItem.getTexture(AnimationKey.IDLE, frameIndex));
+
+                }
+            });
         }
     }
 
@@ -75,10 +86,6 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
         return true;
     }
 
-    public boolean isPackable() {
-        return mapkitItem.getTextureCount(AnimationKey.IDLE) == 1;
-    }
-
     @Override
     public float getWidth() {
         return getTexture().width() * getRepeatX();
@@ -97,22 +104,6 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
     @Override
     public float getOriginalHeight() {
         return getTexture().height();
-    }
-
-    @Override
-    public void onEvent(Event event) {
-        if (event.getType().equals(Event.EACH_FRAME)) {
-            frameCounter++;
-            if (frameCounter >= Slowing.SLOWING) {
-                frameCounter = 0;
-                frameIndex++;
-
-                if(frameIndex >= mapkitItem.getTextureCount(AnimationKey.IDLE)) {
-                    frameIndex = 0;
-                }
-                setTexture(mapkitItem.getTexture(AnimationKey.IDLE, frameIndex));
-            }
-        }
     }
 
     public boolean isStatic() {
