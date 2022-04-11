@@ -325,7 +325,7 @@ public class TcpConnection implements IConnection {
 
     @Override
     public String toString() {
-        return "TcpB254Connection{" +
+        return "TcpConnection{" +
                 "id=" + id +
                 ", host='" + host + '\'' +
                 ", port=" + port +

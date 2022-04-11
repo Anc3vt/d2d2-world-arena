@@ -44,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
@@ -64,6 +65,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     private final TabWindow tabWindow;
     private String serverName;
     private int attempts;
+    private boolean connected;
 
     public GameRoot() {
         UiTextInputProcessor.enableRoot(this);
@@ -252,9 +254,18 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void clientConnectionClosed(@NotNull CloseStatus status) {
+        debug("GameRoot:256: <A>clientConnectionClosed");
+
+        connected = false;
         worldScene.stop();
         Chat.getInstance().addMessage(status.getErrorMessage(), Color.RED);
         new Lock().lock(5, SECONDS);
+
+        if(connected){
+            attempts = 0;
+            return;
+        }
+
         if (attempts < 10) {
             start(server, CLIENT.getLocalPlayerName());
         } else {
@@ -271,6 +282,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     public void clientConnectionEstablished() {
         Chat.getInstance().addMessage("Connection established", Color.GREEN);
         CLIENT.sendPlayerEnterRequest();
+        connected = true;
     }
 
     /**

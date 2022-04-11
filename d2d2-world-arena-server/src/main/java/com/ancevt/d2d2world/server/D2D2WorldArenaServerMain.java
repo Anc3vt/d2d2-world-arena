@@ -18,7 +18,6 @@
 package com.ancevt.d2d2world.server;
 
 import com.ancevt.commons.Holder;
-import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
@@ -39,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.MODULE_SERVER_PROTOCOL;
 import static com.ancevt.d2d2world.server.ServerConfig.*;
@@ -170,13 +168,6 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         };
 
         MODULE_SERVER_PROTOCOL.addServerProtocolImplListener(serverProtocolImplListener);
-
-        Async.runLater(MODULE_SERVER_CONFIG.getInt(SERVER_CONNECTION_TIMEOUT), TimeUnit.MILLISECONDS, () -> {
-            if (!playerEntered.getValue()) {
-                connection.closeIfOpen();
-                MODULE_SERVER_PROTOCOL.removeServerProtocolImplListener(serverProtocolImplListener);
-            }
-        });
 
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
