@@ -72,8 +72,8 @@ id = _ance2_27_1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = anc
 id = _ance2_27_2 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=32,112,16,16
 id = _ance2_27_3 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=256,48,32,32
 id = _ance2_27_4 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=96,112,32,32
-id = _ance2_web  | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,96,16,16; 224,96,16,16; 240,96,16,16
-id = _ance2_torch | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,112,16,32; 224,112,16,32
+id = _ance2_web  | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,96,16,16 h 3
+id = _ance2_torch | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,112,16,32 h 2
 id = _ance2_ss_0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=128,112,32,32
 id = _ance2_brkc_11 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,96,16,16
 
@@ -81,5 +81,5 @@ id = _ance_parallax_0 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas
 id = _ance_parallax_1 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = ance-tileset.png | idle=0,240,512,48 | speed = 0.25
 id = _ance_parallax_2 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = ance-tileset.png | idle=0,288,512,16 | speed = 0.125
 
-id = _ance_ramp_0 | class = com.ancevt.d2d2world.gameobject.Ramp | atlas = ance-tileset.png | idle=256,80,32,4;256,84,32,4;256,88,32,4;256,80,32,4;256,92,32,4;256,96,32,4;256,100,32,4;256,104,32,4;256,108,32,4 | powerX = 0 | powerY = -10 | collisionWidth = 32 | collisionHeight = 4 | sound = ramp.ogg
-id = _ance_ramp_1 | class = com.ancevt.d2d2world.gameobject.Ramp | atlas = ance-tileset.png | idle=288,48,32,16; 288,64,32,16; 288,80,32,16; 288,96,32,16 | powerX = 0 | powerY = -10 | collisionWidth = 32 | collisionHeight = 4 | sound = ramp.ogg
+id = _ance_ramp_0 | class = com.ancevt.d2d2world.gameobject.Ramp | atlas = ance-tileset.png | idle=256,80,32,4 v 8 | powerX = 0 | powerY = -10 | collisionWidth = 32 | collisionHeight = 4 | sound = ramp.ogg
+id = _ance_ramp_1 | class = com.ancevt.d2d2world.gameobject.Ramp | atlas = ance-tileset.png | idle=288,48,32,16 v 4 | powerX = 0 | powerY = -10 | collisionWidth = 32 | collisionHeight = 4 | sound = ramp.ogg
