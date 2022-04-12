@@ -60,7 +60,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
@@ -502,6 +501,16 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerActor.addEventListener(ActorEvent.ACTOR_REPAIR, event -> {
             world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
             overlay.startOut();
+        });
+
+        localPlayerActor.addEventListener(ActorEvent.ACTOR_HOOK, event->{
+            var e = (ActorEvent) event;
+            if(e.getHookGameObjectId() != 0) {
+                CLIENT.sendHook(e.getHookGameObjectId());
+            } else {
+                CLIENT.sendHook(0);
+            }
+
         });
 
         if (overlay.getState() == Overlay.STATE_BLACK) {

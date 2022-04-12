@@ -77,7 +77,6 @@ public class BuiltInMapkit extends Mapkit {
                         System.err.println(pickupClass);
                         e.printStackTrace();
                     }
-
                 }
 
                 add("""

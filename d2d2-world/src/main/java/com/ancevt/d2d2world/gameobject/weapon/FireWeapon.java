@@ -5,6 +5,7 @@ import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
+import com.ancevt.d2d2world.gameobject.IScalable;
 import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -73,7 +74,7 @@ public class FireWeapon extends Weapon {
         return super.toString();
     }
 
-    public static class FireBullet extends Bullet implements ITight {
+    public static class FireBullet extends Bullet implements ITight, IScalable {
 
         private boolean setToRemove;
         private boolean floorOnly;

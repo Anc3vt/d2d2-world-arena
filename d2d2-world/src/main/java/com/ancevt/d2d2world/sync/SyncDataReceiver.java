@@ -4,6 +4,7 @@ import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.Mapkit;
@@ -64,6 +65,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         String dataEntryText = in.readUtf(short.class);
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
                     }
+                    case SyncDataType.HOOK -> hook(gameObjectId, in.readInt());
                     case SyncDataType.ADD_WEAPON -> {
                         String weaponClassname = in.readUtf(byte.class);
                         addWeapon(gameObjectId, weaponClassname);
@@ -87,9 +89,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                     case SyncDataType.ACTION_INDEX -> {
                         actionIndex(gameObjectId, in.readShort());
                     }
-                    case SyncDataType.REMOVE -> {
-                        removeGameObject(gameObjectId);
-                    }
+                    case SyncDataType.REMOVE -> removeGameObject(gameObjectId);
                     case SyncDataType.ANIMATION -> {
                         int animKey = in.readByte();
                         boolean loop = in.readByte() == 1;
@@ -117,12 +117,8 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         boolean visibility = in.readByte() == 1;
                         setVisibility(gameObjectId, visibility);
                     }
-                    case SyncDataType.REPAIR -> {
-                        repair(gameObjectId);
-                    }
-                    case SyncDataType.RESET -> {
-                        reset(gameObjectId);
-                    }
+                    case SyncDataType.REPAIR -> repair(gameObjectId);
+                    case SyncDataType.RESET -> reset(gameObjectId);
 
                     default -> throw new IllegalStateException("no such SyncDataType " + type);
                 }
@@ -131,6 +127,13 @@ public class SyncDataReceiver implements ISyncDataReceiver {
             }
         }
 
+    }
+
+    private void hook(int gameObjectId, int hookGameObjectId) {
+        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor playerActor) {
+            AreaHook hook = (AreaHook) world.getGameObjectById(hookGameObjectId);
+            playerActor.setHook(hook);
+        }
     }
 
     private void addWeapon(int gameObjectId, String weaponClassname) {
@@ -248,7 +251,8 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     private void setXY(int gameObjectId, float x, float y) {
         IGameObject o = world.getGameObjectById(gameObjectId);
         if (o != null) {
-            if (o instanceof Weapon.Bullet || (o instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor())) return;
+            if (o instanceof Weapon.Bullet || (o instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()))
+                return;
             o.setXY(x, y);
             //SyncMotion.moveMotion(o, x, y);
         }

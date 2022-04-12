@@ -64,6 +64,13 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     serverProtocolImplListeners.forEach(l -> l.ping(connectionId));
                 }
 
+                case MessageType.CLIENT_PLAYER_HOOK -> {
+                    int hookGameObjectId = in.readInt();
+                    log.trace("received <b>CLIENT_PLAYER_HOOK<> {} {}", connectionId, hookGameObjectId);
+
+                    serverProtocolImplListeners.forEach(l -> l.playerHook(connectionId, hookGameObjectId));
+                }
+
                 case MessageType.CLIENT_DAMAGE_REPORT -> {
                     int damageValue = in.readShort();
                     int damagingGameObjectId = in.readInt();

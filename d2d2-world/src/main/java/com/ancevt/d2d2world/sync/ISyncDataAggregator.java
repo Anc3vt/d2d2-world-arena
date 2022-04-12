@@ -1,6 +1,7 @@
 package com.ancevt.d2d2world.sync;
 
 import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import org.jetbrains.annotations.NotNull;
 
 public interface ISyncDataAggregator {
@@ -84,6 +85,10 @@ public interface ISyncDataAggregator {
     }
 
     default void switchWeapon(Actor actor) {
+
+    }
+
+    default void hook(IHookable hookable, AreaHook hook) {
 
     }
 }

@@ -2,6 +2,7 @@ package com.ancevt.d2d2world.net.protocol;
 
 import com.ancevt.commons.io.ByteOutputWriter;
 import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.sync.ISyncDataAggregator;
@@ -35,7 +36,16 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public void pickUp(@NotNull PlayerActor playerActor, int pickupGameObjectId) {
+    public synchronized void hook(IHookable hookable, AreaHook hook) {
+        if (!(hookable instanceof ISynchronized)) return;
+
+        buffer.writeByte(SyncDataType.HOOK)
+                .writeInt(hookable.getGameObjectId())
+                .writeInt(hook == null ? 0 : hook.getGameObjectId());
+    }
+
+    @Override
+    public synchronized void pickUp(@NotNull PlayerActor playerActor, int pickupGameObjectId) {
         buffer.writeByte(SyncDataType.PICKUP)
                 .writeInt(playerActor.getGameObjectId())
                 .writeInt(pickupGameObjectId);
@@ -108,7 +118,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeInt(destroyable.getGameObjectId())
                 .writeShort(destroyable.getHealth());
 
-        if(damaging != null) {
+        if (damaging != null) {
             buffer.writeInt(damaging.getGameObjectId());
         } else {
             buffer.writeInt(0);

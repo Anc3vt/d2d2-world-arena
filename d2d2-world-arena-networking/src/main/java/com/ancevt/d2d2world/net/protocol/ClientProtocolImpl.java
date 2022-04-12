@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.net.protocol;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.commons.io.ByteOutputWriter;
@@ -94,6 +95,14 @@ public final class ClientProtocolImpl extends ProtocolImpl {
         } catch (Exception e) {
             log.error("message" + message.getBytes().length, e);
         }
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static byte @NotNull [] createMessageHook(int hookGameObjectId) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.CLIENT_PLAYER_HOOK)
+                .writeInt(hookGameObjectId)
+                .toByteArray();
     }
 
     public static byte[] createMessagePlayerWeaponSwitch(int delta) {

@@ -53,6 +53,10 @@ public class MessageType {
     public static final int CLIENT_DAMAGE_REPORT = 8;
 
 
+    /**
+     * b)t i)hookGameObjectId
+     */
+    public static final int CLIENT_PLAYER_HOOK = 9;
     //                                           CLIENT <=== SERVER
 
     /**

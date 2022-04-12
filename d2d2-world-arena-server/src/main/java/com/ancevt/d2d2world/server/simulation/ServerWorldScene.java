@@ -10,6 +10,7 @@ import com.ancevt.d2d2.starter.norender.NoRenderStarter;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -195,6 +196,19 @@ public class ServerWorldScene {
         SENDER.sendToPlayer(playerId, PlayerEnterRoomStartResponseDto.builder().build());
     }
 
+    /**
+     * Calls from {@link GeneralService}
+     */
+    public void playerHook(int playerId, int hookGameObjectId) {
+        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
+            World world = getWorldByGameObjectId(hookGameObjectId);
+            if (world != null) {
+                AreaHook hook = (AreaHook) world.getGameObjectById(hookGameObjectId);
+                playerActor.setHook(hook);
+            }
+        });
+    }
+
     public void sendObjectsSyncData(int playerId) {
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
             World world = playerActor.getWorld();
@@ -308,7 +322,7 @@ public class ServerWorldScene {
                     // TODO: extract to separate method
                     deadPlayerActor.setXY(32, 128);
                     deadPlayerActor.repair();
-                    world.addGameObject(deadPlayerActor, 5,  false);
+                    world.addGameObject(deadPlayerActor, 5, false);
                     SENDER.sendToAll(PlayerSpawnDto.builder()
                             .playerId(deadPlayerId.getValue())
                             .playerActorGameObjectId(deadPlayerActor.getGameObjectId())

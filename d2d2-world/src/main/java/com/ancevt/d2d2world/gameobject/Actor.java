@@ -444,6 +444,8 @@ abstract public class Actor extends Animated implements
     private void death(IDamaging damaging) {
         getMapkitItem().playSound(SoundKey.DEATH);
         setAlive(false);
+        setGravityEnabled(true);
+        setHook(null);
         health = 0;
 
         if (damaging == null) {
@@ -563,13 +565,30 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void setHook(AreaHook hook) {
-        if(hookTime == 0) {
+        if (hook == null) {
+            this.hook = null;
+            if (isOnWorld()) {
+                getWorld().getSyncDataAggregator().hook(this, null);
+            }
+            return;
+        }
+
+        if (hookTime == 0) {
             setXY(hook.getX(), hook.getY() + 24);
             setAnimation(HOOK, false);
             setGravityEnabled(false);
             this.hook = hook;
             hookTime = HOOK_TIME;
+
+            if (isOnWorld()) {
+                getWorld().getSyncDataAggregator().hook(this, hook);
+            }
         }
+
+        dispatchEvent(ActorEvent.builder()
+                .type(ActorEvent.ACTOR_HOOK)
+                .hookGameObjectId(hook.getGameObjectId())
+                .build());
     }
 
     @Override
@@ -579,7 +598,7 @@ abstract public class Actor extends Animated implements
 
     public void jump() {
         if (floor != null || getHook() != null) {
-            hook = null;
+            setHook(null);
 
             setGravityEnabled(true);
 
@@ -624,7 +643,7 @@ abstract public class Actor extends Animated implements
 
             if (c.isA() && getHook() != null && !onJump) {
                 if (c.isDown()) {
-                    hook = null;
+                    setHook(null);
                     setGravityEnabled(true);
                 } else {
                     jump();

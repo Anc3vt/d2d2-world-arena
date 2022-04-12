@@ -37,4 +37,6 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
     default void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId){}
 
     default void playerXY(int connectionId, float x, float y){}
+
+    default void playerHook(int connectionId, int hookGameObjectId) {}
 }
