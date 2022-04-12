@@ -289,8 +289,15 @@ public class PlayProcessor {
                     .findAny()
                     .orElseThrow();
 
+
             world.getMap().getRoomByGameObject(areaTarget).ifPresent(
-                    room -> world.switchRoom(room.getId(), actor, areaTarget.getX(), areaTarget.getY())
+                    room -> {
+                        if(room.getId().equals(actor.getWorld().getRoom().getId())) {
+                            actor.setXY(areaTarget.getX(), areaTarget.getY());
+                        } else {
+                            world.switchRoomWithActor(room.getId(), actor, areaTarget.getX(), areaTarget.getY());
+                        }
+                    }
             );
         }
     }

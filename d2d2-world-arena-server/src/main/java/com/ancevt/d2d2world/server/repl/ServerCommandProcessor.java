@@ -69,6 +69,16 @@ public class ServerCommandProcessor {
         repl.addCommand("fps", this::cmd_fps);
         repl.addCommand("tostring", this::cmd_tostring);
         repl.addCommand("kill", this::cmd_kill);
+        repl.addCommand("tw", this::cmd_tw);
+    }
+
+    private @NotNull Object cmd_tw(@NotNull Args args) {
+        int playerId = args.get(int.class, 0);
+        String roomId = args.get(String.class, 1);
+        float x = args.get(float.class, 2, 64f);
+        float y = args.get(float.class, 3, 64f);
+        WORLD_SCENE.instantSwitchRoomForPlayerActor(playerId, roomId, x, y);
+        return "";
     }
 
     private @Nullable Object cmd_kill(@NotNull Args args) {

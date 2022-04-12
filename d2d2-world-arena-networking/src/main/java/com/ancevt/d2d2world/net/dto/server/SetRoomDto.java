@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PlayerSpawnDto implements Dto {
-    private final int playerId;
-    private final int playerActorGameObjectId;
+public class SetRoomDto implements Dto {
+
+    private final String roomId;
+    private final float cameraX;
+    private final float cameraY;
 }

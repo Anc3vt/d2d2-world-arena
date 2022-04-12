@@ -503,9 +503,9 @@ public class WorldScene extends DisplayObjectContainer {
             overlay.startOut();
         });
 
-        localPlayerActor.addEventListener(ActorEvent.ACTOR_HOOK, event->{
+        localPlayerActor.addEventListener(ActorEvent.ACTOR_HOOK, event -> {
             var e = (ActorEvent) event;
-            if(e.getHookGameObjectId() != 0) {
+            if (e.getHookGameObjectId() != 0) {
                 CLIENT.sendHook(e.getHookGameObjectId());
             } else {
                 CLIENT.sendHook(0);
@@ -567,19 +567,18 @@ public class WorldScene extends DisplayObjectContainer {
     /**
      * Calls from {@link GameRoot}
      */
-    public void playerSpawn(int playerId, int playerActorGameObjectId) {
-        /*
-        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
-            SpawnEffect.doSpawnEffect(playerActor, world, Color.WHITE);
-            D2D2WorldSound.playSound(PLAYER_SPAWN);
-        });
-        */
+    public void remotePlayerExit(int playerId) {
     }
 
     /**
      * Calls from {@link GameRoot}
      */
-    public void remotePlayerExit(int playerId) {
+    public void setRoom(String roomId, float cameraX, float cameraY) {
+        world.setSceneryPacked(false);
+        world.setRoom(world.getMap().getRoom(roomId));
+        world.setSceneryPacked(true);
+        world.getCamera().setXY(cameraX, cameraY);
+        CLIENT.sendPlayerActorRequest();
     }
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {

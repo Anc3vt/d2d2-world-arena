@@ -11,6 +11,7 @@ import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
+import com.ancevt.d2d2world.gameobject.area.AreaSpawn;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -21,7 +22,7 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.dto.server.DeathDto;
 import com.ancevt.d2d2world.net.dto.server.PlayerEnterRoomStartResponseDto;
-import com.ancevt.d2d2world.net.dto.server.PlayerSpawnDto;
+import com.ancevt.d2d2world.net.dto.server.SetRoomDto;
 import com.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import com.ancevt.d2d2world.server.content.ServerContentManager;
 import com.ancevt.d2d2world.server.player.Player;
@@ -33,9 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +51,7 @@ public class ServerWorldScene {
     /**
      * roomId => world
      */
-    private Map<String, World> worlds;
+    private final Map<String, World> worlds;
     private GameMap gameMap;
     private FpsMeter fpsMeter;
 
@@ -177,7 +176,7 @@ public class ServerWorldScene {
         PlayerActor playerActor = WORLD_SCENE.createPlayerActor(player, mapkitItemId);
         playerActor.setVisible(true);
         playerActor.setAnimation(IDLE);
-        sendObjectsSyncData(player.getId());
+        sendGameObjectsSyncData(player.getId());
         return playerActor.getGameObjectId();
     }
 
@@ -187,7 +186,9 @@ public class ServerWorldScene {
     public void changePlayerRoom(int playerId, String roomId, float x, float y) {
         PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> player.setRoomId(roomId));
         PlayerActor playerActor = playerActorMap.get(playerId);
-        playerActor.getWorld().removeGameObject(playerActor, false);
+        if (playerActor.isOnWorld()) {
+            playerActor.getWorld().removeGameObject(playerActor, false);
+        }
 
         World worldToEnter = worlds.get(roomId);
         playerActor.setXY(x, y);
@@ -208,7 +209,7 @@ public class ServerWorldScene {
         });
     }
 
-    public void sendObjectsSyncData(int playerId) {
+    public void sendGameObjectsSyncData(int playerId) {
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
             World world = playerActor.getWorld();
             world.getSyncGameObjects().forEach(o -> {
@@ -227,23 +228,62 @@ public class ServerWorldScene {
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);
-        playerActor.setXY(80, 64);
         playerActor.setPlayerColorValue(player.getColor());
         playerActor.setName("playerActor_" + player.getName());
 
-        player.setRoomId(gameMap.getStartRoomName());
-
-        World startRoomWorld = worlds.get(gameMap.getStartRoomName());
-
-        startRoomWorld.addGameObject(playerActor, 5, false);
+        World newWorld = spawnPlayerActorToRandomSpawnPoint(player.getId(), playerActor);
         playerActor.setVisible(false);
-        playerActorMap.put(player.getId(), playerActor);
+        player.setRoomId(newWorld.getRoom().getId());
 
-        //DebugActorCreator.createTestPlayerActor(playerActor, world).setXY(50, 64);
+        playerActorMap.put(player.getId(), playerActor);
 
         log.info("Add player actor {}", playerActor);
 
         return playerActor;
+    }
+
+    public World spawnPlayerActorToRandomSpawnPoint(int playerId, PlayerActor playerActor) {
+        while (true) {
+            World world = getRandomWorld();
+            List<AreaSpawn> areas = new ArrayList<>();
+            world.getGameObjects().forEach(gameObject -> {
+                if (gameObject instanceof AreaSpawn areaSpawn && areaSpawn.isEnabled()) {
+                    areas.add(areaSpawn);
+                }
+            });
+
+            if (!areas.isEmpty()) {
+                AreaSpawn areaSpawn = areas.get(new Random().nextInt(areas.size()));
+                if (playerActor.isOnWorld()) {
+                    playerActor.getWorld().removeGameObject(playerActor, false);
+                }
+
+                float w = new Random().nextFloat(areaSpawn.getWidth());
+                float h = new Random().nextFloat(areaSpawn.getHeight());
+                playerActor.setXY(areaSpawn.getX() + w, areaSpawn.getY() + h);
+                world.addGameObject(playerActor, 5, false);
+
+                SENDER.sendToPlayer(playerId, SetRoomDto.builder()
+                        .roomId(world.getRoom().getId())
+                        .cameraX(playerActor.getX())
+                        .cameraY(playerActor.getY())
+                        .build());
+
+                return world;
+            }
+        }
+    }
+
+    private World getRandomWorld() {
+        int randomIndex = new Random().nextInt(worlds.size());
+        int i = 0;
+        for (World world : worlds.values()) {
+            if (i == randomIndex) {
+                return world;
+            }
+            i++;
+        }
+        throw new IllegalStateException("Cannot return random world");
     }
 
     public void removePlayer(@NotNull Player player) {
@@ -311,7 +351,6 @@ public class ServerWorldScene {
                     world.addGameObject(weaponPickup, 5, false);
                 }
 
-
                 // resurrect player
                 Async.runLater(2, TimeUnit.SECONDS, () -> {
                     world.removeGameObject(deadPlayerActor, false);
@@ -319,17 +358,20 @@ public class ServerWorldScene {
 
                 Async.runLater(5, TimeUnit.SECONDS, () -> {
                     // TODO: extract to separate method
-                    deadPlayerActor.setXY(32, 128);
                     deadPlayerActor.repair();
-                    world.addGameObject(deadPlayerActor, 5, false);
-                    SENDER.sendToAll(PlayerSpawnDto.builder()
-                            .playerId(deadPlayerId.getValue())
-                            .playerActorGameObjectId(deadPlayerActor.getGameObjectId())
-                            .build()
-                    );
+                    spawnPlayerActorToRandomSpawnPoint(deadPlayerId.getValue(), deadPlayerActor);
                 });
             }
         }
+    }
+
+    private String getRoomIdByWorld(World world) {
+        for (Map.Entry<String, World> entry : worlds.entrySet()) {
+            if (entry.getValue().equals(world)) {
+                return entry.getKey();
+            }
+        }
+        throw new IllegalStateException("No room for world: " + world);
     }
 
     public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
@@ -352,7 +394,55 @@ public class ServerWorldScene {
                 .orElseThrow();
     }
 
+    public void instantSwitchRoomForPlayerActor(int playerId, String roomId, float x, float y) {
+        World world = worlds.get(roomId);
+
+        if (world == null) throw new IllegalStateException("No such room '" + roomId + "'");
+
+        getPlayerActorByPlayerId(playerId).ifPresentOrElse(playerActor -> {
+
+            PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> player.setRoomId(roomId));
+
+            if (playerActor.isOnWorld()) {
+                playerActor.getWorld().removeGameObject(playerActor, false);
+            }
+
+            playerActor.setXY(x, y);
+            world.addGameObject(playerActor, 5, false);
+
+            SENDER.sendToPlayer(playerId,
+                    SetRoomDto.builder()
+                            .roomId(roomId)
+                            .cameraX(x)
+                            .cameraY(y)
+                            .build());
+
+        }, () -> {
+            throw new IllegalStateException("player hasn't player actor, player id: " + playerId);
+        });
+
+        //if (playerActor.isOnWorld() &&)
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -296,7 +296,7 @@ public class World extends DisplayObjectContainer {
         }
     }
 
-    public void switchRoom(String roomIdSwitchTo, Actor actor, float actorX, float actorY) {
+    public void switchRoomWithActor(String roomIdSwitchTo, Actor actor, float actorX, float actorY) {
         if (switchingRoomsNow) return;
 
         final Room oldRoom = currentRoom;
@@ -308,8 +308,8 @@ public class World extends DisplayObjectContainer {
                 setRoom(targetRoom);
                 overlay.setSize(targetRoom.getWidth(), targetRoom.getHeight());
                 actor.setXY(actorX, actorY);
-                addGameObject(actor, 5, false);
                 camera.setXY(actorX, actorY);
+                addGameObject(actor, 5, false);
                 camera.setAttachedTo(actor);
                 actor.setAnimation(IDLE);
                 actor.dispatchEvent(ActorEvent.builder()

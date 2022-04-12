@@ -197,9 +197,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
         } else if (dto instanceof PlayerEnterRoomStartResponseDto d) {
             clientListeners.forEach(l -> l.playerEnterRoomStartResponseReceived());
-
-        } else if (dto instanceof PlayerSpawnDto d) {
-            clientListeners.forEach(l -> l.playerSpawn(d.getPlayerId(), d.getPlayerActorGameObjectId()));
+        } else if (dto instanceof SetRoomDto d) {
+            clientListeners.forEach(l -> l.setRoom(d.getRoomId(), d.getCameraX(), d.getCameraY()));
         }
     }
 
@@ -264,6 +263,10 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
                 .x(x)
                 .y(y)
                 .build());
+    }
+
+    public void sendPlayerActorRequest() {
+        sender.send(PlayerActorRequestDto.builder().build());
     }
 
     public void sendHook(int hookGameObjectId) {
@@ -426,6 +429,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     public IConnection getConnection() {
         return connection;
     }
+
 }
 
 

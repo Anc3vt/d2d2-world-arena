@@ -394,9 +394,10 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             WORLD_SCENE.changePlayerRoom(playerId, d.getRoomId(), d.getX(), d.getY());
         } else if (dto instanceof RoomSwitchCompleteDto) {
             WORLD_SCENE.getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> playerActor.setVisible(true));
-            WORLD_SCENE.sendObjectsSyncData(playerId);
+            WORLD_SCENE.sendGameObjectsSyncData(playerId);
+        } else if (dto instanceof PlayerActorRequestDto) {
+            WORLD_SCENE.sendGameObjectsSyncData(playerId);
         }
-
     }
 
     /**

@@ -341,8 +341,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void playerSpawn(int playerId, int playerActorGameObjectId) {
-        worldScene.playerSpawn(playerId, playerActorGameObjectId);
+    public void setRoom(String roomId, float cameraX, float cameraY) {
+        worldScene.setRoom(roomId, cameraX, cameraY);
     }
 
     /**
