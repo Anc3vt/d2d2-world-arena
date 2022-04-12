@@ -253,8 +253,8 @@ public class SyncDataReceiver implements ISyncDataReceiver {
         if (o != null) {
             if (o instanceof Weapon.Bullet || (o instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()))
                 return;
-            o.setXY(x, y);
-            //SyncMotion.moveMotion(o, x, y);
+            //o.setXY(x, y);
+            SyncMotion.moveMotion(o, x, y);
         }
     }
 

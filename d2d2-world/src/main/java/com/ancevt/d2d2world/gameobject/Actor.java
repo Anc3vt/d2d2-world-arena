@@ -401,7 +401,7 @@ abstract public class Actor extends Animated implements
         if (toHealth > 0) {
             if (damagingTime > 0) return;
             setAnimation(AnimationKey.DAMAGE);
-            setVelocity(getDirection() * -2, -2);
+            //setVelocity(getDirection() * -2, -2);
         }
 
         setHealthBy(getHealth() - toHealth, damaging, false);

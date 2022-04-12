@@ -70,6 +70,8 @@ public class ArrowWeapon extends Weapon {
         private Sprite sprite;
         private boolean floorOnly;
         private boolean pushable;
+        private float oldX;
+        private float oldY;
 
         public ArrowBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
@@ -107,6 +109,8 @@ public class ArrowWeapon extends Weapon {
             sprite.setTexture(getMapkitItem().getTexture(AnimationKey.DEATH, 0));
             getMapkitItem().getMapkit().playSound("arrow-2.ogg");
 
+            setXY(oldX, oldY);
+
             if (hasParent()) {
                 IDisplayObject displayObjectContainer = Particle.miniExplosion(10, Color.GRAY, 5f);
                 displayObjectContainer.setScale(0.25f, 0.25f);
@@ -127,6 +131,9 @@ public class ArrowWeapon extends Weapon {
                     getWorld().removeGameObject(this, false);
                 }
             } else {
+                oldX = getX();
+                oldY = getY();
+
                 float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
                 move(getSpeed() * xy[0], getSpeed() * xy[1]);
             }

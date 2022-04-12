@@ -7,7 +7,9 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class SyncMotion {
 
     private static final Map<IDisplayObject, MotionState> map = new ConcurrentHashMap<>();
 
-    public static void moveMotion(IDisplayObject o, float x, float y) {
+    public static void moveMotion(@NotNull IDisplayObject o, float x, float y) {
         if(abs(o.getX() - x) > 8f || abs(o.getY() - y) > 8f) {
             o.setXY(x, y);
             return;
@@ -63,6 +65,10 @@ public class SyncMotion {
             if ((abs(tX - oX) < 1f && abs(tY - oY) < 1f)) {
                 displayObject.setXY(tX, tY);
                 //toRemove.add(displayObject);
+            }
+
+            if (displayObject instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
+                toRemove.add(displayObject);
             }
         });
 

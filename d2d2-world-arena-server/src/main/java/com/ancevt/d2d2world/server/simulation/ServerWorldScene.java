@@ -202,8 +202,7 @@ public class ServerWorldScene {
     public void playerHook(int playerId, int hookGameObjectId) {
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
             World world = getWorldByGameObjectId(hookGameObjectId);
-            if (world != null) {
-                AreaHook hook = (AreaHook) world.getGameObjectById(hookGameObjectId);
+            if (world != null && world.getGameObjectById(hookGameObjectId) instanceof AreaHook hook) {
                 playerActor.setHook(hook);
             }
         });
