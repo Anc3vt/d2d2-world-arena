@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class FireWeapon extends Weapon {
 
-
     public FireWeapon() {
         super(createSprite());
         setMaxAmmunition(100);
@@ -76,7 +75,6 @@ public class FireWeapon extends Weapon {
 
     public static class FireBullet extends Bullet implements ITight, IScalable {
 
-        private boolean setToRemove;
         private boolean floorOnly;
         private boolean pushable;
 

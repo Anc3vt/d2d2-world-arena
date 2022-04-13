@@ -155,11 +155,6 @@ public class World extends DisplayObjectContainer {
 
         camera.setBounds(room.getWidth(), room.getHeight());
 
-        if (isRoomRectVisible()) {
-            setRoomRectVisible(false);
-            setRoomRectVisible(true);
-        }
-
         currentRoom = room;
 
         update();
@@ -170,6 +165,11 @@ public class World extends DisplayObjectContainer {
                 .build());
         if (!isServer()) {
             setSceneryPacked(true);
+        }
+
+        if (isRoomRectVisible()) {
+            setRoomRectVisible(false);
+            setRoomRectVisible(true);
         }
     }
 

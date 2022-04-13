@@ -19,6 +19,7 @@ package com.ancevt.d2d2.demo;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Sprite;
@@ -49,7 +50,6 @@ public class D2D2Demo_TextureCombiner {
         root.add(sprite2, 100, 100);
 
 
-
         root.add(new FpsMeter());
         D2D2.getStage().setRoot(root);
         D2D2.loop();
@@ -66,7 +66,7 @@ public class D2D2Demo_TextureCombiner {
             int y = (int) (Math.random() * c.getHeight());
             float scale = (float) (Math.random());
 
-            c.append(textureSat, x, y, scale, scale, scale, i * 10, 2, 2);
+            c.append(textureSat, x, y, Color.WHITE, scale, scale, scale, i * 10, 2, 2);
         }
 
         for (int i = 0; i < 100; i++) {
@@ -74,7 +74,7 @@ public class D2D2Demo_TextureCombiner {
             int y = (int) (Math.random() * c.getHeight());
             float scale = (float) (Math.random());
 
-            c.append(textureTest, x, y, scale, scale, scale, i * 10, 2, 2);
+            c.append(textureTest, x, y, Color.WHITE, scale, scale, scale, i * 10, 2, 2);
         }
 
         TextureAtlas atlas = c.createTextureAtlas();
@@ -94,9 +94,9 @@ public class D2D2Demo_TextureCombiner {
 
             Sprite sprite = new Sprite(D2D2.getTextureManager().loadTextureAtlas("d2d2-logo.png").createTexture());
             root.add(sprite);
-        } else if(inputEvent.getKeyChar() == 'S') {
-            root.addEventListener(Event.EACH_FRAME, e->{
-                for(int i = 0; i < 1; i ++) {
+        } else if (inputEvent.getKeyChar() == 'S') {
+            root.addEventListener(Event.EACH_FRAME, e -> {
+                for (int i = 0; i < 1; i++) {
                     D2D2.getTextureManager().unloadTextureAtlas(sprite.getTexture().getTextureAtlas());
                     sprite.removeFromParent();
                     start();

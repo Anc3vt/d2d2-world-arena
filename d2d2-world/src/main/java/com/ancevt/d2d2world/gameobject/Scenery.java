@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.gameobject;
 
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.constant.AnimationKey;
@@ -25,7 +26,7 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
-public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotatable, IScalable, IAlphable {
+public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotatable, IScalable, IAlphable, IColored {
 
     private final int gameObjectId;
     private final MapkitItem mapkitItem;
@@ -50,7 +51,6 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
                         frameIndex = 0;
                     }
                     setTexture(mapkitItem.getTexture(AnimationKey.IDLE, frameIndex));
-
                 }
             });
         }
@@ -108,5 +108,15 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
 
     public boolean isStatic() {
         return mapkitItem.getTextureCount(AnimationKey.IDLE) == 1;
+    }
+
+    @Override
+    public void setColorHex(String colorHex) {
+        setColor(Color.of(Integer.parseInt(colorHex, 16)));
+    }
+
+    @Override
+    public String getColorHex() {
+        return getColor().toHexString();
     }
 }

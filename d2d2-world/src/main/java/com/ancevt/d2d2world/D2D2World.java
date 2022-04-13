@@ -51,6 +51,10 @@ public class D2D2World {
         return getTextureManager().getTexture("d2d2-world-common-tileset-spawn-effect");
     }
 
+    public static Texture getWaterBubbleTexture() {
+        return getTextureManager().getTexture("d2d2-world-common-tileset-water-bubble");
+    }
+
     public static boolean isServer() {
         return server;
     }

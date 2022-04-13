@@ -82,6 +82,54 @@ public class Particle extends DisplayObjectContainer {
         return doc;
     }
 
+    public static @NotNull IDisplayObject water(int amount, Color color, float factor) {
+        DisplayObjectContainer doc = new DisplayObjectContainer() {
+
+            int time = 250;
+
+            @Override
+            public void onEachFrame() {
+                super.onEachFrame();
+                time--;
+                if (time <= 0) {
+                    removeFromParent();
+                }
+            }
+        };
+
+        for (int i = 0; i < amount; i++) {
+
+            Particle p = new Particle() {
+
+                {
+                    setScale((float) (random() + 1f), (float) (random() + 1f));
+                }
+
+                float b = (float) (factor * random() - factor / 2);
+                float t = -(float) (factor * random() - factor / 2);
+
+                @Override
+                public void onEachFrame() {
+                    super.onEachFrame();
+                    move(b, t);
+                    toAlpha(0.9f);
+                    toScale(1.001f, 1.001f);
+                    rotate(45);
+                    t += 0.1f;
+                    if(getY() > 0) {
+                        setY(0);
+                        t = 0;
+                    }
+                }
+            };
+
+            p.setColor(color);
+            doc.add(p);
+        }
+
+        return doc;
+    }
+
 
     public static @NotNull IDisplayObject bloodExplosion(int amount, Color color) {
         DisplayObjectContainer doc = new DisplayObjectContainer() {

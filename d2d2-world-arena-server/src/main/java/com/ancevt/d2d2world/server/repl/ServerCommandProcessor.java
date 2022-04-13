@@ -227,7 +227,7 @@ public class ServerCommandProcessor {
         TextTable table = new TextTable();
         table.setDecorEnabled(false);
         table.setColumnNames(new String[]{
-                "id", "hash", "name", "color", "clntProtVer", "address", "ping"
+                "id", "hash", "name", "color", "clntProtVer", "address", "ping", "room"
         });
 
         PLAYER_MANAGER.getPlayerList().forEach(p -> {
@@ -239,7 +239,7 @@ public class ServerCommandProcessor {
                     p.getClientProtocolVersion(),
                     p.getAddress(),
                     p.getPingValue(),
-                    p.getLastSeenChatMessageId()
+                    p.getRoomId()
             );
         });
 

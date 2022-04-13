@@ -104,6 +104,7 @@ abstract public class Actor extends Animated implements
     private float startY;
     private float startX;
     private AreaHook hook;
+    private int tact;
 
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -146,7 +147,7 @@ abstract public class Actor extends Animated implements
         getController().setControllerChangeListener(c -> setAnimation(IDLE));
     }
 
-    private void resetWeapons() {
+    public void resetWeapons() {
         weapons.clear();
         addWeapon(StandardWeapon.class, 100);
         setCurrentWeaponClass(StandardWeapon.class);
@@ -609,7 +610,14 @@ abstract public class Actor extends Animated implements
     }
 
     @Override
+    public int tact() {
+        return tact;
+    }
+
+    @Override
     public void process() {
+        tact++;
+
         if (attackTime > 0) {
             if (getVelocityY() == 0) setAnimation(ATTACK);
         }
@@ -649,6 +657,9 @@ abstract public class Actor extends Animated implements
                     jump();
                 }
                 jumpTime = JUMP_TIME;
+            } else if (c.isDown() && getHook() != null && !onJump) {
+                setHook(null);
+                setGravityEnabled(true);
             }
 
             if (!c.isA() && (getFloor() != null || getHook() != null)) onJump = false;

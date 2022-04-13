@@ -129,13 +129,9 @@ public class GameObjectEditor {
             } else {
 
                 switch (keyChar) {
-                    case 'C' -> {
-                        setCollisionsVisible(!isCollisionsVisible());
-                    }
+                    case 'C' -> setCollisionsVisible(!isCollisionsVisible());
 
-                    case 'B' -> {
-                        getWorld().getCamera().setBoundsLock(!getWorld().getCamera().isBoundsLock());
-                    }
+                    case 'B' -> getWorld().getCamera().setBoundsLock(!getWorld().getCamera().isBoundsLock());
 
                     case 'P' -> {
                         editor.setEnabled(false);
@@ -151,13 +147,9 @@ public class GameObjectEditor {
                         setInfoText("Snap to grid: " + isSnapToGrid());
                     }
 
-                    case 'R' -> {
-                        editor.showRoomInfo();
-                    }
+                    case 'R' -> editor.showRoomInfo();
 
-                    case 'Q' -> {
-                        getWorld().reset();
-                    }
+                    case 'Q' -> getWorld().reset();
 
                     case 'V' -> {
                         getWorld().setAreasVisible(!getWorld().isAreasVisible());

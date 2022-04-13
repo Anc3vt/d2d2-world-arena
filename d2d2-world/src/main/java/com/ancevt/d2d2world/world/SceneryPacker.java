@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.world;
 
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureCombiner;
 import com.ancevt.d2d2world.gameobject.IGameObject;
@@ -44,8 +45,8 @@ public class SceneryPacker {
                     float rotation = scenery.getRotation();
                     int repeatX = scenery.getRepeatX();
                     int repeatY = scenery.getRepeatY();
-
-                    comb.append(textureRegion, x, y, scaleX, scaleY, alpha, rotation, repeatX, repeatY);
+                    Color color = scenery.getColor();
+                    comb.append(textureRegion, x, y, color, scaleX, scaleY, alpha, rotation, repeatX, repeatY);
                 }
             }
         }

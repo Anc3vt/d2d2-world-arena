@@ -17,10 +17,6 @@
  */
 package com.ancevt.d2d2.starter.lwjgl;
 
-import com.filters.GaussianFilter;
-import com.filters.LensBlurFilter;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL30;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.asset.Assets;
 import com.ancevt.d2d2.display.text.BitmapCharInfo;
@@ -30,6 +26,10 @@ import com.ancevt.d2d2.display.texture.ITextureEngine;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.display.texture.TextureCell;
+import com.filters.GaussianFilter;
+import com.filters.LensBlurFilter;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL30;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -165,7 +165,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        if(texturePreprocessingEnabled) {
+        if (texturePreprocessingEnabled) {
             var f = new GaussianFilter(1.5f);
             image = f.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 //            var f2 = new GlowFilter();
@@ -247,7 +247,17 @@ public class LWJGLTextureEngine implements ITextureEngine {
         float scaleX = cell.getScaleX();
         float scaleY = cell.getScaleY();
 
+
         BufferedImage imageRegion = textureRegionToImage(cell.getTexture());
+
+        final java.awt.Color awtColor
+                = new java.awt.Color(
+                1f / cell.getColor().getR(),
+                1f / cell.getColor().getG(),
+                1f / cell.getColor().getB(),
+                cell.getAlpha()
+        );
+        g.setColor(awtColor);
 
         int width = cell.getTexture().width() * repeatX;
         int height = cell.getTexture().height() * repeatY;
@@ -269,6 +279,8 @@ public class LWJGLTextureEngine implements ITextureEngine {
                 );
             }
         }
+
+        g.setColor(Color.WHITE);
     }
 
     @Override

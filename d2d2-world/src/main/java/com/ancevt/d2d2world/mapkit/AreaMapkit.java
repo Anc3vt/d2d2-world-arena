@@ -42,6 +42,7 @@ public class AreaMapkit extends Mapkit {
         putItem(new AreaMapkitItem(this, "hook", AreaHook.class, AreaHook.FILL_COLOR));
         putItem(new AreaMapkitItem(this, "target", AreaTarget.class, AreaTarget.FILL_COLOR));
         putItem(new AreaMapkitItem(this, "spawn", AreaSpawn.class, AreaSpawn.FILL_COLOR));
+        putItem(new AreaMapkitItem(this, "water", AreaWater.class, AreaWater.FILL_COLOR));
     }
 
     private static class AreaMapkitItem extends MapkitItem {

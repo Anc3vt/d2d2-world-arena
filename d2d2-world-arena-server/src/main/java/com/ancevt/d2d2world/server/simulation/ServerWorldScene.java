@@ -258,6 +258,8 @@ public class ServerWorldScene {
                     playerActor.getWorld().removeGameObject(playerActor, false);
                 }
 
+                PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> player.setRoomId(getRoomIdByWorld(world)));
+
                 float w = new Random().nextFloat(areaSpawn.getWidth());
                 float h = new Random().nextFloat(areaSpawn.getHeight());
                 playerActor.setXY(areaSpawn.getX() + w, areaSpawn.getY() + h);

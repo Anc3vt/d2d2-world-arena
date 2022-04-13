@@ -17,12 +17,12 @@
  */
 package com.ancevt.d2d2.display.texture;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.text.BitmapText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TextureCombiner {
 	private final List<TextureCell> cells;
@@ -49,6 +49,7 @@ public class TextureCombiner {
 			final Texture texture,
 			final int x,
 			final int y,
+			final Color color,
 			final float scaleX,
 			final float scaleY,
 			final float alpha,
@@ -59,6 +60,7 @@ public class TextureCombiner {
 		final TextureCell cell = new TextureCell();
 		cell.setX(x);
 		cell.setY(y);
+		cell.setColor(color);
 		cell.setTexture(texture);
 		cell.setScaleX(scaleX);
 		cell.setScaleY(scaleY);

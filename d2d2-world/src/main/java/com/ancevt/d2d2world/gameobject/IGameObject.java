@@ -31,6 +31,10 @@ public interface IGameObject extends IDisplayObject, IProcessable {
         return DefaultMaps.extraMap.computeIfAbsent(this, k -> new HashMap<>());
     }
 
+    default int tact() {
+        return 0;
+    }
+
     int getGameObjectId();
 
     @Property

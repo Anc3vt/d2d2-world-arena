@@ -137,7 +137,10 @@ public class PlayProcessor {
             processTight(tight1, tight2);
         }
         if (o1 instanceof Actor actor && o2 instanceof AreaDoorTeleport areaDoorTeleport) {
-            processDoorTeleport(actor, areaDoorTeleport);
+            processDoorTeleportActor(actor, areaDoorTeleport);
+        }
+        if (o1 instanceof Weapon.Bullet bullet && o2 instanceof AreaDoorTeleport areaDoorTeleport) {
+            processDoorTeleportBullet(bullet, areaDoorTeleport);
         }
         if (o1 instanceof IHookable hookable && o2 instanceof AreaHook areaHook) {
             processHook(hookable, areaHook);
@@ -163,7 +166,7 @@ public class PlayProcessor {
         }
     }
 
-    private void processHook(@NotNull IHookable o, AreaHook hook) {
+    private void processHook(@NotNull IHookable o, @NotNull AreaHook hook) {
         if (o.getCollisionY() + o.getY() > hook.getY()) {
             o.setHook(hook);
         }
@@ -201,7 +204,7 @@ public class PlayProcessor {
 
         if (!(o2 instanceof Weapon.Bullet)) {
             if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
-                o1.setX(x2 - w1 - tx1 - 1);
+                o1.setX(x2 - w1 - tx1 - 2);
                 getPushState(o1).pushFromRight().tightFromRight = o2;
                 wallHitTest = true;
             }
@@ -277,9 +280,24 @@ public class PlayProcessor {
         o.move(o.getVelocityX(), o.getVelocityY());
     }
 
-    private void processDoorTeleport(Actor actor, AreaDoorTeleport area) {
-        if (world.isSwitchingRoomsNow() || isServer()) return;
+    private void processDoorTeleportBullet(Weapon.Bullet bullet, @NotNull AreaDoorTeleport area) {
+        String targetAreaName = area.getTargetAreaName();
 
+        AreaTarget areaTarget = (AreaTarget) world.getMap().getAllGameObjectsFromAllRooms().stream()
+                .filter(gameObject -> gameObject instanceof AreaTarget)
+                .filter(gameObject -> gameObject.getName().equals(targetAreaName))
+                .findAny()
+                .orElseThrow();
+
+        world.getMap().getRoomByGameObject(areaTarget).ifPresent(room -> {
+            if (room.getId().equals(bullet.getWorld().getRoom().getId())) {
+                bullet.setXY(areaTarget.getX(), areaTarget.getY());
+            }
+        });
+    }
+
+    private void processDoorTeleportActor(Actor actor, AreaDoorTeleport area) {
+        if (world.isSwitchingRoomsNow() || isServer()) return;
         if (actor instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
             String targetAreaName = area.getTargetAreaName();
 
@@ -290,15 +308,13 @@ public class PlayProcessor {
                     .orElseThrow();
 
 
-            world.getMap().getRoomByGameObject(areaTarget).ifPresent(
-                    room -> {
-                        if(room.getId().equals(actor.getWorld().getRoom().getId())) {
-                            actor.setXY(areaTarget.getX(), areaTarget.getY());
-                        } else {
-                            world.switchRoomWithActor(room.getId(), actor, areaTarget.getX(), areaTarget.getY());
-                        }
-                    }
-            );
+            world.getMap().getRoomByGameObject(areaTarget).ifPresent(room -> {
+                if (room.getId().equals(actor.getWorld().getRoom().getId())) {
+                    actor.setXY(areaTarget.getX(), areaTarget.getY());
+                } else {
+                    world.switchRoomWithActor(room.getId(), actor, areaTarget.getX(), areaTarget.getY());
+                }
+            });
         }
     }
 

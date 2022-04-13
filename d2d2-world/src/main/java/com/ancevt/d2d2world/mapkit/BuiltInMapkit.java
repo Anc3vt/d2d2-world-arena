@@ -21,6 +21,7 @@ import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.gameobject.Fire;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.Scenery;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.*;
@@ -88,6 +89,20 @@ public class BuiltInMapkit extends Mapkit {
                         | collisionY = -16
                         | collisionWidth = 16
                         | collisionHeight = 16
+                        | atlas=$ATLAS$
+                        """);
+
+                add("""
+                        id = water_scenery_surface
+                        | class = """ + Scenery.class.getName() + """
+                        | idle = 112,16,16,4 v 4
+                        | atlas=$ATLAS$
+                        """);
+
+                add("""
+                        id = water_scenery
+                        | class = """ + Scenery.class.getName() + """
+                        | idle = 128,16,16,16; 144,16,16,16
                         | atlas=$ATLAS$
                         """);
 
@@ -198,6 +213,16 @@ public class BuiltInMapkit extends Mapkit {
                         | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
                         | atlas = $ATLAS$
                         | idle = 32,0,16,16 h 2
+                        """);
+
+                add("""
+                        id = bullet_of_""" + TripleLazerWeapon.class.getSimpleName() + """
+                        | class =""" + TripleLazerWeapon.TripleLazerBullet.class.getName() + """
+                        | damagingPower = 15
+                        | speed = 12d
+                        | collisionX = -5 | collisionY = -2 | collisionWidth = 10 | collisionHeight = 4
+                        | atlas = $ATLAS$
+                        | idle = 32,144,52,16
                         """);
 
                 add("""
