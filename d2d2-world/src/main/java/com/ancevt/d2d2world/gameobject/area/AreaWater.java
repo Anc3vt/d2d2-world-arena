@@ -12,7 +12,7 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AreaWater extends Area {
+public class AreaWater extends Area implements IDamaging {
 
     public static final Color FILL_COLOR = Color.DARK_BLUE;
     private static final Color STROKE_COLOR = Color.ORANGE;
@@ -21,6 +21,7 @@ public class AreaWater extends Area {
     private int splashSoundTime;
 
     private Map<IGameObject, Integer> actorTacts;
+    private int damagingPower;
 
     public AreaWater(MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -56,6 +57,13 @@ public class AreaWater extends Area {
             if (s.getSpeed() > 2.5f) s.setSpeed(2.5f);
         }
         if (collideWith instanceof Actor a) {
+
+            if(a.getY() + a.getCollisionY() > getY()) {
+                a.underWater(this);
+            } else {
+                a.resetUnderWater();
+            }
+
             if (a.getController().isA()) {
                 a.setVelocityY(a.getVelocityY() - 0.5f);
 
@@ -119,6 +127,26 @@ public class AreaWater extends Area {
         bubble.setXY(getX() + (float) (Math.random() * getWidth()), getY() + getHeight());
         getParent().add(bubble);
         return bubble;
+    }
+
+    @Override
+    public void setDamagingPower(int damagingPower) {
+        this.damagingPower = damagingPower;
+    }
+
+    @Override
+    public int getDamagingPower() {
+        return damagingPower;
+    }
+
+    @Override
+    public void setDamagingOwnerActor(Actor actor) {
+
+    }
+
+    @Override
+    public Actor getDamagingOwnerActor() {
+        return null;
     }
 
     private static class Bubble extends Sprite {

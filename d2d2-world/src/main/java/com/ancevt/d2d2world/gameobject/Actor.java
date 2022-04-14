@@ -28,6 +28,7 @@ import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
+import com.ancevt.d2d2world.gameobject.area.AreaWater;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -59,6 +60,7 @@ abstract public class Actor extends Animated implements
     private static final int DAMAGING_TIME = 14;
     private static final int WEAPON_SWITCH_TIME = 4;
     private static final int HOOK_TIME = 20;
+    private static final int UNDER_WATER_TIME = 2000;
 
     private final FramedSprite framedDoHead;
     private final List<Weapon> weapons;
@@ -71,6 +73,7 @@ abstract public class Actor extends Animated implements
     private int damagingTime;
     private int hookTime;
     private int weaponSwitchTime;
+    private int underWaterTime;
     private boolean onJump;
 
     private int health, maxHealth;
@@ -105,6 +108,7 @@ abstract public class Actor extends Animated implements
     private float startX;
     private AreaHook hook;
     private int tact;
+    private AreaWater areaWater;
 
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -145,6 +149,115 @@ abstract public class Actor extends Animated implements
         setDirection(Direction.RIGHT);
         setController(new Controller());
         getController().setControllerChangeListener(c -> setAnimation(IDLE));
+    }
+
+    @Override
+    public void process() {
+        tact++;
+
+        if (attackTime > 0) {
+            if (getVelocityY() == 0) setAnimation(ATTACK);
+        }
+
+        Controller c = getController();
+
+        boolean left = c.isLeft();
+        boolean right = c.isRight();
+
+        if (isAlive()) {
+
+            if (left || right) {
+                int direction = left ? -1 : 1;
+                go(direction);
+
+                if (attackTime == 0 && !c.isB()) {
+                    setAnimation(AnimationKey.WALK);
+                } else {
+                    setAnimation(AnimationKey.WALK_ATTACK);
+                }
+            }
+
+            if (c.isB()) {
+                if (attackTime == 0) attack();
+            }
+
+            if (c.isA() && getFloor() != null && !onJump) {
+                jump();
+                jumpTime = JUMP_TIME;
+            }
+
+            if (c.isA() && getHook() != null && !onJump) {
+                if (c.isDown()) {
+                    setHook(null);
+                    setGravityEnabled(true);
+                } else {
+                    jump();
+                }
+                jumpTime = JUMP_TIME;
+            } else if (c.isDown() && getHook() != null && !onJump) {
+                setHook(null);
+                setGravityEnabled(true);
+            }
+
+            if (!c.isA() && (getFloor() != null || getHook() != null)) onJump = false;
+        }
+
+        if (attackTime >= 1) attackTime--;
+
+        if (jumpTime > 0) {
+            jumpTime--;
+            if (c.isA()) setVelocityY(getVelocityY() - 1f);
+        }
+
+        if (getFloor() == null) {
+            setAnimation(
+                    getVelocityY() < 0 ?
+                            (attackTime == 0 ? AnimationKey.JUMP : AnimationKey.JUMP_ATTACK) :
+                            (attackTime == 0 ? AnimationKey.FALL : AnimationKey.FALL_ATTACK)
+            );
+
+        } else if (getFloor() instanceof final IMovable movableFloor) {
+            final float toX = movableFloor.getMovingSpeedX();
+            final float toY = movableFloor.getMovingSpeedY();
+
+            if (toY != 0) {
+                setVelocityY(toY);
+                //moveY(toY);
+            }
+            if (toX != 0) {
+                setVelocityX(getVelocityX() + toX / 3);
+                //moveX(toX);
+            }
+        }
+
+        setMovingSpeedX(0f);
+        setMovingSpeedY(0f);
+
+        if (weaponSwitchTime > 0) weaponSwitchTime--;
+
+        if (hookTime > 0 && getHook() == null) hookTime--;
+
+        if (underWaterTime >= UNDER_WATER_TIME) {
+            damage(5, areaWater);
+            underWaterTime = UNDER_WATER_TIME - 200;
+        }
+
+        if (underWaterTime > 0) {
+            underWaterTime--;
+        }
+
+        if (getHealth() < 26 && tact % 50 == 0) {
+            setHealth(getHealth() + 1);
+        }
+    }
+
+    public void underWater(AreaWater areaWater) {
+        this.areaWater = areaWater;
+        underWaterTime += 2;
+    }
+
+    public void resetUnderWater() {
+        underWaterTime = 0;
     }
 
     public void resetWeapons() {
@@ -612,93 +725,6 @@ abstract public class Actor extends Animated implements
     @Override
     public int tact() {
         return tact;
-    }
-
-    @Override
-    public void process() {
-        tact++;
-
-        if (attackTime > 0) {
-            if (getVelocityY() == 0) setAnimation(ATTACK);
-        }
-
-        Controller c = getController();
-
-        boolean left = c.isLeft();
-        boolean right = c.isRight();
-
-        if (isAlive()) {
-
-            if (left || right) {
-                int direction = left ? -1 : 1;
-                go(direction);
-
-                if (attackTime == 0 && !c.isB()) {
-                    setAnimation(AnimationKey.WALK);
-                } else {
-                    setAnimation(AnimationKey.WALK_ATTACK);
-                }
-            }
-
-            if (c.isB()) {
-                if (attackTime == 0) attack();
-            }
-
-            if (c.isA() && getFloor() != null && !onJump) {
-                jump();
-                jumpTime = JUMP_TIME;
-            }
-
-            if (c.isA() && getHook() != null && !onJump) {
-                if (c.isDown()) {
-                    setHook(null);
-                    setGravityEnabled(true);
-                } else {
-                    jump();
-                }
-                jumpTime = JUMP_TIME;
-            } else if (c.isDown() && getHook() != null && !onJump) {
-                setHook(null);
-                setGravityEnabled(true);
-            }
-
-            if (!c.isA() && (getFloor() != null || getHook() != null)) onJump = false;
-        }
-
-        if (attackTime >= 1) attackTime--;
-
-        if (jumpTime > 0) {
-            jumpTime--;
-            if (c.isA()) setVelocityY(getVelocityY() - 1f);
-        }
-
-        if (getFloor() == null) {
-            setAnimation(
-                    getVelocityY() < 0 ?
-                            (attackTime == 0 ? AnimationKey.JUMP : AnimationKey.JUMP_ATTACK) :
-                            (attackTime == 0 ? AnimationKey.FALL : AnimationKey.FALL_ATTACK)
-            );
-
-        } else if (getFloor() instanceof final IMovable movableFloor) {
-            final float toX = movableFloor.getMovingSpeedX();
-            final float toY = movableFloor.getMovingSpeedY();
-
-            if (toY != 0) {
-                setVelocityY(toY);
-                //moveY(toY);
-            }
-            if (toX != 0) {
-                setVelocityX(getVelocityX() + toX / 3);
-                //moveX(toX);
-            }
-        }
-
-        setMovingSpeedX(0f);
-        setMovingSpeedY(0f);
-
-        if (weaponSwitchTime > 0) weaponSwitchTime--;
-
-        if (hookTime > 0 && getHook() == null) hookTime--;
     }
 
     public boolean isOnJump() {
