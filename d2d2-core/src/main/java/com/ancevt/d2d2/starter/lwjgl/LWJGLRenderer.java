@@ -128,7 +128,6 @@ public class LWJGLRenderer implements IRenderer {
 
         float a = displayObject.getAlpha() * toAlpha;
 
-
         GL30.glPushMatrix();
         GL30.glTranslatef(x, y, 0);
         GL30.glRotatef(r, 0, 0, 1);
@@ -151,7 +150,7 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glPopMatrix();
     }
 
-    private void renderSprite(Sprite sprite, float alpha, float scaleX, float scaleY) {
+    private void renderSprite(ISprite sprite, float alpha, float scaleX, float scaleY) {
         Texture texture = sprite.getTexture();
 
         if (texture == null) return;
@@ -206,7 +205,7 @@ public class LWJGLRenderer implements IRenderer {
 
                 GL30.glBegin(GL30.GL_QUADS);
 
-                final double bleedingFix = 0.0005;
+                final double bleedingFix = sprite.getBleedingFix();
 
                 // L
                 GL30.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);

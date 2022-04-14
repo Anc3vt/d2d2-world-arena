@@ -44,13 +44,17 @@ public class AreaWater extends Area implements IDamaging {
             }
 
             if (g.getY() < getY()) {
-                var p = Particle.water((int) (5 * g.getVelocityY()), Color.WHITE, g.getVelocityY());
+
+                float vel = 4f;
+
+                var p = Particle.water(5, Color.WHITE, vel);
                 p.setScale(0.5f, 0.5f);
-                getParent().add(p, g.getX(), getY() - 16);
-                if(splashSoundTime == 0) {
+                getWorld().add(p, g.getX(), getY() - 16);
+                if (splashSoundTime == 0) {
                     BuiltInMapkit.getInstance().playSound("splash.ogg");
                     splashSoundTime = SPLASH_SOUND_TIME;
                 }
+
             }
         }
         if (collideWith instanceof ISpeedable s) {
@@ -58,7 +62,7 @@ public class AreaWater extends Area implements IDamaging {
         }
         if (collideWith instanceof Actor a) {
 
-            if(a.getY() + a.getCollisionY() > getY()) {
+            if (a.getY() + a.getCollisionY() > getY()) {
                 a.underWater(this);
             } else {
                 a.resetUnderWater();
@@ -69,7 +73,7 @@ public class AreaWater extends Area implements IDamaging {
 
                 Integer tact = actorTacts.computeIfAbsent(a, k -> 0);
                 tact++;
-                if(tact < 25) {
+                if (tact < 25) {
                     a.setAnimation(AnimationKey.JUMP);
                 } else {
                     a.setAnimation(AnimationKey.FALL);
@@ -77,7 +81,7 @@ public class AreaWater extends Area implements IDamaging {
 
                 actorTacts.put(a, tact);
 
-                if(tact > 50) {
+                if (tact > 50) {
                     actorTacts.put(a, 0);
                 }
             }
@@ -93,8 +97,8 @@ public class AreaWater extends Area implements IDamaging {
             createBubble();
         }
 
-        if(splashSoundTime > 0) {
-            splashSoundTime --;
+        if (splashSoundTime > 0) {
+            splashSoundTime--;
         }
     }
 

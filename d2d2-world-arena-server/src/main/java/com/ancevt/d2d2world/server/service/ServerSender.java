@@ -90,11 +90,7 @@ public class ServerSender {
     }
 
     public void sendToAllOfRoom(byte[] bytes, String roomId) {
-        PLAYER_MANAGER.getPlayerListInRoom(roomId).forEach(
-                player -> {
-                    player.getConnection().send(bytes);
-                }
-        );
+        PLAYER_MANAGER.getPlayerListInRoom(roomId).forEach(player -> player.getConnection().send(bytes));
     }
 
     public void sendToAllOfRoomExcluding(byte[] bytes, String roomId, int excludingPlayerId) {

@@ -142,10 +142,9 @@ public class PlayerActor extends Actor {
     @Override
     public String toString() {
         return "PlayerActor{" +
-                "localPlayerActor=" + localPlayerActor +
-                ", localAim=" + localAim +
-                ", playerColor=" + playerColor +
-                ", humanControllable=" + humanControllable +
+                "name=" + getName() +
+                ", gameObjectId=" + getGameObjectId() +
+                ", localPlayerActor=" + localPlayerActor +
                 '}';
     }
 }

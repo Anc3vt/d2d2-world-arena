@@ -65,7 +65,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     public static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
-    private final ServerConfig serverConfig = ServerConfig.MODULE_SERVER_CONFIG;
+    private final ServerConfig serverConfig = ServerConfig.CONFIG;
     private final IServer serverUnit = ServerUnit.MODULE_SERVER_UNIT.server;
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
     private final ServerSender serverSender = SENDER;

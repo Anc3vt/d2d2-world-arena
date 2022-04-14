@@ -122,10 +122,13 @@ public class WorldScene extends DisplayObjectContainer {
                             setY(world.getRoom().getHeight() + world.getRoom().getHeight() / 2f);
                         }
                     }
+
+                    float scale = (float) (Math.random() * 2 + 5);
+                    setScale(scale, scale);
                 }
             }
         };
-        shadowRadial.setColor(Color.YELLOW);
+        shadowRadial.setColor(Color.BLACK);
         shadowRadial.setScale(2f, 2f);
         //world.add(shadowRadial);
 
@@ -463,6 +466,13 @@ public class WorldScene extends DisplayObjectContainer {
                     }
                 };
                 ChatHint finalChatHint = chatHint;
+                playerActor.getWorld().addEventListener(WorldEvent.REMOVE_GAME_OBJECT, event -> {
+                    var e = (WorldEvent) event;
+                    ChatHint chatHint1 = (ChatHint) e.getGameObject().extra().get(ChatHint.class.getName());
+                    if (chatHint1 != null) {
+                        chatHint1.removeFromParent();
+                    }
+                });
                 playerActor.addEventListener(Event.REMOVE_FROM_STAGE, event -> {
                     finalChatHint.removeFromParent();
                 });

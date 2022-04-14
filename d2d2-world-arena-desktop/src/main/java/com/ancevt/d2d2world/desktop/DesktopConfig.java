@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
@@ -48,6 +49,7 @@ public class DesktopConfig {
     public static final String FULLSCREEN = "fullscreen";
     public static final String DEBUG_WINDOW_SIZE = "debug.window-size";
     public static final String SOUND_ENABLED = "sound-enabled";
+    public static final String DEBUG_WINDOW_XY = "debug.window-xy";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "");
@@ -65,6 +67,13 @@ public class DesktopConfig {
     private DesktopConfig() {
         properties = new Properties();
         changeListeners = new ArrayList<>();
+    }
+
+    public void ifKeyPresent(String key, Consumer<String> valueConsumer) {
+        String value = getString(key);
+        if (!value.equals("")) {
+            valueConsumer.accept(value);
+        }
     }
 
     public void addConfigChangeListener(ConfigChangeListener listener) {

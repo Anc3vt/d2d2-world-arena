@@ -22,6 +22,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Slowing;
+import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,7 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
     private int frameCounter;
     private int frameIndex;
     private World world;
+    private boolean isStatic;
 
     public Scenery(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
@@ -53,7 +55,21 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
                     setTexture(mapkitItem.getTexture(AnimationKey.IDLE, frameIndex));
                 }
             });
+        } else {
+            isStatic = true;
         }
+    }
+
+    @Override
+    @Property
+    public void setBleedingFix(float v) {
+        super.setBleedingFix(v);
+    }
+
+    @Override
+    @Property
+    public float getBleedingFix() {
+        return super.getBleedingFix();
     }
 
     @Override
@@ -106,8 +122,15 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
         return getTexture().height();
     }
 
+    @Property
+    public void setStatic(boolean b) {
+        isStatic = b;
+    }
+
+
+    @Property
     public boolean isStatic() {
-        return mapkitItem.getTextureCount(AnimationKey.IDLE) == 1;
+        return mapkitItem.getTextureCount(AnimationKey.IDLE) == 1 && isStatic;
     }
 
     @Override

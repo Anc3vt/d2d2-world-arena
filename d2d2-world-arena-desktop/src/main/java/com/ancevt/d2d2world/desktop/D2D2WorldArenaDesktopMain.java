@@ -35,6 +35,7 @@ import java.util.StringTokenizer;
 
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
+import static java.lang.Integer.parseInt;
 
 @Slf4j
 public class D2D2WorldArenaDesktopMain {
@@ -84,9 +85,17 @@ public class D2D2WorldArenaDesktopMain {
         String debugScreenSize = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
         if (!debugScreenSize.equals("")) {
             StringTokenizer tokenizer = new StringTokenizer(debugScreenSize, "x");
-            int width = Integer.parseInt(tokenizer.nextToken());
-            int height = Integer.parseInt(tokenizer.nextToken());
+            int width = parseInt(tokenizer.nextToken());
+            int height = parseInt(tokenizer.nextToken());
             D2D2.getStarter().setSize(width, height);
+        }
+
+        String debugWindowLocation = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_XY);
+        if (!debugWindowLocation.equals("")) {
+            StringTokenizer tokenizer = new StringTokenizer(debugWindowLocation, ",");
+            int x = parseInt(tokenizer.nextToken());
+            int y = parseInt(tokenizer.nextToken());
+            D2D2.getStarter().setWindowXY(x, y);
         }
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);

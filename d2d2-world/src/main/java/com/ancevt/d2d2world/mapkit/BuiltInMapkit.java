@@ -102,7 +102,9 @@ public class BuiltInMapkit extends Mapkit {
                 add("""
                         id = water_scenery
                         | class = """ + Scenery.class.getName() + """
-                        | idle = 128,16,16,16; 144,16,16,16
+                        | idle = 128,16,16,16
+                        | static = false
+                        | bleedingFix = 0.00005
                         | atlas=$ATLAS$
                         """);
 

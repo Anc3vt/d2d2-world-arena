@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
+import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
+import static com.ancevt.d2d2world.server.ServerConfig.DEBUG_FORCED_SPAWN_AREA;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
@@ -103,6 +105,17 @@ public class ServerWorldScene {
             long timeBefore = System.currentTimeMillis();
             gameMap = MapIO.load(scmMap.filename());
             log.info("Map '{}' loaded {}ms", mapName, System.currentTimeMillis() - timeBefore);
+
+
+            CONFIG.ifKeyPresent(DEBUG_FORCED_SPAWN_AREA, value -> {
+                gameMap.getAllGameObjectsFromAllRooms().stream()
+                        .filter(gameObject -> gameObject instanceof AreaSpawn)
+                        .forEach(gameObject -> {
+                            AreaSpawn areaSpawn = (AreaSpawn) gameObject;
+                            if (!areaSpawn.getName().equals(value)) areaSpawn.setEnabled(false);
+                        });
+            });
+
 
             gameMap.getRooms().forEach(room -> {
                 World world = new World(new SyncDataAggregator());

@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
@@ -36,7 +37,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Slf4j
 public class ServerConfig {
 
-    public static final ServerConfig MODULE_SERVER_CONFIG = new ServerConfig();
+    public static final ServerConfig CONFIG = new ServerConfig();
 
     private static final String FILE_NAME = "d2d2-world-arena-server.conf";
 
@@ -50,6 +51,7 @@ public class ServerConfig {
     public static final String WORLD_DEFAULT_MAP = "world.default-map";
     public static final String WORLD_DEFAULT_MOD = "world.default-mod";
     public static final String CONTENT_COMPRESSION = "content.compression";
+    public static final String DEBUG_FORCED_SPAWN_AREA = "debug.forced-spawn-area";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER_NAME, "D2D2 World Arena Server");
@@ -97,6 +99,13 @@ public class ServerConfig {
             return parseInt(properties.getProperty(key, String.valueOf(defaults.get(key))));
         } catch (NumberFormatException ex) {
             return 0;
+        }
+    }
+
+    public void ifKeyPresent(String key, Consumer<String> valueConsumer) {
+        String value = getString(key);
+        if (!value.equals("")) {
+            valueConsumer.accept(value);
         }
     }
 

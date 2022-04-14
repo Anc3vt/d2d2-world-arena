@@ -55,14 +55,14 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         SoundSystem.setEnabled(false);
 
         // Load serverConfig properties
-        MODULE_SERVER_CONFIG.load();
+        CONFIG.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
-                MODULE_SERVER_CONFIG.setProperty(key, value);
+                CONFIG.setProperty(key, value);
             }
             if (arg.equals("--colorize-logs")) {
                 UnixDisplay.setEnabled(true);
@@ -93,10 +93,10 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     public D2D2WorldArenaServerMain() {
         MODULE_SERVER_PROTOCOL.addServerProtocolImplListener(MODULE_GENERAL);
 
-        MODULE_SERVER_STATE.setName(MODULE_SERVER_CONFIG.getString(SERVER_NAME));
+        MODULE_SERVER_STATE.setName(CONFIG.getString(SERVER_NAME));
         MODULE_SERVER_STATE.setVersion(getServerVersion());
-        MODULE_SERVER_STATE.setMaxPlayers(MODULE_SERVER_CONFIG.getInt(SERVER_MAX_PLAYERS));
-        MODULE_SERVER_STATE.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
+        MODULE_SERVER_STATE.setMaxPlayers(CONFIG.getInt(SERVER_MAX_PLAYERS));
+        MODULE_SERVER_STATE.setMap(CONFIG.getString(WORLD_DEFAULT_MAP));
 
         MODULE_SERVER_UNIT.server.addServerListener(this);
 
@@ -107,8 +107,8 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
 
     public void start() {
         MODULE_SERVER_UNIT.server.asyncListenAndAwait(
-                MODULE_SERVER_CONFIG.getString(SERVER_HOST),
-                MODULE_SERVER_CONFIG.getInt(SERVER_PORT),
+                CONFIG.getString(SERVER_HOST),
+                CONFIG.getInt(SERVER_PORT),
                 2,
                 SECONDS
         );
@@ -131,11 +131,11 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     @Override
     public void serverStarted() {
         log.info("<y>Version: <g>{}<>", getServerVersion());
-        log.info("Server started at {}:{}", MODULE_SERVER_CONFIG.getString(SERVER_HOST), MODULE_SERVER_CONFIG.getInt(SERVER_PORT));
+        log.info("Server started at {}:{}", CONFIG.getString(SERVER_HOST), CONFIG.getInt(SERVER_PORT));
 
         WORLD_SCENE.start();
         D2D2World.init(true);
-        MODULE_GENERAL.setMap(MODULE_SERVER_CONFIG.getString(WORLD_DEFAULT_MAP));
+        MODULE_GENERAL.setMap(CONFIG.getString(WORLD_DEFAULT_MAP));
     }
 
     /**

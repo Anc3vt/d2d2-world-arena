@@ -29,6 +29,7 @@ public class Sprite extends DisplayObject implements ISprite {
     private int repeatY;
     private Color color;
     private Texture texture;
+    private float bleedingFix = 0.0005f;
 
     public Sprite() {
         setColor(DEFAULT_COLOR);
@@ -132,6 +133,16 @@ public class Sprite extends DisplayObject implements ISprite {
         result.setVisible(isVisible());
         result.setRotation(getRotation());
         return result;
+    }
+
+    @Override
+    public void setBleedingFix(float v) {
+        this.bleedingFix = v;
+    }
+
+    @Override
+    public float getBleedingFix() {
+        return bleedingFix;
     }
 
     @Override
