@@ -8,6 +8,7 @@ import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class AreaWater extends Area implements IDamaging {
             }
 
             if (a.getController().isA()) {
-                a.setVelocityY(a.getVelocityY() - 0.5f);
+                a.setVelocityY(a.getVelocityY() - 0.35f);
 
                 Integer tact = actorTacts.computeIfAbsent(a, k -> 0);
                 tact++;
@@ -102,7 +103,7 @@ public class AreaWater extends Area implements IDamaging {
         }
     }
 
-    private Bubble createBubble() {
+    private @NotNull Bubble createBubble() {
         Bubble bubble = new Bubble() {
 
             private int tact;

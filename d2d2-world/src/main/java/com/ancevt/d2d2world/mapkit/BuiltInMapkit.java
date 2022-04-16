@@ -218,13 +218,13 @@ public class BuiltInMapkit extends Mapkit {
                         """);
 
                 add("""
-                        id = bullet_of_""" + TripleLazerWeapon.class.getSimpleName() + """
-                        | class =""" + TripleLazerWeapon.TripleLazerBullet.class.getName() + """
+                        id = bullet_of_""" + RaveWeapon.class.getSimpleName() + """
+                        | class =""" + RaveWeapon.RaveWeaponBullet.class.getName() + """
                         | damagingPower = 15
                         | speed = 12d
                         | collisionX = -5 | collisionY = -2 | collisionWidth = 10 | collisionHeight = 4
                         | atlas = $ATLAS$
-                        | idle = 32,144,52,16
+                        | idle = 32,144,32,16 h 4
                         """);
 
                 add("""

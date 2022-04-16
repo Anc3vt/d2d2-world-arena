@@ -1,10 +1,8 @@
 package com.ancevt.d2d2world.gameobject.weapon;
 
-import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2.display.ISprite;
-import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.IScalable;
@@ -16,9 +14,9 @@ import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public class TripleLazerWeapon extends Weapon {
+public class RaveWeapon extends Weapon {
 
-    public TripleLazerWeapon() {
+    public RaveWeapon() {
         super(createSprite());
         setMaxAmmunition(100);
     }
@@ -49,19 +47,17 @@ public class TripleLazerWeapon extends Weapon {
 
         for (int i = 0; i < 3; i++) {
             float deg = getOwner().getArmDegree();
-            deg += (i * 10f) - 10f;
+            deg += ((i * 10f) - 10f) * Math.random();
 
             Bullet bullet = getNextBullet(deg);
             if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
                 bullet.setDamagingOwnerActor(getOwner());
                 bullet.setSpeed(bullet.getSpeed() + i);
-                if (i == 0) ((TripleLazerBullet) bullet).setPlaySound(true);
+                if (i == 0) ((RaveWeaponBullet) bullet).setPlaySound(true);
                 float[] toXY = RadialUtils.xySpeedOfDegree(deg);
-                float distance = RadialUtils.distance(0, 0, (getOwner().getWeaponX()) * getOwner().getDirection(),
-                        getOwner().getWeaponY());
-
+                float distance = RadialUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
                 bullet.setXY(getOwner().getX(), getOwner().getY());
-                bullet.move(toXY[0] * distance, toXY[1] * distance);
+                bullet.move(toXY[0] * distance, toXY[1] * distance + getOwner().getWeaponY());
                 bullet.setDirection(getOwner().getDirection());
 
                 if (RadialUtils.getDirection(deg) < 0) {
@@ -79,15 +75,14 @@ public class TripleLazerWeapon extends Weapon {
         return super.toString();
     }
 
-    public static class TripleLazerBullet extends Bullet implements IScalable {
+    public static class RaveWeaponBullet extends Bullet implements IScalable {
 
-        private Sprite sprite;
         private boolean setToRemove;
         private boolean playSound;
 
-        public TripleLazerBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
+        public RaveWeaponBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(TripleLazerBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(RaveWeaponBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
         }
 
         @Property
@@ -101,11 +96,20 @@ public class TripleLazerWeapon extends Weapon {
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(TripleLazerWeapon.class);
-            sprite = new Sprite(getMapkitItem().getTexture());
-            sprite.setColor(Color.createRandomColor());
-            sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
-            add(sprite);
+            removeEventListener(RaveWeapon.class);
+
+            var a = getMapkitItem().getTextureAtlas();
+            FramedSprite framedSprite = new FramedSprite(
+                    a.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))
+            );
+            framedSprite.setFrame(0);
+            framedSprite.setLoop(true);
+            framedSprite.play();
+            framedSprite.setXY(-framedSprite.getWidth() / 2, -framedSprite.getHeight() / 2);
+            add(framedSprite);
+
+            framedSprite.setXY(-framedSprite.getWidth() / 2, -framedSprite.getHeight() / 2);
+            add(framedSprite);
         }
 
         @Override
@@ -135,7 +139,7 @@ public class TripleLazerWeapon extends Weapon {
             setCollisionEnabled(false);
 
             if (hasParent()) {
-                IDisplayObject displayObjectContainer = Particle.miniExplosion(2, sprite.getColor(), 10f);
+                IDisplayObject displayObjectContainer = Particle.miniExplosion(2, Color.createRandomColor(), 10f);
                 displayObjectContainer.setScale(0.25f, 0.25f);
                 getParent().add(displayObjectContainer, getX(), getY());
             }
