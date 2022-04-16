@@ -243,7 +243,7 @@ public class PlayProcessor {
     }
 
     private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {
-        float x1 = o1.getX() + o1.getCollisionX() + 1;
+        float x1 = o1.getX() + o1.getCollisionX() - 2;
         float y1 = o1.getY() + o1.getCollisionY() + 1;
         float w1 = o1.getCollisionWidth() + 1;
         float h1 = o1.getCollisionHeight() + 1;

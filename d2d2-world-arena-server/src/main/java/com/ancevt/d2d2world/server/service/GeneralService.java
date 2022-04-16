@@ -53,7 +53,7 @@ import static com.ancevt.d2d2world.net.transfer.Headers.*;
 import static com.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
 import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
-import static com.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
+import static com.ancevt.d2d2world.server.player.BanList.BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
 import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.WORLD_SCENE;
@@ -170,7 +170,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             String playerName = d.getName();
             String clientProtocolVersion = d.getProtocolVersion();
 
-            if (MODULE_BANLIST.ifBannedCloseConnection(getConnection(playerId).orElseThrow())) {
+            if (BANLIST.ifBannedCloseConnection(getConnection(playerId).orElseThrow())) {
                 log.info("Banned ip enter attempt: {}", playerId);
                 return;
             }

@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.server.repl;
 
+import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.net.connection.IConnection;
@@ -30,8 +31,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import static com.ancevt.d2d2world.data.Properties.getProperties;
+import static com.ancevt.d2d2world.data.Properties.setProperties;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
-import static com.ancevt.d2d2world.server.player.BanList.MODULE_BANLIST;
+import static com.ancevt.d2d2world.server.player.BanList.BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
@@ -70,6 +72,15 @@ public class ServerCommandProcessor {
         repl.addCommand("tostring", this::cmd_tostring);
         repl.addCommand("kill", this::cmd_kill);
         repl.addCommand("tw", this::cmd_tw);
+        repl.addCommand("setprop", this::cmd_setprop);
+    }
+
+    private @NotNull @Unmodifiable Object cmd_setprop(@NotNull Args args) {
+        int gameObjectId = args.get(int.class, 0);
+        IGameObject gameObject = WORLD_SCENE.getWorldByGameObjectId(gameObjectId).getGameObjectById(gameObjectId);
+        String prop = args.get(String.class, 1) + "=" + args.get(String.class, 2);
+        setProperties(gameObject, DataEntry.newInstance(prop));
+        return getProperties(gameObject).toString();
     }
 
     private @NotNull Object cmd_tw(@NotNull Args args) {
@@ -96,9 +107,9 @@ public class ServerCommandProcessor {
         }
 
         IGameObject gameObject = world.getGameObjectById(gameObjectId);
-        String result = world.toString() + "\n"
-                + gameObject.toString() + "\n"
-                + getProperties(gameObject) + "\n"
+        String result = world.toString() + "\n--\n"
+                + gameObject.toString() + "\n--\n"
+                + getProperties(gameObject) + "\n--\n"
                 + gameObject.getMapkitItem().getDataEntry();
         return result;
     }
@@ -117,7 +128,7 @@ public class ServerCommandProcessor {
         try {
             String a = args.get(String.class, 0);
             String ip = a.contains(".") ? a : IConnection.getIpFromAddress(MODULE_GENERAL.getConnection(args.get(int.class, 0)).orElseThrow().getRemoteAddress());
-            MODULE_BANLIST.unban(ip);
+            BANLIST.unban(ip);
             String result = "Unbanned ip " + ip;
             System.out.println(result);
             return result;
@@ -130,7 +141,7 @@ public class ServerCommandProcessor {
         try {
             String a = args.get(String.class, 0);
             String ip = a.contains(".") ? a : IConnection.getIpFromAddress(MODULE_GENERAL.getConnection(args.get(int.class, 0)).orElseThrow().getRemoteAddress());
-            MODULE_BANLIST.ban(ip);
+            BANLIST.ban(ip);
             String result = "Banned ip " + ip;
             System.out.println(result);
 
@@ -147,7 +158,7 @@ public class ServerCommandProcessor {
 
     private @NotNull @Unmodifiable Object cmd_banlist(Args args) {
         StringBuilder s = new StringBuilder();
-        MODULE_BANLIST.getList().forEach(ip -> s.append(ip).append('\n'));
+        BANLIST.getList().forEach(ip -> s.append(ip).append('\n'));
         System.out.println(s);
         return s.toString();
     }

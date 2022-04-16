@@ -59,6 +59,10 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
             switch (message.getType()) {
 
+                case MessageType.HANDSHAKE -> {
+                    log.trace("received <b>HANDSHAKE<> {}", connectionId);
+                }
+
                 case MessageType.PING -> {
                     log.trace("received <b>PING<> {}", connectionId);
                     serverProtocolImplListeners.forEach(l -> l.ping(connectionId));
@@ -101,14 +105,14 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
                 case MessageType.CLIENT_PLAYER_CONTROLLER -> {
                     int controlState = in.readByte();
-                    log.trace("received <b>CLIENT_PLAYER_CONTROLLER<> from {}", connectionId);
+                    log.trace("received <b>CLIENT_PLAYER_CONTROLLER<> {}", connectionId);
                     serverProtocolImplListeners.forEach(l -> l.playerController(connectionId, controlState));
                 }
 
                 case MessageType.CLIENT_REQUEST_FILE -> {
                     String headers = in.readUtf(short.class);
                     if (log.isTraceEnabled()) {
-                        log.trace("received <b>CLIENT_REQUEST_FILE<> from {}\n<g>{}<>", connectionId, headers);
+                        log.trace("received <b>CLIENT_REQUEST_FILE<> {}\n<g>{}<>", connectionId, headers);
                     }
                     serverProtocolImplListeners.forEach(l -> l.requestFile(connectionId, headers));
                 }
@@ -118,7 +122,7 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     int contentLength = in.readInt();
                     byte[] fileData = in.readBytes(contentLength);
                     if (log.isTraceEnabled()) {
-                        log.trace("received <b>FILE_DATA<> from {}\n<g>{}\n<contentLength={}<>",
+                        log.trace("received <b>FILE_DATA<> {}\n<g>{}\n<contentLength={}<>",
                                 connectionId,
                                 headers,
                                 contentLength);
@@ -131,7 +135,7 @@ public final class ServerProtocolImpl extends ProtocolImpl {
                     String json = in.readUtf(int.class);
                     Dto dto = (Dto) gson().fromJson(json, Class.forName(className));
                     if (log.isDebugEnabled() && !(dto instanceof PlayerPingReportDto) ) {
-                        log.debug("received <b>DTO<> from {} <g>{}\n{}<>", connectionId, className, json);
+                        log.debug("received <b>DTO<> {} <g>{}\n{}<>", connectionId, className, json);
                     }
                     serverProtocolImplListeners.forEach(l -> l.dtoFromPlayer(connectionId, dto));
                 }

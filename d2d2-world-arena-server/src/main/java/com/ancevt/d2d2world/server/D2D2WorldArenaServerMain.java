@@ -25,8 +25,10 @@ import com.ancevt.d2d2world.net.client.ClientSender;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
 import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
+import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import com.ancevt.net.CloseStatus;
+import com.ancevt.net.connection.ConnectionListener;
 import com.ancevt.net.connection.ConnectionListenerAdapter;
 import com.ancevt.net.connection.IConnection;
 import com.ancevt.net.connection.TcpConnection;
@@ -168,6 +170,29 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         };
 
         MODULE_SERVER_PROTOCOL.addServerProtocolImplListener(serverProtocolImplListener);
+
+        // HANDSHAKE CHECK
+        connection.addConnectionListener(new ConnectionListener() {
+            @Override
+            public void connectionEstablished() {
+
+            }
+
+            @Override
+            public void connectionBytesReceived(byte[] bytes) {
+                if((bytes[0] & 0xFF) == MessageType.HANDSHAKE) {
+                    connection.removeConnectionListener(this);
+                } else {
+                    connection.closeIfOpen();
+                }
+            }
+
+            @Override
+            public void connectionClosed(CloseStatus status) {
+                log.info("Not a handshake packet!");
+            }
+        });
+
 
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override

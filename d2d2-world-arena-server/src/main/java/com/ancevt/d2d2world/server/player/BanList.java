@@ -16,7 +16,7 @@ public class BanList {
 
     private static final String FILE = "ban.list";
 
-    public static final BanList MODULE_BANLIST = new BanList();
+    public static final BanList BANLIST = new BanList();
 
     private BanList() {
     }
@@ -45,27 +45,35 @@ public class BanList {
         return result;
     }
 
-    public void ban(String ip) {
+    public void ban(@NotNull String addressOrIp) {
+        if (addressOrIp.contains("/") && addressOrIp.contains(":")) {
+            addressOrIp = IConnection.getIpFromAddress(addressOrIp);
+        }
+
         try {
-            if (!loadIps().contains(ip)) {
-                Files.writeString(Path.of(FILE), ip + "\n", StandardCharsets.UTF_8, CREATE, APPEND, WRITE);
+            if (!loadIps().contains(addressOrIp)) {
+                Files.writeString(Path.of(FILE), addressOrIp + "\n", StandardCharsets.UTF_8, CREATE, APPEND, WRITE);
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public void ban(IConnection connection) {
+    public void ban(@NotNull IConnection connection) {
         ban(IConnection.getIpFromAddress(connection.getRemoteAddress()));
         connection.closeIfOpen();
     }
 
-    public void unban(String ip) {
+    public void unban(String addressOrIp) {
+        if (addressOrIp.contains("/") && addressOrIp.contains(":")) {
+            addressOrIp = IConnection.getIpFromAddress(addressOrIp);
+        }
+
         try {
             List<String> list = loadIps();
-            list.remove(ip);
+            list.remove(addressOrIp);
             StringBuilder s = new StringBuilder();
-            list.forEach(i->s.append(i).append('\n'));
+            list.forEach(i -> s.append(i).append('\n'));
             Files.writeString(Path.of(FILE), s.toString(), StandardCharsets.UTF_8, CREATE, WRITE, TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);

@@ -82,5 +82,9 @@ public class MessageType {
      */
     public static final int DTO = 200;
 
+    /**
+     * b)t
+     */
+    public static final int HANDSHAKE = 148;
 
 }

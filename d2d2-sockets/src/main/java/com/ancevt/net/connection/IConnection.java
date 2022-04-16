@@ -62,10 +62,16 @@ public interface IConnection {
     long bytesLoaded();
 
     static String getIpFromAddress(@NotNull String address) {
-        if (address.startsWith("/")) {
-            address = address.replaceAll("/", "");
+        if (address.contains("/")) {
+            address = address.replaceAll("^.*/", "");
         }
-        String[] split = address.split(":");
-        return split[0];
+
+        if(address.contains(":")) {
+            String[] split = address.split(":");
+            return split[0];
+        } else {
+            return address;
+        }
+
     }
 }

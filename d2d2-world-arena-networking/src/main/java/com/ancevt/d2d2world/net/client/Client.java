@@ -23,6 +23,7 @@ import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.PlayerDto;
 import com.ancevt.d2d2world.net.dto.client.*;
 import com.ancevt.d2d2world.net.dto.server.*;
+import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.protocol.ClientProtocolImpl;
 import com.ancevt.d2d2world.net.protocol.ClientProtocolImplListener;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
@@ -75,13 +76,14 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         return syncDataReceiver;
     }
 
-    // CONNECTION LISTENERS:
+    // CONNECTION LISTENER:
 
     /**
      * {@link ConnectionListener} method
      */
     @Override
     public void connectionEstablished() {
+        sendHandshake();
         clientListeners.forEach(ClientListener::clientConnectionEstablished);
     }
 
@@ -101,7 +103,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         clientListeners.forEach(l -> l.clientConnectionClosed(status));
     }
 
-    // CLIENT PROTOCOL LISTENERS:
+    // CLIENT PROTOCOL LISTENER:
 
     /**
      * {@link ClientProtocolImplListener} method
@@ -254,6 +256,11 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     // SENDERS:
+
+    public void sendHandshake() {
+        sender.send(new byte[]{(byte) MessageType.HANDSHAKE});
+    }
+
     public void sendPlayerEnterRequest() {
         sender.send(PlayerEnterRequestDto.builder()
                 .name(localPlayerName)
