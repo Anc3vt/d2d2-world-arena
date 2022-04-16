@@ -21,6 +21,7 @@ import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Color;
+import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
@@ -82,16 +83,22 @@ public class WorldScene extends DisplayObjectContainer {
     private long frameCounter;
     private PlayerActor localPlayerActor;
     private final GameObjectTexts gameObjectTexts;
-    private final Map<Integer, PlayerActor> playerActorMap;
+    private final Map<Integer, PlayerActor> playerIdPlayerActorMap;
+    private final Map<Integer, Integer> playerActorGameObjectIdPlayerIdMap;
 
     private List<Weapon> roomChangePlayerActorWeapons;
     private Weapon roomChangePlayerActorCurrentWeapon;
+
+    private final Set<ChatBubble> chatBubbles;
 
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
         MapIO.setMapkitsDirectory("data/mapkits/");
 
-        playerActorMap = new HashMap<>();
+        playerIdPlayerActorMap = new HashMap<>();
+        playerActorGameObjectIdPlayerIdMap = new HashMap<>();
+
+        chatBubbles = new HashSet<>();
 
         world = new World();
 
@@ -141,10 +148,13 @@ public class WorldScene extends DisplayObjectContainer {
 
             @Override
             public void serverInfo(@NotNull ServerInfoDto result) {
-                result.getPlayers().forEach(p -> {
-                    if (world.getGameObjectById(p.getPlayerActorGameObjectId()) instanceof PlayerActor playerActor) {
-                        playerActorUiText(playerActor, p.getId(), p.getName());
-                        playerActorMap.put(p.getId(), playerActor);
+                result.getPlayers().forEach(player -> {
+                    if (world.getGameObjectById(player.getPlayerActorGameObjectId()) instanceof PlayerActor playerActor) {
+                        playerActorUiText(playerActor, player.getId(), player.getName());
+                        playerIdPlayerActorMap.put(player.getId(), playerActor);
+                        PLAYER_MANAGER.getPlayerById(player.getId()).ifPresent(
+                                playerManagerPlayer -> playerManagerPlayer.setPlayerActorGameObjectId(playerActor.getGameObjectId())
+                        );
                     }
                 });
             }
@@ -250,6 +260,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     private void world_roomSwitchComplete(Event<World> event) {
+        clearChatBubbles();
         CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
     }
 
@@ -438,36 +449,49 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void playerChatEvent(int playerId, String action) {
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
-
-            ChatHint chatHint = (ChatHint) playerActor.extra().get(ChatHint.class.getName());
-            if (chatHint == null) {
-                chatHint = new ChatHint() {
-                    @Override
-                    public void onEachFrame() {
-                        super.onEachFrame();
-                        setXY(playerActor.getX() - this.getWidth() / 4, playerActor.getY() - 48);
-                    }
-                };
-                ChatHint finalChatHint = chatHint;
-                playerActor.getWorld().addEventListener(WorldEvent.REMOVE_GAME_OBJECT, event -> {
-                    var e = (WorldEvent) event;
-                    ChatHint chatHint1 = (ChatHint) e.getGameObject().extra().get(ChatHint.class.getName());
-                    if (chatHint1 != null) {
-                        chatHint1.removeFromParent();
-                    }
-                });
-                playerActor.addEventListener(Event.REMOVE_FROM_STAGE, event -> {
-                    finalChatHint.removeFromParent();
-                });
-                chatHint.setScale(0.5f, 0.5f);
-                playerActor.extra().put(ChatHint.class.getName(), chatHint);
-            }
-
-            switch (action) {
-                case OPEN -> world.add(chatHint);
-                case CLOSE -> chatHint.removeFromParent();
-            }
+            if (OPEN.equals(action))
+                showChatBubble(playerActor);
+            else
+                hideChatBubble(playerActor);
         });
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
+        PlayerActor playerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+
+        if (playerActor == null) {
+            Async.runLater(1, TimeUnit.SECONDS, () -> setLocalPlayerActorGameObjectId(playerActorGameObjectId));
+            return;
+        }
+
+        setLocalPlayerActor(playerActor);
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void playerEnterRoomStartResponseReceived() {
+        world.roomSwitchOverlayStartOut();
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void remotePlayerExit(int playerId) {
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void setRoom(String roomId, float cameraX, float cameraY) {
+        world.setSceneryPacked(false);
+        world.setRoom(world.getMap().getRoom(roomId));
+        world.setSceneryPacked(true);
+        world.getCamera().setXY(cameraX, cameraY);
+        CLIENT.sendPlayerActorRequest();
     }
 
     private void world_addGameObject(Event<World> event) {
@@ -476,14 +500,52 @@ public class WorldScene extends DisplayObjectContainer {
             SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
             D2D2WorldSound.playSound(PLAYER_SPAWN);
 
+            PLAYER_MANAGER.getPlayerByPlayerActorGameObjectId(playerActor.getGameObjectId()).ifPresent(player -> {
+                if (player.isChatOpened()) showChatBubble(playerActor);
+            });
+
+            playerActorUiText(playerActor, playerActor.getPlayerId(), playerActor.getPlayerName());
+
             if (localPlayerActor != null) {
                 if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
-                    PLAYER_MANAGER.getPlayer(CLIENT.getLocalPlayerId());
+                    PLAYER_MANAGER.getPlayerById(CLIENT.getLocalPlayerId());
                     setLocalPlayerActor(playerActor);
-                    //setLocalPlayerActorGameObjectId(playerActor.getGameObjectId());
                 }
             }
         }
+    }
+
+    private void showChatBubble(@NotNull PlayerActor playerActor) {
+        ChatBubble chatBubble = (ChatBubble) playerActor.extra().get(ChatBubble.class.getName());
+        if (chatBubble == null) {
+            chatBubble = new ChatBubble() {
+                @Override
+                public void onEachFrame() {
+                    super.onEachFrame();
+                    setXY(playerActor.getX() - this.getWidth() / 4, playerActor.getY() - 48);
+                }
+            };
+            playerActor.addEventListener(Event.REMOVE_FROM_STAGE, event -> {
+                ChatBubble cb = (ChatBubble) playerActor.extra().get(ChatBubble.class.getName());
+                if (cb != null) {
+                    cb.removeFromParent();
+                }
+            });
+            playerActor.extra().put(ChatBubble.class.getName(), chatBubble);
+            chatBubbles.add(chatBubble);
+            chatBubble.setScale(0.5f, 0.5f);
+        }
+        world.add(chatBubble);
+    }
+
+    private void hideChatBubble(@NotNull PlayerActor playerActor) {
+        ChatBubble chatHint = (ChatBubble) playerActor.extra().get(ChatBubble.class.getName());
+        if (chatHint != null) chatHint.removeFromParent();
+    }
+
+    private void clearChatBubbles() {
+        chatBubbles.forEach(DisplayObject::removeFromParent);
+        chatBubbles.clear();
     }
 
     private void setLocalPlayerActor(PlayerActor playerActor) {
@@ -519,7 +581,6 @@ public class WorldScene extends DisplayObjectContainer {
             } else {
                 CLIENT.sendHook(0);
             }
-
         });
 
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
@@ -561,55 +622,18 @@ public class WorldScene extends DisplayObjectContainer {
         }
     }
 
-    /**
-     * Calls from {@link GameRoot}
-     */
-    public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
-        PlayerActor playerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
-
-        if (playerActor == null) {
-            Async.runLater(1, TimeUnit.SECONDS, () -> setLocalPlayerActorGameObjectId(playerActorGameObjectId));
-            return;
-        }
-
-        setLocalPlayerActor(playerActor);
-
-
-    }
-
-    /**
-     * Calls from {@link GameRoot}
-     */
-    public void playerEnterRoomStartResponseReceived() {
-        world.roomSwitchOverlayStartOut();
-    }
-
-    /**
-     * Calls from {@link GameRoot}
-     */
-    public void remotePlayerExit(int playerId) {
-    }
-
-    /**
-     * Calls from {@link GameRoot}
-     */
-    public void setRoom(String roomId, float cameraX, float cameraY) {
-        world.setSceneryPacked(false);
-        world.setRoom(world.getMap().getRoom(roomId));
-        world.setSceneryPacked(true);
-        world.getCamera().setXY(cameraX, cameraY);
-        CLIENT.sendPlayerActorRequest();
-    }
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
+        playerActor.setPlayerName(playerName);
+        playerActor.setPlayerId(playerId);
         UiText uiText = new UiText(playerName + "(" + playerId + ")");
         uiText.setScale(0.5f, 0.5f);
-        PLAYER_MANAGER.getPlayer(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
+        PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
         playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
     }
 
     private Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {
-        return Optional.ofNullable(playerActorMap.get(playerId));
+        return Optional.ofNullable(playerIdPlayerActorMap.get(playerId));
     }
 
     @Override

@@ -37,6 +37,8 @@ public class PlayerActor extends Actor {
     private boolean localAim;
     private final Color playerColor;
     private boolean humanControllable;
+    private String playerName;
+    private int playerId;
 
     public PlayerActor(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -46,6 +48,26 @@ public class PlayerActor extends Actor {
         BitmapText playerNameBitmapText = new BitmapText();
         playerNameBitmapText.setScale(0.5f, 0.5f);
         add(playerNameBitmapText, 0, -30);
+    }
+
+    @Property
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    @Property
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
+    @Property
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    @Property
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
     public void setHumanControllable(boolean humanControllable) {

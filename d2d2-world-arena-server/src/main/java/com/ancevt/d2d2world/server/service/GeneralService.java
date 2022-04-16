@@ -233,7 +233,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
             // send everyone else information about the entrance of a new player
             serverSender.sendToAllExcluding(
-                    PlayerEnterDto.builder()
+                    PlayerEnterServerDto.builder()
                             .player(PlayerDto.builder()
                                     .id(playerId)
                                     .name(newPlayer.getName())

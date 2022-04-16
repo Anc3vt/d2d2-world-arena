@@ -28,13 +28,32 @@ public class Player {
     private int ping;
     private int frags;
 
-    private List<Integer> pingValues;
+    private boolean chatOpened;
+    private int playerActorGameObjectId;
+
+    private final List<Integer> pingValues;
 
     public Player(int id, String name, int color) {
         this.id = id;
         this.name = name;
         this.color = color;
         pingValues = new ArrayList<>();
+    }
+
+    public void setPlayerActorGameObjectId(int playerActorGameObjectId) {
+        this.playerActorGameObjectId = playerActorGameObjectId;
+    }
+
+    public int getPlayerActorGameObjectId() {
+        return playerActorGameObjectId;
+    }
+
+    public void setChatOpened(boolean b) {
+        this.chatOpened = b;
+    }
+
+    public boolean isChatOpened() {
+        return chatOpened;
     }
 
     public int getFrags() {

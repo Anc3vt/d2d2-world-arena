@@ -243,6 +243,8 @@ public class ServerWorldScene {
         playerActor.getController().setEnabled(true);
         playerActor.setPlayerColorValue(player.getColor());
         playerActor.setName("playerActor_" + player.getName());
+        playerActor.setPlayerName(player.getName());
+        playerActor.setPlayerId(player.getId());
 
         World newWorld = spawnPlayerActorToRandomSpawnPoint(player.getId(), playerActor);
         playerActor.setVisible(false);

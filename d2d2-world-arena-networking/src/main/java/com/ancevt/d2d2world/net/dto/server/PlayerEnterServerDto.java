@@ -10,7 +10,7 @@ import com.ancevt.d2d2world.net.dto.PlayerDto;
 @Data
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PlayerEnterDto implements Dto {
+public class PlayerEnterServerDto implements Dto {
 
     private final PlayerDto player;
 }

@@ -303,21 +303,21 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void playerDeath(int deadPlayerId, int killerPlayerId) {
-        Player deadPlayer = PLAYER_MANAGER.getPlayer(deadPlayerId).orElseThrow();
+        Player deadPlayer = PLAYER_MANAGER.getPlayerById(deadPlayerId).orElseThrow();
 
-        PLAYER_MANAGER.getPlayer(killerPlayerId).ifPresentOrElse(killerPlayer -> {
+        PLAYER_MANAGER.getPlayerById(killerPlayerId).ifPresentOrElse(killerPlayer -> {
                     Chat.getInstance().addMessage(
                             killerPlayer.getName() + "(" + killerPlayer.getId() + ") killed " +
                                     deadPlayer.getName() + "(" + deadPlayer.getId() + ")");
 
-                    PLAYER_MANAGER.getPlayer(killerPlayerId).orElseThrow().incrementFrags();
+                    PLAYER_MANAGER.getPlayerById(killerPlayerId).orElseThrow().incrementFrags();
                 },
 
                 () -> {
                     Chat.getInstance().addMessage(
                             deadPlayer.getName() + "(" + deadPlayer.getId() + ") knocked out");
 
-                    PLAYER_MANAGER.getPlayer(deadPlayerId).orElseThrow().decrementFrags();
+                    PLAYER_MANAGER.getPlayerById(deadPlayerId).orElseThrow().decrementFrags();
                 });
     }
 

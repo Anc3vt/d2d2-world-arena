@@ -33,7 +33,7 @@ public class PlayerManager {
         playerMap = new HashMap<>();
     }
 
-    public @NotNull Player registerPlayer(int id, @NotNull String name, int color) {
+    public @NotNull Player addPlayer(int id, @NotNull String name, int color) {
         Player player = playerMap.get(id);
         if (player == null) {
             player = new Player(id, name, color);
@@ -48,7 +48,14 @@ public class PlayerManager {
         return playerMap.containsKey(playerId);
     }
 
-    public @NotNull Optional<Player> getPlayer(int playerId) {
+    public @NotNull Optional<Player> getPlayerByPlayerActorGameObjectId(int gameObjectId) {
+        return playerMap.values()
+                .stream()
+                .filter(p -> p.getPlayerActorGameObjectId() == gameObjectId)
+                .findAny();
+    }
+
+    public @NotNull Optional<Player> getPlayerById(int playerId) {
         return Optional.ofNullable(playerMap.get(playerId));
     }
 

@@ -2,11 +2,11 @@ package com.ancevt.d2d2world.desktop.scene;
 
 import com.ancevt.d2d2.display.Sprite;
 
-public class ChatHint extends Sprite {
+public class ChatBubble extends Sprite {
 
     private float factor = -0.05f;
 
-    public ChatHint() {
+    public ChatBubble() {
         super("d2d2-world-common-tileset-chat-hint");
     }
 

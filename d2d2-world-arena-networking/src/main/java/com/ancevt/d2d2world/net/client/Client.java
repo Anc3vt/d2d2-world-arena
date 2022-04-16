@@ -141,11 +141,13 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         } else if (dto instanceof PlayerActorDto d) {
             clientListeners.forEach(l -> l.localPlayerActorGameObjectId(d.getPlayerActorGameObjectId()));
 
-        } else if (dto instanceof PlayerEnterDto d) {
+        } else if (dto instanceof PlayerEnterServerDto d) {
             PlayerDto playerDto = d.getPlayer();
-            PLAYER_MANAGER.getPlayer(playerDto.getId()).ifPresent(
-                    remotePlayer -> remotePlayer.update(playerDto.getName(), playerDto.getColor())
-            );
+            PLAYER_MANAGER.getPlayerById(playerDto.getId()).ifPresentOrElse(remotePlayer -> {
+                remotePlayer.update(playerDto.getName(), playerDto.getColor());
+            }, () -> {
+                PLAYER_MANAGER.addPlayer(playerDto.getId(), playerDto.getName(), playerDto.getColor());
+            });
             clientListeners.forEach(l -> l.playerEnterServer(playerDto.getId(), playerDto.getName(), playerDto.getColor()));
 
         } else if (dto instanceof RconResponseDto d) {
@@ -177,7 +179,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         } else if (dto instanceof ServerInfoDto d) {
             Set<PlayerDto> playerDtoSet = d.getPlayers();
             playerDtoSet.forEach(p -> {
-                Player player = PLAYER_MANAGER.registerPlayer(p.getId(), p.getName(), p.getColor());
+                Player player = PLAYER_MANAGER.addPlayer(p.getId(), p.getName(), p.getColor());
                 player.setPing(p.getPing());
                 player.setFrags(p.getFrags());
             });
@@ -193,6 +195,9 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         } else if (dto instanceof PlayerChatEventDto d) {
             int playerId = d.getPlayerId();
             String action = d.getAction();
+            PLAYER_MANAGER.getPlayerById(playerId).ifPresent(
+                    player -> player.setChatOpened(PlayerChatEventDto.OPEN.equals(action))
+            );
             clientListeners.forEach(l -> l.playerChatEvent(playerId, action));
 
         } else if (dto instanceof PlayerEnterRoomStartResponseDto d) {
@@ -211,7 +216,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         var pingValue = (int) (pingResponseTime - pingRequestTime) / 2; // devide by 2 because that is average of sending and receiving time values
         pingValues.add(pingValue);
         sender.send(PlayerPingReportDto.builder().ping(pingValue).build());
-        PLAYER_MANAGER.getPlayer(localPlayerId).ifPresent(player -> {
+        PLAYER_MANAGER.getPlayerById(localPlayerId).ifPresent(player -> {
             int pingAverage = getAveragePing();
             player.setPing(pingAverage);
             sender.send(PlayerPingReportDto.builder().ping(pingAverage).build());
@@ -399,7 +404,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     public int getLocalPlayerPing() {
         // improve .get if error occurred
-        return PLAYER_MANAGER.getPlayer(localPlayerId).get().getPing();
+        return PLAYER_MANAGER.getPlayerById(localPlayerId).get().getPing();
     }
 
     public void setLocalPlayerFrags(int localPlayerFrags) {
