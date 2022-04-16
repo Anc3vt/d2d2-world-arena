@@ -249,7 +249,7 @@ abstract public class Actor extends Animated implements
             underWaterTime--;
         }
 
-        if (getHealth() < 26 && tact % 50 == 0) {
+        if (isServer() && getHealth() < 26 && tact % 50 == 0) {
             setHealth(getHealth() + 1);
         }
 
@@ -503,6 +503,7 @@ abstract public class Actor extends Animated implements
             if (health <= 0 && isAlive()) death(damaging);
             healthBar.setValue(health);
         }
+
         if (isOnWorld()) {
             getWorld().getSyncDataAggregator().health(this, damaging);
         }
