@@ -35,8 +35,10 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.ui.HealthBar;
 import com.ancevt.d2d2world.world.WorldEvent;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +111,7 @@ abstract public class Actor extends Animated implements
     private AreaHook hook;
     private int tact;
     private AreaWater areaWater;
+    private IDisplayObject weaponDisplayObject;
 
     public Actor(MapkitItem mapkitItem, final int gameObjectId) {
         super(mapkitItem, gameObjectId);
@@ -249,6 +252,7 @@ abstract public class Actor extends Animated implements
         if (getHealth() < 26 && tact % 50 == 0) {
             setHealth(getHealth() + 1);
         }
+
     }
 
     public void underWater(AreaWater areaWater) {
@@ -272,18 +276,16 @@ abstract public class Actor extends Animated implements
 
             switch (getDirection()) {
                 case Direction.LEFT -> {
-                    IDisplayObject d = currentWeapon.getSprite();
-                    d.setScaleX(-1);
-                    d.setX(d.getWidth() - getWeaponX() - 32 + 4);
-                    d.setY(currentWeapon.offsetY());
+                    weaponDisplayObject.setScaleX(-1);
+                    weaponDisplayObject.setX(weaponDisplayObject.getWidth() - getWeaponX() - 32 + 2);
+                    weaponDisplayObject.setY(-11);
                     armSprite.setScaleX(-1);
                     armSprite.setXY(-2, -8);
                 }
                 case Direction.RIGHT -> {
-                    IDisplayObject d = currentWeapon.getSprite();
-                    d.setScaleX(1);
-                    d.setX(getWeaponX() - 4);
-                    d.setY(currentWeapon.offsetY());
+                    weaponDisplayObject.setScaleX(1);
+                    weaponDisplayObject.setX(getWeaponX() - 2);
+                    weaponDisplayObject.setY(-11);
                     armSprite.setScaleX(1);
                     armSprite.setXY(2, -8);
                 }
@@ -297,7 +299,6 @@ abstract public class Actor extends Animated implements
     private void fixBodyPartsY() {
         if (currentWeapon != null) {
 
-            IDisplayObject weaponDisplayObject = currentWeapon.getSprite();
             float w = weaponDisplayObject.getWidth();
             float h = weaponDisplayObject.getHeight();
             if (getAnimation() == WALK_ATTACK) {
@@ -305,11 +306,8 @@ abstract public class Actor extends Animated implements
                 //weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             } else {
                 armSprite.setY(-8);
-                currentWeapon.getSprite().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0) + currentWeapon.offsetY());
-
+                weaponDisplayObject.setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
             }
-
-
         }
 
         if (headContainer != null) {
@@ -802,26 +800,36 @@ abstract public class Actor extends Animated implements
         setCurrentWeaponClassname(cls.getName());
     }
 
+    @Property
+    public String getCurrentWeaponClassname() {
+        return currentWeapon.getClass().getName();
+    }
+
+    @SneakyThrows
+    @Property
     public void setCurrentWeaponClassname(@NotNull String weaponClassname) {
         //if (weaponSwitchTime > 0) return;
         weaponSwitchTime = WEAPON_SWITCH_TIME;
 
-        if (this.currentWeapon != null) {
-            this.currentWeapon.getSprite().removeFromParent();
+        if (weaponDisplayObject != null) {
+            weaponDisplayObject.removeFromParent();
         }
+
+        var weaponClass = (Class<? extends Weapon>) Class.forName(weaponClassname);
+        Method method = weaponClass.getMethod("createSprite");
+        weaponDisplayObject = (Sprite) method.invoke(null);
+        weaponContainer.add(weaponDisplayObject);
+
+        fixXY();
 
         weapons.stream()
                 .filter(w -> w.getClass().getName().equals(weaponClassname))
                 .findAny()
                 .ifPresent(w -> {
-
                     getMapkitItem().getMapkit().playSound("weapon-switch.ogg");
 
                     currentWeapon = w;
                     currentWeapon.setOwner(this);
-                    weaponContainer.add(currentWeapon.getSprite(), currentWeapon.offsetX(), currentWeapon.offsetY());
-
-                    fixXY();
 
                     dispatchEvent(ActorEvent.builder()
                             .type(ActorEvent.SET_WEAPON)

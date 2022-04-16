@@ -79,10 +79,12 @@ public class RaveWeapon extends Weapon {
 
         private boolean setToRemove;
         private boolean playSound;
+        private int tact;
 
         public RaveWeaponBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
             addEventListener(RaveWeaponBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            setAlpha(0.0f);
         }
 
         @Property
@@ -122,8 +124,12 @@ public class RaveWeapon extends Weapon {
 
         @Override
         public void process() {
+            tact++;
             float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
             move(getSpeed() * xy[0], getSpeed() * xy[1]);
+
+            if(tact == 2) setAlpha(1f);
+
             super.process();
         }
 
@@ -137,7 +143,6 @@ public class RaveWeapon extends Weapon {
             setSpeed(0);
             setToRemove = true;
             setCollisionEnabled(false);
-
             if (hasParent()) {
                 IDisplayObject displayObjectContainer = Particle.miniExplosion(2, Color.createRandomColor(), 10f);
                 displayObjectContainer.setScale(0.25f, 0.25f);

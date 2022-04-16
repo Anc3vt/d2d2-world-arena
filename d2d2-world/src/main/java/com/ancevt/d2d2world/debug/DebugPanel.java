@@ -28,6 +28,7 @@ public class DebugPanel extends DisplayObjectContainer {
 
     private static final Map<String, DebugPanel> debugPanels = new HashMap<>();
     private static boolean enabled;
+    private static float scale = 1;
 
     private final BitmapText text;
     private final String systemPropertyName;
@@ -35,7 +36,6 @@ public class DebugPanel extends DisplayObjectContainer {
     private final TouchButton touchButton;
     private int oldX;
     private int oldY;
-    private Root root;
     private boolean shiftDown;
 
     private DebugPanel(String systemPropertyName) {
@@ -63,6 +63,12 @@ public class DebugPanel extends DisplayObjectContainer {
         addEventListener(DebugPanel.class, Event.ADD_TO_STAGE, this::this_addToStage);
 
         add(touchButton);
+
+        setScale(scale, scale);
+    }
+
+    public static void setScale(float scale) {
+        DebugPanel.scale = scale;
     }
 
     public static void setEnabled(boolean enabled) {
@@ -75,7 +81,7 @@ public class DebugPanel extends DisplayObjectContainer {
 
     private void this_addToStage(Event event) {
         load();
-        root = D2D2.getStage().getRoot();
+        Root root = D2D2.getStage().getRoot();
         root.addEventListener(InputEvent.KEY_DOWN, this::root_keyDown);
         root.addEventListener(InputEvent.KEY_UP, this::root_keyUp);
         removeEventListener(DebugPanel.class);

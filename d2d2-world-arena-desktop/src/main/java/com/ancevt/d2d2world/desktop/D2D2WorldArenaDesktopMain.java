@@ -63,6 +63,8 @@ public class D2D2WorldArenaDesktopMain {
             }
         }
 
+        DebugPanel.setScale(2f);
+
         SoundSystem.setEnabled(MODULE_CONFIG.getBoolean(SOUND_ENABLED));
 
         // Load project properties
@@ -103,6 +105,9 @@ public class D2D2WorldArenaDesktopMain {
         D2D2.getStage().setRoot(introRoot);
         D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
+
+
+
         if (GameRoot.INSTANCE != null) {
             GameRoot.INSTANCE.exit();
         }

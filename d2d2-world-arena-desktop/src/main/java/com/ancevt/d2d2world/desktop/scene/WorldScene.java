@@ -84,9 +84,6 @@ public class WorldScene extends DisplayObjectContainer {
     private final GameObjectTexts gameObjectTexts;
     private final Map<Integer, PlayerActor> playerActorMap;
 
-    /**
-     * game object id => weapon list
-     */
     private List<Weapon> roomChangePlayerActorWeapons;
     private Weapon roomChangePlayerActorCurrentWeapon;
 
@@ -249,20 +246,6 @@ public class WorldScene extends DisplayObjectContainer {
         if (e.getGameObject() instanceof PlayerActor playerActor) {
             SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
             D2D2WorldSound.playSound(PLAYER_SPAWN);
-        }
-    }
-
-    private void world_addGameObject(Event<World> event) {
-        var e = (WorldEvent) event;
-        if (e.getGameObject() instanceof PlayerActor playerActor) {
-            SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
-            D2D2WorldSound.playSound(PLAYER_SPAWN);
-
-            if (localPlayerActor != null) {
-                if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
-                    setLocalPlayerActorGameObjectId(localPlayerActor.getGameObjectId());
-                }
-            }
         }
     }
 
@@ -487,20 +470,36 @@ public class WorldScene extends DisplayObjectContainer {
         });
     }
 
-    /**
-     * Calls from {@link GameRoot}
-     */
-    public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
-        localPlayerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+    private void world_addGameObject(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (e.getGameObject() instanceof PlayerActor playerActor) {
+            SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
+            D2D2WorldSound.playSound(PLAYER_SPAWN);
 
-        if (localPlayerActor == null) {
-            Async.runLater(1, TimeUnit.SECONDS, () -> setLocalPlayerActorGameObjectId(playerActorGameObjectId));
-            return;
+            if (localPlayerActor != null) {
+                if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
+                    PLAYER_MANAGER.getPlayer(CLIENT.getLocalPlayerId());
+                    setLocalPlayerActor(playerActor);
+                    //setLocalPlayerActorGameObjectId(playerActor.getGameObjectId());
+                }
+            }
+        }
+    }
+
+    private void setLocalPlayerActor(PlayerActor playerActor) {
+        if (localPlayerActor == playerActor) return;
+
+        localPlayerActor = playerActor;
+
+        if (overlay.getState() == Overlay.STATE_BLACK) {
+            world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
+            overlay.startOut();
         }
 
-        localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
-        localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));
-        localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn));
+        localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor), true);
+        localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor), true);
+        localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn), true);
+
         localPlayerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
             var e = (ActorEvent) event;
             roomChangePlayerActorWeapons = e.getSource().getWeapons();
@@ -522,11 +521,6 @@ public class WorldScene extends DisplayObjectContainer {
             }
 
         });
-
-        if (overlay.getState() == Overlay.STATE_BLACK) {
-            world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());
-            overlay.startOut();
-        }
 
         localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
             private float oldX;
@@ -555,16 +549,32 @@ public class WorldScene extends DisplayObjectContainer {
             }
         });
 
-        if (roomChangePlayerActorWeapons != null) {
-            localPlayerActor.setWeapons(roomChangePlayerActorWeapons);
-            localPlayerActor.setCurrentWeaponClass(roomChangePlayerActorCurrentWeapon.getClass());
-        }
-
         localPlayerActor.setController(localPlayerController);
         localPlayerActor.setLocalPlayerActor(true);
         localPlayerActor.setLocalAim(true);
         world.getCamera().setAttachedTo(localPlayerActor);
         playerActorUiText(localPlayerActor, CLIENT.getLocalPlayerId(), CLIENT.getLocalPlayerName());
+
+        if (roomChangePlayerActorWeapons != null) {
+            localPlayerActor.setWeapons(roomChangePlayerActorWeapons);
+            localPlayerActor.setCurrentWeaponClass(roomChangePlayerActorCurrentWeapon.getClass());
+        }
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
+        PlayerActor playerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+
+        if (playerActor == null) {
+            Async.runLater(1, TimeUnit.SECONDS, () -> setLocalPlayerActorGameObjectId(playerActorGameObjectId));
+            return;
+        }
+
+        setLocalPlayerActor(playerActor);
+
+
     }
 
     /**

@@ -22,10 +22,6 @@ public class FireWeapon extends Weapon {
         setMaxAmmunition(100);
     }
 
-    @Override
-    public float offsetY() {
-        return 8f;
-    }
 
     @Contract(" -> new")
     public static @NotNull ISprite createSprite() {
