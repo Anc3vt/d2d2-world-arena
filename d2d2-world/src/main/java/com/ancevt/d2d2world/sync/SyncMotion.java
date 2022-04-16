@@ -23,7 +23,7 @@ public class SyncMotion {
     private static final Map<IDisplayObject, MotionState> map = new ConcurrentHashMap<>();
 
     public static void moveMotion(@NotNull IDisplayObject o, float x, float y) {
-        if(abs(o.getX() - x) > 8f || abs(o.getY() - y) > 8f) {
+        if(abs(o.getX() - x) > 8f && abs(o.getY() - y) > 8f) {
             o.setXY(x, y);
             return;
         }

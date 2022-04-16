@@ -214,6 +214,7 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
+
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//gameobjectnames",
                 args -> {
@@ -223,6 +224,7 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
+
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//config",
                 args -> {
@@ -241,6 +243,7 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
+
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//fullscreen",
                 args -> {
@@ -248,6 +251,7 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
+        
         ammunitionHud = new AmmunitionHud();
     }
 
