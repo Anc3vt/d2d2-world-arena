@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.server;
 
 import com.ancevt.commons.Holder;
+import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
@@ -74,7 +75,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         Args a = new Args(args);
 
         Integer portToKill = a.get(int.class, "--kill");
-        if(portToKill != null) {
+        if (portToKill != null) {
             IConnection connection = TcpConnection.create();
             connection.asyncConnectAndAwait("localhost", portToKill, 5, SECONDS);
             new ClientSender(connection).send(LocalServerKillDto.INSTANCE);
@@ -154,7 +155,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
 
             @Override
             public void dtoFromPlayer(int playerId, Dto dto) {
-                if(dto instanceof ServerInfoRequestDto) {
+                if (dto instanceof ServerInfoRequestDto) {
                     if (connection.getId() == playerId) {
                         playerEntered.setValue(true);
                         MODULE_SERVER_PROTOCOL.removeServerProtocolImplListener(this);
@@ -173,14 +174,20 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
 
         // HANDSHAKE CHECK
         connection.addConnectionListener(new ConnectionListener() {
+
+            private boolean handshakeReceived;
+
             @Override
             public void connectionEstablished() {
-
+                Async.runLater(10, SECONDS, () -> {
+                    if (!handshakeReceived) connection.closeIfOpen();
+                });
             }
 
             @Override
             public void connectionBytesReceived(byte[] bytes) {
-                if((bytes[0] & 0xFF) == MessageType.HANDSHAKE) {
+                if ((bytes[0] & 0xFF) == MessageType.HANDSHAKE) {
+                    handshakeReceived = true;
                     connection.removeConnectionListener(this);
                 } else {
                     connection.closeIfOpen();
@@ -189,7 +196,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
 
             @Override
             public void connectionClosed(CloseStatus status) {
-                log.info("Not a handshake packet!");
+                log.info("No handshake packet received!");
             }
         });
 

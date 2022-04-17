@@ -75,6 +75,9 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glMatrixMode(GL30.GL_MODELVIEW);
         GL30.glLoadIdentity();
 
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_MIRRORED_REPEAT);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_MIRRORED_REPEAT);
+
         renderDisplayObject(stage,
                 0,
                 stage.getX(),
@@ -150,7 +153,7 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glPopMatrix();
     }
 
-    private void renderSprite(ISprite sprite, float alpha, float scaleX, float scaleY) {
+    private void renderSprite(@NotNull ISprite sprite, float alpha, float scaleX, float scaleY) {
         Texture texture = sprite.getTexture();
 
         if (texture == null) return;
@@ -158,7 +161,7 @@ public class LWJGLRenderer implements IRenderer {
 
         TextureAtlas textureAtlas = texture.getTextureAtlas();
 
-        textureParamsHandle();
+        //textureParamsHandle();
 
         GL30.glEnable(GL_BLEND);
         GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -247,7 +250,7 @@ public class LWJGLRenderer implements IRenderer {
 
         D2D2.getTextureManager().getTextureEngine().enable(textureAtlas);
 
-        textureParamsHandle();
+        textureParamsLinear();
 
         Color color = bitmapText.getColor();
 
@@ -304,6 +307,8 @@ public class LWJGLRenderer implements IRenderer {
 
         GL30.glDisable(GL_BLEND);
         D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
+
+        textureParamsNearest();
     }
 
     private static float nextHalf(float v) {
@@ -315,7 +320,7 @@ public class LWJGLRenderer implements IRenderer {
             float y,
             int textureAtlasWidth,
             int textureAtlasHeight,
-            BitmapCharInfo charInfo,
+            @NotNull BitmapCharInfo charInfo,
             float scX,
             float scY) {
 
@@ -343,15 +348,17 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glVertex2d(x, charHeight * -scY + y);
     }
 
-    private void textureParamsHandle() {
+    private void textureParamsLinear() {
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
         if (smoothMode) {
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
-        } else {
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+        }
+    }
+
+    private void textureParamsNearest() {
+        if (smoothMode) {
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);
             GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_NEAREST);
         }

@@ -73,6 +73,13 @@ public class ServerCommandProcessor {
         repl.addCommand("kill", this::cmd_kill);
         repl.addCommand("tw", this::cmd_tw);
         repl.addCommand("setprop", this::cmd_setprop);
+        repl.addCommand("connections", this::cmd_connections);
+    }
+
+    private @NotNull @Unmodifiable Object cmd_connections(Args args) {
+        StringBuilder stringBuilder = new StringBuilder();
+        MODULE_SERVER_UNIT.server.getConnections().forEach(connection -> stringBuilder.append(connection).append('\n'));
+        return stringBuilder.toString();
     }
 
     private @NotNull @Unmodifiable Object cmd_setprop(@NotNull Args args) {

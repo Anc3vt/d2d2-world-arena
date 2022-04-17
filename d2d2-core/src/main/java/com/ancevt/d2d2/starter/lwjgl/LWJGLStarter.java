@@ -176,8 +176,6 @@ public class LWJGLStarter implements D2D2Starter {
 
         glfwDefaultWindowHints();
 
-        glfwWindowHint(GLFW.GLFW_SAMPLES, 64);
-
         long resultWindowId = glfwCreateWindow(width, height, title, NULL, NULL);
 
         if (resultWindowId == NULL)
@@ -312,6 +310,9 @@ public class LWJGLStarter implements D2D2Starter {
 
         renderer.init(resultWindowId);
         renderer.reshape(width, height);
+
+        glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
+
 
         return resultWindowId;
     }

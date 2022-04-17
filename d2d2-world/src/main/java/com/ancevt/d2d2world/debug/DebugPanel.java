@@ -71,6 +71,10 @@ public class DebugPanel extends DisplayObjectContainer {
         DebugPanel.scale = scale;
     }
 
+    public static float getScale() {
+        return DebugPanel.scale;
+    }
+
     public static void setEnabled(boolean enabled) {
         DebugPanel.enabled = enabled;
     }

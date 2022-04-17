@@ -54,7 +54,7 @@ public class LWJGLTextureEngine implements ITextureEngine {
     private int textureAtlasIdCounter;
 
     public LWJGLTextureEngine() {
-        texturePreprocessingEnabled = (boolean) System.getProperties().getOrDefault("d2d2.experimental.bloom", false);
+        texturePreprocessingEnabled = "true".equals(System.getProperties().get("d2d2.experimental.bloom"));
 
         mapping = new TextureMapping();
         loadQueue = new TextureLoadQueue();
