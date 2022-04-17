@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.gameobject.weapon;
 
+import com.ancevt.commons.Pair;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.texture.Texture;
@@ -30,8 +31,14 @@ import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 abstract public class Weapon {
+
+    private static final Map<Class<? extends Weapon>, Pair<Float, Float>> weaponXYOffsetMap = new HashMap<>() {{
+        put(FireWeapon.class, Pair.of(2f, -11f));
+    }};
 
     private final ISprite sprite;
     private final Mapkit mapkit;
@@ -42,6 +49,10 @@ abstract public class Weapon {
     public Weapon(@NotNull ISprite sprite) {
         this.sprite = sprite;
         mapkit = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME);
+    }
+
+    public static Pair<Float, Float> getXYOffset(Class<? extends Weapon> clazz) {
+        return weaponXYOffsetMap.getOrDefault(clazz, Pair.of(2f, -11f));
     }
 
     public @NotNull MapkitItem getBulletMapkitItem() {

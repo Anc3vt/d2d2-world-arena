@@ -18,6 +18,8 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
+import com.ancevt.commons.Pair;
+import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.constant.AnimationKey;
@@ -64,7 +66,7 @@ abstract public class Actor extends Animated implements
     private static final int HOOK_TIME = 20;
     private static final int UNDER_WATER_TIME = 2000;
 
-    private final FramedSprite framedDoHead;
+    private final FramedSprite headFramedDisplayObject;
     private final List<Weapon> weapons;
     private float weaponLocationX, weaponLocationY;
     private Weapon currentWeapon;
@@ -121,14 +123,14 @@ abstract public class Actor extends Animated implements
         weaponContainer = new DisplayObjectContainer();
         resetWeapons();
 
-        framedDoHead = new FramedSprite(mapkitItem
+        headFramedDisplayObject = new FramedSprite(mapkitItem
                 .getTextureAtlas()
                 .createTextures(mapkitItem.getDataEntry().getString(DataKey.HEAD))
         );
-        framedDoHead.setSlowing(SLOWING);
-        framedDoHead.setFrame(0);
-        framedDoHead.setLoop(true);
-        framedDoHead.play();
+        headFramedDisplayObject.setSlowing(SLOWING);
+        headFramedDisplayObject.setFrame(0);
+        headFramedDisplayObject.setLoop(true);
+        headFramedDisplayObject.play();
         headContainer = new DisplayObjectContainer();
 
         armSprite = new Sprite(mapkitItem.getTextureAtlas()
@@ -137,7 +139,7 @@ abstract public class Actor extends Animated implements
 
         weaponContainer.add(armSprite, 2, -9);
 
-        headContainer.add(framedDoHead, -framedDoHead.getWidth() / 2, -16);
+        headContainer.add(headFramedDisplayObject, -headFramedDisplayObject.getWidth() / 2, -16);
 
         add(headContainer, 0);
         add(weaponContainer, 0);
@@ -274,18 +276,20 @@ abstract public class Actor extends Animated implements
     protected void fixXY() {
         if (currentWeapon != null) {
 
+            Pair<Float, Float> weaponXYOffset = Weapon.getXYOffset(currentWeapon.getClass());
+
             switch (getDirection()) {
                 case Direction.LEFT -> {
                     weaponDisplayObject.setScaleX(-1);
-                    weaponDisplayObject.setX(weaponDisplayObject.getWidth() - getWeaponX() - 32 + 2);
-                    weaponDisplayObject.setY(-11);
+                    weaponDisplayObject.setX(weaponDisplayObject.getWidth() - getWeaponX() - 32 + weaponXYOffset.getFirst());
+                    weaponDisplayObject.setY(weaponXYOffset.getSecond());
                     armSprite.setScaleX(-1);
                     armSprite.setXY(-2, -8);
                 }
                 case Direction.RIGHT -> {
                     weaponDisplayObject.setScaleX(1);
-                    weaponDisplayObject.setX(getWeaponX() - 2);
-                    weaponDisplayObject.setY(-11);
+                    weaponDisplayObject.setX(getWeaponX() - weaponXYOffset.getFirst());
+                    weaponDisplayObject.setY(weaponXYOffset.getSecond());
                     armSprite.setScaleX(1);
                     armSprite.setXY(2, -8);
                 }
@@ -301,13 +305,14 @@ abstract public class Actor extends Animated implements
 
             float w = weaponDisplayObject.getWidth();
             float h = weaponDisplayObject.getHeight();
-            if (getAnimation() == WALK_ATTACK) {
-                //armSprite.setY(-12);
-                //weapon.getDisplayObject().setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
-            } else {
-                armSprite.setY(-8);
-                weaponDisplayObject.setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
-            }
+            armSprite.setY(-8);
+            weaponDisplayObject.setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
+
+            Pair<Float, Float> weaponXYOffset = Weapon.getXYOffset(currentWeapon.getClass());
+
+            UnixDisplay.debug("Actor:310: <A> " + currentWeapon + " " + weaponXYOffset);
+            weaponDisplayObject.moveY(weaponXYOffset.getSecond());
+
         }
 
         if (headContainer != null) {
@@ -327,7 +332,7 @@ abstract public class Actor extends Animated implements
     }
 
     public void attack() {
-        fixBodyPartsY();
+        //fixBodyPartsY();
 
         attackTime = getCurrentWeapon().getAttackTime();
 
@@ -347,32 +352,30 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void setAnimation(int animationKey, boolean loop) {
-        if (damagingTime > 0) return;
-        if (animationKey == getAnimation()) return;
+        if (damagingTime > 0 || animationKey == getAnimation()) return;
 
-        if (framedDoHead != null) {
-            framedDoHead.setFrame(0);
-        }
-
-        if (framedDoHead != null) {
+        if (headFramedDisplayObject != null) {
+            headFramedDisplayObject.setFrame(0);
             if (animationKey == DAMAGE) {
-                framedDoHead.removeFromParent();
-            } else if (!framedDoHead.hasParent()) {
-                headContainer.add(framedDoHead);
+                headFramedDisplayObject.removeFromParent();
+            } else if (!headFramedDisplayObject.hasParent()) {
+                headContainer.add(headFramedDisplayObject);
             }
         }
 
         super.setAnimation(animationKey, loop);
 
-        fixBodyPartsY();
+        //fixBodyPartsY();
     }
 
     @Override
     public void setDirection(int direction) {
+        if(getDirection() == direction) return;
+
         super.setDirection(direction);
         weaponContainer.setScale(direction, direction);
         headContainer.setScaleY(direction);
-        fixBodyPartsY();
+        //fixBodyPartsY();
     }
 
     public final void debug(final Object o) {

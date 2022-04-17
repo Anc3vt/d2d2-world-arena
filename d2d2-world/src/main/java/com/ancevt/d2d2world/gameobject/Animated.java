@@ -94,7 +94,6 @@ abstract public class Animated extends DisplayObjectContainer implements IAnimat
             add(framedDisplayObject);
         }
 
-        fixXY();
         animationsPrepared = true;
         setAnimation(AnimationKey.IDLE);
     }
