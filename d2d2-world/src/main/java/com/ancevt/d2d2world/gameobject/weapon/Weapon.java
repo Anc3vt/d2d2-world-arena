@@ -88,7 +88,7 @@ abstract public class Weapon {
     }
 
     public Bullet getNextBullet(float degree) {
-        Bullet bullet = (Bullet) getBulletMapkitItem().createGameObject(IdGenerator.INSTANCE.getNewId());
+        Bullet bullet = (Bullet) getBulletMapkitItem().createGameObject(IdGenerator.getInstance().getNewId());
         bullet.setDegree(degree);
         return bullet;
     }

@@ -238,7 +238,7 @@ public class ServerWorldScene {
 
     public PlayerActor createPlayerActor(@NotNull Player player, @NotNull String mapkitItemId) {
         MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemId);
-        PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.INSTANCE.getNewId());
+        PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.getInstance().getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);
         playerActor.setPlayerColorValue(player.getColor());

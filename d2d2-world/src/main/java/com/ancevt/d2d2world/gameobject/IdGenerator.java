@@ -4,7 +4,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class IdGenerator {
-    public static final IdGenerator INSTANCE = new IdGenerator();
+
+    private static IdGenerator instance;
+
+    public static IdGenerator getInstance() {
+        return instance == null ? instance = new IdGenerator() : instance;
+    }
 
     private final List<Integer> ids;
 

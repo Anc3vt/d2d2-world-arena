@@ -3,6 +3,7 @@ package com.ancevt.d2d2world.gameobject.weapon;
 import com.ancevt.d2d2.display.FramedSprite;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.IScalable;
@@ -81,9 +82,9 @@ public class FireWeapon extends Weapon {
 
         private void this_addToStage(Event event) {
             removeEventListener(StandardWeapon.StandardBullet.class);
-            var a = getMapkitItem().getTextureAtlas();
+            TextureAtlas textureAtlas = getMapkitItem().getTextureAtlas();
             FramedSprite framedSprite = new FramedSprite(
-                    a.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))
+                    textureAtlas.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))
             );
             framedSprite.setFrame(0);
             framedSprite.setLoop(true);

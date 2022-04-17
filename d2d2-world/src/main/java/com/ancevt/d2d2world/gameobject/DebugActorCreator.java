@@ -18,7 +18,7 @@ public class DebugActorCreator {
         PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance()
                 .getMapkit(BuiltInMapkit.NAME)
                 .getItem("character_stranger")
-                .createGameObject(IdGenerator.INSTANCE.getNewId());
+                .createGameObject(IdGenerator.getInstance().getNewId());
 
         playerActor.setXY((float) (Math.random() * 900), (float) (Math.random() * 100));
         playerActor.setDirection(Direction.LEFT);

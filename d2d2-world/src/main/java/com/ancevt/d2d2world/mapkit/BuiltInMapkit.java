@@ -290,7 +290,7 @@ public class BuiltInMapkit extends Mapkit {
     }
 
     public static WeaponPickup createWeaponPickupMapkitItem(Weapon weapon) {
-        WeaponPickup weaponPickup = (WeaponPickup) getInstance().getItem("pickup_" + WeaponPickup.class.getSimpleName()).createGameObject(IdGenerator.INSTANCE.getNewId());
+        WeaponPickup weaponPickup = (WeaponPickup) getInstance().getItem("pickup_" + WeaponPickup.class.getSimpleName()).createGameObject(IdGenerator.getInstance().getNewId());
         weaponPickup.setWeaponClassname(weapon.getClass().getName());
         weaponPickup.setAmmunition(weapon.getAmmunition());
         weaponPickup.setRespawnTimeMillis(0);

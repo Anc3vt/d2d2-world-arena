@@ -112,7 +112,7 @@ public class MapIO {
 
             int gameObjectId = dataEntry.getInt(DataKey.ID, 0);
 
-            if (gameObjectId == 0) gameObjectId = IdGenerator.INSTANCE.getNewId();
+            if (gameObjectId == 0) gameObjectId = IdGenerator.getInstance().getNewId();
 
             String mapkitItemId = dataEntry.getString(DataKey.ITEM);
             int layer = dataEntry.getInt(DataKey.LAYER);

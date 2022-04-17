@@ -342,7 +342,7 @@ public class World extends DisplayObjectContainer {
                 throw new IllegalStateException("duplicate game object id: " + gameObject.getGameObjectId() + " " + gameObject + " and  " + o);
         });
 
-        IdGenerator.INSTANCE.addId(gameObject.getGameObjectId());
+        IdGenerator.getInstance().addId(gameObject.getGameObjectId());
 
         if (gameObject instanceof Parallax parallax && !(D2D2.getStarter() instanceof NoRenderStarter)) {
             parallax.setCamera(getCamera());
@@ -370,7 +370,7 @@ public class World extends DisplayObjectContainer {
 
 
     public void removeGameObject(@NotNull IGameObject gameObject, boolean updateRoom) {
-        IdGenerator.INSTANCE.removeId(gameObject.getGameObjectId());
+        IdGenerator.getInstance().removeId(gameObject.getGameObjectId());
         gameObjects.remove(gameObject);
         gameObjectMap.remove(gameObject.getGameObjectId());
 

@@ -309,7 +309,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void loadMap(String mapFilename) {
-        IdGenerator.INSTANCE.clear();
+        IdGenerator.getInstance().clear();
         world.clear();
         overlay.startIn();
         Lock lock = new Lock();
