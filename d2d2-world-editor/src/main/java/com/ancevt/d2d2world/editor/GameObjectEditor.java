@@ -83,7 +83,7 @@ public class GameObjectEditor {
         lockedLayers = new HashSet<>();
         collisionRects = new ArrayList<>();
 
-        setSnapToGrid(true);
+        setSnapToGrid(false);
 
         gameObjectLayersMap = new GameObjectLayersMap();
         cursor = new Cursor();
@@ -133,7 +133,8 @@ public class GameObjectEditor {
 
                     case 'B' -> getWorld().getCamera().setBoundsLock(!getWorld().getCamera().isBoundsLock());
 
-                    case 'P' -> {
+                    /* TAB */
+                    case 'P','Ă' -> {
                         editor.setEnabled(false);
                         unselect();
                         getWorld().setPlaying(true);
@@ -143,8 +144,9 @@ public class GameObjectEditor {
                     }
 
                     case 'S' -> {
-                        setSnapToGrid(!isSnapToGrid());
-                        setInfoText("Snap to grid: " + isSnapToGrid());
+                        //setSnapToGrid(!isSnapToGrid());
+                        snapToGridSelected();
+                        //setInfoText("Snap to grid: " + isSnapToGrid());
                     }
 
                     case 'R' -> editor.showRoomInfo();
@@ -774,10 +776,7 @@ public class GameObjectEditor {
         root.addEventListener(hashCode() + InputEvent.KEY_DOWN, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
-
-            if (e.getKeyCode() == KeyCode.TAB) {
-                playerActor.nextWeapon();
-            }
+            if (e.getKeyCode() == KeyCode.F) playerActor.nextWeapon();
         });
 
         root.removeEventListener(hashCode() + InputEvent.KEY_UP);

@@ -52,7 +52,7 @@ public class Editor {
     }
 
     public void key(int keyCode, char keyChar, boolean down) {
-        if (keyChar == 'P' && !isEnabled() && down) {
+        if ((keyCode == KeyCode.TAB || keyChar == 'P') && !isEnabled() && down) {
             setEnabled(true);
             world.setPlaying(false);
             world.getCamera().setBoundsLock(false);
