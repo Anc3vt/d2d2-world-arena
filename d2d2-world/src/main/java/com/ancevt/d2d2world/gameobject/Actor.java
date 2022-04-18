@@ -19,7 +19,6 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.Pair;
-import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.constant.AnimationKey;
@@ -300,21 +299,7 @@ abstract public class Actor extends Animated implements
         super.fixXY();
     }
 
-    private void fixBodyPartsY() {
-        if (currentWeapon != null) {
-
-            float w = weaponDisplayObject.getWidth();
-            float h = weaponDisplayObject.getHeight();
-            armSprite.setY(-8);
-            weaponDisplayObject.setY(getWeaponY() - h / 2 - (getAnimation() == WALK_ATTACK ? 4 : 0));
-
-            Pair<Float, Float> weaponXYOffset = Weapon.getXYOffset(currentWeapon.getClass());
-
-            UnixDisplay.debug("Actor:310: <A> " + currentWeapon + " " + weaponXYOffset);
-            weaponDisplayObject.moveY(weaponXYOffset.getSecond());
-
-        }
-
+    private void fixHeadContainerXY() {
         if (headContainer != null) {
             switch (getAnimation()) {
                 case WALK, WALK_ATTACK -> {
@@ -364,8 +349,7 @@ abstract public class Actor extends Animated implements
         }
 
         super.setAnimation(animationKey, loop);
-
-        //fixBodyPartsY();
+        fixHeadContainerXY();
     }
 
     @Override
@@ -375,7 +359,7 @@ abstract public class Actor extends Animated implements
         super.setDirection(direction);
         weaponContainer.setScale(direction, direction);
         headContainer.setScaleY(direction);
-        //fixBodyPartsY();
+        fixHeadContainerXY();
     }
 
     public final void debug(final Object o) {

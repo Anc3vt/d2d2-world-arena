@@ -23,5 +23,6 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 public class PackedScenery extends Sprite {
 	public PackedScenery(final TextureAtlas textureAtlas) {
 		super(textureAtlas.createTexture());
+		setBleedingFix(0);
 	}
 }

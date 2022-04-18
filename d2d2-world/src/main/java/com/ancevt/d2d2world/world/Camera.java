@@ -21,6 +21,9 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.gameobject.IDirectioned;
 import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
+
+import static java.lang.Math.abs;
 
 public class Camera {
 
@@ -203,7 +206,7 @@ public class Camera {
 
         float zoom = getZoom();
 
-        if (Math.abs(zoom - 1.0f) < 0.005f) {
+        if (abs(zoom - 1.0f) < 0.005f) {
             setZoom(DEFAULT_ZOOM);
             return;
         }
@@ -229,18 +232,22 @@ public class Camera {
         float x = getX() + (left ? side : -side);
         float y = getY();
 
+        float factorX = attachedTo instanceof PlayerActor playerActor && abs(playerActor.getVelocityX()) > 6 ? 7.5f : 1f;
+        float factorY = attachedTo instanceof PlayerActor playerActor && abs(playerActor.getVelocityY()) > 5 ? 7.5f : 3f;
+
         if (aX > x) {
-            float t = (aX - x) / smooth;
+            float t = (aX - x) / (smooth / factorX);
             moveX(t);
         } else if (aX < x) {
-            float t = (x - aX) / smooth;
+            float t = (x - aX) / (smooth / factorX);
             moveX(-t);
         }
+
         if (aY > y) {
-            float t = (aY - y) / (smooth / 2);
+            float t = (aY - y) / (smooth / factorY);
             moveY(t);
         } else if (aY < y) {
-            float t = (y - aY) / (smooth / 2);
+            float t = (y - aY) / (smooth / factorY);
             moveY(-t);
         }
     }
@@ -261,4 +268,3 @@ public class Camera {
         this.autoZoom = autoZoom;
     }
 }
-

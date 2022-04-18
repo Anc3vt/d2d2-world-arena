@@ -22,7 +22,6 @@ import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.control.LocalPlayerController;
@@ -756,17 +755,6 @@ public class GameObjectEditor {
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);
         playerActor.setController(localPlayerController);
-
-        playerActor.addEventListener(Event.EACH_FRAME, event -> {
-            StringBuilder s = new StringBuilder();
-            playerActor.getWeapons().forEach(w -> {
-                if (playerActor.getCurrentWeapon() == w) {
-                    s.append('>');
-                }
-
-                s.append(w.toString()).append('\n');
-            });
-        });
 
         getWorld().getCamera().setAttachedTo(playerActor);
 
