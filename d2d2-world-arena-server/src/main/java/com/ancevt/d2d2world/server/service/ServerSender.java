@@ -57,6 +57,20 @@ public class ServerSender {
         sendToAll(createDtoMessage(className, json));
     }
 
+    public void sendToAllOfRoom(@NotNull Dto dto, String roomId) {
+        String className = dto.getClass().getName();
+        String json = gson().toJson(dto);
+        log.debug("sendToAllOfRoom <y>{}\n{}\n{}<>", roomId, className, json);
+        sendToAllOfRoom(createDtoMessage(className, json), roomId);
+    }
+
+    public void sendToAllOfRoomExcluding(@NotNull Dto dto, String roomId, int excludingPlayerId) {
+        String className = dto.getClass().getName();
+        String json = gson().toJson(dto);
+        log.debug("sendToAllOfRoomExcluding <y>{}\n{}\n{}<>", roomId, className, json);
+        sendToAllOfRoomExcluding(createDtoMessage(className, json), roomId, excludingPlayerId);
+    }
+
     public void sendToAllExcluding(byte[] bytes, int excludingPlayerId) {
         try {
             serverUnit.getConnections()

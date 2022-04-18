@@ -327,7 +327,9 @@ public class PlayProcessor {
 
             world.getMap().getRoomByGameObject(areaTarget).ifPresent(room -> {
                 if (room.getId().equals(actor.getWorld().getRoom().getId())) {
+                    actor.setVisible(false);
                     actor.setXY(areaTarget.getX(), areaTarget.getY());
+                    actor.setVisible(true);
                 } else {
                     world.switchRoomWithActor(room.getId(), actor, areaTarget.getX(), areaTarget.getY());
                 }

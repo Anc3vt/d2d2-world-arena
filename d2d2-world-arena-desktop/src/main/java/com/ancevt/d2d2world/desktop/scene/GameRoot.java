@@ -346,6 +346,14 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void spawnEffect(float x, float y) {
+        worldScene.spawnEffect(x, y);
+    }
+
+    /**
      * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override

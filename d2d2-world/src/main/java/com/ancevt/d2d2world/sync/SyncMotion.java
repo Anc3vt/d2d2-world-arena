@@ -64,7 +64,6 @@ public class SyncMotion {
 
             if ((abs(tX - oX) < 1f && abs(tY - oY) < 1f)) {
                 displayObject.setXY(tX, tY);
-                //toRemove.add(displayObject);
             }
 
             if (displayObject instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {

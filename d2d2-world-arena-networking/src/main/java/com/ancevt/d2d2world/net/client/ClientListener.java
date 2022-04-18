@@ -63,4 +63,6 @@ public interface ClientListener {
     default void playerEnterServer(int id, @NotNull String name, int color){}
 
     default void setRoom(String roomId, float cameraX, float cameraY){}
+
+    default void spawnEffect(float x, float y){};
 }

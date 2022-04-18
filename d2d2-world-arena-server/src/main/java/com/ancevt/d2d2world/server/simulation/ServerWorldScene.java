@@ -23,6 +23,7 @@ import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.dto.server.DeathDto;
 import com.ancevt.d2d2world.net.dto.server.PlayerEnterRoomStartResponseDto;
 import com.ancevt.d2d2world.net.dto.server.SetRoomDto;
+import com.ancevt.d2d2world.net.dto.server.SpawnEffectDto;
 import com.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import com.ancevt.d2d2world.server.content.ServerContentManager;
 import com.ancevt.d2d2world.server.player.Player;
@@ -120,6 +121,8 @@ public class ServerWorldScene {
             gameMap.getRooms().forEach(room -> {
                 World world = new World(new SyncDataAggregator());
                 world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+                world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
+                world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_removeGameObject);
                 world.setMap(gameMap);
                 world.setRoom(room);
                 world.setSceneryPacked(true);
@@ -129,6 +132,32 @@ public class ServerWorldScene {
             });
         } else {
             log.warn("No such map \"{}\"", mapName);
+        }
+    }
+
+    private void world_addGameObject(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (e.getGameObject() instanceof PlayerActor playerActor) {
+            SENDER.sendToAllOfRoom(
+                    SpawnEffectDto.builder()
+                            .x(playerActor.getX())
+                            .y(playerActor.getY())
+                            .build(),
+                    e.getSource().getRoom().getId()
+            );
+        }
+    }
+
+    private void world_removeGameObject(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (e.getGameObject() instanceof PlayerActor playerActor) {
+            SENDER.sendToAllOfRoom(
+                    SpawnEffectDto.builder()
+                            .x(playerActor.getX())
+                            .y(playerActor.getY())
+                            .build(),
+                    e.getSource().getRoom().getId()
+            );
         }
     }
 
@@ -285,6 +314,14 @@ public class ServerWorldScene {
                         .cameraX(playerActor.getX())
                         .cameraY(playerActor.getY())
                         .build());
+
+                SENDER.sendToAllOfRoom(
+                        SpawnEffectDto.builder()
+                                .x(playerActor.getX())
+                                .y(playerActor.getY())
+                                .build(),
+                        world.getRoom().getId()
+                );
 
                 return world;
             }

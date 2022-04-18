@@ -206,6 +206,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
             clientListeners.forEach(l -> l.playerEnterRoomStartResponseReceived());
         } else if (dto instanceof SetRoomDto d) {
             clientListeners.forEach(l -> l.setRoom(d.getRoomId(), d.getCameraX(), d.getCameraY()));
+        } else if (dto instanceof SpawnEffectDto d) {
+            clientListeners.forEach(l -> l.spawnEffect(d.getX(), d.getY()));
         }
     }
 

@@ -197,15 +197,6 @@ public class WorldScene extends DisplayObjectContainer {
         ));
 
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
-                "//spawneffect",
-                args -> {
-                    SpawnEffect.doSpawnEffect(localPlayerActor, world, Color.of(CLIENT.getLocalPlayerColor()));
-                    D2D2WorldSound.playSound(PLAYER_SPAWN);
-                    return true;
-                }
-        ));
-
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//gameobjectids",
                 args -> {
                     StringBuilder sb = new StringBuilder();
@@ -256,11 +247,6 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     private void world_removeGameObject(Event<World> event) {
-        var e = (WorldEvent) event;
-        if (e.getGameObject() instanceof PlayerActor playerActor) {
-            SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
-            D2D2WorldSound.playSound(PLAYER_SPAWN);
-        }
     }
 
     private void world_roomSwitchComplete(Event<World> event) {
@@ -498,12 +484,17 @@ public class WorldScene extends DisplayObjectContainer {
         CLIENT.sendPlayerActorRequest();
     }
 
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void spawnEffect(float x, float y) {
+        SpawnEffect.doSpawnEffect(x, y, world.getLayer(5));
+        D2D2WorldSound.playSound(PLAYER_SPAWN);
+    }
+
     private void world_addGameObject(Event<World> event) {
         var e = (WorldEvent) event;
         if (e.getGameObject() instanceof PlayerActor playerActor) {
-            SpawnEffect.doSpawnEffect(playerActor, e.getSource(), Color.WHITE);
-            D2D2WorldSound.playSound(PLAYER_SPAWN);
-
             PLAYER_MANAGER.getPlayerByPlayerActorGameObjectId(playerActor.getGameObjectId()).ifPresent(player -> {
                 if (player.isChatOpened()) showChatBubble(playerActor);
             });

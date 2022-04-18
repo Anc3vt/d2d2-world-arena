@@ -89,12 +89,8 @@ public class SpawnEffect extends DisplayObjectContainer {
         if (getAlpha() <= 0) removeFromParent();
     }
 
-    public static void doSpawnEffect(@NotNull IDisplayObject target,
-                                     @NotNull IDisplayObjectContainer targetParent,
-                                     @NotNull Color color) {
-        SpawnEffect spawnEffect = new SpawnEffect();
-        //spawnEffect.setColor1(color);
-        targetParent.add(spawnEffect, target.getX(), target.getY() + 48);
+    public static void doSpawnEffect(float x, float y, @NotNull IDisplayObjectContainer targetParent) {
+        targetParent.add(new SpawnEffect(), x, y + 48);
     }
 
 }
