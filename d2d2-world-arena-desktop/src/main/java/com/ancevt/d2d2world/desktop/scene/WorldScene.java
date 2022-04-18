@@ -109,7 +109,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         gameObjectTexts = new GameObjectTexts(world);
 
-        world.getPlayProcessor().setEnabled(false);
+        world.getPlayProcessor().setAsyncProcessingEnabled(false);
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
         world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
@@ -325,7 +325,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         MapkitManager.getInstance().disposeExternalMapkits();
 
-        world.getPlayProcessor().setEnabled(false);
+        world.getPlayProcessor().setAsyncProcessingEnabled(false);
         world.setSceneryPacked(false);
         world.clear();
         DefaultMaps.clear();
@@ -346,7 +346,7 @@ public class WorldScene extends DisplayObjectContainer {
 
     private void mapLoaded() {
         world.setSceneryPacked(true);
-        world.getPlayProcessor().setEnabled(true);
+        world.getPlayProcessor().setAsyncProcessingEnabled(true);
 
         CharSelectScene charSelectScene = new CharSelectScene();
         charSelectScene.addEventListener(CharSelectScene.CharSelectSceneEvent.CHARACTER_SELECT, event -> {

@@ -354,7 +354,7 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void setDirection(int direction) {
-        if(getDirection() == direction) return;
+        if (getDirection() == direction) return;
 
         super.setDirection(direction);
         weaponContainer.setScale(direction, direction);
@@ -667,9 +667,7 @@ abstract public class Actor extends Animated implements
     public void setHook(AreaHook hook) {
         if (hook == null) {
             this.hook = null;
-            if (isOnWorld()) {
-                getWorld().getSyncDataAggregator().hook(this, null);
-            }
+            if (isOnWorld()) getWorld().getSyncDataAggregator().hook(this, null);
             return;
         }
 
@@ -680,9 +678,8 @@ abstract public class Actor extends Animated implements
             this.hook = hook;
             hookTime = HOOK_TIME;
 
-            if (isOnWorld()) {
-                getWorld().getSyncDataAggregator().hook(this, hook);
-            }
+            if (isOnWorld()) getWorld().getSyncDataAggregator().hook(this, hook);
+
         }
 
         dispatchEvent(ActorEvent.builder()

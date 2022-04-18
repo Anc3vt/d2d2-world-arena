@@ -113,15 +113,8 @@ public class World extends DisplayObjectContainer {
     @Override
     public void onEachFrame() {
         if (!isPlaying()) return;
-
         dispatchEvent(WorldEvent.builder().type(WorldEvent.WORLD_PROCESS).build());
-
-        //long oldTime = System.currentTimeMillis();
         playProcessor.process();
-        //long newTime = System.currentTimeMillis() - oldTime;
-        //System.out.println(">> " + newTime);
-
-
         camera.process();
     }
 

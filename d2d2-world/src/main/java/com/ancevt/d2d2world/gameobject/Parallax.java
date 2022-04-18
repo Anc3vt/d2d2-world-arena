@@ -66,10 +66,12 @@ public class Parallax extends Sprite implements IGameObject, ISpeedable, IScalab
         if (D2D2.getStarter() instanceof NoRenderStarter) return;
 
         final Room room = getWorld().getRoom();
-        final float roomWidth = room.getWidth();
-        final float width = getWidth();
 
-        setX(camera.getX() * speed + (roomWidth / width) - width / 3);
+        if(room != null) {
+            final float roomWidth = room.getWidth();
+            final float width = getWidth();
+            setX(camera.getX() * speed + (roomWidth / width) - width / 3);
+        }
     }
 
     @Override

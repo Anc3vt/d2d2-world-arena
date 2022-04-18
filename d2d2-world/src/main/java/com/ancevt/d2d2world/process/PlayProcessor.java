@@ -47,17 +47,36 @@ public class PlayProcessor {
 
     private int tact;
 
+    private Thread thread;
+
     public PlayProcessor(@NotNull World world) {
         this.world = world;
         gravity = DEFAULT_GRAVITY;
-        setEnabled(true);
+        setAsyncProcessingEnabled(false);
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setAsyncProcessingEnabled(boolean asyncProcessingEnabled) {
+        if (asyncProcessingEnabled == this.enabled) return;
+        this.enabled = asyncProcessingEnabled;
+
+        /*
+        if (asyncProcessingEnabled) {
+            thread = new Thread(() -> {
+                while (asyncProcessingEnabled) {
+                    try {
+                        Thread.sleep(1000 / 50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    process();
+                }
+            }, "playProc");
+            thread.start();
+        }
+         */
     }
 
-    public boolean isEnabled() {
+    public boolean isAsyncProcessingEnabled() {
         return enabled;
     }
 
@@ -74,8 +93,6 @@ public class PlayProcessor {
     }
 
     public final synchronized void process() {
-        if (!enabled) return;
-
         tact++;
 
         if (tact % 250 == 0) pushStates.clear();
@@ -167,7 +184,7 @@ public class PlayProcessor {
     }
 
     private void processHook(@NotNull IHookable o, @NotNull AreaHook hook) {
-        if (o.getCollisionY() + o.getY() > hook.getY()) {
+        if (isServer() && o.getCollisionY() + o.getY() > hook.getY()) {
             o.setHook(hook);
         }
     }
