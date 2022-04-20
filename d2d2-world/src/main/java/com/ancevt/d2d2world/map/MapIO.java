@@ -37,7 +37,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
@@ -110,7 +109,7 @@ public class MapIO {
 
             if (IdGenerator.getInstance().contains(gameObjectId)) {
                 int newGameObjectId = IdGenerator.getInstance().getNewId();
-                debug("MapIO:120: <R> duplicate game object id " + gameObjectId + ", change to: " + newGameObjectId);
+                log.warn("duplicate game object id {}, change to {}", gameObjectId, newGameObjectId);
                 gameObjectId = newGameObjectId;
             }
 

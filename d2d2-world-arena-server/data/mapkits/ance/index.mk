@@ -10,6 +10,7 @@ id = _ance1_6 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-t
 id = _ance1_7 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=48,16,16,16
 id = _ance1_8 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=64,16,16,16
 id = _ance1_9 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=80,16,16,16
+id = _ance1_9_m | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=80,80,16,16
 id = _ance1_10 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=16,32,16,16
 id = _ance1_11 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=32,32,16,16
 id = _ance1_12 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=48,32,16,16
