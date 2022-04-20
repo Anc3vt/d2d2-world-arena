@@ -19,9 +19,7 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2world.data.Property;
-import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.world.World;
 
 import java.util.HashMap;
@@ -73,13 +71,6 @@ public interface IGameObject extends IDisplayObject, IProcessable {
         setWorld(world);
     }
 
-    default void playSound(String soundFilenameFromMapkit) {
-        if (isOnWorld()) {
-            String mapkitName = getMapkitItem().getMapkit().getName();
-            String path = MapIO.getMapkitsDirectory() + mapkitName + "/" + soundFilenameFromMapkit;
-            D2D2WorldSound.playSound(path, getWorld().getCamera(), getX(), getY());
-        }
-    }
 }
 
 

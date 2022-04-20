@@ -142,4 +142,12 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
     public String getColorHex() {
         return getColor().toHexString();
     }
+
+    @Override
+    public String toString() {
+        return "Scenery{" +
+                "gameObjectId=" + gameObjectId +
+                ", isStatic=" + isStatic +
+                '}';
+    }
 }

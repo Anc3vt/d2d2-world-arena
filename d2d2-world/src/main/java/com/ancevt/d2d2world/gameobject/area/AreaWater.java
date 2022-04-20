@@ -10,6 +10,7 @@ import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IGravitational;
+import com.ancevt.d2d2world.gameobject.ISonicSynchronized;
 import com.ancevt.d2d2world.gameobject.ISpeedable;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +57,9 @@ public class AreaWater extends Area implements IDamaging {
                 p.setScale(0.5f, 0.5f);
                 getWorld().add(p, g.getX(), getY() - 16);
                 if (splashSoundTime == 0) {
-                    collideWith.playSound("splash.ogg");
+                    if(collideWith instanceof ISonicSynchronized sonicSynchronized) {
+                        sonicSynchronized.playSound("splash.ogg");
+                    }
                     splashSoundTime = SPLASH_SOUND_TIME;
                 }
 

@@ -148,7 +148,8 @@ abstract public class Weapon {
             IDirectioned,
             ISpeedable,
             IDamaging,
-            ISynchronized {
+            ISynchronized,
+            ISonicSynchronized {
 
         private final MapkitItem mapkitItem;
         private final int gameObjectId;

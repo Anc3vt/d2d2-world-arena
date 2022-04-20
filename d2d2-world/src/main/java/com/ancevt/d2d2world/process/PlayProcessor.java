@@ -184,7 +184,7 @@ public class PlayProcessor {
     }
 
     private void processHook(@NotNull IHookable o, @NotNull AreaHook hook) {
-        if (isServer() && o.getCollisionY() + o.getY() > hook.getY()) {
+        if (o.getCollisionY() + o.getY() > hook.getY()) {
             o.setHook(hook);
         }
     }

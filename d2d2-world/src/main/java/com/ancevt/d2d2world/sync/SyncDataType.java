@@ -19,4 +19,5 @@ public class SyncDataType {
     public static final int RESET = 15;
     public static final int PICKUP = 16;
     public static final int HOOK = 17;
+    public static final int SOUND = 18;
 }

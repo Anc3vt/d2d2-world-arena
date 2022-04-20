@@ -9,7 +9,7 @@ import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.NotNull;
 
-public class Ramp extends Sprite implements ICollision, IRotatable, IScalable, IRepeatable, ITight {
+public class Jumper extends Sprite implements ICollision, IRotatable, IScalable, IRepeatable, ITight, ISonicSynchronized {
 
     private final MapkitItem mapkitItem;
     private final int gameObjectId;
@@ -27,7 +27,7 @@ public class Ramp extends Sprite implements ICollision, IRotatable, IScalable, I
     private boolean floorOnly;
     private String sound;
 
-    public Ramp(@NotNull MapkitItem mapkitItem, int gameObjectId) {
+    public Jumper(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
         this.gameObjectId = gameObjectId;
 
@@ -54,7 +54,7 @@ public class Ramp extends Sprite implements ICollision, IRotatable, IScalable, I
 
     @Override
     public void onCollide(ICollision collideWith) {
-        if (collideWith instanceof IGravitational g && g.getVelocityY() >= 0) {
+        if (collideWith instanceof IGravitational g) {
             g.setVelocity(g.getVelocityX() + powerX, powerY);
             if(sound != null) playSound(sound);
         }
@@ -199,4 +199,5 @@ public class Ramp extends Sprite implements ICollision, IRotatable, IScalable, I
     public boolean isPushable() {
         return false;
     }
+
 }

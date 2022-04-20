@@ -3,7 +3,16 @@ package com.ancevt.d2d2world.sync;
 import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataKey;
-import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.Actor;
+import com.ancevt.d2d2world.gameobject.IActioned;
+import com.ancevt.d2d2world.gameobject.IAnimated;
+import com.ancevt.d2d2world.gameobject.IDamaging;
+import com.ancevt.d2d2world.gameobject.IDestroyable;
+import com.ancevt.d2d2world.gameobject.IDirectioned;
+import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.IResettable;
+import com.ancevt.d2d2world.gameobject.ISonicSynchronized;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -64,6 +73,10 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         String mapkitItemId = in.readUtf(byte.class);
                         String dataEntryText = in.readUtf(short.class);
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
+                    }
+                    case SyncDataType.SOUND -> {
+                        String soundFilenameFromMapkit = in.readUtf(byte.class);
+                        sound(gameObjectId, soundFilenameFromMapkit);
                     }
                     case SyncDataType.HOOK -> hook(gameObjectId, in.readInt());
                     case SyncDataType.ADD_WEAPON -> {
@@ -127,6 +140,12 @@ public class SyncDataReceiver implements ISyncDataReceiver {
             }
         }
 
+    }
+
+    private void sound(int gameObjectId, String soundFilenameFromMapkit) {
+        if (world.getGameObjectById(gameObjectId) instanceof ISonicSynchronized sonicSynchronized) {
+            sonicSynchronized.playSoundFromServer(soundFilenameFromMapkit);
+        }
     }
 
     private void hook(int gameObjectId, int hookGameObjectId) {

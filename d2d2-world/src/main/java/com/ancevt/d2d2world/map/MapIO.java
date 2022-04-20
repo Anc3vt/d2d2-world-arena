@@ -35,10 +35,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
@@ -74,7 +73,9 @@ public class MapIO {
         return mapsDirectory;
     }
 
-    public static GameMap load(String mapFileName) throws IOException {
+    public static @NotNull GameMap load(String mapFileName) throws IOException {
+        IdGenerator.getInstance().clear();
+
         log.debug("load map: {}", mapFileName);
 
         DataEntry[] dataEntries = DataEntryLoader.load(MapIO.mapsDirectory + mapFileName);
@@ -85,12 +86,7 @@ public class MapIO {
 
         Room room = null;
 
-        Map<String, String> mapkitNamesVsUids = new HashMap<>();
-
         for (DataEntry dataEntry : dataEntries) {
-
-            //log.debug("loaded data entry {}", dataEntry.toString());
-
             if (dataEntry.containsKey(DataKey.MAP)) {
                 setProperties(map, dataEntry);
 
@@ -112,6 +108,12 @@ public class MapIO {
 
             int gameObjectId = dataEntry.getInt(DataKey.ID, 0);
 
+            if (IdGenerator.getInstance().contains(gameObjectId)) {
+                int newGameObjectId = IdGenerator.getInstance().getNewId();
+                debug("MapIO:120: <R> duplicate game object id " + gameObjectId + ", change to: " + newGameObjectId);
+                gameObjectId = newGameObjectId;
+            }
+
             if (gameObjectId == 0) gameObjectId = IdGenerator.getInstance().getNewId();
 
             String mapkitItemId = dataEntry.getString(DataKey.ITEM);
@@ -124,16 +126,18 @@ public class MapIO {
             if (room == null) throw new IllegalStateException("room undefined");
 
             MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
-            if(mapkitItem != null) {
+            if (mapkitItem != null) {
                 IGameObject gameObject = (IGameObject) setProperties(mapkitItem.createGameObject(gameObjectId), dataEntry);
                 room.addGameObject(layer, gameObject);
             }
+
+            IdGenerator.getInstance().addId(gameObjectId);
         }
 
         return map;
     }
 
-    public static String toString(GameMap map) {
+    public static @NotNull String toString(GameMap map) {
         StringBuilder stringBuilder = new StringBuilder();
 
         DataEntry mapDataEntry = DataEntry.newInstance();

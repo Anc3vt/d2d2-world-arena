@@ -73,22 +73,19 @@ public interface ISyncDataAggregator {
     }
 
     default void pickUp(PlayerActor playerActor, int pickupGameObjectId) {
-
     }
 
     default void addWeapon(@NotNull Actor actor, String weaponClassname) {
-
     }
 
     default void changeWeaponState(Actor actor, String weaponClassname, int ammunition) {
-
     }
 
     default void switchWeapon(Actor actor) {
-
     }
 
     default void hook(IHookable hookable, AreaHook hook) {
-
     }
+
+    default void sound(ISonicSynchronized gameObject, String soundFilenameFromMapkit) {};
 }

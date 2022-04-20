@@ -39,5 +39,9 @@ public class IdGenerator {
         ids.removeAll(List.of(id));
     }
 
+    public boolean contains(int id) {
+        return ids.contains(id);
+    }
+
 
 }

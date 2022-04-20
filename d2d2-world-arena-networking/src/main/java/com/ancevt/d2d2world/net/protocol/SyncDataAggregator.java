@@ -45,6 +45,14 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
+    public void sound(ISonicSynchronized gameObject, String soundFilenameFromMapkit) {
+        buffer.writeByte(SyncDataType.SOUND)
+                .writeInt(gameObject.getGameObjectId())
+                .writeUtf(byte.class, soundFilenameFromMapkit);
+
+    }
+
+    @Override
     public synchronized void pickUp(@NotNull PlayerActor playerActor, int pickupGameObjectId) {
         buffer.writeByte(SyncDataType.PICKUP)
                 .writeInt(playerActor.getGameObjectId())

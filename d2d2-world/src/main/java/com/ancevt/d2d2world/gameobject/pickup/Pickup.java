@@ -10,6 +10,7 @@ import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IResettable;
+import com.ancevt.d2d2world.gameobject.ISonicSynchronized;
 import com.ancevt.d2d2world.gameobject.ISynchronized;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
 
-abstract public class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized {
+abstract public class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized, ISonicSynchronized {
 
     private static final int DEFAULT_RESPAWN_MILLIS = 30000;
 

@@ -39,6 +39,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
 import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
 import static com.ancevt.d2d2world.server.ServerConfig.DEBUG_FORCED_SPAWN_AREA;
@@ -243,9 +244,20 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public void playerHook(int playerId, int hookGameObjectId) {
+        debug("ServerWorldScene:247: <A>----------------------------- playerId: " + playerId + ", hook: " + hookGameObjectId);
+
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
+            debug("ServerWorldScene:248: <A>PRESENT");
+
             World world = getWorldByGameObjectId(hookGameObjectId);
+
+            if(world != null) {
+                debug("ServerWorldScene:254: <b>hook:" + world.getGameObjectById(hookGameObjectId));
+                debug("ServerWorldScene:254: <A>world: " + world);
+            }
+
             if (world != null && world.getGameObjectById(hookGameObjectId) instanceof AreaHook hook) {
+                debug("ServerWorldScene:249: <A>playerHook: " + playerId + " " + hookGameObjectId);
                 playerActor.setHook(hook);
             }
         });
@@ -442,10 +454,12 @@ public class ServerWorldScene {
     }
 
     public World getWorldByGameObjectId(int gameObjectId) {
-        return worlds.values().stream()
+        Holder<World> result = new Holder<>();
+        worlds.values().stream()
                 .filter(w -> w.getGameObjectById(gameObjectId) != null)
                 .findAny()
-                .orElseThrow();
+                .ifPresent(result::setValue);
+        return result.getValue();
     }
 
     public void instantSwitchRoomForPlayerActor(int playerId, String roomId, float x, float y) {

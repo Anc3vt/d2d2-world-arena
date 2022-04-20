@@ -66,12 +66,13 @@ abstract public class Actor extends Animated implements
         IGravitational,
         IControllable,
         ISpeedable,
-        IHookable {
+        IHookable,
+        ISonicSynchronized {
 
     private static final int JUMP_TIME = 4;
     private static final int DAMAGING_TIME = 14;
     private static final int WEAPON_SWITCH_TIME = 4;
-    private static final int HOOK_TIME = 20;
+    private static final int HOOK_TIME = 10;
     private static final int UNDER_WATER_TIME = 2000;
 
     private final FramedSprite headFramedDisplayObject;
@@ -673,9 +674,15 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void setHook(AreaHook hook) {
+        if (this.hook == hook) return;
+
         if (hook == null) {
             this.hook = null;
             if (isOnWorld()) getWorld().getSyncDataAggregator().hook(this, null);
+            dispatchEvent(ActorEvent.builder()
+                    .type(ActorEvent.ACTOR_HOOK)
+                    .hookGameObjectId(0)
+                    .build());
             return;
         }
 
@@ -687,13 +694,11 @@ abstract public class Actor extends Animated implements
             hookTime = HOOK_TIME;
 
             if (isOnWorld()) getWorld().getSyncDataAggregator().hook(this, hook);
-
+            dispatchEvent(ActorEvent.builder()
+                    .type(ActorEvent.ACTOR_HOOK)
+                    .hookGameObjectId(hook.getGameObjectId())
+                    .build());
         }
-
-        dispatchEvent(ActorEvent.builder()
-                .type(ActorEvent.ACTOR_HOOK)
-                .hookGameObjectId(hook.getGameObjectId())
-                .build());
     }
 
     @Override
