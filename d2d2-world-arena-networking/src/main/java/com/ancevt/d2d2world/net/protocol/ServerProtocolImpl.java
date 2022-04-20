@@ -86,7 +86,7 @@ public final class ServerProtocolImpl extends ProtocolImpl {
 
                 case MessageType.CLIENT_PLAYER_WEAPON_SWITCH -> {
                     int delta = in.readByte() - 1;
-                    log.trace("received <b>CLIENT_DAMAGE_REPORT<> {} value: {}", connectionId, delta + 1);
+                    log.trace("received <b>CLIENT_PLAYER_WEAPON_SWITCH<> {} value: {}", connectionId, delta + 1);
                     serverProtocolImplListeners.forEach(l -> l.playerWeaponSwitch(connectionId, delta));
                 }
 

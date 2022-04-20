@@ -79,7 +79,7 @@ public class RailWeapon extends Weapon {
         @Override
         public void onAddToWorld(World world) {
             super.onAddToWorld(world);
-            getMapkitItem().getMapkit().playSound("rail.ogg");
+            playSound("rail.ogg");
         }
 
         @Override

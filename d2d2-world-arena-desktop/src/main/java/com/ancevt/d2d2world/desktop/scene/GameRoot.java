@@ -28,7 +28,7 @@ import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
-import com.ancevt.d2d2world.desktop.sound.D2D2WorldSound;
+import com.ancevt.d2d2world.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -46,6 +46,8 @@ import java.time.LocalDateTime;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_ENTER;
+import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_EXIT;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static java.lang.String.format;
@@ -187,7 +189,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
     @Override
     public void playerEnterServer(int id, @NotNull String name, int color) {
-        D2D2WorldSound.playSound(D2D2WorldSound.PLAYER_ENTER);
+        D2D2WorldSound.playSoundAsset(PLAYER_ENTER);
     }
 
     /**
@@ -195,7 +197,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void playerExit(@NotNull Player remotePlayer) {
-        D2D2WorldSound.playSound(D2D2WorldSound.PLAYER_EXIT);
+        D2D2WorldSound.playSoundAsset(PLAYER_EXIT);
         worldScene.remotePlayerExit(remotePlayer.getId());
     }
 
@@ -223,7 +225,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
         }
 
-        D2D2WorldSound.playSound(D2D2WorldSound.PLAYER_ENTER);
+        D2D2WorldSound.playSoundAsset(PLAYER_ENTER);
     }
 
     /**

@@ -14,6 +14,9 @@ public class BlockingSound implements Media {
     private final ByteArrayOutputStream byteArrayOutputStream;
     private boolean playing;
 
+    private float volume = 1f;
+    private float pan = 0f;
+
     @SneakyThrows
     public BlockingSound(@NotNull InputStream inputStream) {
         byteArrayOutputStream = new ByteArrayOutputStream();
@@ -24,6 +27,33 @@ public class BlockingSound implements Media {
     public BlockingSound(String path) {
         byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.write(new FileInputStream(slashSafe(path)).readAllBytes());
+    }
+
+    @Override
+    public void setVolume(float volume) {
+        if(volume < -80f) volume = -80f;
+        if(volume >= 6f) volume = 6f;
+        this.volume = volume;
+    }
+
+    @Override
+    public float getVolume() {
+        return volume;
+    }
+
+    @Override
+    public void setPan(float pan) {
+        if (pan < -1f) {
+            pan = -1f;
+        } else if (pan > 1f) {
+            pan = 1f;
+        }
+        this.pan = pan;
+    }
+
+    @Override
+    public float getPan() {
+        return pan;
     }
 
     public boolean isPlaying() {
@@ -37,7 +67,7 @@ public class BlockingSound implements Media {
 
     @Override
     public void play() {
-        if (!SoundSystem.isEnabled()) return;
+        if (!SoundSystem.isEnabled() || volume < -15f) return;
 
         if (isPlaying()) stop();
 
@@ -77,13 +107,14 @@ public class BlockingSound implements Media {
     private void stream(AudioInputStream in, SourceDataLine line) throws IOException {
         final byte[] buffer = new byte[4096];
         for (int n = 0; n != -1; n = in.read(buffer, 0, buffer.length)) {
+            FloatControl floatControlPan = (FloatControl) line.getControl(FloatControl.Type.PAN);
+            floatControlPan.setValue(pan);
+            FloatControl floatControlVolume = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+            floatControlVolume.setValue(volume);
             line.write(buffer, 0, n);
-            if (!playing) {
-                break;
-            }
+            if (!playing) break;
         }
     }
-
 
     @SneakyThrows
     public static void main(String[] args) {
@@ -91,44 +122,11 @@ public class BlockingSound implements Media {
 
         Async.run(() -> {
             BlockingSound sound = null;
-                sound = new BlockingSound("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/ance/IceSugar_Bounce.ogg");
-
+            sound = new BlockingSound("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/builtin-mapkit/character-damage.ogg");
             while (true) {
                 sound.play();
             }
         });
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

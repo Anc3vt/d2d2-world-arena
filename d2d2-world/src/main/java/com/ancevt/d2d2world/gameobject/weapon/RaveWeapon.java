@@ -118,7 +118,7 @@ public class RaveWeapon extends Weapon {
         public void onAddToWorld(World world) {
             super.onAddToWorld(world);
             if (playSound) {
-                getMapkitItem().getMapkit().playSound("lazer.ogg");
+                playSound("lazer.ogg");
             }
         }
 

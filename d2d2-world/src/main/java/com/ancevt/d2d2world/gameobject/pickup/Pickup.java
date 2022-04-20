@@ -239,9 +239,9 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
 
     public void playPickUpSound() {
         if (getMapkitItem().getDataEntry().containsKey(SoundKey.PICK_UP)) {
-            getMapkitItem().playSound(SoundKey.PICK_UP);
+            playSound(getMapkitItem().getDataEntry().getString(SoundKey.PICK_UP));
         } else {
-            getMapkitItem().getMapkit().playSound("pickup.ogg");
+            playSound("pickup.ogg");
         }
     }
 

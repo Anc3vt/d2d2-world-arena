@@ -27,6 +27,7 @@ import com.ancevt.d2d2world.data.IntRectangle;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -105,7 +106,7 @@ public class MapkitItem {
         return textures[animationKey] != null;
     }
 
-    private Texture[][] prepareTextures() {
+    private Texture[] @NotNull [] prepareTextures() {
         final Texture[][] result = new Texture[MAX_TEXTURE_TYPES][];
 
         result[AnimationKey.IDLE] = prepareTexturesOfKey(DataKey.IDLE);
@@ -126,7 +127,7 @@ public class MapkitItem {
         return result;
     }
 
-    private Texture[] prepareTexturesOfKey(final String key) {
+    private Texture @Nullable [] prepareTexturesOfKey(final String key) {
 
         if (!dataEntry.containsKey(key)) return null;
 
@@ -146,13 +147,5 @@ public class MapkitItem {
         }
 
         return result;
-    }
-
-    public void playSound(String soundKey) {
-        if (dataEntry.containsKey(soundKey)) {
-            getMapkit().playSound(dataEntry.getString(soundKey));
-        } else {
-            System.err.println("no such sound with key \"" + soundKey + "\"");
-        }
     }
 }

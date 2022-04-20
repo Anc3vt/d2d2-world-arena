@@ -34,7 +34,7 @@ import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
-import com.ancevt.d2d2world.desktop.sound.D2D2WorldSound;
+import com.ancevt.d2d2world.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
-import static com.ancevt.d2d2world.desktop.sound.D2D2WorldSound.PLAYER_SPAWN;
+import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
@@ -489,7 +489,7 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void spawnEffect(float x, float y) {
         SpawnEffect.doSpawnEffect(x, y, world.getLayer(5));
-        D2D2WorldSound.playSound(PLAYER_SPAWN);
+        D2D2WorldSound.playSoundAsset(PLAYER_SPAWN, world.getCamera(), x, y);
     }
 
     private void world_addGameObject(Event<World> event) {

@@ -84,7 +84,7 @@ public class PlasmaWeapon extends Weapon {
         @Override
         public void onAddToWorld(World world) {
             super.onAddToWorld(world);
-            getMapkitItem().getMapkit().playSound("plasma.ogg");
+            playSound("plasma.ogg");
         }
 
         @Override

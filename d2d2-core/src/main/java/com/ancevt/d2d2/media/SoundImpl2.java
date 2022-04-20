@@ -6,15 +6,31 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import javax.sound.sampled.*;
-import java.io.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
+
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 
 public class SoundImpl2 implements Media {
     private final ByteArrayOutputStream byteArrayOutputStream;
     private boolean playing;
     private boolean loop;
     private Thread thread;
+    private float pan = 0f;
+    private float volume = 1f;
 
     private static int counter = 0;
 
@@ -24,9 +40,33 @@ public class SoundImpl2 implements Media {
         byteArrayOutputStream.write(inputStream.readAllBytes());
     }
 
-
     public SoundImpl2(String path) throws FileNotFoundException {
         this(new FileInputStream(path));
+    }
+
+    @Override
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    @Override
+    public float getVolume() {
+        return volume;
+    }
+
+    @Override
+    public void setPan(float pan) {
+        if (pan < -1f) {
+            pan = -1f;
+        } else if (pan > 1f) {
+            pan = 1f;
+        }
+        this.pan = pan;
+    }
+
+    @Override
+    public float getPan() {
+        return pan;
     }
 
     public boolean isPlaying() {
@@ -64,6 +104,8 @@ public class SoundImpl2 implements Media {
                     try (final AudioInputStream in = AudioSystem.getAudioInputStream(read())) {
 
                         final AudioFormat outFormat = getOutFormat(in.getFormat());
+
+
                         final DataLine.Info info = new DataLine.Info(SourceDataLine.class, outFormat);
 
                         try (final SourceDataLine line =
@@ -119,13 +161,15 @@ public class SoundImpl2 implements Media {
     private void stream(AudioInputStream in, SourceDataLine line) throws IOException {
         final byte[] buffer = new byte[4096];
         for (int n = 0; n != -1; n = in.read(buffer, 0, buffer.length)) {
+            FloatControl floatControlPan = (FloatControl) line.getControl(FloatControl.Type.PAN);
+            floatControlPan.setValue(pan);
+            FloatControl floatControlVolume = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+            floatControlVolume.setValue(volume);
+
             line.write(buffer, 0, n);
-            if (!playing) {
-                break;
-            }
+            if (!playing) break;
         }
     }
-
 
     @SneakyThrows
     public static void main(String[] args) {
@@ -135,13 +179,18 @@ public class SoundImpl2 implements Media {
             SoundImpl2 sound = null;
             try {
                 sound = new SoundImpl2(new FileInputStream("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/builtin-mapkit/character-damage.ogg"));
+                sound.setPan(1f);
+                sound.setVolume(2);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
 
             while (true) {
                 sound.play();
-                new Lock().lock(1000, TimeUnit.MILLISECONDS);
+                sound.setVolume(sound.getVolume() - 1);
+                debug("SoundImpl2:185: <A>" + sound.getVolume());
+                sound.setPan(sound.getPan() - 0.01f);
+                new Lock().lock(100, TimeUnit.MILLISECONDS);
             }
         });
     }

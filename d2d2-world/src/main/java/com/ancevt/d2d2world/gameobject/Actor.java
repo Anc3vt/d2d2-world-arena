@@ -19,11 +19,14 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.Pair;
-import com.ancevt.d2d2.display.*;
+import com.ancevt.d2d2.display.Color;
+import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.FramedSprite;
+import com.ancevt.d2d2.display.IDisplayObject;
+import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
-import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
@@ -44,7 +47,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
-import static com.ancevt.d2d2world.constant.AnimationKey.*;
+import static com.ancevt.d2d2world.constant.AnimationKey.ATTACK;
+import static com.ancevt.d2d2world.constant.AnimationKey.DAMAGE;
+import static com.ancevt.d2d2world.constant.AnimationKey.HOOK;
+import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
+import static com.ancevt.d2d2world.constant.AnimationKey.SLOWING;
+import static com.ancevt.d2d2world.constant.AnimationKey.WALK;
+import static com.ancevt.d2d2world.constant.AnimationKey.WALK_ATTACK;
 
 abstract public class Actor extends Animated implements
         IProcessable,
@@ -482,7 +491,7 @@ abstract public class Actor extends Animated implements
 
         if (health < oldHealth) {
             damageBlink();
-            getMapkitItem().playSound(SoundKey.DAMAGE);
+            playSound("character-damage.ogg");
         }
 
         if (fromServer || isServer()) {
@@ -542,7 +551,6 @@ abstract public class Actor extends Animated implements
     }
 
     private void death(IDamaging damaging) {
-        getMapkitItem().playSound(SoundKey.DEATH);
         setAlive(false);
         setGravityEnabled(true);
         setHook(null);
@@ -811,7 +819,7 @@ abstract public class Actor extends Animated implements
                 .filter(w -> w.getClass().getName().equals(weaponClassname))
                 .findAny()
                 .ifPresent(w -> {
-                    getMapkitItem().getMapkit().playSound("weapon-switch.ogg");
+                    playSound("weapon-switch.ogg");
 
                     currentWeapon = w;
                     currentWeapon.setOwner(this);

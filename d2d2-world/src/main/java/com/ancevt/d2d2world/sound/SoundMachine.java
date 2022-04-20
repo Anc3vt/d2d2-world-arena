@@ -1,6 +1,8 @@
-package com.ancevt.d2d2.media;
+package com.ancevt.d2d2world.sound;
 
 import com.ancevt.commons.concurrent.Lock;
+import com.ancevt.d2d2.media.Media;
+import com.ancevt.d2d2.media.SoundSystem;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,22 +31,27 @@ public class SoundMachine {
         }
     }
 
-    public void playAsset(String path) {
+    public void playAsset(String path, float volume, float pan) {
         if (!SoundSystem.isEnabled()) return;
 
         Track track = tracks[currentIndex];
-        track.play(Media.lookupSoundAsset(path));
+        Media media = Media.lookupSoundAsset(path);
+        media.setVolume(volume);
+        media.setPan(pan);
+        track.play(media);
         currentIndex++;
         if (currentIndex >= tracks.length) {
             currentIndex = 0;
         }
     }
 
-    public void play(String path) {
+    public void play(String path, float volume, float pan) {
         if (!SoundSystem.isEnabled()) return;
-
         Track track = tracks[currentIndex];
-        track.play(Media.lookupSound(path));
+        Media media = Media.lookupSound(path);
+        media.setVolume(volume);
+        media.setPan(pan);
+        track.play(media);
         currentIndex++;
         if (currentIndex >= tracks.length) {
             currentIndex = 0;

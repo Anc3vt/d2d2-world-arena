@@ -51,7 +51,7 @@ public class WeaponPickup extends Pickup {
 
     @Override
     public void playPickUpSound() {
-        getMapkitItem().getMapkit().playSound("weapon-pickup.ogg");
+        playSound("weapon-pickup.ogg");
     }
 
     @Property

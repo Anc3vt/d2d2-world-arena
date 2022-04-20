@@ -79,7 +79,7 @@ public class AutomaticWeapon extends Weapon {
         @Override
         public void onAddToWorld(World world) {
             super.onAddToWorld(world);
-            getMapkitItem().getMapkit().playSound("automatic.ogg");
+            playSound("automatic.ogg");
         }
 
         @Override

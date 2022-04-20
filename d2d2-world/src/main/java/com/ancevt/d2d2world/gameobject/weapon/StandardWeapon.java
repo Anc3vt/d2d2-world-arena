@@ -86,7 +86,7 @@ public class StandardWeapon extends Weapon {
         @Override
         public void onAddToWorld(World world) {
             super.onAddToWorld(world);
-            getMapkitItem().getMapkit().playSound("standard-bullet.ogg");
+            playSound("standard-bullet.ogg");
         }
 
         @Override
@@ -100,7 +100,7 @@ public class StandardWeapon extends Weapon {
 
             setSpeed(0);
             setToRemove = true;
-            getMapkitItem().getMapkit().playSound("standard-bullet-destroy.ogg");
+            playSound("standard-bullet-destroy.ogg");
         }
 
         @Override

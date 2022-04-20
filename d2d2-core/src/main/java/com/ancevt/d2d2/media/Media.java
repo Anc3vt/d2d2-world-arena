@@ -15,6 +15,11 @@ public interface Media {
     void play();
     void stop();
 
+    void setVolume(float vaolume);
+    float getVolume();
+    void setPan(float pan);
+    float getPan();
+
     static @NotNull Media lookupSound(String path) {
         Media media = medias.get(path);
         if (media == null) {

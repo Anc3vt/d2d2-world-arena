@@ -56,7 +56,7 @@ public class Ramp extends Sprite implements ICollision, IRotatable, IScalable, I
     public void onCollide(ICollision collideWith) {
         if (collideWith instanceof IGravitational g && g.getVelocityY() >= 0) {
             g.setVelocity(g.getVelocityX() + powerX, powerY);
-            if(sound != null) getMapkitItem().getMapkit().playSound(sound);
+            if(sound != null) playSound(sound);
         }
     }
 

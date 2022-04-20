@@ -5,8 +5,12 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.fx.Particle;
-import com.ancevt.d2d2world.gameobject.*;
-import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
+import com.ancevt.d2d2world.gameobject.Actor;
+import com.ancevt.d2d2world.gameobject.ICollision;
+import com.ancevt.d2d2world.gameobject.IDamaging;
+import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.IGravitational;
+import com.ancevt.d2d2world.gameobject.ISpeedable;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +56,7 @@ public class AreaWater extends Area implements IDamaging {
                 p.setScale(0.5f, 0.5f);
                 getWorld().add(p, g.getX(), getY() - 16);
                 if (splashSoundTime == 0) {
-                    BuiltInMapkit.getInstance().playSound("splash.ogg");
+                    collideWith.playSound("splash.ogg");
                     splashSoundTime = SPLASH_SOUND_TIME;
                 }
 

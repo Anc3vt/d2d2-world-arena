@@ -90,7 +90,7 @@ public class ArrowWeapon extends Weapon {
         @Override
         public void onAddToWorld(World world) {
             super.onAddToWorld(world);
-            getMapkitItem().getMapkit().playSound("arrow-1.ogg");
+            playSound("arrow-1.ogg");
         }
 
         @Override
@@ -107,7 +107,7 @@ public class ArrowWeapon extends Weapon {
             setDamagingOwnerActor(null);
             setDamagingPower(0);
             sprite.setTexture(getMapkitItem().getTexture(AnimationKey.DEATH, 0));
-            getMapkitItem().getMapkit().playSound("arrow-2.ogg");
+            playSound("arrow-2.ogg");
 
             setXY(oldX, oldY);
 
