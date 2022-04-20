@@ -182,7 +182,7 @@ public class Particle extends DisplayObjectContainer {
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
 
-        D2D2World.init(true);
+        D2D2World.init(true, false);
 
 
         root.add(Particle.bloodExplosion(500, Color.of(0x220000)), 300, 300);

@@ -98,7 +98,7 @@ public class DialogWarning extends TitledPanel implements EventListener {
 
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
-        D2D2World.init(false);
+        D2D2World.init(false, false);
 
         root.add(new DialogWarning("Warning", "Info text info text info text info text info text info text info text info text "));
 

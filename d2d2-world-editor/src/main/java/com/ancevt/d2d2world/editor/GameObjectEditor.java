@@ -751,10 +751,15 @@ public class GameObjectEditor {
         playerActor.setXY(64, 64);
         playerActor.setName("lpa");
         playerActor.setLocalAim(true);
+        playerActor.setLocalPlayerActor(true);
         getWorld().addGameObject(playerActor, 5, false);
         LocalPlayerController localPlayerController = new LocalPlayerController();
         localPlayerController.setEnabled(true);
         playerActor.setController(localPlayerController);
+
+        playerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
+            getWorld().roomSwitchOverlayStartOut();
+        });
 
         getWorld().getCamera().setAttachedTo(playerActor);
 

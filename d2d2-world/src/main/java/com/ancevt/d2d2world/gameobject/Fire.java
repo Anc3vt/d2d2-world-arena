@@ -194,7 +194,7 @@ public class Fire extends DisplayObjectContainer implements IDamaging {
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
         MapIO.setMapkitsDirectory("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
         MapIO.setMapsDirectory("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/maps/");
-        D2D2World.init(false);
+        D2D2World.init(false, false);
 
         root.setBackgroundColor(Color.of(0x223344));
 

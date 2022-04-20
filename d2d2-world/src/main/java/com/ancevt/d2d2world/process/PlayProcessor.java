@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ancevt.d2d2world.D2D2World.isEditor;
 import static com.ancevt.d2d2world.D2D2World.isServer;
 
 public class PlayProcessor {
@@ -314,7 +315,7 @@ public class PlayProcessor {
     }
 
     private void processDoorTeleportActor(Actor actor, AreaDoorTeleport area) {
-        if (world.isSwitchingRoomsNow() || isServer()) return;
+        if (world.isSwitchingRoomsNow() || (isServer() && !isEditor())) return;
         if (actor instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
             String targetAreaName = area.getTargetAreaName();
 

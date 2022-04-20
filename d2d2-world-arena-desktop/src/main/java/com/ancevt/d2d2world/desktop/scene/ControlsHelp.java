@@ -48,7 +48,7 @@ public class ControlsHelp extends Sprite {
 
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
-        D2D2World.init(false);
+        D2D2World.init(false, false);
         root.setBackgroundColor(Color.DARK_GRAY);
 
         root.add(new ControlsHelp(), 0, 0);

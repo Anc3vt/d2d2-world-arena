@@ -30,12 +30,14 @@ public class D2D2World {
 
     private static boolean server;
     private static Aim aim;
+    private static boolean editor;
 
     private D2D2World() {
     }
 
-    public static void init(boolean server) {
+    public static void init(boolean server, boolean editor) {
         D2D2World.server = server;
+        D2D2World.editor = editor;
         getTextureManager().loadTextureDataInfo("d2d2-world-common-texture-data.inf");
     }
 
@@ -57,6 +59,10 @@ public class D2D2World {
 
     public static boolean isServer() {
         return server;
+    }
+
+    public static boolean isEditor() {
+        return editor;
     }
 
     public static Aim getAim() {

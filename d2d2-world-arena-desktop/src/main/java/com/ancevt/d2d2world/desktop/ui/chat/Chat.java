@@ -357,7 +357,7 @@ public class Chat extends DisplayObjectContainer {
 
     public static void main(String[] args) {
         D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
-        D2D2World.init(false);
+        D2D2World.init(false, false);
 
         Root root = D2D2.getStage().getRoot();
         root.setBackgroundColor(Color.of(0x223344));

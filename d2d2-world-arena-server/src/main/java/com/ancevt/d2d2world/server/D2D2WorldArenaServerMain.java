@@ -137,7 +137,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         log.info("Server started at {}:{}", CONFIG.getString(SERVER_HOST), CONFIG.getInt(SERVER_PORT));
 
         WORLD_SCENE.start();
-        D2D2World.init(true);
+        D2D2World.init(true, false);
         MODULE_GENERAL.setMap(CONFIG.getString(WORLD_DEFAULT_MAP));
     }
 
