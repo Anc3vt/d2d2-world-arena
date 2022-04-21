@@ -17,7 +17,7 @@ public class DebugActorCreator {
     public static synchronized @NotNull PlayerActor createTestPlayerActor(PlayerActor targetPlayerActor, @NotNull World world) {
         PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance()
                 .getMapkit(BuiltInMapkit.NAME)
-                .getItem("character_stranger")
+                .getItemById("character_stranger")
                 .createGameObject(IdGenerator.getInstance().getNewId());
 
         playerActor.setXY((float) (Math.random() * 900), (float) (Math.random() * 100));

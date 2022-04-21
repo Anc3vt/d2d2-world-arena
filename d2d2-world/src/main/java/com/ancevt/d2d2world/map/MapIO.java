@@ -124,7 +124,7 @@ public class MapIO {
 
             if (room == null) throw new IllegalStateException("room undefined");
 
-            MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
+            MapkitItem mapkitItem = mapkit.getItemById(mapkitItemId);
             if (mapkitItem != null) {
                 IGameObject gameObject = (IGameObject) setProperties(mapkitItem.createGameObject(gameObjectId), dataEntry);
                 room.addGameObject(layer, gameObject);

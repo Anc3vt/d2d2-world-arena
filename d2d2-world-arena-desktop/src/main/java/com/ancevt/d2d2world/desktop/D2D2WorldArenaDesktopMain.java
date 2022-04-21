@@ -65,7 +65,7 @@ public class D2D2WorldArenaDesktopMain {
 
         //System.setProperty("d2d2.experimental.bloom", "true");
 
-        DebugPanel.setScale(2f);
+        // DebugPanel.setScale(2f);
 
         SoundSystem.setEnabled(MODULE_CONFIG.getBoolean(SOUND_ENABLED));
 

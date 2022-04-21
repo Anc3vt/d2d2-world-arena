@@ -69,7 +69,7 @@ public class HealthPickup extends Pickup {
         Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
         D2D2World.init(true, false);
 
-        Pickup pickup = new HealthPickup(BuiltInMapkit.getInstance().getItem("pickup_" + HealthPickup.class.getSimpleName()), 0);
+        Pickup pickup = new HealthPickup(BuiltInMapkit.getInstance().getItemById("pickup_" + HealthPickup.class.getSimpleName()), 0);
         pickup.setScale(1.5f, 1.5f);
 
         root.add(pickup, 100, 100);

@@ -745,7 +745,7 @@ public class GameObjectEditor {
     public void addPlayerActor() {
         MapkitItem playerActorMapkitItem = MapkitManager.getInstance()
                 .getMapkit(BuiltInMapkit.NAME)
-                .getItem("character_blake");
+                .getItemById("character_blake");
 
         playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(-1);
         playerActor.setXY(64, 64);
@@ -757,9 +757,7 @@ public class GameObjectEditor {
         localPlayerController.setEnabled(true);
         playerActor.setController(localPlayerController);
 
-        playerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
-            getWorld().roomSwitchOverlayStartOut();
-        });
+        playerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> getWorld().roomSwitchOverlayStartOut());
 
         getWorld().getCamera().setAttachedTo(playerActor);
 

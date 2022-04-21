@@ -363,7 +363,6 @@ public class World extends DisplayObjectContainer {
 
 
     public void removeGameObject(@NotNull IGameObject gameObject, boolean updateRoom) {
-        IdGenerator.getInstance().removeId(gameObject.getGameObjectId());
         gameObjects.remove(gameObject);
         gameObjectMap.remove(gameObject.getGameObjectId());
 

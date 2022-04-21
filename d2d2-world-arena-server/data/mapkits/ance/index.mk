@@ -1,4 +1,7 @@
 mapkit | name = ance
+id = _ance-n-1_ | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=192,0,16,16
+id = _ance_n-2_ | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,0,16,16
+id = _ance_n-4_ | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=174,0,16,16
 
 id = _ance1_0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=16,0,16,16
 id = _ance1_1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=32,0,16,16
@@ -40,6 +43,16 @@ id = _ance1_35 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-
 id = _ance1_36 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=0,0,16,16
 id = _ance1_37 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=0,128,16,16
 id = _ance1_cloud1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=48,112,48,32
+id = _ance_bone | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,0,16,16
+
+id = _ance_brk1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,16,16,16
+id = _ance_brk2 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=176,16,16,16
+id = _ance_brk3 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,32,16,16
+id = _ance_brk4 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=176,32,16,16
+
+
+
+
 
 id = _ance2_0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=96,0,16,16
 id = _ance2_1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=112,0,16,16

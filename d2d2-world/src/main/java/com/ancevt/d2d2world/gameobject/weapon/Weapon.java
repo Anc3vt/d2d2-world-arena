@@ -56,7 +56,7 @@ abstract public class Weapon {
     }
 
     public @NotNull MapkitItem getBulletMapkitItem() {
-        return mapkit.getItem("bullet_of_" + getClass().getSimpleName());
+        return mapkit.getItemById("bullet_of_" + getClass().getSimpleName());
     }
 
     public Texture getTexture() {

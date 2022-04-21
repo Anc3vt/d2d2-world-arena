@@ -30,6 +30,7 @@ import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
+import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.area.AreaWater;
@@ -327,8 +328,6 @@ abstract public class Actor extends Animated implements
     }
 
     public void attack() {
-        //fixBodyPartsY();
-
         attackTime = getCurrentWeapon().getAttackTime();
 
         if (getCurrentWeapon().getAmmunition() <= 0) {
@@ -427,6 +426,8 @@ abstract public class Actor extends Animated implements
 
             headContainer.setRotation(-deg + 100);
         }
+
+        DebugPanel.createIfEnabled("weapons", weapons.toString().replace('}', '\n'));
     }
 
     public void setAimXY(float targetX, float targetY) {

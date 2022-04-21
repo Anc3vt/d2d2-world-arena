@@ -26,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CharSelectScene extends DisplayObjectContainer {
@@ -65,7 +66,7 @@ public class CharSelectScene extends DisplayObjectContainer {
         float x = STEP_X;
         float y = STEP_Y + 16;
 
-        Set<MapkitItem> items = BuiltInMapkit.getInstance().getCharacterMapkitItems();
+        List<MapkitItem> items = BuiltInMapkit.getInstance().getCharacterMapkitItems();
         for (MapkitItem mki : items) {
             CharSelectItem charSelectItem = new CharSelectItem(mki, this);
             add(charSelectItem, x, y);
@@ -82,7 +83,7 @@ public class CharSelectScene extends DisplayObjectContainer {
         String debugCharacterMapkitItem = DesktopConfig.MODULE_CONFIG.getString(DesktopConfig.DEBUG_CHARACTER);
 
         if (!debugCharacterMapkitItem.isEmpty()) {
-            MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItem(debugCharacterMapkitItem);
+            MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItemById(debugCharacterMapkitItem);
             dispatchEvent(CharSelectSceneEvent.builder()
                     .type(CharSelectSceneEvent.CHARACTER_SELECT)
                     .mapkitItem(mapkitItem).build()

@@ -164,6 +164,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
 
         if (collideWith instanceof PlayerActor playerActor && pickUpTimeMillis == 0 && playerActor.isAlive()) {
             var result = onPlayerActorPickUpPickup(playerActor);
+
             if (result) {
                 setVisible(false);
                 setCollisionEnabled(false);
@@ -185,10 +186,10 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     @Override
     public void reset() {
         setVisible(true);
+        setCollisionEnabled(true);
         ready = false;
         counter = 0;
         container.setScale(0.01f, 0.01f);
-        setCollisionEnabled(true);
         pickUpTimeMillis = 0;
 
         if (isOnWorld()) getWorld().getSyncDataAggregator().reset(this);

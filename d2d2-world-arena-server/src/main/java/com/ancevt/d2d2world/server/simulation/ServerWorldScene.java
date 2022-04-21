@@ -51,7 +51,6 @@ import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
 public class ServerWorldScene {
 
     public static final ServerWorldScene WORLD_SCENE = new ServerWorldScene();
-
     /**
      * roomId => world
      */
@@ -66,7 +65,7 @@ public class ServerWorldScene {
         MapIO.setMapkitsDirectory("data/mapkits/");
         MapIO.setMapsDirectory("data/maps/");
 
-        worlds = new HashMap<>();
+        worlds = new ConcurrentHashMap<>();
     }
 
     private void clear() {
@@ -278,7 +277,7 @@ public class ServerWorldScene {
     }
 
     public PlayerActor createPlayerActor(@NotNull Player player, @NotNull String mapkitItemId) {
-        MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItem(mapkitItemId);
+        MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItemById(mapkitItemId);
         PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.getInstance().getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);

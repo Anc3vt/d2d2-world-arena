@@ -20,7 +20,11 @@ package com.ancevt.d2d2world.editor.panels;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2.panels.*;
+import com.ancevt.d2d2.panels.Button;
+import com.ancevt.d2d2.panels.DropList;
+import com.ancevt.d2d2.panels.DropListItem;
+import com.ancevt.d2d2.panels.Label;
+import com.ancevt.d2d2.panels.TitledPanel;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.mapkit.AreaMapkit;
@@ -165,9 +169,7 @@ public class MapkitToolsPanel extends TitledPanel {
             Mapkit mapkit = MapkitManager.getInstance().getMapkit(mapkitName);
             dropListMapkit.addItem(new DropListItem(mapkit.getName(), mapkit));
 
-            for (String mapkitItemId : mapkit.keySet()) {
-                MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
-
+            for (var mapkitItem : mapkit.getItems()) {
                 Class<?> clazz = mapkitItem.getGameObjectClass();
 
                 if (clazz.getSuperclass() != Area.class && !classes.contains(clazz)) {
@@ -208,9 +210,7 @@ public class MapkitToolsPanel extends TitledPanel {
         List<MapkitItem> items = new ArrayList<>();
 
         for (Mapkit mapkit : mapkits) {
-            for (String mapkitItemId : mapkit.keySet()) {
-                MapkitItem mapkitItem = mapkit.getItem(mapkitItemId);
-
+            for (var mapkitItem : mapkit.getItems()) {
                 if (mapkitItem.getGameObjectClass() == PlayerActor.class ||
                         mapkitItem.getId().startsWith("bullet_of_")) continue;
 

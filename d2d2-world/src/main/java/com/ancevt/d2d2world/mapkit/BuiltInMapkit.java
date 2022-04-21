@@ -18,7 +18,6 @@
 package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2world.data.DataEntry;
-import com.ancevt.d2d2world.gameobject.Fire;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.Scenery;
@@ -45,14 +44,10 @@ public class BuiltInMapkit extends Mapkit {
         return instance == null ? instance = (BuiltInMapkit) MapkitManager.getInstance().getMapkit(NAME) : instance;
     }
 
-    public Set<MapkitItem> getCharacterMapkitItems() {
-        final Set<MapkitItem> items = new HashSet<>();
-        keySet().forEach(mapkitItemId -> {
-            if (mapkitItemId.startsWith("character_")) {
-                items.add(getItem(mapkitItemId));
-            }
-        });
-        return items;
+    public List<MapkitItem> getCharacterMapkitItems() {
+        return getItems().stream()
+                .filter(mapkitItem -> mapkitItem.getId().startsWith("character_"))
+                .toList();
     }
 
 
@@ -79,18 +74,6 @@ public class BuiltInMapkit extends Mapkit {
                         e.printStackTrace();
                     }
                 }
-
-                add("""
-                        id = fire
-                        | class = """ + Fire.class.getName() + """
-                        | damagingPower = 5
-                        | idle = 288,80,16,16 h 4
-                        | collisionX = -8
-                        | collisionY = -16
-                        | collisionWidth = 16
-                        | collisionHeight = 16
-                        | atlas=$ATLAS$
-                        """);
 
                 add("""
                         id = water_scenery_surface
@@ -290,7 +273,7 @@ public class BuiltInMapkit extends Mapkit {
     }
 
     public static WeaponPickup createWeaponPickupMapkitItem(Weapon weapon) {
-        WeaponPickup weaponPickup = (WeaponPickup) getInstance().getItem("pickup_" + WeaponPickup.class.getSimpleName()).createGameObject(IdGenerator.getInstance().getNewId());
+        WeaponPickup weaponPickup = (WeaponPickup) getInstance().getItemById("pickup_" + WeaponPickup.class.getSimpleName()).createGameObject(IdGenerator.getInstance().getNewId());
         weaponPickup.setWeaponClassname(weapon.getClass().getName());
         weaponPickup.setAmmunition(weapon.getAmmunition());
         weaponPickup.setRespawnTimeMillis(0);

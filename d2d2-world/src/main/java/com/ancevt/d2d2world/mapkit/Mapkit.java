@@ -27,19 +27,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 public abstract class Mapkit {
 
     private final String name;
-    private final Map<String, MapkitItem> items;
+    // private final Map<String, MapkitItem> items;
+    private final List<MapkitItem> items;
     private final Map<String, TextureAtlas> textureAtlases;
 
     Mapkit(String name) {
-        this.items = new HashMap<>();
+        this.items = new ArrayList<>();
         this.name = name;
         textureAtlases = new HashMap<>();
     }
@@ -74,32 +76,28 @@ public abstract class Mapkit {
     }
 
     public MapkitItem putItem(@NotNull MapkitItem item) {
-        if (items.containsKey(item.getId())) {
-            throw new IllegalStateException("duplicate mapkit item id: " + item.getId());
+        MapkitItem oldItem = getItemById(item.getId());
+        if (oldItem != null) {
+            throw new IllegalStateException("duplicate mapkit item id: " + item.getId() + ", " + item + ", old: " + oldItem);
         }
-        items.put(item.getId(), item);
+        items.add(item);
         return item;
     }
 
+    public MapkitItem getItemById(String id) {
+        for (MapkitItem item : items) {
+            if (item.getId().equals(id)) return item;
+        }
+        return null; //TODO: refactor
+    }
+
     public void removeItem(@NotNull MapkitItem item) {
-        items.remove(item.getId());
+        items.remove(item);
     }
 
-    /*
-    @SneakyThrows
-    public void playSound(String filename) {
-        SoundMachine.getInstance().play(MapIO.getMapkitsDirectory() + name + "/" + filename);
-    }
-     */
 
-    public MapkitItem getItem(String mapkitItemId) {
-        MapkitItem mapkitItem = items.get(mapkitItemId);
-        if (mapkitItem == null) log.error("Mapkit item not defined, id {}, mapkit: {}", mapkitItemId, getName());
-        return mapkitItem;
-    }
-
-    public Set<String> keySet() {
-        return items.keySet();
+    public List<MapkitItem> getItems() {
+        return List.copyOf(items);
     }
 
     public void dispose() {
