@@ -122,7 +122,8 @@ public class ServerWorldScene {
                 World world = new World(new SyncDataAggregator());
                 world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
                 world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
-                world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_removeGameObject);
+                world.addEventListener(this, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
+                world.addEventListener(this, WorldEvent.BULLET_DOOR_TELEPORT, this::world_bulletDoorTeleport);
                 world.setMap(gameMap);
                 world.setRoom(room);
                 world.setSceneryPacked(true);
@@ -133,6 +134,20 @@ public class ServerWorldScene {
         } else {
             log.warn("No such map \"{}\"", mapName);
         }
+    }
+
+    private void world_bulletDoorTeleport(@NotNull Event<World> event) {
+        var e = (WorldEvent) event;
+
+        Weapon.Bullet b = e.getBullet();
+
+        World oldWorld = event.getSource();
+        oldWorld.removeGameObject(b, false);
+
+        World world = worlds.get(e.getRoomId());
+        b.setXY(e.getX(), e.getY());
+        world.addGameObject(b, 5, false);
+
     }
 
     private void world_addGameObject(Event<World> event) {

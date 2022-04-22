@@ -75,7 +75,7 @@ public class DebugPanel extends DisplayObjectContainer {
         return DebugPanel.scale;
     }
 
-    public static void setEna bled(boolean enabled) {
+    public static void setEnabled(boolean enabled) {
         DebugPanel.enabled = enabled;
     }
 

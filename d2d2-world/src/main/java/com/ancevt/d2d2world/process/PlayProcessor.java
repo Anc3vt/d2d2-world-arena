@@ -24,6 +24,7 @@ import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.area.AreaTarget;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.world.World;
+import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -261,7 +262,7 @@ public class PlayProcessor {
     }
 
     private static boolean hitTest(@NotNull ICollision o1, @NotNull ICollision o2) {
-        float x1 = o1.getX() + o1.getCollisionX() - 2;
+        float x1 = o1.getX() + o1.getCollisionX() - 1;
         float y1 = o1.getY() + o1.getCollisionY() + 1;
         float w1 = o1.getCollisionWidth() + 1;
         float h1 = o1.getCollisionHeight() + 1;
@@ -310,6 +311,15 @@ public class PlayProcessor {
         world.getMap().getRoomByGameObject(areaTarget).ifPresent(room -> {
             if (room.getId().equals(bullet.getWorld().getRoom().getId())) {
                 bullet.setXY(areaTarget.getX(), areaTarget.getY());
+            } else {
+                world.dispatchEvent(WorldEvent.builder()
+                        .type(WorldEvent.BULLET_DOOR_TELEPORT)
+                        .x(areaTarget.getX())
+                        .y(areaTarget.getY())
+                        .room(room)
+                        .roomId(room.getId())
+                        .bullet(bullet)
+                        .build());
             }
         });
     }

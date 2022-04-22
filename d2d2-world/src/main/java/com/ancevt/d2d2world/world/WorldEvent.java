@@ -38,13 +38,16 @@ public class WorldEvent extends Event<World> {
     public static final String ROOM_SWITCH_COMPLETE = "roomSwitchComplete";
     public static final String ADD_GAME_OBJECT = "addGameObject";
     public static final String REMOVE_GAME_OBJECT = "removeGameObject";
+    public static final String BULLET_DOOR_TELEPORT = "bulletDoorTeleport";
 
+    private final float x;
+    private final float y;
+    private final String roomId;
     private final Weapon.Bullet bullet;
     private final IGameObject gameObject;
     private final Actor actor;
     private final int deadActorGameObjectId;
     private final int killerGameObjectId;
     private final Room room;
+
 }
-
-
