@@ -118,7 +118,7 @@ public class GameObjectEditor {
                         }
                     }
                     case 'S' -> {
-                        getWorld().reset();
+                        resetResettableGameObjects();
                         setInfoText("Saved to " + MapIO.save(getWorld().getMap(), MapIO.getMapFileName()));
                     }
 
@@ -133,7 +133,7 @@ public class GameObjectEditor {
                     case 'B' -> getWorld().getCamera().setBoundsLock(!getWorld().getCamera().isBoundsLock());
 
                     /* TAB */
-                    case 'P','Ă' -> {
+                    case 'P', 'Ă' -> {
                         editor.setEnabled(false);
                         unselect();
                         getWorld().setPlaying(true);
@@ -150,7 +150,7 @@ public class GameObjectEditor {
 
                     case 'R' -> editor.showRoomInfo();
 
-                    case 'Q' -> getWorld().reset();
+                    case 'Q' -> resetResettableGameObjects();
 
                     case 'V' -> {
                         getWorld().setAreasVisible(!getWorld().isAreasVisible());
@@ -170,7 +170,7 @@ public class GameObjectEditor {
 
                     case 'Ł' -> { // numpad 1
                         getSelectedGameObject().ifPresent(gameObject -> {
-                            if(gameObject instanceof IRotatable rotatable) {
+                            if (gameObject instanceof IRotatable rotatable) {
                                 rotatable.rotate(-1);
                             }
                         });
@@ -178,7 +178,7 @@ public class GameObjectEditor {
 
                     case 'Ń' -> { // numpad 3
                         getSelectedGameObject().ifPresent(gameObject -> {
-                            if(gameObject instanceof IRotatable rotatable) {
+                            if (gameObject instanceof IRotatable rotatable) {
                                 rotatable.rotate(+1);
                             }
                         });
@@ -194,6 +194,18 @@ public class GameObjectEditor {
         putState();
     }
 
+    private void resetResettableGameObjects() {
+        getWorld()
+                .getMap()
+                .getAllGameObjectsFromAllRooms()
+                .forEach(
+                        gameObject -> {
+                            if (gameObject instanceof IResettable resettable) {
+                                resettable.reset();
+                            }
+                        });
+
+    }
 
     private void putState() {
 

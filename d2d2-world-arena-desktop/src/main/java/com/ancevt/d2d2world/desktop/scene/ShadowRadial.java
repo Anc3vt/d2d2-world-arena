@@ -22,7 +22,7 @@ public class ShadowRadial extends DisplayObjectContainer {
             texture = textureManager().loadTextureAtlas("shadow-radial.png").createTexture();
         }
         sprites = new ArrayList<>();
-        setValue(5);
+        setValue(1);
     }
 
     public void setValue(int value) {

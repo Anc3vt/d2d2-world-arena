@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
@@ -119,22 +120,19 @@ public class WorldScene extends DisplayObjectContainer {
             @Override
             public void onEachFrame() {
                 if (localPlayerActor != null) {
-                    setXY(localPlayerActor.getX() + 35, localPlayerActor.getY());
+                    setXY(localPlayerActor.getX(), localPlayerActor.getY());
 
                     if (world.getRoom() != null) {
                         if (getY() > world.getRoom().getHeight() + world.getRoom().getHeight() / 2f) {
                             setY(world.getRoom().getHeight() + world.getRoom().getHeight() / 2f);
                         }
                     }
-
-                    float scale = (float) (Math.random() * 2 + 5);
-                    setScale(scale, scale);
                 }
             }
         };
         shadowRadial.setColor(Color.BLACK);
-        shadowRadial.setScale(2f, 2f);
-        //world.add(shadowRadial);
+        shadowRadial.setScale(1.5f, 1.5f);
+        world.add(shadowRadial);
 
         ((SyncDataReceiver) CLIENT.getSyncDataReceiver()).setWorld(world);
 
@@ -250,6 +248,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     private void world_roomSwitchComplete(Event<World> event) {
+        debug("WorldScene:253: <A>world_roomSwitchComplete");
         clearChatBubbles();
         CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
     }

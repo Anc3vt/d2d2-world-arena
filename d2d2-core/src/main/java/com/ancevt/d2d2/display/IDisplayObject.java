@@ -105,7 +105,7 @@ public interface IDisplayObject extends IEventDispatcher {
 
     String toString();
 
-    void onEachFrame();
+    default void onEachFrame(){};
 
     default TextureManager textureManager() {
         return D2D2.getTextureManager();
