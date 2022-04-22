@@ -1,5 +1,6 @@
 package com.ancevt.d2d2world.gameobject.weapon;
 
+import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.ISprite;
@@ -17,6 +18,8 @@ import com.ancevt.d2d2world.math.RadialUtils;
 import com.ancevt.d2d2world.world.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 public class ArrowWeapon extends Weapon {
 
@@ -100,7 +103,7 @@ public class ArrowWeapon extends Weapon {
 
         @Override
         public void destroy() {
-            if(setToRemove) return;
+            if (setToRemove) return;
 
             setSpeed(0);
             setToRemove = true;
@@ -145,7 +148,9 @@ public class ArrowWeapon extends Weapon {
             super.onCollide(collideWith);
             if (!setToRemove && collideWith instanceof PlayerActor playerActor &&
                     getOwnerGameObjectId() != playerActor.getGameObjectId()) {
-                getWorld().removeGameObject(this, false);
+                Async.runLater(100, TimeUnit.MILLISECONDS, () -> {
+                    if (isOnWorld()) getWorld().removeGameObject(this, false);
+                });
             }
         }
 

@@ -54,7 +54,6 @@ public class D2D2WorldEditorMain {
         Args a = new Args(args);
 
         SoundSystem.setEnabled(!a.contains("--disable-sound"));
-
         UnixDisplay.setEnabled(a.contains("--colorize-logs"));
 
         MapIO.setMapkitsDirectory(a.get("--mapkits-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/"));

@@ -2,6 +2,8 @@
 
     d2d2-world-common-tileset-ring  64 32 96 96
 
+    d2d2-world-common-tileset-rope  176 128 16 8
+
     d2d2-world-common-tileset-water-bubble 48 0 8 8
 
     d2d2-world-common-tileset-aim  0  0 32 32

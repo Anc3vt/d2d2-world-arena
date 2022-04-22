@@ -213,7 +213,7 @@ public class BuiltInMapkit extends Mapkit {
                 add("""
                         id = bullet_of_""" + ArrowWeapon.class.getSimpleName() + """
                         | class =""" + ArrowWeapon.ArrowBullet.class.getName() + """
-                        | damagingPower = 20
+                        | damagingPower = 33
                         | speed = 8
                         | collisionX = -5 | collisionY = -1 | collisionWidth = 10 | collisionHeight = 3
                         | atlas = $ATLAS$

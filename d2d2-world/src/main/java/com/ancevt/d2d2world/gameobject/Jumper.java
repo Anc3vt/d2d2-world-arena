@@ -55,8 +55,11 @@ public class Jumper extends Sprite implements ICollision, IRotatable, IScalable,
     @Override
     public void onCollide(ICollision collideWith) {
         if (collideWith instanceof IGravitational g) {
-            g.setVelocity(g.getVelocityX() + powerX, powerY);
-            if(sound != null) playSound(sound);
+            if (getPowerX() != 0f) {
+                g.setVelocityX(getPowerX());
+            }
+            g.setVelocityY(powerY);
+            if (sound != null) playSound(sound);
         }
     }
 

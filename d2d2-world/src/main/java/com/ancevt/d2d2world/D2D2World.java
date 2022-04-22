@@ -57,6 +57,18 @@ public class D2D2World {
         return getTextureManager().getTexture("d2d2-world-common-tileset-water-bubble");
     }
 
+    public static Texture getRopeTexture() {
+        return getTextureManager().getTexture("d2d2-world-common-tileset-rope");
+    }
+
+    public static Texture getPickupBubbleTexture32() {
+        return getTextureManager().getTexture("pickup-bubble-32");
+    }
+
+    public static Texture getPickupBubbleTexture16() {
+        return getTextureManager().getTexture("pickup-bubble-16");
+    }
+
     public static boolean isServer() {
         return server;
     }
@@ -67,14 +79,6 @@ public class D2D2World {
 
     public static Aim getAim() {
         return aim == null ? aim = new Aim() : aim;
-    }
-
-    public static Texture getPickupBubbleTexture32() {
-        return getTextureManager().getTexture("pickup-bubble-32");
-    }
-
-    public static Texture getPickupBubbleTexture16() {
-        return getTextureManager().getTexture("pickup-bubble-16");
     }
 
     public static class Aim extends DisplayObjectContainer {

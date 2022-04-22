@@ -426,7 +426,6 @@ abstract public class Actor extends Animated implements
 
             headContainer.setRotation(-deg + 100);
         }
-
         DebugPanel.createIfEnabled("weapons", weapons.toString().replace('}', '\n'));
     }
 
