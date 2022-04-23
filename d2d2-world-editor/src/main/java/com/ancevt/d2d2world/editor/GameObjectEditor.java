@@ -32,6 +32,7 @@ import com.ancevt.d2d2world.editor.objects.Selection;
 import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.Area;
+import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -100,6 +101,7 @@ public class GameObjectEditor {
                 case KeyCode.DOWN -> moveSelected(0, speed);
                 case KeyCode.ESCAPE -> setPlacingMapkitItem(null);
                 case KeyCode.E -> setPlayerXYToCursor();
+                case KeyCode.F9 -> playerActor.addWeapon(AutomaticWeapon.class, 100);
             }
 
             if (editor.isControlDown()) {
@@ -808,6 +810,8 @@ public class GameObjectEditor {
                 playerActor.prevWeapon();
             }
         });
+
+        playerActor.addWeapon(AutomaticWeapon.class, 100);
 
         //DebugActorCreator.createTestPlayerActor(playerActor, getWorld());
     }

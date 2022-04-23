@@ -74,6 +74,12 @@ public class ServerCommandProcessor {
         repl.addCommand("tw", this::cmd_tw);
         repl.addCommand("setprop", this::cmd_setprop);
         repl.addCommand("connections", this::cmd_connections);
+        repl.addCommand("reset", this::cmd_reset);
+    }
+
+    private Object cmd_reset(Args args) {
+        WORLD_SCENE.resetAllResettableGameObjects();
+        return "";
     }
 
     private @NotNull @Unmodifiable Object cmd_connections(Args args) {

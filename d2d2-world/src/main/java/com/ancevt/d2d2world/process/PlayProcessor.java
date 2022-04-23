@@ -17,7 +17,19 @@
  */
 package com.ancevt.d2d2world.process;
 
-import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.Actor;
+import com.ancevt.d2d2world.gameobject.DestroyableBox;
+import com.ancevt.d2d2world.gameobject.IActioned;
+import com.ancevt.d2d2world.gameobject.ICollision;
+import com.ancevt.d2d2world.gameobject.IDamaging;
+import com.ancevt.d2d2world.gameobject.IDestroyable;
+import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.IGravitational;
+import com.ancevt.d2d2world.gameobject.IHookable;
+import com.ancevt.d2d2world.gameobject.IMovable;
+import com.ancevt.d2d2world.gameobject.IPlatform;
+import com.ancevt.d2d2world.gameobject.ITight;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
@@ -180,9 +192,7 @@ public class PlayProcessor {
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
 
-        if (!(damaging.getDamagingOwnerActor() instanceof PlayerActor playerActor && !playerActor.isHumanControllable())) {
-            o.damage(damagingPower, damaging);
-        }
+        if(isServer()) o.damage(damagingPower, damaging);
     }
 
     private void processHook(@NotNull IHookable o, @NotNull AreaHook hook) {
@@ -277,6 +287,8 @@ public class PlayProcessor {
 
     private void processGravity(@NotNull IGravitational o) {
         //if (!isServer() || !o.isGravityEnabled()) return;
+        if(!isServer() && o instanceof DestroyableBox) return;
+
         if (!o.isGravityEnabled()) return;
 
         if (!isServer() && o instanceof PlayerActor playerActor && !playerActor.isLocalPlayerActor()) return;
@@ -430,34 +442,4 @@ public class PlayProcessor {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

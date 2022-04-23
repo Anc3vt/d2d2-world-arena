@@ -48,17 +48,17 @@ public class DataKey {
             EXTRA_ANIMATION = "extra-animation",
             DEATH = "death";
 
-    public static final String
-            SOUND_JUMP = "snd-jump",
-            SOUND_DAMAGE = "snd-damage",
-            SOUND_EXTRA = "snd-extra",
-            SOUND_DEATH = "snd-death";
-
     public static final String OWNER_GAME_OBJECT_ID = "ownerGameObjectId";
     public static final String MAX_HEALTH = "maxHealth";
     public static final String HEALTH = "health";
     public static final String HEAD = "head";
     public static final String ARM = "arm";
+
+    public static final String DAMAGE_SOUND = "damageSound";
+    public static final String DESTROY_SOUND = "destroySound";
+    public static final String BLINK = "blink";
+    public static final String BROKEN_PARTS = "brokenParts";
+
 
     public static String READABLE_NAME = "readableName";
 }

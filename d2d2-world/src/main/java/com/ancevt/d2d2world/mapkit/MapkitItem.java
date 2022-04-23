@@ -98,6 +98,14 @@ public class MapkitItem {
         return textures[animationKey][frameIndex];
     }
 
+    public final Texture getTexture(String dataKey) {
+        return getTextureAtlas().createTexture(getDataEntry().getString(dataKey));
+    }
+
+    public final Texture[] getTextures(String dataKey) {
+        return getTextureAtlas().createTextures(getDataEntry().getString(dataKey));
+    }
+
     public final int getTextureCount(final int animationKey) {
         return textures[animationKey].length;
     }

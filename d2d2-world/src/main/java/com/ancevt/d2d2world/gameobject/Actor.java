@@ -598,6 +598,7 @@ abstract public class Actor extends Animated implements
         setAlive(true);
         repair();
 
+        if(isOnWorld()) getWorld().getSyncDataAggregator().reset(this);
     }
 
     @Override

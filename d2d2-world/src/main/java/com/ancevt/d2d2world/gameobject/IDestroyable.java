@@ -33,6 +33,10 @@ public interface IDestroyable extends ICollision, IResettable {
     @Property
     int getHealth();
 
+    default boolean isAlive() {
+        return getHealth() > 0;
+    }
+
     void repair();
 
     void setHealthBy(int health, IDamaging damaging, boolean fromServer);

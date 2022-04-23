@@ -8,6 +8,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
 import com.ancevt.d2d2world.gameobject.IDamaging;
+import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
@@ -265,7 +266,7 @@ public class ServerWorldScene {
 
             World world = getWorldByGameObjectId(hookGameObjectId);
 
-            if(world != null) {
+            if (world != null) {
                 debug("ServerWorldScene:254: <b>hook:" + world.getGameObjectById(hookGameObjectId));
                 debug("ServerWorldScene:254: <A>world: " + world);
             }
@@ -502,8 +503,14 @@ public class ServerWorldScene {
         }, () -> {
             throw new IllegalStateException("player hasn't player actor, player id: " + playerId);
         });
+    }
 
-        //if (playerActor.isOnWorld() &&)
+    public void resetAllResettableGameObjects() {
+        worlds.values().forEach(w -> {
+            w.getGameObjects().forEach(gameObject -> {
+                if (gameObject instanceof IResettable resettable) resettable.reset();
+            });
+        });
     }
 }
 
