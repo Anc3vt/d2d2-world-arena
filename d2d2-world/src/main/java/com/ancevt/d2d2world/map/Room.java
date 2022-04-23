@@ -35,6 +35,7 @@ public class Room {
     private int width;
     private int height;
     private Color backgroundColor;
+    private int darkness;
 
     public Room(String name, GameMap map) {
         this.id = name;
@@ -55,6 +56,16 @@ public class Room {
     @Property
     public void setId(String newId) {
         this.id = newId;
+    }
+
+    @Property
+    public void setDarkness(int value) {
+        darkness = value;
+    }
+
+    @Property
+    public int getDarkness() {
+        return darkness;
     }
 
     public GameMap getMap() {

@@ -261,6 +261,7 @@ public class WorldScene extends DisplayObjectContainer {
     private void world_roomSwitchComplete(Event<World> event) {
         clearChatBubbles();
         CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
+        shadowRadial.setValue(world.getRoom().getDarkness());
     }
 
     private void world_playerActorTakeBullet(Event<World> event) {
