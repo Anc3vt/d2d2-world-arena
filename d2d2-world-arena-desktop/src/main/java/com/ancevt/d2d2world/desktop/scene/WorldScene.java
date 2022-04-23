@@ -41,6 +41,7 @@ import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.fx.SpawnEffect;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.DefaultMaps;
+import com.ancevt.d2d2world.gameobject.DestroyableBox;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
@@ -502,6 +503,15 @@ public class WorldScene extends DisplayObjectContainer {
     public void spawnEffect(float x, float y) {
         SpawnEffect.doSpawnEffect(x, y, world.getLayer(5));
         D2D2WorldSound.playSoundAsset(PLAYER_SPAWN, world.getCamera(), x, y);
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void destroyableBoxDestroy(int destroyableGameObjectId) {
+        if(world.getGameObjectById(destroyableGameObjectId) instanceof DestroyableBox destroyableBox) {
+            destroyableBox.doDestroyEffect();
+        }
     }
 
     private void world_addGameObject(Event<World> event) {

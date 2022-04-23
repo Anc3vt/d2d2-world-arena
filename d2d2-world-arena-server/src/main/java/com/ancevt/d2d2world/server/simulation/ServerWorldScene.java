@@ -22,6 +22,7 @@ import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
 import com.ancevt.d2d2world.net.dto.server.DeathDto;
+import com.ancevt.d2d2world.net.dto.server.DestroyableBoxDestroyDto;
 import com.ancevt.d2d2world.net.dto.server.PlayerEnterRoomStartResponseDto;
 import com.ancevt.d2d2world.net.dto.server.SetRoomDto;
 import com.ancevt.d2d2world.net.dto.server.SpawnEffectDto;
@@ -125,6 +126,7 @@ public class ServerWorldScene {
                 world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
                 world.addEventListener(this, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
                 world.addEventListener(this, WorldEvent.BULLET_DOOR_TELEPORT, this::world_bulletDoorTeleport);
+                world.addEventListener(this, WorldEvent.DESTROYABLE_BOX_DESTROY, this::world_destroyableDestroy);
                 world.setMap(gameMap);
                 world.setRoom(room);
                 world.setSceneryPacked(true);
@@ -135,6 +137,14 @@ public class ServerWorldScene {
         } else {
             log.warn("No such map \"{}\"", mapName);
         }
+    }
+
+    private void world_destroyableDestroy(Event<World> event) {
+        var e = (WorldEvent) event;
+        SENDER.sendToAllOfRoom(DestroyableBoxDestroyDto.builder()
+                .destroyableGameObjectId(e.getGameObject().getGameObjectId())
+                .build(), e.getSource().getRoom().getId()
+        );
     }
 
     private void world_bulletDoorTeleport(@NotNull Event<World> event) {

@@ -350,6 +350,14 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void destroyableBoxDestroy(int destroyableGameObjectId) {
+        worldScene.destroyableBoxDestroy(destroyableGameObjectId);
+    }
+
+    /**
      * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override

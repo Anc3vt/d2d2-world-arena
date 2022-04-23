@@ -9,13 +9,18 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.fx.Particle;
+import com.ancevt.d2d2world.gameobject.pickup.HealthPickup;
+import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
+import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
+import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.data.DataKey.DAMAGE_SOUND;
 import static com.ancevt.d2d2world.data.DataKey.DESTROY_SOUND;
+import static com.ancevt.d2d2world.data.DataUtils.isNullOrEmpty;
 
 public class DestroyableBox extends DisplayObjectContainer implements
         IDestroyable,
@@ -41,7 +46,10 @@ public class DestroyableBox extends DisplayObjectContainer implements
 
     private final Sprite sprite;
     private Sprite blinkSprite;
-    private Sprite[] brokenParts;
+    private Sprite iconSprite;
+    private String icon;
+    private boolean iconVisible;
+
     private boolean pushable;
     private boolean floorOnly;
     private float movingSpeedY;
@@ -70,16 +78,39 @@ public class DestroyableBox extends DisplayObjectContainer implements
         add(sprite);
 
         setCollisionEnabled(true);
+        setGravityEnabled(true);
         setWeight(5f);
     }
 
     @Property
-    public void setPickupClassname(String pickupClassname) {
+    public void setIconVisible(boolean iconVisible) {
+        this.iconVisible = iconVisible;
+        rebuildIcon();
+    }
+
+    @Property
+    public boolean isIconVisible() {
+        return iconVisible;
+    }
+
+    @Property
+    public void setIcon(String icon) {
+        this.icon = icon;
+        rebuildIcon();
+    }
+
+    @Property
+    public String getIcon() {
+        return icon;
+    }
+
+    @Property
+    public void setPickupSimpleClassname(String pickupClassname) {
         this.pickupClassname = pickupClassname;
     }
 
     @Property
-    public String getPickupClassname() {
+    public String getPickupSimpleClassname() {
         return pickupClassname;
     }
 
@@ -103,9 +134,112 @@ public class DestroyableBox extends DisplayObjectContainer implements
         this.pickupValue = pickupValue;
     }
 
+    @Property
+    public void setDestroyed(boolean destroyed) {
+        this.destroyed = destroyed;
+
+        if (destroyed) {
+            setCollisionEnabled(false);
+            setGravityEnabled(false);
+            if (iconSprite != null) iconSprite.removeFromParent();
+
+            sprite.removeFromParent();
+        }
+    }
+
+    @Property
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+
+    public void doDestroyEffect() {
+        if (iconSprite != null) iconSprite.removeFromParent();
+
+        blinkSprite.removeFromParent();
+        blinkSprite.setAlpha(1.0f);
+        blinkSprite.removeEventListener(blinkSprite);
+
+        if (!destroyed && isOnWorld() && mapkitItem.getDataEntry().containsKey(DataKey.BROKEN_PARTS)) {
+
+            playSound(mapkitItem.getDataEntry().getString(DESTROY_SOUND));
+
+            Texture[] textures = mapkitItem.getTextures(DataKey.BROKEN_PARTS);
+            getWorld().getLayer(5).add(Particle.miniExplosionDestroyable(textures, 6, Color.WHITE, 4),
+                    getX() + sprite.getWidth() / 2,
+                    getY() + sprite.getHeight() / 2
+            );
+        }
+    }
+
+    private void destroy() {
+        if (destroyed || !hasParent()) return;
+
+        getWorld().dispatchEvent(WorldEvent.builder()
+                .type(WorldEvent.DESTROYABLE_BOX_DESTROY)
+                .gameObject(this)
+                .build());
+
+        // drop pickup
+        if (isServer() && !isNullOrEmpty(getPickupSimpleClassname())) {
+            String mapkitItemId = "pickup_" + getPickupSimpleClassname();
+            MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItemById(mapkitItemId);
+            IGameObject pickup = mapkitItem.createGameObject(IdGenerator.getInstance().getNewId());
+            if (pickup instanceof WeaponPickup weaponPickup) {
+                int value = getPickupValue();
+                weaponPickup.setAmmunition(value);
+                weaponPickup.setWeaponClassname(getWeaponClassname());
+            } else if (pickup instanceof HealthPickup healthPickup) {
+                int value = getPickupValue();
+                healthPickup.setValue(value);
+            }
+
+            pickup.setXY(getX() + sprite.getWidth() / 2, getY() + sprite.getHeight() / 3);
+            getWorld().addGameObject(pickup, 5, false);
+        }
+
+        setDestroyed(true);
+    }
+
     @Override
     public void setCollisionEnabled(boolean value) {
         collisionEnabled = value;
+    }
+
+    private void rebuildIcon() {
+        if (!isNullOrEmpty(icon) && isIconVisible()) {
+            if (iconSprite != null) iconSprite.removeFromParent();
+
+            if(!destroyed) {
+                iconSprite = new Sprite(getMapkitItem().getTextureAtlas().createTexture(icon)) {
+
+                    private static final int SPEED = 25;
+
+                    private int direction = SPEED;
+
+                    {
+                        setColor(new Color(0xFF, 0x80, 0xFF));
+                    }
+
+                    @Override
+                    public void onEachFrame() {
+                        int value = getColor().getB();
+
+                        getColor().setB(value + direction);
+
+                        value = getColor().getB();
+
+                        if (value > 0xFF) {
+                            direction = -SPEED;
+                        } else if (value < 0) {
+                            direction = SPEED;
+                        }
+
+                    }
+                };
+                add(iconSprite);
+            }
+        }
     }
 
     @Override
@@ -213,17 +347,18 @@ public class DestroyableBox extends DisplayObjectContainer implements
         if (health < 0) health = 0;
         else if (health > maxHealth) health = maxHealth;
 
-        if (health < oldHealth) {
+        if (health < oldHealth && health > 0) {
             damageBlink();
             playSound(mapkitItem.getDataEntry().getString(DAMAGE_SOUND));
         }
 
         this.health = health;
-        if (health <= 0) destroy();
-
-        if (isOnWorld()) {
-            getWorld().getSyncDataAggregator().health(this, null);
+        if (health <= 0) {
+            if (iconSprite != null) iconSprite.removeFromParent();
+            destroy();
         }
+
+        if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, null);
     }
 
     @Override
@@ -232,17 +367,14 @@ public class DestroyableBox extends DisplayObjectContainer implements
         if (health < 0) health = 0;
         else if (health > maxHealth) health = maxHealth;
 
-        if (health < oldHealth) {
+        if (health < oldHealth && health > 0) {
             damageBlink();
             playSound(mapkitItem.getDataEntry().getString(DAMAGE_SOUND));
         }
 
         this.health = health;
         if (health <= 0) destroy();
-
-        if (isOnWorld()) {
-            getWorld().getSyncDataAggregator().health(this, damaging);
-        }
+        if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, damaging);
     }
 
     @Override
@@ -252,34 +384,6 @@ public class DestroyableBox extends DisplayObjectContainer implements
         }
 
         setHealth(getHealth() - toHealth);
-    }
-
-    private void destroy() {
-        if (destroyed) return;
-
-        destroyed = true;
-
-        setCollisionEnabled(false);
-        sprite.removeFromParent();
-        blinkSprite.removeFromParent();
-        blinkSprite.setAlpha(1.0f);
-        blinkSprite.removeEventListener(blinkSprite);
-
-        if (isOnWorld() && mapkitItem.getDataEntry().containsKey(DataKey.BROKEN_PARTS)) {
-            playSound(mapkitItem.getDataEntry().getString(DESTROY_SOUND));
-
-            Texture[] textures = mapkitItem.getTextures(DataKey.BROKEN_PARTS);
-            getWorld().getLayer(5).add(Particle.miniExplosionDestroyable(textures, 6, Color.WHITE, 4),
-                    getX() + sprite.getWidth() / 2,
-                    getY() + sprite.getHeight() / 2
-            );
-        }
-
-        // drop pickup
-        if (isServer()) {
-            
-        }
-
     }
 
     private void damageBlink() {
@@ -309,9 +413,13 @@ public class DestroyableBox extends DisplayObjectContainer implements
     @Override
     public void repair() {
         destroyed = false;
-        setHealth(getMaxHealth());
+
         add(sprite);
+        rebuildIcon();
+
+        setHealth(getMaxHealth());
         setCollisionEnabled(true);
+        setGravityEnabled(true);
 
         if (isOnWorld()) getWorld().getSyncDataAggregator().repair(this);
     }

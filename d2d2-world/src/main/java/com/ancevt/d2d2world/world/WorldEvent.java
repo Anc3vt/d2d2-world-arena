@@ -39,6 +39,7 @@ public class WorldEvent extends Event<World> {
     public static final String ADD_GAME_OBJECT = "addGameObject";
     public static final String REMOVE_GAME_OBJECT = "removeGameObject";
     public static final String BULLET_DOOR_TELEPORT = "bulletDoorTeleport";
+    public static final String DESTROYABLE_BOX_DESTROY = "destroyableBoxDestroy";
 
     private final float x;
     private final float y;

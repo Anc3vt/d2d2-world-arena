@@ -58,8 +58,8 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
         container.setScale(0.01f, 0.01f);
         add(container);
         setCollision(-8f / 2f, -8f / 2f, 16f / 2f, 16f / 2f);
-
         setRespawnTimeMillis(DEFAULT_RESPAWN_MILLIS);
+        setCollisionEnabled(true);
     }
 
     @Override
@@ -265,7 +265,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     @Override
     public void onEachFrame() {
         if (!ready) {
-            container.toScale(1.1f, 1.1f);
+            container.toScale(1.25f, 1.25f);
             if (container.getScaleX() >= 1) {
                 container.setScale(1, 1);
                 ready = true;
