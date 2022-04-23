@@ -58,7 +58,7 @@ public class CharSelectScene extends DisplayObjectContainer {
         final float sw = getStage().getStageWidth();
         final float sh = getStage().getStageHeight();
 
-        bg.setSize(sw / getAbsoluteScaleX(), sh / getAbsoluteScaleY());
+        bg.setSize(sw, sh);
 
         final float STEP_X = 64f;
         final float STEP_Y = 64f;
@@ -140,6 +140,7 @@ public class CharSelectScene extends DisplayObjectContainer {
             decorDoor.setVisible(false);
             add(decorDoor, 8, -h / 2);
 
+            playerActor.setWeaponVisible(false);
             add(playerActor);
 
             UiText uiText = new UiText(mapkitItem.getDataEntry().getString(DataKey.READABLE_NAME));

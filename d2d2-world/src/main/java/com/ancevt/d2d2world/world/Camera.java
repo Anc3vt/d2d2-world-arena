@@ -232,7 +232,7 @@ public class Camera {
         float x = getX() + (left ? side : -side);
         float y = getY();
 
-        float factorX = attachedTo instanceof PlayerActor playerActor && abs(playerActor.getVelocityX()) > 6 ? 7.5f : 1f;
+        float factorX = attachedTo instanceof PlayerActor playerActor && abs(playerActor.getVelocityX()) > 6 ? 7.5f : 2f;
         float factorY = attachedTo instanceof PlayerActor playerActor && abs(playerActor.getVelocityY()) > 5 ? 7.5f : 3f;
 
         if (aX > x) {

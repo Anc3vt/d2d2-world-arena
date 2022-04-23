@@ -50,8 +50,12 @@ import java.util.List;
 import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.constant.AnimationKey.ATTACK;
 import static com.ancevt.d2d2world.constant.AnimationKey.DAMAGE;
+import static com.ancevt.d2d2world.constant.AnimationKey.FALL;
+import static com.ancevt.d2d2world.constant.AnimationKey.FALL_ATTACK;
 import static com.ancevt.d2d2world.constant.AnimationKey.HOOK;
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
+import static com.ancevt.d2d2world.constant.AnimationKey.JUMP;
+import static com.ancevt.d2d2world.constant.AnimationKey.JUMP_ATTACK;
 import static com.ancevt.d2d2world.constant.AnimationKey.SLOWING;
 import static com.ancevt.d2d2world.constant.AnimationKey.WALK;
 import static com.ancevt.d2d2world.constant.AnimationKey.WALK_ATTACK;
@@ -315,6 +319,12 @@ abstract public class Actor extends Animated implements
             switch (getAnimation()) {
                 case WALK, WALK_ATTACK -> {
                     headContainer.setXY(3 * getDirection(), -5);
+                }
+                case JUMP, JUMP_ATTACK -> {
+                    headContainer.setXY(0, -6);
+                }
+                case FALL, FALL_ATTACK -> {
+                    headContainer.setXY(3 * getDirection(), -6);
                 }
                 default -> {
                     headContainer.setXY(0, -4);
@@ -1085,6 +1095,14 @@ abstract public class Actor extends Animated implements
     public void setWeapons(List<Weapon> weapons) {
         this.weapons.clear();
         this.weapons.addAll(weapons);
+    }
+
+    public void setWeaponVisible(boolean b) {
+        weaponDisplayObject.setVisible(false);
+    }
+
+    public boolean isWeaponVisible() {
+        return weaponDisplayObject.isVisible();
     }
 }
 

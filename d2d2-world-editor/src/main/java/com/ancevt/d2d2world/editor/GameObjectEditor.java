@@ -132,7 +132,7 @@ public class GameObjectEditor {
 
                     case 'B' -> getWorld().getCamera().setBoundsLock(!getWorld().getCamera().isBoundsLock());
 
-                    /* TAB */
+                    /* Ă is TAB */
                     case 'P', 'Ă' -> {
                         editor.setEnabled(false);
                         unselect();
@@ -162,7 +162,7 @@ public class GameObjectEditor {
                         if (!getWorld().isPlaying()) setPlacingMapkitItem(lastPlacingMapkitItem);
                     }
 
-                    case 'L' -> setLayerNumbersVisible(!LayerNumbers.isShow());
+                    case 'L' -> setLayerNumbersVisible(true);
 
                     case 'T' -> {
                         JOptionPane.showConfirmDialog(null, "test");
@@ -171,7 +171,10 @@ public class GameObjectEditor {
                     case 'Ł' -> { // numpad 1
                         getSelectedGameObject().ifPresent(gameObject -> {
                             if (gameObject instanceof IRotatable rotatable) {
-                                rotatable.rotate(-1);
+                                if(editor.isShiftDown())
+                                    rotatable.rotate(-22.5f);
+                                else
+                                    rotatable.rotate(-1);
                             }
                         });
                     }
@@ -179,11 +182,19 @@ public class GameObjectEditor {
                     case 'Ń' -> { // numpad 3
                         getSelectedGameObject().ifPresent(gameObject -> {
                             if (gameObject instanceof IRotatable rotatable) {
-                                rotatable.rotate(+1);
+                                if(editor.isShiftDown())
+                                    rotatable.rotate(+22.5f);
+                                else
+                                    rotatable.rotate(+1);
                             }
                         });
                     }
                 }
+            }
+            // else if !down
+        } else {
+            switch (keyChar) {
+                case 'L' -> setLayerNumbersVisible(false);
             }
         }
 

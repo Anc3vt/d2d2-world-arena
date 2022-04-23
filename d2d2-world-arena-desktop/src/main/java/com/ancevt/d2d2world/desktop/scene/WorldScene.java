@@ -34,13 +34,16 @@ import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
-import com.ancevt.d2d2world.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.fx.SpawnEffect;
-import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.ActorEvent;
+import com.ancevt.d2d2world.gameobject.DefaultMaps;
+import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -49,6 +52,7 @@ import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
 import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
 import com.ancevt.d2d2world.net.dto.client.RoomSwitchCompleteDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
+import com.ancevt.d2d2world.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
 import com.ancevt.d2d2world.sync.SyncMotion;
 import com.ancevt.d2d2world.world.Overlay;
@@ -58,18 +62,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
-import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_WORLD_ALPHA;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
+import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
 
 @Slf4j
 public class WorldScene extends DisplayObjectContainer {
@@ -248,7 +259,6 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     private void world_roomSwitchComplete(Event<World> event) {
-        debug("WorldScene:253: <A>world_roomSwitchComplete");
         clearChatBubbles();
         CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
     }
@@ -358,11 +368,13 @@ public class WorldScene extends DisplayObjectContainer {
                     .build()
             );
 
-            dispatchEvent(SceneEvent.builder()
-                    .type(SceneEvent.MAP_LOADED)
-                    .build());
-
             Mouse.setVisible(false);
+
+            ControlsHelp controlsHelp = new ControlsHelp();
+            getRoot().add(controlsHelp,
+                    (D2D2.getStage().getStageWidth() - controlsHelp.getWidth()) / 2,
+                    (D2D2.getStage().getStageHeight() - controlsHelp.getHeight()) / 5
+            );
         });
         getRoot().add(charSelectScene);
     }

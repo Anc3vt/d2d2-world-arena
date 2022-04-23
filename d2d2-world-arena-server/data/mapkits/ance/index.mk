@@ -1,4 +1,7 @@
 mapkit | name = ance
+id = _ance-n-7_box_brk | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,80,16,16
+id = _ance-n-6_box | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,64,16,16
+id = _ance-n-5_ | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,48,16,16
 id = _ance-n-1_ | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=192,0,16,16
 id = _ance_n-2_ | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=208,0,16,16
 id = _ance_n-4_ | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=174,0,16,116

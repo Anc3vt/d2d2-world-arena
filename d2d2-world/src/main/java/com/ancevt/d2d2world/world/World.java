@@ -299,7 +299,7 @@ public class World extends DisplayObjectContainer {
             if (overlay.getState() == Overlay.STATE_BLACK) {
                 Room targetRoom = currentMap.getRoom(roomIdSwitchTo);
                 setRoom(targetRoom);
-                overlay.setSize(targetRoom.getWidth(), targetRoom.getHeight());
+                overlay.setSize(targetRoom.getWidth() * 2, targetRoom.getHeight() * 2 );
                 actor.setXY(actorX, actorY);
                 camera.setXY(actorX, actorY);
                 addGameObject(actor, 5, false);
