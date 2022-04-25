@@ -9,6 +9,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TouchButtonEvent;
+import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.touch.TouchButton;
 import com.ancevt.d2d2world.D2D2World;
@@ -152,6 +153,8 @@ public class CharSelectScene extends DisplayObjectContainer {
             touchButton.addEventListener(TouchButtonEvent.TOUCH_HOVER_OUT, TouchButtonEvent.TOUCH_HOVER_OUT, this::touchButton_touchHoverOut);
             touchButton.addEventListener(TouchButtonEvent.TOUCH_UP, TouchButtonEvent.TOUCH_UP, this::touchButton_touchUp);
             add(touchButton, borderedRect.getX(), borderedRect.getY());
+
+            Mouse.setVisible(true);
         }
 
         private void touchButton_touchUp(Event event) {
