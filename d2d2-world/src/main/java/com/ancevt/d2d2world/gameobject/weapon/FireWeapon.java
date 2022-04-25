@@ -7,7 +7,6 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.IScalable;
-import com.ancevt.d2d2world.gameobject.ITight;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -70,10 +69,7 @@ public class FireWeapon extends Weapon {
         return super.toString();
     }
 
-    public static class FireBullet extends Bullet implements ITight, IScalable {
-
-        private boolean floorOnly;
-        private boolean pushable;
+    public static class FireBullet extends Bullet implements IScalable {
 
         public FireBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
@@ -115,26 +111,6 @@ public class FireWeapon extends Weapon {
             float[] xy = RadialUtils.xySpeedOfDegree(getDegree());
             move(getSpeed() * xy[0], getSpeed() * xy[1] - 1);
             super.process();
-        }
-
-        @Override
-        public void setFloorOnly(boolean b) {
-            this.floorOnly = b;
-        }
-
-        @Override
-        public boolean isFloorOnly() {
-            return floorOnly;
-        }
-
-        @Override
-        public void setPushable(boolean b) {
-            this.pushable = b;
-        }
-
-        @Override
-        public boolean isPushable() {
-            return pushable;
         }
     }
 }

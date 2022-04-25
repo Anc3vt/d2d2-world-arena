@@ -24,6 +24,8 @@ public class JPropertiesEditor extends JFrame {
 
     private final JScrollPane scrollPane;
 
+    private static final JPropertiesEditor instance = new JPropertiesEditor();
+
     public static void main(String[] args) {
         create("Test", "some default text", null);
     }
@@ -34,17 +36,34 @@ public class JPropertiesEditor extends JFrame {
     private final JButton buttonOk;
     private final JButton buttonCancel;
 
-    public JPropertiesEditor() {
+    private JPropertiesEditor() {
         setSize(700, 700);
         setPreferredSize(new Dimension(700, 700));
 
         textArea = new JTextArea();
-        textArea.setFont(new Font("Monospaced", Font.BOLD, 14));
+        textArea.setBackground(java.awt.Color.BLACK);
+        textArea.setForeground(java.awt.Color.LIGHT_GRAY);
+        textArea.setCaretColor(java.awt.Color.WHITE);
+
+        if (checkFontExists("Terminus (TTF)")) {
+            textArea.setFont(new Font("Terminus (TTF)", Font.BOLD, 20));
+        } else {
+            textArea.setFont(new Font("Monospaced", Font.BOLD, 20));
+        }
+
+        textArea.setBorder(null);
+
         buttonCancel = new JButton("Cancel");
         buttonOk = new JButton("OK");
 
-        setLocationByPlatform(true);
+        buttonCancel.setBackground(java.awt.Color.BLACK);
+        buttonOk.setBackground(java.awt.Color.BLACK);
+        buttonCancel.setBorder(BorderFactory.createLoweredBevelBorder());
+        buttonOk.setBorder(BorderFactory.createLoweredBevelBorder());
 
+        setLocationByPlatform(true);
+        setBackground(java.awt.Color.BLACK);
+        getContentPane().setBackground(java.awt.Color.BLACK);
         getContentPane().add(textArea);
         getContentPane().add(buttonOk);
         getContentPane().add(buttonCancel);
@@ -57,6 +76,7 @@ public class JPropertiesEditor extends JFrame {
 
         scrollPane = new JScrollPane(textArea);
         scrollPane.setPreferredSize(textArea.getSize());
+        scrollPane.setBorder(null);
 
         getContentPane().add(scrollPane);
 
@@ -74,6 +94,13 @@ public class JPropertiesEditor extends JFrame {
             }
         });
         resize();
+    }
+
+    public static boolean checkFontExists(String fontName) {
+        for (String font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
+            if (font.equals(fontName)) return true;
+        }
+        return false;
     }
 
     @Override
@@ -148,14 +175,16 @@ public class JPropertiesEditor extends JFrame {
     }
 
     public static @NotNull JPropertiesEditor create(String title, String text, OkFunction okFunction) {
-        JPropertiesEditor editor = new JPropertiesEditor();
+        JPropertiesEditor editor = instance;
 
-        //SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             editor.setText(text);
             editor.setTitle(title + " (floating)");
             editor.setOkFunction(okFunction);
             editor.setVisible(true);
-        //});
+            editor.setSize(editor.getSize());
+            editor.repaint();
+        });
 
         return editor;
     }

@@ -271,9 +271,10 @@ abstract public class Actor extends Animated implements
 
     }
 
-    public void underWater(AreaWater areaWater) {
+    public boolean underWater(AreaWater areaWater) {
         this.areaWater = areaWater;
         underWaterTime += 2;
+        return underWaterTime >= UNDER_WATER_TIME;
     }
 
     public void resetUnderWater() {

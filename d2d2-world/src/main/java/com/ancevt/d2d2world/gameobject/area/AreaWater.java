@@ -46,7 +46,7 @@ public class AreaWater extends Area implements IDamaging {
             g.setVelocity(g.getVelocityX() * 0.9f, g.getVelocityY() * 0.9f);
 
             if (Math.random() < 0.01) {
-                createBubble().setXY(collideWith.getX(), collideWith.getY());
+                createBubble().setXY(collideWith.getX(), collideWith.getY() - 16);
             }
 
             if (g.getY() < getY()) {
@@ -71,7 +71,10 @@ public class AreaWater extends Area implements IDamaging {
         if (collideWith instanceof Actor a) {
 
             if (a.getY() + a.getCollisionY() > getY()) {
-                a.underWater(this);
+                boolean noAirLeft = a.underWater(this);
+                if(noAirLeft) {
+                    createBubble().setXY(collideWith.getX(), collideWith.getY() - 16);
+                }
             } else {
                 a.resetUnderWater();
             }

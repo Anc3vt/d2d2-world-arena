@@ -78,8 +78,6 @@ public class Particle extends DisplayObjectContainer {
                 public void onEachFrame() {
                     super.onEachFrame();
                     move(b, t);
-                    toAlpha(0.975f);
-                    toScale(1.01f, 1.01f);
                     rotate(b);
                     t += 0.1f;
                 }
