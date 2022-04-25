@@ -34,6 +34,7 @@ import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.area.AreaWater;
+import com.ancevt.d2d2world.gameobject.weapon.FireWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -347,6 +348,10 @@ abstract public class Actor extends Animated implements
             return;
         }
 
+        if (getCurrentWeaponClassname().equals(FireWeapon.class.getName())) {
+            if(underWaterTime != 0) return;
+        }
+
         if (!isServer() || !isAlive() || damagingTime > 0) return;
 
         if (getCurrentWeapon() != null) {
@@ -599,7 +604,7 @@ abstract public class Actor extends Animated implements
         setAlive(true);
         repair();
 
-        if(isOnWorld()) getWorld().getSyncDataAggregator().reset(this);
+        if (isOnWorld()) getWorld().getSyncDataAggregator().reset(this);
     }
 
     @Override
