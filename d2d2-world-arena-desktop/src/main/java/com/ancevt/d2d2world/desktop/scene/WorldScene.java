@@ -478,6 +478,7 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void playerEnterRoomStartResponseReceived() {
         world.roomSwitchOverlayStartOut();
+        shadowRadial.setValue(world.getRoom().getDarkness());
     }
 
     /**
@@ -494,6 +495,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.setRoom(world.getMap().getRoom(roomId));
         world.setSceneryPacked(true);
         world.getCamera().setXY(cameraX, cameraY);
+        shadowRadial.setValue(world.getRoom().getDarkness());
         CLIENT.sendPlayerActorRequest();
     }
 
