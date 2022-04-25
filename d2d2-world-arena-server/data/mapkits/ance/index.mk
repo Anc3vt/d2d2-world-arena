@@ -1,5 +1,17 @@
 mapkit | name = ance
 
+id = _ance-sewers-5 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=416,0,16,16
+id = _ance-sewers-4 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=432,0,16,16
+id = _ance-sewers-3 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=448,0,16,16
+id = _ance-sewers-2 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=464,0,16,16
+id = _ance-sewers-1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=416,16,16,16
+id = _ance-sewers-0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=432,16,16,16
+id = _ance-pipe-3 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=496,16,16,16
+id = _ance-pipe-2 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=448,16,16,16
+id = _ance-pipe-1 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=464,16,16,16
+id = _ance-pipe-0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=480,16,16,16
+
+
 id = _ance-n-dbox | class = com.ancevt.d2d2world.gameobject.DestroyableBox | atlas = ance-tileset.png | idle=160,112,16,16 | blink=176,128,16,16 | icon=160,128,16,16 | brokenParts=176,112,8,8; 184,112,8,8; 176,120,8,8; 184,120,8,8 | collisionWidth = 16 | collisionHeight = 16 | damageSound = box-damage.ogg | destroySound = box-destroy.ogg | maxHealth = 100 | health = 100
 id = _ance-n-8 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=192,16,16,16
 id = _ance-n-7_box_brk | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=160,80,16,16

@@ -74,6 +74,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
                         String dataEntryText = in.readUtf(short.class);
                         newGameObject(gameObjectId, layer, x, y, mapkitName, mapkitItemId, dataEntryText);
                     }
+                    case SyncDataType.PICKUP_DISAPPEAR -> {
+                        pickupDisappear(gameObjectId);
+                    }
                     case SyncDataType.SOUND -> {
                         String soundFilenameFromMapkit = in.readUtf(byte.class);
                         sound(gameObjectId, soundFilenameFromMapkit);
@@ -140,6 +143,12 @@ public class SyncDataReceiver implements ISyncDataReceiver {
             }
         }
 
+    }
+
+    private void pickupDisappear(int gameObjectId) {
+        if (world.getGameObjectById(gameObjectId) instanceof Pickup pickup) {
+            pickup.startOut();
+        }
     }
 
     private void sound(int gameObjectId, String soundFilenameFromMapkit) {

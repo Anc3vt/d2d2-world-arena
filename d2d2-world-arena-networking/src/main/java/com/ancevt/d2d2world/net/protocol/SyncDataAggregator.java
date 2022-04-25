@@ -3,6 +3,7 @@ package com.ancevt.d2d2world.net.protocol;
 import com.ancevt.commons.io.ByteOutputWriter;
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
+import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.sync.ISyncDataAggregator;
@@ -50,6 +51,12 @@ public class SyncDataAggregator implements ISyncDataAggregator {
                 .writeInt(gameObject.getGameObjectId())
                 .writeUtf(byte.class, soundFilenameFromMapkit);
 
+    }
+
+    @Override
+    public void pickupDisappear(Pickup pickup) {
+        buffer.writeByte(SyncDataType.PICKUP_DISAPPEAR)
+                .writeInt(pickup.getGameObjectId());
     }
 
     @Override

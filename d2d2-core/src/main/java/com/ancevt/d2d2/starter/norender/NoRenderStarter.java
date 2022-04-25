@@ -18,7 +18,7 @@
 package com.ancevt.d2d2.starter.norender;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.D2D2Starter;
+import com.ancevt.d2d2.starter.D2D2Starter;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLTextureEngine;

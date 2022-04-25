@@ -2,6 +2,7 @@ package com.ancevt.d2d2world.sync;
 
 import com.ancevt.d2d2world.gameobject.*;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
+import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import org.jetbrains.annotations.NotNull;
 
 public interface ISyncDataAggregator {
@@ -88,4 +89,6 @@ public interface ISyncDataAggregator {
     }
 
     default void sound(ISonicSynchronized gameObject, String soundFilenameFromMapkit) {};
+
+    default void pickupDisappear(Pickup pickup){};
 }

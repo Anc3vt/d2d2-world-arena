@@ -20,4 +20,5 @@ public class SyncDataType {
     public static final int PICKUP = 16;
     public static final int HOOK = 17;
     public static final int SOUND = 18;
+    public static final int PICKUP_DISAPPEAR = 19;
 }

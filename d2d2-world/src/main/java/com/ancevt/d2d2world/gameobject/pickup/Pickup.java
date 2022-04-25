@@ -24,6 +24,8 @@ import static com.ancevt.d2d2world.D2D2World.isServer;
 
 abstract public class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized, ISonicSynchronized {
 
+    public static final int PICKUP_DISAPPEAR_AFTER_TACT = 5000;
+
     private static final int DEFAULT_RESPAWN_MILLIS = 30000;
 
     private final MapkitItem mapkitItem;
@@ -33,10 +35,12 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     protected final Sprite bubbleSprite;
 
     private int counter = 0;
+    private int tact = 0;
     private boolean ready;
     private String pickUpSound;
     private long respawnTimeMillis;
     private long pickUpTimeMillis;
+    private int disappearAfterTact;
     private World world;
     private float collisionY;
     private float collisionX;
@@ -44,6 +48,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     private float collisionWidth;
     private boolean collisionEnabled;
     private boolean permanentSync;
+    private boolean outStarted;
 
     public Pickup(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
@@ -239,6 +244,14 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
         return pickUpSound;
     }
 
+    public void setDisappearAfterTact(int disappearAfterTact) {
+        this.disappearAfterTact = disappearAfterTact;
+    }
+
+    public int getDisappearAfterTact() {
+        return disappearAfterTact;
+    }
+
     public void playPickUpSound() {
         if (getMapkitItem().getDataEntry().containsKey(SoundKey.PICK_UP)) {
             playSound(getMapkitItem().getDataEntry().getString(SoundKey.PICK_UP));
@@ -259,7 +272,24 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
 
     @Override
     public void process() {
+        tact++;
 
+        if (!outStarted && disappearAfterTact != 0 && tact > disappearAfterTact) {
+            startOut();
+            if (isOnWorld()) {
+                getWorld().getSyncDataAggregator().pickupDisappear(this);
+            }
+        }
+    }
+
+    public void startOut() {
+        outStarted = true;
+        addEventListener(Event.EACH_FRAME, event -> {
+            toScale(0.8f, 0.8f);
+            if (getScaleX() <= 0.05f) {
+                getWorld().removeGameObject(this, false);
+            }
+        });
     }
 
     @Override

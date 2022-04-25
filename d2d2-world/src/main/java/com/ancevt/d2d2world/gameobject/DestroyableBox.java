@@ -10,6 +10,7 @@ import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.pickup.HealthPickup;
+import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -17,6 +18,7 @@ import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 
+import static com.ancevt.d2d2world.D2D2World.isEditor;
 import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.data.DataKey.DAMAGE_SOUND;
 import static com.ancevt.d2d2world.data.DataKey.DESTROY_SOUND;
@@ -180,22 +182,29 @@ public class DestroyableBox extends DisplayObjectContainer implements
                 .gameObject(this)
                 .build());
 
+        if(isEditor()) {
+            doDestroyEffect();
+        }
+
         // drop pickup
         if (isServer() && !isNullOrEmpty(getPickupSimpleClassname())) {
             String mapkitItemId = "pickup_" + getPickupSimpleClassname();
             MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItemById(mapkitItemId);
-            IGameObject pickup = mapkitItem.createGameObject(IdGenerator.getInstance().getNewId());
-            if (pickup instanceof WeaponPickup weaponPickup) {
+            IGameObject gameObject = mapkitItem.createGameObject(IdGenerator.getInstance().getNewId());
+            if (gameObject instanceof WeaponPickup weaponPickup) {
                 int value = getPickupValue();
                 weaponPickup.setAmmunition(value);
                 weaponPickup.setWeaponClassname(getWeaponClassname());
-            } else if (pickup instanceof HealthPickup healthPickup) {
+            } else if (gameObject instanceof HealthPickup healthPickup) {
                 int value = getPickupValue();
                 healthPickup.setValue(value);
             }
 
-            pickup.setXY(getX() + sprite.getWidth() / 2, getY() + sprite.getHeight() / 3);
-            getWorld().addGameObject(pickup, 5, false);
+            if(gameObject instanceof Pickup pickup) {
+                pickup.setDisappearAfterTact(Pickup.PICKUP_DISAPPEAR_AFTER_TACT);
+            }
+            gameObject.setXY(getX() + sprite.getWidth() / 2, getY() + sprite.getHeight() / 3);
+            getWorld().addGameObject(gameObject, 5, false);
         }
 
         setDestroyed(true);
