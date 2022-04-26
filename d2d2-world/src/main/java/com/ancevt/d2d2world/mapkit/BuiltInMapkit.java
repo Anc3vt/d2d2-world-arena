@@ -74,14 +74,12 @@ public class BuiltInMapkit extends Mapkit {
                         e.printStackTrace();
                     }
                 }
-
                 add("""
                         id = water_scenery_surface
                         | class = """ + Scenery.class.getName() + """
                         | idle = 112,16,16,4 v 4
                         | atlas=$ATLAS$
                         """);
-
                 add("""
                         id = water_scenery
                         | class = """ + Scenery.class.getName() + """
@@ -90,7 +88,6 @@ public class BuiltInMapkit extends Mapkit {
                         | bleedingFix = 0.00005
                         | atlas=$ATLAS$
                         """);
-
                 add("""
                         id = character_blake
                         | readableName = Blake
@@ -123,7 +120,6 @@ public class BuiltInMapkit extends Mapkit {
                         | arm = 576,32,16,16
                         | damageSound = character-damage.ogg
                         """);
-
                 add("""
                         id = character_ava
                         | readableName = Ava
@@ -156,7 +152,6 @@ public class BuiltInMapkit extends Mapkit {
                         | arm = 576,80,16,16
                         | damageSound=character-damage.ogg
                         """);
-
                 add("""
                         id = character_stranger
                         | readableName = Stranger
@@ -189,7 +184,6 @@ public class BuiltInMapkit extends Mapkit {
                         | arm = 576,128,16,16
                         | damageSound=character-damage.ogg
                         """);
-
                 add("""
                         id = bullet_of_""" + StandardWeapon.class.getSimpleName() + """
                         | class =""" + StandardWeapon.StandardBullet.class.getName() + """
@@ -199,7 +193,6 @@ public class BuiltInMapkit extends Mapkit {
                         | atlas = $ATLAS$
                         | idle = 32,0,16,16 h 2
                         """);
-
                 add("""
                         id = bullet_of_""" + RaveWeapon.class.getSimpleName() + """
                         | class =""" + RaveWeapon.RaveWeaponBullet.class.getName() + """
@@ -209,7 +202,6 @@ public class BuiltInMapkit extends Mapkit {
                         | atlas = $ATLAS$
                         | idle = 32,144,32,16 h 4
                         """);
-
                 add("""
                         id = bullet_of_""" + ArrowWeapon.class.getSimpleName() + """
                         | class =""" + ArrowWeapon.ArrowBullet.class.getName() + """
@@ -252,9 +244,9 @@ public class BuiltInMapkit extends Mapkit {
                 add("""
                         id = bullet_of_""" + FireWeapon.class.getSimpleName() + """
                         | class =""" + FireWeapon.FireBullet.class.getName() + """
-                        | damagingPower = 10
+                        | damagingPower = 20
                         | speed = 1f
-                        | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
+                        | collisionX = -8 | collisionY = -8 | collisionWidth = -4 | collisionHeight = 8
                         | atlas = $ATLAS$
                         | idle = 32,80,64,64 h 4
                         """);

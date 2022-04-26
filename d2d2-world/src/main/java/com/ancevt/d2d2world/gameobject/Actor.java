@@ -352,7 +352,7 @@ abstract public class Actor extends Animated implements
             if(underWaterTime != 0) return;
         }
 
-        if (!isServer() || !isAlive() || damagingTime > 0) return;
+        if (!isServer() || !isAlive()/* || damagingTime > 0*/) return;
 
         if (getCurrentWeapon() != null) {
             getCurrentWeapon().shoot(getWorld());
@@ -526,8 +526,8 @@ abstract public class Actor extends Animated implements
     public void damage(int toHealth, IDamaging damaging) {
         if (toHealth > 0) {
             if (damagingTime > 0) return;
-            setAnimation(AnimationKey.DAMAGE);
-            //setVelocity(getDirection() * -2, -2);
+
+            if(attackTime == 0) setAnimation(AnimationKey.DAMAGE);
         }
 
         setHealthBy(getHealth() - toHealth, damaging, false);

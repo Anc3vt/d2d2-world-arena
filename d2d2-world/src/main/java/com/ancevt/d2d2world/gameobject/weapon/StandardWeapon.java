@@ -45,9 +45,12 @@ public class StandardWeapon extends Weapon {
             bullet.setDamagingOwnerActor(getOwner());
             float deg = getOwner().getArmDegree();
             float[] toXY = RadialUtils.xySpeedOfDegree(deg);
-            float distance = RadialUtils.distance(0, 0, getOwner().getWeaponX() * getOwner().getDirection(), getOwner().getWeaponY());
+            float distance = RadialUtils.distance(0, 0,
+                    getOwner().getWeaponX() * getOwner().getDirection(),
+                    getOwner().getWeaponY());
+
             bullet.setXY(getOwner().getX(), getOwner().getY());
-            bullet.move(toXY[0] * distance, toXY[1] * distance + getOwner().getWeaponY());
+            bullet.move(toXY[0] * distance, toXY[1] * distance + getOwner().getWeaponY() - 2);
             bullet.setDirection(getOwner().getDirection());
             world.addGameObject(bullet, 4, false);
         }

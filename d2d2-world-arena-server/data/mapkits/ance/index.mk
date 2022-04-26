@@ -1,5 +1,6 @@
 mapkit | name = ance
 
+id = _ance-ground-0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=224,0,32,32
 id = _ance-sewers-5 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=416,0,16,16
 id = _ance-sewers-4 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=432,0,16,16
 id = _ance-sewers-3 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=448,0,16,16

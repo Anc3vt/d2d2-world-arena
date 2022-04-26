@@ -42,6 +42,7 @@ import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.FireWeapon;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -826,6 +827,7 @@ public class GameObjectEditor {
         });
 
         playerActor.addWeapon(AutomaticWeapon.class, 100);
+        playerActor.addWeapon(FireWeapon.class, 100);
 
         //DebugActorCreator.createTestPlayerActor(playerActor, getWorld());
     }

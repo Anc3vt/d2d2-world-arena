@@ -6,7 +6,9 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.DataKey;
+import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IScalable;
+import com.ancevt.d2d2world.gameobject.area.AreaWater;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -87,6 +89,14 @@ public class FireWeapon extends Weapon {
             framedSprite.play();
             framedSprite.setXY(-framedSprite.getWidth() / 2, -framedSprite.getHeight() / 2 - 16f);
             add(framedSprite);
+        }
+
+        @Override
+        public void onCollide(ICollision collideWith) {
+            if(collideWith instanceof AreaWater && isOnWorld()) {
+                getWorld().removeGameObject(this, false);
+            }
+
         }
 
         @Override
