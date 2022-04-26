@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.editor;
 
 import com.ancevt.commons.concurrent.Async;
+import com.ancevt.commons.properties.PropertyWrapper;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
@@ -50,6 +51,8 @@ public class D2D2WorldEditorMain {
         var hack = JPropertiesEditor.create("(floating))", "null", null);
         Async.runLater(100, TimeUnit.MILLISECONDS, hack::dispose);
         // </hack>
+
+        PropertyWrapper.argsToProperties(args, System.getProperties());
 
         Args a = new Args(args);
 

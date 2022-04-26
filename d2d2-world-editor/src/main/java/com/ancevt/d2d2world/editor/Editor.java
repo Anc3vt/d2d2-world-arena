@@ -22,6 +22,10 @@ import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.map.Room;
 import com.ancevt.d2d2world.world.World;
 
+import java.util.StringTokenizer;
+
+import static java.lang.Float.parseFloat;
+
 
 public class Editor {
 
@@ -47,6 +51,18 @@ public class Editor {
 
         gameObjectEditor = new GameObjectEditor(this);
         gameObjectEditor.addPlayerActor();
+
+        if (System.getProperties().containsKey("start-position")) {
+            StringTokenizer stringTokenizer = new StringTokenizer(System.getProperty("start-position"), ",");
+            String roomId = stringTokenizer.nextToken();
+            float x = parseFloat(stringTokenizer.nextToken());
+            float y = parseFloat(stringTokenizer.nextToken());
+            getWorld().setSceneryPacked(false);
+            getWorld().setRoom(getWorld().getMap().getRoom(roomId));
+            gameObjectEditor.addPlayerActor();
+            gameObjectEditor.getPlayerActor().setXY(x, y);
+            getWorld().getCamera().setXY(x, y);
+        }
 
         setEnabled(true);
     }

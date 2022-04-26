@@ -30,7 +30,16 @@ import com.ancevt.d2d2world.editor.objects.SelectArea;
 import com.ancevt.d2d2world.editor.objects.SelectRectangle;
 import com.ancevt.d2d2world.editor.objects.Selection;
 import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
-import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.ActorEvent;
+import com.ancevt.d2d2world.gameobject.GameObjectUtils;
+import com.ancevt.d2d2world.gameobject.ICollision;
+import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.IMovable;
+import com.ancevt.d2d2world.gameobject.IRepeatable;
+import com.ancevt.d2d2world.gameobject.IResettable;
+import com.ancevt.d2d2world.gameobject.IRotatable;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
 import com.ancevt.d2d2world.map.MapIO;
@@ -43,8 +52,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.util.*;
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class GameObjectEditor {
 
@@ -173,7 +186,7 @@ public class GameObjectEditor {
                     case 'Ł' -> { // numpad 1
                         getSelectedGameObject().ifPresent(gameObject -> {
                             if (gameObject instanceof IRotatable rotatable) {
-                                if(editor.isShiftDown())
+                                if (editor.isShiftDown())
                                     rotatable.rotate(-22.5f);
                                 else
                                     rotatable.rotate(-1);
@@ -184,7 +197,7 @@ public class GameObjectEditor {
                     case 'Ń' -> { // numpad 3
                         getSelectedGameObject().ifPresent(gameObject -> {
                             if (gameObject instanceof IRotatable rotatable) {
-                                if(editor.isShiftDown())
+                                if (editor.isShiftDown())
                                     rotatable.rotate(+22.5f);
                                 else
                                     rotatable.rotate(+1);
@@ -774,6 +787,7 @@ public class GameObjectEditor {
 
         playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(-1);
         playerActor.setXY(64, 64);
+
         playerActor.setName("lpa");
         playerActor.setLocalAim(true);
         playerActor.setLocalPlayerActor(true);
