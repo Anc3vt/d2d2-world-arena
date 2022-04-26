@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-public interface ISpeedable {
+public interface ISpeedable extends IGameObject {
 
     @Property
     void setSpeed(float speed);

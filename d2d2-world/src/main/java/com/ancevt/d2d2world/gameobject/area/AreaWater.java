@@ -12,6 +12,7 @@ import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IGravitational;
 import com.ancevt.d2d2world.gameobject.ISonicSynchronized;
 import com.ancevt.d2d2world.gameobject.ISpeedable;
+import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,37 +43,37 @@ public class AreaWater extends Area implements IDamaging {
 
     @Override
     public void onCollide(ICollision collideWith) {
+
         if (collideWith instanceof IGravitational g) {
             g.setVelocity(g.getVelocityX() * 0.9f, g.getVelocityY() * 0.9f);
+        }
 
-            if (Math.random() < 0.01) {
-                createBubble().setXY(collideWith.getX(), collideWith.getY() - 16);
-            }
-
-            if (g.getY() < getY()) {
-
+        if (collideWith instanceof Weapon.Bullet || collideWith instanceof Actor) {
+            if (collideWith.getY() < getY()) {
                 float vel = 4f;
 
                 var p = Particle.water(5, Color.WHITE, vel);
                 p.setScale(0.5f, 0.5f);
-                getWorld().add(p, g.getX(), getY() - 16);
+                getWorld().add(p, collideWith.getX(), getY());
                 if (splashSoundTime == 0) {
-                    if(collideWith instanceof ISonicSynchronized sonicSynchronized) {
-                        sonicSynchronized.playSound("splash.ogg");
-                    }
+                    ISonicSynchronized sonicSynchronized = (ISonicSynchronized) collideWith;
+                    sonicSynchronized.playSound("splash.ogg");
                     splashSoundTime = SPLASH_SOUND_TIME;
                 }
-
             }
         }
-        if (collideWith instanceof ISpeedable s) {
+
+        if (collideWith instanceof ISpeedable s && s.getY() > getY()) {
             if (s.getSpeed() > 2.5f) s.setSpeed(2.5f);
         }
-        if (collideWith instanceof Actor a) {
+        if (collideWith instanceof Actor a && a.getY() > getY()) {
 
-            if (a.getY() + a.getCollisionY() > getY()) {
+
+            a.setVelocityX(a.getVelocityX() * 1.085f);
+
+            if (a.getY() + a.getCollisionY() > getY() + 16) {
                 boolean noAirLeft = a.underWater(this);
-                if(noAirLeft) {
+                if (noAirLeft) {
                     createBubble().setXY(collideWith.getX(), collideWith.getY() - 16);
                 }
             } else {
