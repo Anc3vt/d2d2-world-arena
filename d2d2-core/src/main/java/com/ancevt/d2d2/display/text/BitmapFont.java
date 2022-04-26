@@ -20,11 +20,17 @@ package com.ancevt.d2d2.display.text;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.asset.Assets;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+
+import static java.lang.Integer.parseInt;
 
 public class BitmapFont {
 
@@ -78,13 +84,44 @@ public class BitmapFont {
     }
 
     public static void loadDefaultBitmapFont(String assetPath) {
-        BitmapFont.setDefaultBitmapFont(BitmapFont.loadBitmapFont(assetPath));
+        BitmapFont.setDefaultBitmapFont(BitmapFont.loadBitmapFontBmf(assetPath));
     }
 
-    public static BitmapFont loadBitmapFont(String bmfAssetPath) {
+    public static @NotNull BitmapFont loadBitmapFontD2F(String bmfAssetPathNoExt) {
+        BitmapFont fromCache = cache.get(bmfAssetPathNoExt);
+
+        if (fromCache != null) {
+            return fromCache;
+        }
+
+        BitmapCharInfo[] charInfos = new BitmapCharInfo[MAX_CHARS];
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Assets.getAssetAsStream(BITMAP_FONTS_DIR + bmfAssetPathNoExt + ".d2f")));
+        String line;
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                StringTokenizer stringTokenizer = new StringTokenizer(line, " ");
+                char chr = stringTokenizer.nextToken().charAt(0);
+                int x = parseInt(stringTokenizer.nextToken());
+                int y = parseInt(stringTokenizer.nextToken());
+                int w = parseInt(stringTokenizer.nextToken());
+                int h = parseInt(stringTokenizer.nextToken());
+                charInfos[chr] = new BitmapCharInfo(chr, x, y, w, h);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+        BitmapFont result = new BitmapFont(D2D2.getTextureManager().loadTextureAtlas(Assets.getAssetAsStream(BITMAP_FONTS_DIR + bmfAssetPathNoExt + ".png")), charInfos);
+        cache.put(bmfAssetPathNoExt, result);
+        return result;
+
+    }
+
+    public static @NotNull BitmapFont loadBitmapFontBmf(String bmfAssetPath) {
         BitmapFont fromCache = cache.get(bmfAssetPath);
 
-        if(fromCache != null) {
+        if (fromCache != null) {
             return fromCache;
         }
 

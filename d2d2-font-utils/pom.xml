@@ -8,7 +8,7 @@
     <name>D2D2 TTF2BMF Tool</name>
 
     <groupId>com.ancevt.d2d2</groupId>
-    <artifactId>d2d2-ttf2bmf</artifactId>
+    <artifactId>d2d2-font-utils</artifactId>
     <version>1.0.0.4-d2d2-SNAPSHOT</version>
 
     <url>https://github.com/Anc3vt/d2d2</url>
@@ -72,10 +72,30 @@
             <artifactId>args</artifactId>
             <version>2.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>23.0.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
             <resource>
                 <directory>src/main/resources-filtered</directory>
                 <filtering>true</filtering>
@@ -132,7 +152,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>com.ancevt.d2d2.ttf2bmf.Ttf2Bmf</mainClass>
+                                    <mainClass>com.ancevt.d2d2.fontutils.Ttf2Bmf</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

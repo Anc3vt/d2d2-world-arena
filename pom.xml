@@ -58,7 +58,7 @@
         <module>d2d2-world-arena-desktop</module>
         <module>d2d2-world-arena-networking</module>
         <module>d2d2-world-arena-server</module>
-        <module>d2d2-ttf2bmf</module>
+        <module>d2d2-font-utils</module>
         <module>d2d2-sockets</module>
     </modules>
 

@@ -26,7 +26,7 @@ public class Font {
 
     public static BitmapFont getBitmapFont() {
         if (bitmapFont == null) {
-            bitmapFont = BitmapFont.loadBitmapFont(BMF_FILE_NAME);
+            bitmapFont = BitmapFont.loadBitmapFontBmf(BMF_FILE_NAME);
         }
         return bitmapFont;
     }

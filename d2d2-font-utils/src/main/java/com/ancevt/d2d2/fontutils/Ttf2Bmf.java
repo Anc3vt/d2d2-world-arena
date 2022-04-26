@@ -15,8 +15,11 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.ttf2bmf;
+package com.ancevt.d2d2.fontutils;
 
+import com.ancevt.util.args.Args;
+
+import javax.imageio.ImageIO;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -28,10 +31,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-
-import javax.imageio.ImageIO;
-
-import com.ancevt.util.args.Args;
 
 public class Ttf2Bmf {
 

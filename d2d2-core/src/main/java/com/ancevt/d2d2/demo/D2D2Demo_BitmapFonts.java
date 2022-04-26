@@ -30,7 +30,7 @@ public class D2D2Demo_BitmapFonts {
         D2D2.init(new LWJGLStarter(800, 600, D2D2Demo_BitmapFonts.class.getName()));
         Root root = D2D2.getStage().getRoot();
 
-        BitmapFont font2 = BitmapFont.loadBitmapFont("PressStart2P.bmf");
+        BitmapFont font2 = BitmapFont.loadBitmapFontBmf("PressStart2P.bmf");
         BitmapText bitmapText2 = new BitmapText(font2);
         bitmapText2.setText("PRESSSTART.bmf`` алалала");
 

@@ -303,7 +303,7 @@ public class LWJGLStarter implements D2D2Starter {
 
         glfwSwapInterval(1);
 
-        BitmapFont.setDefaultBitmapFont(BitmapFont.loadBitmapFont(DEFAULT_BITMAP_FONT));
+        BitmapFont.setDefaultBitmapFont(BitmapFont.loadBitmapFontBmf(DEFAULT_BITMAP_FONT));
 
         // TODO: remove loading demo texture data info from here
         D2D2.getTextureManager().loadTextureDataInfo(DEMO_TEXTURE_DATA_INF_FILE);
