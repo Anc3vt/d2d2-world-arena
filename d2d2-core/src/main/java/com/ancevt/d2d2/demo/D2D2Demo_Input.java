@@ -91,6 +91,11 @@ public class D2D2Demo_Input {
         }
     }
 
+    private static float nextHalf(float v) {
+        return (float) (Math.ceil(v * 16) / 16);
+    }
+
+
     private static void keyDown(Event event) {
         InputEvent e = (InputEvent) event;
 

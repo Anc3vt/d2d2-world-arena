@@ -112,9 +112,9 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
                 case InputEvent.KEY_DOWN -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), true);
                 case InputEvent.KEY_UP -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), false);
                 case InputEvent.MOUSE_DOWN -> {
-                    if (!isMouseAtPanels(x, y) || world.isPlaying()) editor.mouseButton(x, y, worldX, worldY, true);
+                    if (!isMouseAtPanels(x, y) || world.isPlaying()) editor.mouseButton(x, y, worldX, worldY, true, inputEvent.getMouseButton());
                 }
-                case InputEvent.MOUSE_UP -> editor.mouseButton(x, y, worldX, worldY, false);
+                case InputEvent.MOUSE_UP -> editor.mouseButton(x, y, worldX, worldY, false, inputEvent.getMouseButton());
                 case InputEvent.MOUSE_MOVE -> {
                     if (!isMouseAtPanels(x, y) || world.isPlaying())
                         editor.mouseMove(x, y, worldX, worldY, inputEvent.isDrag());

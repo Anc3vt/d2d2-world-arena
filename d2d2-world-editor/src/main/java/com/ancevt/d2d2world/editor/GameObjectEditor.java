@@ -24,6 +24,7 @@ import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
+import com.ancevt.d2d2.input.MouseButton;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.editor.objects.GameObjectLayersMap;
 import com.ancevt.d2d2world.editor.objects.SelectArea;
@@ -60,6 +61,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
+
 public class GameObjectEditor {
 
     private static final int GRID_SIZE = 16;
@@ -85,6 +88,8 @@ public class GameObjectEditor {
     private MapkitItem lastPlacingMapkitItem;
     private PlayerActor playerActor;
     private boolean collisionVisible;
+    private boolean brushMode;
+    private int mouseButton;
 
     public GameObjectEditor(Editor editor) {
         this.editor = editor;
@@ -113,7 +118,10 @@ public class GameObjectEditor {
                 case KeyCode.RIGHT -> moveSelected(speed, 0);
                 case KeyCode.UP -> moveSelected(0, -speed);
                 case KeyCode.DOWN -> moveSelected(0, speed);
-                case KeyCode.ESCAPE -> setPlacingMapkitItem(null);
+                case KeyCode.ESCAPE -> {
+                    setPlacingMapkitItem(null);
+                    setBrushMode(false);
+                }
                 case KeyCode.E -> setPlayerXYToCursor();
                 case KeyCode.F9 -> playerActor.addWeapon(AutomaticWeapon.class, 100);
             }
@@ -140,6 +148,7 @@ public class GameObjectEditor {
 
                     case 'Z' -> undo();
                     case 'Y' -> redo();
+                    case 'B' -> setBrushMode(!isBrushMode());
                 }
             } else {
 
@@ -221,32 +230,14 @@ public class GameObjectEditor {
         putState();
     }
 
-    private void resetResettableGameObjects() {
-        getWorld()
-                .getMap()
-                .getAllGameObjectsFromAllRooms()
-                .forEach(
-                        gameObject -> {
-                            if (gameObject instanceof IResettable resettable) {
-                                resettable.reset();
-                            }
-                        });
+    public void mouseButton(float x, float y, float worldX, float worldY, boolean down, int mouseButton) {
+        this.mouseButton = mouseButton;
 
-    }
+        if (brushMode) {
+            mouseMove(x, y, worldX, worldY, down);
+            return;
+        }
 
-    private void putState() {
-
-    }
-
-    private void undo() {
-
-    }
-
-    private void redo() {
-
-    }
-
-    public void mouseButton(float x, float y, float worldX, float worldY, boolean down) {
         if (!down) {
             selectArea.removeFromParent();
 
@@ -268,7 +259,7 @@ public class GameObjectEditor {
 
         if (getPlacingMapkitItem() != null) {
             createNewGameObject();
-            setPlacingMapkitItem(null);
+            if (!brushMode) setPlacingMapkitItem(null);
         }
 
         selecting = true;
@@ -304,6 +295,32 @@ public class GameObjectEditor {
     }
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
+        if (brushMode && drag) {
+
+            long oldTime = System.currentTimeMillis();
+
+            int brushX = (int) worldX;
+            int brushY = (int) worldY;
+
+            int needAddX = -brushX & 0xf;
+            int needAddY = -brushY & 0xf;
+
+            brushX = brushX - 16 + needAddX;
+            brushY = brushY - 16 + needAddY;
+
+            IGameObject gameObject = getGameObjectUnderPoint(editor.getCurrentLayerIndex(), brushX, brushY);
+            if (gameObject != null) delete(gameObject);
+
+            if (mouseButton == MouseButton.LEFT && placingMapkitItem != null) {
+                createNewGameObject().setXY(brushX, brushY);
+                unselect();
+            }
+
+            System.out.println(System.currentTimeMillis() - oldTime);
+
+            return;
+        }
+
         if (!moving && drag && selecting) {
             selectRectangle.setX2(worldX);
             selectRectangle.setY2(worldY);
@@ -312,7 +329,7 @@ public class GameObjectEditor {
             selectGameObjectsInSelectedArea();
         }
 
-        cursor.setXY(worldX, worldY);
+        cursor.setXY(worldX - GRID_SIZE / 2, worldY - GRID_SIZE / 2);
         if (isSnapToGrid()) {
             snapToGrid(cursor);
         }
@@ -344,6 +361,40 @@ public class GameObjectEditor {
 
         oldMouseX = x;
         oldMouseY = y;
+    }
+
+    private void setBrushMode(boolean brushMode) {
+        this.brushMode = brushMode;
+        setInfoText("Brush mode: " + brushMode);
+    }
+
+    private boolean isBrushMode() {
+        return this.brushMode;
+    }
+
+    private void resetResettableGameObjects() {
+        getWorld()
+                .getMap()
+                .getAllGameObjectsFromAllRooms()
+                .forEach(
+                        gameObject -> {
+                            if (gameObject instanceof IResettable resettable) {
+                                resettable.reset();
+                            }
+                        });
+
+    }
+
+    private void putState() {
+
+    }
+
+    private void undo() {
+
+    }
+
+    private void redo() {
+
     }
 
     private boolean isCollisionsVisible() {
@@ -437,12 +488,16 @@ public class GameObjectEditor {
         setInfoText(s.toString());
     }
 
-    private void createNewGameObject() {
+    private IGameObject createNewGameObject() {
         int newGameObjectId = IdGenerator.getInstance().getNewId();
+
+        debug("GameObjectEditor:488: <A>" + newGameObjectId);
+
         IGameObject gameObject = getPlacingMapkitItem().createGameObject(newGameObjectId);
         gameObject.setXY(cursor.getX(), cursor.getY());
         gameObject.setName("_" + newGameObjectId);
         getWorld().addGameObject(gameObject, editor.getCurrentLayerIndex(), true);
+        return gameObject;
     }
 
     public void setPlacingMapkitItem(MapkitItem placingMapkitItem) {
@@ -499,9 +554,7 @@ public class GameObjectEditor {
 
                     clearSelections();
 
-                    for (IGameObject o : selectedGameObjects)
-                        getWorld().removeGameObject(o, true);
-
+                    for (IGameObject o : selectedGameObjects) delete(o);
                     selectedGameObjects.clear();
 
                     updateSelecting();
@@ -513,8 +566,11 @@ public class GameObjectEditor {
                     }
 
                 });
+    }
 
-
+    public void delete(IGameObject gameObject) {
+        getWorld().removeGameObject(gameObject, true);
+        IdGenerator.getInstance().removeId(gameObject.getGameObjectId());
     }
 
 

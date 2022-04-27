@@ -120,12 +120,12 @@ public class Editor {
         }
     }
 
-    public void mouseButton(float x, float y, float worldX, float worldY, boolean down) {
+    public void mouseButton(float x, float y, float worldX, float worldY, boolean down, int mouseButton) {
         gameObjectEditor.getPlayerActor().getController().setB(down);
         if (!isEnabled()) return;
 
         if (!spaceDown) {
-            gameObjectEditor.mouseButton(x, y, worldX, worldY, down);
+            gameObjectEditor.mouseButton(x, y, worldX, worldY, down, mouseButton);
         }
     }
 
