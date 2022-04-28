@@ -33,24 +33,14 @@
 
     <distributionManagement>
         <repository>
-            <id>ancevt</id>
-            <url>https://packages.ancevt.com/snapshots</url>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
         </repository>
-        <snapshotRepository>
-            <id>ancevt-snapshots</id>
-            <url>https://packages.ancevt.com/snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
-        <repository>
-            <id>ancevt</id>
-            <url>https://packages.ancevt.com/releases</url>
-        </repository>
-        <repository>
-            <id>ancevt-snapshots</id>
-            <url>https://packages.ancevt.com/snapshots</url>
-        </repository>
+
     </repositories>
 
     <properties>
