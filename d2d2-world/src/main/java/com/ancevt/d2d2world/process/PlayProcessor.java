@@ -147,9 +147,9 @@ public class PlayProcessor {
             }
 
             if (o1 instanceof Actor actor) {
-                //if (isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
-                //    actor.setHealthBy(0, null, false);
-                //}
+                if (isServer() && actor.getY() > world.getRoom().getHeight() * 2 && actor.isAlive()) {
+                    actor.setHealthBy(0, null, false);
+                }
             }
         }
 

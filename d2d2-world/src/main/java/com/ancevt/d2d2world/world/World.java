@@ -23,7 +23,15 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.starter.norender.NoRenderStarter;
-import com.ancevt.d2d2world.gameobject.*;
+import com.ancevt.d2d2world.gameobject.Actor;
+import com.ancevt.d2d2world.gameobject.ActorEvent;
+import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.IResettable;
+import com.ancevt.d2d2world.gameobject.ISynchronized;
+import com.ancevt.d2d2world.gameobject.IdGenerator;
+import com.ancevt.d2d2world.gameobject.Parallax;
+import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.Scenery;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.GameMap;
@@ -35,9 +43,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
@@ -52,6 +63,7 @@ public class World extends DisplayObjectContainer {
 
     private PackedScenery packedSceneryBack;
     private PackedScenery packedSceneryFore;
+    private Set<IGameObject> sceneriesBuffer;
     private boolean sceneryPacked;
     private boolean areasVisible;
     private BorderedRect roomRect;
@@ -66,8 +78,8 @@ public class World extends DisplayObjectContainer {
         this.syncDataAggregator = syncManager;
 
         gameObjectMap = new HashMap<>();
-
         gameObjects = new CopyOnWriteArrayList<>();
+        sceneriesBuffer = new HashSet<>();
         layers = new Layer[Layer.LAYER_COUNT];
         for (int i = 0; i < layers.length; i++) {
             layers[i] = new Layer(i);
@@ -251,6 +263,11 @@ public class World extends DisplayObjectContainer {
             packedSceneryBack = SceneryPacker.pack(currentRoom, 0, 4);
             getLayer(TARGET_LAYER_INDEX_BG).add(packedSceneryBack);
 
+            sceneriesBuffer = gameObjects.stream()
+                    .filter(gameObject -> gameObject instanceof Scenery scenery && scenery.isStatic())
+                    .collect(Collectors.toSet());
+            gameObjects.removeAll(sceneriesBuffer);
+
             packedSceneryFore = SceneryPacker.pack(currentRoom, 7, 8);
             getLayer(TARGET_LAYER_INDEX_FG).add(packedSceneryFore);
 
@@ -258,6 +275,10 @@ public class World extends DisplayObjectContainer {
         } else {
             removePackedScenery(packedSceneryBack);
             removePackedScenery(packedSceneryFore);
+
+            gameObjects.addAll(sceneriesBuffer);
+            sceneriesBuffer.clear();
+
             addSceneries();
         }
     }
