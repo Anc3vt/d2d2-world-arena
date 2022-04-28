@@ -197,7 +197,7 @@ public class JPropertiesEditor extends JFrame {
 
             map.getAllGameObjectsFromAllRooms().forEach(current -> {
                 if (Objects.equals(current.getName(), dataEntry.getString(DataKey.NAME)) && gameObject != current) {
-                    JOptionPane.showMessageDialog(null, "Error: duplicate game object name " + current.getName());
+                    //JOptionPane.showMessageDialog(null, "Error: duplicate game object name " + current.getName());
                     throw new IllegalStateException("duplicate game object name " + current.getName());
                 }
             });

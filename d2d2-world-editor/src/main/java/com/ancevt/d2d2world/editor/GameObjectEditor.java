@@ -59,9 +59,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
-
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 
 public class GameObjectEditor {
 
@@ -296,9 +295,6 @@ public class GameObjectEditor {
 
     public void mouseMove(float x, float y, float worldX, float worldY, boolean drag) {
         if (brushMode && drag) {
-
-            long oldTime = System.currentTimeMillis();
-
             int brushX = (int) worldX;
             int brushY = (int) worldY;
 
@@ -315,9 +311,6 @@ public class GameObjectEditor {
                 createNewGameObject().setXY(brushX, brushY);
                 unselect();
             }
-
-            System.out.println(System.currentTimeMillis() - oldTime);
-
             return;
         }
 
@@ -488,14 +481,11 @@ public class GameObjectEditor {
         setInfoText(s.toString());
     }
 
-    private IGameObject createNewGameObject() {
+    private @NotNull IGameObject createNewGameObject() {
         int newGameObjectId = IdGenerator.getInstance().getNewId();
-
-        debug("GameObjectEditor:488: <A>" + newGameObjectId);
-
         IGameObject gameObject = getPlacingMapkitItem().createGameObject(newGameObjectId);
         gameObject.setXY(cursor.getX(), cursor.getY());
-        gameObject.setName("_" + newGameObjectId);
+        gameObject.setName("_" + newGameObjectId + "_" + new Random().nextInt());
         getWorld().addGameObject(gameObject, editor.getCurrentLayerIndex(), true);
         return gameObject;
     }

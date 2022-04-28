@@ -132,7 +132,7 @@
 
     <profiles>
         <profile>
-            <id>assembly</id>
+            <id>editor</id>
             <build>
                 <plugins>
                     <plugin>

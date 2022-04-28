@@ -48,8 +48,8 @@ public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         //Hack to avoid BadAccess bug with JPropertiesEditor under i3wm
         // <hack>
-        var hack = JPropertiesEditor.create("(floating))", "null", null);
-        Async.runLater(100, TimeUnit.MILLISECONDS, hack::dispose);
+        var hack = JPropertiesEditor.create("(floating)", "null", null);
+        Async.runLater(1000, TimeUnit.MILLISECONDS, hack::dispose);
         // </hack>
 
         PropertyWrapper.argsToProperties(args, System.getProperties());

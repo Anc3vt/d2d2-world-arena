@@ -147,9 +147,9 @@ public class PlayProcessor {
             }
 
             if (o1 instanceof Actor actor) {
-                if (isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
-                    actor.setHealthBy(0, null, false);
-                }
+                //if (isServer() && actor.getY() > world.getRoom().getHeight() && actor.isAlive()) {
+                //    actor.setHealthBy(0, null, false);
+                //}
             }
         }
 
@@ -233,7 +233,7 @@ public class PlayProcessor {
 
         if (!(o2 instanceof Weapon.Bullet)) {
             if (checkWalls && cx1 < x2 && y1 + h1 > y2 + 8) {
-                o1.setX(x2 - w1 - tx1 - 2);
+                o1.setX(x2 - w1 - tx1 - 1);
                 getPushState(o1).pushFromRight().tightFromRight = o2;
                 wallHitTest = true;
             }

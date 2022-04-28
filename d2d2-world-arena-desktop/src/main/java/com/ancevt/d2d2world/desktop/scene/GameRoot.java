@@ -132,8 +132,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         });
 
 
-
-
         worldScene = new WorldScene();
         add(worldScene);
 
@@ -254,7 +252,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         Chat.getInstance().addMessage(status.getErrorMessage(), Color.RED);
         new Lock().lock(5, SECONDS);
 
-        if(connected){
+        if (connected) {
             attempts = 0;
             return;
         }
@@ -362,8 +360,12 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      */
     @Override
     public void fileReceiverProgress(@NotNull FileReceiver fileReceiver) {
-        int proc = (fileReceiver.bytesLoaded() / fileReceiver.bytesTotal()) * 100;
-        Chat.getInstance().addMessage(format("%d%% content load %s", proc, fileReceiver.getPath()), Color.DARK_GRAY);
+        Chat.getInstance().addMessage(
+                format("%d/%d content load %s",
+                        fileReceiver.bytesLoaded(),
+                        fileReceiver.bytesTotal(),
+                        fileReceiver.getPath()),
+                Color.DARK_GRAY);
     }
 
     /**
