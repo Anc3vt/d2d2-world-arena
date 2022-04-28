@@ -1,5 +1,10 @@
 mapkit | name = ance
 
+
+id = _ance-roadsign | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=224,32,32,32
+
+id = _ance_tsp | class = com.ancevt.d2d2world.gameobject.ThreeSpritesPlatform | atlas=ance-tileset.png | idle=320,96,48,16 | spriteLeft = 320,96,16,16 | spriteCenter = 336,96,16,16 | spriteRight = 352,96,16,16
+
 id = _ance-ground-0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=224,0,32,32
 id = _ance-sewers-5 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=416,0,16,16
 id = _ance-sewers-4 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=432,0,16,16

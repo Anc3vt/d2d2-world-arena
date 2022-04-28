@@ -18,7 +18,6 @@
 package com.ancevt.d2d2world.editor;
 
 import com.ancevt.commons.concurrent.Async;
-import com.ancevt.commons.debug.Trace;
 import com.ancevt.commons.properties.PropertyWrapper;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
@@ -52,8 +51,6 @@ public class D2D2WorldEditorMain {
         var hack = JPropertiesEditor.create("(floating)", "null", null);
         Async.runLater(1000, TimeUnit.MILLISECONDS, hack::dispose);
         // </hack>
-
-        new Trace().test();
 
         PropertyWrapper.argsToProperties(args, System.getProperties());
 

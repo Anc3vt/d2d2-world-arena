@@ -18,7 +18,7 @@ public class RaveWeapon extends Weapon {
 
     public RaveWeapon() {
         super(createSprite());
-        setMaxAmmunition(100);
+        setMaxAmmunition(50);
     }
 
     @Contract(" -> new")
@@ -38,7 +38,7 @@ public class RaveWeapon extends Weapon {
 
     @Override
     public int getAttackTime() {
-        return 8;
+        return 14;
     }
 
     @Override

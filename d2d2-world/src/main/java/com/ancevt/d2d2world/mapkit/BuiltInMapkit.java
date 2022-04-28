@@ -188,7 +188,7 @@ public class BuiltInMapkit extends Mapkit {
                         id = bullet_of_""" + StandardWeapon.class.getSimpleName() + """
                         | class =""" + StandardWeapon.StandardBullet.class.getName() + """
                         | damagingPower = 15
-                        | speed = 5
+                        | speed = 10
                         | collisionX = -2 | collisionY = -2 | collisionWidth = 4 | collisionHeight = 4
                         | atlas = $ATLAS$
                         | idle = 32,0,16,16 h 2

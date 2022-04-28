@@ -26,7 +26,7 @@ public class ArrowWeapon extends Weapon {
 
     public ArrowWeapon() {
         super(createSprite());
-        setMaxAmmunition(15);
+        setMaxAmmunition(20);
     }
 
     @Contract(" -> new")

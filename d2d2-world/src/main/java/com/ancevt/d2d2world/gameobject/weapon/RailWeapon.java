@@ -19,7 +19,7 @@ public class RailWeapon extends Weapon {
 
     public RailWeapon() {
         super(createSprite());
-        setMaxAmmunition(15);
+        setMaxAmmunition(25);
     }
 
     @Contract(" -> new")
