@@ -5,26 +5,26 @@
   <version>1.0.0.4-d2d2-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20220428.134136</timestamp>
+      <timestamp>20220428.144422</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20220428134136</lastUpdated>
+    <lastUpdated>20220428144422</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>1.0.0.4-d2d2-20220428.134136-1</value>
-        <updated>20220428134136</updated>
+        <value>1.0.0.4-d2d2-20220428.144422-1</value>
+        <updated>20220428144422</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>1.0.0.4-d2d2-20220428.134136-1</value>
-        <updated>20220428134136</updated>
+        <value>1.0.0.4-d2d2-20220428.144422-1</value>
+        <updated>20220428144422</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>1.0.0.4-d2d2-20220428.134136-1</value>
-        <updated>20220428134136</updated>
+        <value>1.0.0.4-d2d2-20220428.144422-1</value>
+        <updated>20220428144422</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
