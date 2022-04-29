@@ -38,6 +38,7 @@ import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
+import com.ancevt.d2d2world.desktop.ui.playerarrowview.PlayerArrowView;
 import com.ancevt.d2d2world.fx.SpawnEffect;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.DefaultMaps;
@@ -104,6 +105,8 @@ public class WorldScene extends DisplayObjectContainer {
 
     private final Set<ChatBubble> chatBubbles;
 
+    private final PlayerArrowView playerArrowView;
+
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
         MapIO.setMapkitsDirectory("data/mapkits/");
@@ -114,6 +117,7 @@ public class WorldScene extends DisplayObjectContainer {
         chatBubbles = new HashSet<>();
 
         world = new World();
+
 
         world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
         world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
@@ -127,6 +131,8 @@ public class WorldScene extends DisplayObjectContainer {
         world.setVisible(false);
         world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
         add(world);
+
+        playerArrowView = new PlayerArrowView(world);
 
         shadowRadial = new ShadowRadial() {
             @Override
@@ -252,11 +258,57 @@ public class WorldScene extends DisplayObjectContainer {
                     return true;
                 }
         ));
-        
+
         ammunitionHud = new AmmunitionHud();
     }
 
+    private void this_addToStage(Event event) {
+        removeEventListener(getClass());
+        final float w = getStage().getStageWidth();
+        final float h = getStage().getStageHeight();
+        overlay = new Overlay(w, h);
+        setXY(w / 2, h / 2);
+        add(overlay, -w / 2, -h / 2);
+        world.getCamera().setViewportSize(w, h);
+        world.getCamera().setBoundsLock(true);
+
+        ammunitionHud.setScale(3, 3);
+        getParent().add(ammunitionHud, getStage().getStageWidth() - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
+        playerArrowView.setViewport(
+                D2D2.getStage().getStageWidth() / getAbsoluteScaleX(),
+                D2D2.getStage().getStageHeight() / getAbsoluteScaleY()
+        );
+        add(playerArrowView, -getX() / 2, -getY() / 2);
+    }
+
+    private void world_addGameObject(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (e.getGameObject() instanceof PlayerActor playerActor) {
+            PLAYER_MANAGER.getPlayerByPlayerActorGameObjectId(playerActor.getGameObjectId()).ifPresent(player -> {
+                if (player.isChatOpened()) showChatBubble(playerActor);
+            });
+
+            if(!playerActor.isLocalPlayerActor()) {
+                playerArrowView.createPlayerArrow(playerActor, playerActor.getPlayerColor());
+            }
+
+            playerActorUiText(playerActor, playerActor.getPlayerId(), playerActor.getPlayerName());
+
+            if (localPlayerActor != null) {
+                if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
+                    PLAYER_MANAGER.getPlayerById(CLIENT.getLocalPlayerId());
+                    setLocalPlayerActor(playerActor);
+                }
+            }
+        }
+    }
+
     private void world_removeGameObject(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (e.getGameObject() instanceof PlayerActor playerActor) {
+            hideChatBubble(playerActor);
+            playerArrowView.removePlayerArrow(playerActor);
+        }
     }
 
     private void world_roomSwitchComplete(Event<World> event) {
@@ -285,20 +337,6 @@ public class WorldScene extends DisplayObjectContainer {
             }
 
         }
-    }
-
-    private void this_addToStage(Event event) {
-        removeEventListener(getClass());
-        final float w = getStage().getStageWidth();
-        final float h = getStage().getStageHeight();
-        overlay = new Overlay(w, h);
-        setXY(w / 2, h / 2);
-        add(overlay, -w / 2, -h / 2);
-        world.getCamera().setViewportSize(w, h);
-        world.getCamera().setBoundsLock(true);
-
-        ammunitionHud.setScale(3, 3);
-        getParent().add(ammunitionHud, getStage().getStageWidth() - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
     }
 
     public void init() {
@@ -511,26 +549,8 @@ public class WorldScene extends DisplayObjectContainer {
      * Calls from {@link GameRoot}
      */
     public void destroyableBoxDestroy(int destroyableGameObjectId) {
-        if(world.getGameObjectById(destroyableGameObjectId) instanceof DestroyableBox destroyableBox) {
+        if (world.getGameObjectById(destroyableGameObjectId) instanceof DestroyableBox destroyableBox) {
             destroyableBox.doDestroyEffect();
-        }
-    }
-
-    private void world_addGameObject(Event<World> event) {
-        var e = (WorldEvent) event;
-        if (e.getGameObject() instanceof PlayerActor playerActor) {
-            PLAYER_MANAGER.getPlayerByPlayerActorGameObjectId(playerActor.getGameObjectId()).ifPresent(player -> {
-                if (player.isChatOpened()) showChatBubble(playerActor);
-            });
-
-            playerActorUiText(playerActor, playerActor.getPlayerId(), playerActor.getPlayerName());
-
-            if (localPlayerActor != null) {
-                if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
-                    PLAYER_MANAGER.getPlayerById(CLIENT.getLocalPlayerId());
-                    setLocalPlayerActor(playerActor);
-                }
-            }
         }
     }
 

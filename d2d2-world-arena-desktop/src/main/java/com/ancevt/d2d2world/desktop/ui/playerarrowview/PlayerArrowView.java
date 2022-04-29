@@ -1,10 +1,8 @@
 package com.ancevt.d2d2world.desktop.ui.playerarrowview;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.debug.DebugGrid;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.IDisplayObjectContainer;
@@ -16,8 +14,8 @@ import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerArrowView extends DisplayObjectContainer {
 
@@ -25,15 +23,15 @@ public class PlayerArrowView extends DisplayObjectContainer {
     private float viewportWidth;
     private float viewportHeight;
 
-    private final BorderedRect debugBorderedRect;
-    private final Set<PlayerArrow> playerArrows;
+    //private final BorderedRect debugBorderedRect;
+    private final Map<IDisplayObject, PlayerArrow> playerArrowMap;
 
     public PlayerArrowView(IDisplayObject world) {
         this.world = world;
-        debugBorderedRect = new BorderedRect(null, Color.YELLOW);
-        add(debugBorderedRect);
+        //debugBorderedRect = new BorderedRect(null, Color.YELLOW);
+        //add(debugBorderedRect);
 
-        playerArrows = new HashSet<>();
+        playerArrowMap = new HashMap<>();
     }
 
     public IDisplayObject getWorld() {
@@ -45,12 +43,19 @@ public class PlayerArrowView extends DisplayObjectContainer {
         playerArrow.setColor(color);
         playerArrow.setTarget(target);
         add(playerArrow);
-        playerArrows.add(playerArrow);
+        playerArrowMap.put(target, playerArrow);
+    }
+
+    public void removePlayerArrow(IDisplayObject target) {
+        IDisplayObject playerArrow = playerArrowMap.remove(target);
+        if(playerArrow != null) {
+            playerArrow.removeFromParent();
+        }
     }
 
     public void clear() {
-        playerArrows.forEach(DisplayObject::removeFromParent);
-        playerArrows.clear();
+        playerArrowMap.keySet().forEach(IDisplayObject::removeFromParent);
+        playerArrowMap.clear();
     }
 
     public float getViewportWidth() {
@@ -64,7 +69,7 @@ public class PlayerArrowView extends DisplayObjectContainer {
     public void setViewport(float width, float height) {
         this.viewportWidth = width;
         this.viewportHeight = height;
-        debugBorderedRect.setSize(width, height);
+        //debugBorderedRect.setSize(width, height);
     }
 
     public static void main(String[] args) {
@@ -104,7 +109,7 @@ public class PlayerArrowView extends DisplayObjectContainer {
             var e = (InputEvent) event;
             sprite.setXY(
                     (e.getX() - world.getX()) / world.getAbsoluteScaleX(),
-                    (e.getY() - world.getY())  / world.getAbsoluteScaleY()
+                    (e.getY() - world.getY()) / world.getAbsoluteScaleY()
             );
         });
 
