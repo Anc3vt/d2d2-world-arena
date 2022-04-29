@@ -10,6 +10,7 @@ import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.sync.SyncDataType;
 import org.jetbrains.annotations.NotNull;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 
 public class SyncDataAggregator implements ISyncDataAggregator {
@@ -25,6 +26,10 @@ public class SyncDataAggregator implements ISyncDataAggregator {
         if (!(gameObject instanceof ISynchronized)) return;
 
         MapkitItem mapkitItem = gameObject.getMapkitItem();
+
+        if(gameObject.getWorld() == null) {
+            debug("SyncDataAggregator:30: <A>" + gameObject);
+        }
 
         buffer.writeByte(SyncDataType.NEW)
                 .writeInt(gameObject.getGameObjectId())

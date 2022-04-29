@@ -180,7 +180,7 @@ public class PlayProcessor {
         o1.onCollide(o2);
         o2.onCollide(o1);
 
-        if (o2 instanceof Weapon.Bullet bullet && o1 instanceof ITight && o1 != bullet.getDamagingOwnerActor()) {
+        if (o2 instanceof Weapon.Bullet bullet && o1 instanceof ITight tight && !tight.isFloorOnly() && o1 != bullet.getDamagingOwnerActor()) {
             bullet.destroy();
             if (o1 instanceof Weapon.Bullet bullet2) {
                 bullet2.destroy();
@@ -209,6 +209,9 @@ public class PlayProcessor {
         if (o2 instanceof Weapon.Bullet bullet) {
             if (bullet.getOwnerGameObjectId() == o1.getGameObjectId()) return;
         }
+
+        if (o1 instanceof PlayerActor && o2 instanceof PlayerActor) return;
+
 
         float tx1 = o1.getCollisionX();
         float ty1 = o1.getCollisionY();
