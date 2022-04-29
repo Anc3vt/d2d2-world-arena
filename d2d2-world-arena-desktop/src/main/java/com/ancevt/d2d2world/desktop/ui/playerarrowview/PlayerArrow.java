@@ -55,6 +55,14 @@ public class PlayerArrow extends DisplayObjectContainer {
                 setY(playerArrowView.getViewportHeight());
             }
 
+            sprite.setVisible(
+                    target.getX() - playerArrowView.getX() + playerArrowView.getWorld().getX() < 0 ||
+                    target.getX() - playerArrowView.getX() + playerArrowView.getWorld().getX() > playerArrowView.getViewportWidth() ||
+                    target.getY() - playerArrowView.getY() + playerArrowView.getWorld().getY() < 0 ||
+                    target.getY() - playerArrowView.getY() + playerArrowView.getWorld().getY() > playerArrowView.getViewportHeight()
+            );
+
+
             float absoluteX = getAbsoluteX();
             float absoluteY = getAbsoluteY();
             float targetAbsoluteX = target.getAbsoluteX();
