@@ -30,9 +30,12 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.panels.Button;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
-import com.ancevt.d2d2world.desktop.ui.*;
+import com.ancevt.d2d2world.desktop.ui.Font;
+import com.ancevt.d2d2world.desktop.ui.UiText;
+import com.ancevt.d2d2world.desktop.ui.UiTextInput;
+import com.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
+import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.dialog.DialogWarning;
 import com.ancevt.d2d2world.net.client.ServerInfoRetriever;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
@@ -42,7 +45,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.d2d2world.desktop.DesktopConfig.*;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.AUTO_ENTER;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.DISPLAY_MONITOR;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.FULLSCREEN;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.PLAYERNAME;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.SERVER;
 import static java.lang.Integer.parseInt;
 
 @Slf4j
@@ -170,6 +178,13 @@ public class IntroRoot extends Root {
             }
         });
 
+        MODULE_CONFIG.ifKeyPresent(DISPLAY_MONITOR, value -> {
+            if (!value.equals("primary")) {
+                int monitor = parseInt(value);
+                D2D2.getStarter().setMonitor(monitor);
+            }
+        });
+
         if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
             D2D2.setFullscreen(true);
         }
@@ -246,12 +261,5 @@ public class IntroRoot extends Root {
             add(new PlainRect(factor * 240, factor * 160f / 2f, Color.of(0x1040FF)), 0, 0);
             add(new PlainRect(factor * 240, factor * 160f / 2f, Color.YELLOW), 0, factor * 160f / 2f);
         }
-
-        public static void main(String[] args) {
-            Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
-            root.add(new UAFlag());
-            D2D2.loop();
-        }
     }
-
 }

@@ -30,22 +30,7 @@ public class D2D2Demo_BitmapText_toSprite {
         Root root = new Root();
 
         BitmapText bitmapText = new BitmapText();
-        bitmapText.setText("""
-                    How do I properly load a BufferedImage in java? - Stack ...
-                    https://stackoverflow.com › ho...
-                    Перевести эту страницу
-                    2 сент. 2015 г. — getResource("test.png"); BufferedImage img = (BufferedImage) Toolkit.getDefaultToolkit().getImage(url);. This gives ...
-                    2 ответа
-                      ·  Лучший ответ: Use ImageIO.read() instead: BufferedImage img = ImageIO.read(url);
-                    How to save a BufferedImage as a File - Stack Overflow
-                    30 дек. 2017 г.
-                    BufferedImage with Transparent PNG - Stack Overflow
-                    8 авг. 2017 г.
-                    Loading a BufferedImage from a png and preserving ...
-                    31 янв. 2018 г.
-                    JAVA: How to create "png" image from BufferedImage. Image ...
-                    7 сент. 2015 г.
-                """);
+        bitmapText.setText("JAVA: How to create png image from BufferedImage. Image ...");
 
         Sprite sprite = bitmapText.toSprite();
 

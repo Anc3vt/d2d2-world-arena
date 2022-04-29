@@ -18,27 +18,67 @@
 package com.ancevt.d2d2.starter.lwjgl;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.starter.D2D2Starter;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
+import com.ancevt.d2d2.starter.D2D2Starter;
 import com.ancevt.d2d2.touch.TouchProcessor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
+import static org.lwjgl.glfw.GLFW.GLFW_DONT_CARE;
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_ALT;
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_CONTROL;
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
+import static org.lwjgl.glfw.GLFW.glfwHideWindow;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetCharCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 @Slf4j
@@ -70,6 +110,7 @@ public class LWJGLStarter implements D2D2Starter {
     private int windowHeight;
     private int videoModeWidth;
     private int videoModeHeight;
+    private long monitor;
 
     public LWJGLStarter(int width, int height, String title) {
         this.width = width;
@@ -278,6 +319,8 @@ public class LWJGLStarter implements D2D2Starter {
             }
         });
 
+        monitor = glfwGetPrimaryMonitor();
+
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         assert videoMode != null;
 
@@ -344,7 +387,6 @@ public class LWJGLStarter implements D2D2Starter {
     @SneakyThrows
     @Override
     public void setFullscreen(boolean value) {
-
         if (!fullscreen) {
             int[] x = new int[1];
             int[] y = new int[1];
@@ -358,15 +400,10 @@ public class LWJGLStarter implements D2D2Starter {
             windowHeight = h[0];
         }
 
-        if (value) {
-            glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-            glfwSetWindowPos(windowId, 0, 0);
-            glfwSetWindowSize(windowId, videoModeWidth, videoModeHeight);
-        } else {
-            glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-            glfwSetWindowPos(windowId, windowX, windowY);
-            glfwSetWindowSize(windowId, windowWidth, windowHeight);
-        }
+        if (value)
+            glfwSetWindowMonitor(windowId, monitor, 0, 0, videoModeWidth, videoModeHeight, GLFW_DONT_CARE);
+        else
+            glfwSetWindowMonitor(windowId, NULL, windowX, windowY, windowWidth, windowHeight, GLFW_DONT_CARE);
 
         this.fullscreen = value;
     }
@@ -374,6 +411,16 @@ public class LWJGLStarter implements D2D2Starter {
     @Override
     public boolean isFullscreen() {
         return fullscreen;
+    }
+
+    public void setMonitor(int monitor) {
+        this.monitor = monitor;
+        if(isFullscreen()) setFullscreen(true);
+    }
+
+    @Override
+    public int getMonitor() {
+        return (int) monitor;
     }
 
     private int getTransformedX(int x) {
@@ -398,7 +445,7 @@ public class LWJGLStarter implements D2D2Starter {
 
             try {
                 renderer.renderFrame();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
 

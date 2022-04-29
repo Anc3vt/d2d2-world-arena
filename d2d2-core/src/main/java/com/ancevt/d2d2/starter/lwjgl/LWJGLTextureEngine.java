@@ -148,12 +148,12 @@ public class LWJGLTextureEngine implements ITextureEngine {
         int height = image.getHeight();
 
         if (texturePreprocessingEnabled) {
-            var f = new GaussianFilter(1.5f);
+            GaussianFilter f = new GaussianFilter(1.5f);
             image = f.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 //            var f2 = new GlowFilter();
 //            f2.setAmount(0.05f);
 //            image = f2.filter(image, new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
-            var f3 = new LensBlurFilter();
+            LensBlurFilter f3 = new LensBlurFilter();
             f3.setBloom(1.25f);
             f3.setRadius(0.75f);
             f3.setSides(5);

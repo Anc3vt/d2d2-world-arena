@@ -50,14 +50,16 @@ public class Stage extends DisplayObjectContainer {
         float ratio = sW / sH;
 
         switch (scaleMode) {
-            case ScaleMode.REAL -> {
+            case ScaleMode.REAL: {
                 root.setScale(1f, 1f);
                 dispatchEvent(EventPool.simpleEventSingleton(Event.RESIZE, this));
+                break;
             }
-            case ScaleMode.EXTENDED -> {
+            case ScaleMode.EXTENDED: {
                 root.setScale(w / sW, h / sH);
+                break;
             }
-            case ScaleMode.FIT -> {
+            case ScaleMode.FIT: {
                 if (w / h < ratio) {
                     root.setScaleX(w / sW);
                     root.setScaleY(root.getScaleX() / ratio);
@@ -65,8 +67,9 @@ public class Stage extends DisplayObjectContainer {
                     root.setScaleY(h / sH);
                     root.setScaleX(root.getScaleY() * ratio);
                 }
+                break;
             }
-            case ScaleMode.OUTFIT -> {
+            case ScaleMode.OUTFIT: {
                 if (w / h > ratio) {
                     root.setScaleX(w / sW);
                     root.setScaleY(root.getScaleX() / ratio);
@@ -74,8 +77,9 @@ public class Stage extends DisplayObjectContainer {
                     root.setScaleY(h / sH);
                     root.setScaleX(root.getScaleY() * ratio);
                 }
+                break;
             }
-            case ScaleMode.AUTO -> {
+            case ScaleMode.AUTO: {
                 if (w > sW && h > sH) {
                     root.setScale(1f, 1f);
                 } else {
@@ -87,8 +91,10 @@ public class Stage extends DisplayObjectContainer {
                         root.setScaleX(root.getScaleY() * ratio);
                     }
                 }
+                break;
             }
-            default -> throw new IllegalArgumentException("illegal scale mode provided: " + scaleMode);
+            default:
+                throw new IllegalArgumentException("illegal scale mode provided: " + scaleMode);
 
         }
     }
@@ -102,16 +108,8 @@ public class Stage extends DisplayObjectContainer {
         onResize(width, height);
     }
 
-    public void setStageWidth(int value) {
-        this.stageWidth = value;
-    }
-
     public float getStageWidth() {
         return stageWidth;
-    }
-
-    public void setStageHeight(int value) {
-        this.stageHeight = value;
     }
 
     public float getStageHeight() {
@@ -196,7 +194,8 @@ public class Stage extends DisplayObjectContainer {
     static void dispatchAddToStage(@NotNull IDisplayObject displayObject) {
         displayObject.dispatchEvent(EventPool.createEvent(Event.ADD_TO_STAGE));
 
-        if (displayObject instanceof IDisplayObjectContainer container) {
+        if (displayObject instanceof IDisplayObjectContainer) {
+            IDisplayObjectContainer container = (IDisplayObjectContainer) displayObject;
             for (int i = 0; i < container.getChildCount(); i++) {
                 dispatchAddToStage(container.getChild(i));
             }
@@ -206,7 +205,8 @@ public class Stage extends DisplayObjectContainer {
     static void dispatchRemoveFromStage(@NotNull IDisplayObject displayObject) {
         displayObject.dispatchEvent(EventPool.createEvent(Event.REMOVE_FROM_STAGE));
 
-        if (displayObject instanceof IDisplayObjectContainer container) {
+        if (displayObject instanceof IDisplayObjectContainer) {
+            IDisplayObjectContainer container = (IDisplayObjectContainer) displayObject;
             for (int i = 0; i < container.getChildCount(); i++) {
                 dispatchRemoveFromStage(container.getChild(i));
             }

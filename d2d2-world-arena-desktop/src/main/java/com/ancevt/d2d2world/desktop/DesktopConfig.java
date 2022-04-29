@@ -50,6 +50,7 @@ public class DesktopConfig {
     public static final String DEBUG_WINDOW_SIZE = "debug.window-size";
     public static final String SOUND_ENABLED = "sound-enabled";
     public static final String DEBUG_WINDOW_XY = "debug.window-xy";
+    public static final String DISPLAY_MONITOR = "display.monitor";
 
     private static final Map<String, Object> defaults = new TreeMap<>() {{
         put(SERVER, "");
@@ -58,6 +59,7 @@ public class DesktopConfig {
         put(AUTO_ENTER, "false");
         put(FULLSCREEN, "true");
         put(SOUND_ENABLED, "true");
+        put(DISPLAY_MONITOR, "primary");
     }};
 
     private final List<ConfigChangeListener> changeListeners;

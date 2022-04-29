@@ -42,7 +42,7 @@ public class DebugGrid extends DisplayObjectContainer implements IColored {
         lines = new ArrayList<>();
         setColor(DEFAULT_COLOR);
 
-        for(int i = 0; i < D2D2.getStage().getStageWidth(); i += SIZE) {
+        for (int i = 0; i < D2D2.getStage().getStageWidth(); i += SIZE) {
             BitmapText bitmapText = new BitmapText(String.valueOf(i));
             add(bitmapText, i, i);
         }
@@ -110,8 +110,12 @@ public class DebugGrid extends DisplayObjectContainer implements IColored {
         private void eachFrame(Event event) {
             DisplayObjectContainer parent = getParent();
             switch (orientation) {
-                case HORIZONTAL -> setScaleY(1.0f / parent.getAbsoluteScaleY());
-                case VERTICAL -> setScaleX(1.0f / parent.getAbsoluteScaleX());
+                case HORIZONTAL:
+                    setScaleY(1.0f / parent.getAbsoluteScaleY());
+                    break;
+                case VERTICAL:
+                    setScaleX(1.0f / parent.getAbsoluteScaleX());
+                    break;
             }
         }
 
@@ -126,8 +130,12 @@ public class DebugGrid extends DisplayObjectContainer implements IColored {
             final int h = (int) D2D2.getStage().getHeight();
 
             switch (orientation) {
-                case HORIZONTAL -> setScale(w, 1.0f);
-                case VERTICAL -> setScale(1.0f, h);
+                case HORIZONTAL:
+                    setScale(w, 1.0f);
+                    break;
+                case VERTICAL:
+                    setScale(1.0f, h);
+                    break;
             }
         }
 

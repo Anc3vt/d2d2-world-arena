@@ -25,6 +25,7 @@ import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.desktop.net.HttpUtfLoader;
 import com.ancevt.d2d2world.ui.Preloader;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
         HttpUtfLoader.loadAsync("https://d2d2.ancevt.com/thanksto/", this::loadHtmlResult, this::loadHtmlError);
     }
 
-    private void loadHtmlResult(HttpResponse<String> response) {
+    private void loadHtmlResult(@NotNull HttpResponse<String> response) {
         dispatchEvent(Event.builder()
                 .type(Event.COMPLETE)
                 .build());

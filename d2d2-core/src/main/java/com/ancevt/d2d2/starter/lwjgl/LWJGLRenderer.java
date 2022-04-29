@@ -135,18 +135,22 @@ public class LWJGLRenderer implements IRenderer {
         GL30.glTranslatef(x, y, 0);
         GL30.glRotatef(r, 0, 0, 1);
 
-        if (displayObject instanceof IDisplayObjectContainer container) {
+        if (displayObject instanceof IDisplayObjectContainer) {
+            IDisplayObjectContainer container = (IDisplayObjectContainer) displayObject;
             for (int i = 0; i < container.getChildCount(); i++) {
                 renderDisplayObject(container.getChild(i), level + 1, x + toX, y + toY, scX, scY, 0, a);
             }
 
-        } else if (displayObject instanceof Sprite s) {
+        } else if (displayObject instanceof Sprite) {
+            Sprite s = (Sprite) displayObject;
             renderSprite(s, a, scX, scY);
-        } else if (displayObject instanceof BitmapText btx) {
+        } else if (displayObject instanceof BitmapText) {
+            BitmapText btx = (BitmapText) displayObject;
             renderBitmapText(btx, a, scX, scY);
         }
 
-        if (displayObject instanceof IFramedDisplayObject f) {
+        if (displayObject instanceof IFramedDisplayObject) {
+            IFramedDisplayObject f = (IFramedDisplayObject) displayObject;
             f.processFrame();
         }
 

@@ -82,7 +82,7 @@ public class EventDispatcher implements IEventDispatcher {
 
     @Override
     public void removeEventListener(Object key) {
-        var pair = keysTypeListenerMap.remove(key);
+        Pair<String, EventListener> pair= keysTypeListenerMap.remove(key);
         if(pair != null) {
             removeEventListener(pair.getFirst(), pair.getSecond());
         }

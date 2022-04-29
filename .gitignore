@@ -3,6 +3,7 @@ HELP.md
 build/
 **/target
 log/
+**/*.log
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**

@@ -64,7 +64,7 @@ public class AreaWater extends Area implements IDamaging {
         }
 
         if (collideWith instanceof ISpeedable s && s.getY() > getY()) {
-            if (s.getSpeed() > 2.5f) s.setSpeed(2.5f);
+            if (s.getSpeed() > 5f) s.setSpeed(5f);
         }
         if (collideWith instanceof Actor a && a.getY() > getY()) {
 

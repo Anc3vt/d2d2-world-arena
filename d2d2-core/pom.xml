@@ -81,6 +81,7 @@
         <!-- LWJGL -->
         <joml.version>1.10.4</joml.version>
         <lwjgl.version>3.3.0</lwjgl.version>
+        <!--<lwjgl.version>3.3.0</lwjgl.version>-->
         <lwjgl_util.version>2.9.3</lwjgl_util.version>
         <swt.maven.version>3.105.3</swt.maven.version> <!-- contains Eclipse SWT 4.6.2.9 software -->
 
@@ -152,16 +153,16 @@
             <artifactId>joml</artifactId>
             <version>${joml.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
             <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-vulkan</artifactId>
             <version>${lwjgl.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-glfw</artifactId>
@@ -172,39 +173,39 @@
             <artifactId>lwjgl-opengl</artifactId>
             <version>${lwjgl.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-par</artifactId>
             <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-stb</artifactId>
             <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-bgfx</artifactId>
             <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-assimp</artifactId>
             <version>${lwjgl.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
             <version>${lwjgl.version}</version>
             <classifier>natives-${platform}</classifier>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-opengl</artifactId>
             <version>${lwjgl.version}</version>
             <classifier>natives-${platform}</classifier>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-cuda</artifactId>
             <version>${lwjgl.version}</version>
@@ -223,8 +224,8 @@
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-vma</artifactId>
             <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--<dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-glfw</artifactId>
             <version>${lwjgl.version}</version>
@@ -259,7 +260,7 @@
             <artifactId>lwjgl-assimp</artifactId>
             <version>${lwjgl.version}</version>
             <classifier>natives-${platform}</classifier>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-shaderc</artifactId>
@@ -377,7 +378,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>com.ancevt.d2d2.media.SoundImpl</mainClass>
+                                    <mainClass>com.ancevt.d2d2.demo.D2D2Demo_Fullscreen</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

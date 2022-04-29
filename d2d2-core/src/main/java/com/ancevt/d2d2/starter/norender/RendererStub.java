@@ -51,14 +51,15 @@ public class RendererStub implements IRenderer {
     private void renderDisplayObject(@NotNull IDisplayObject displayObject) {
         if (!displayObject.isVisible()) return;
 
-        if (displayObject instanceof IDisplayObjectContainer container) {
+        if (displayObject instanceof IDisplayObjectContainer) {
+            IDisplayObjectContainer container = (IDisplayObjectContainer) displayObject;
             for (int i = 0; i < container.getChildCount(); i++) {
                 renderDisplayObject(container.getChild(i));
             }
         }
 
-        if (displayObject instanceof IFramedDisplayObject f) {
-            f.processFrame();
+        if (displayObject instanceof IFramedDisplayObject) {
+            ((IFramedDisplayObject) displayObject).processFrame();
         }
 
         displayObject.onEachFrame();
