@@ -41,6 +41,10 @@ public class D2D2World {
         getTextureManager().loadTextureDataInfo("d2d2-world-common-texture-data.inf");
     }
 
+    public static Texture getPlayerArrowTexture() {
+        return getTextureManager().getTexture("d2d2-world-common-tileset-player-arrow");
+    }
+
     public static Texture getControlsHelpTexture() {
         return getTextureManager().getTexture("d2d2-world-common-tileset-controls-help");
     }

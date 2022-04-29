@@ -1,5 +1,7 @@
 :d2d2-world-common-tileset.png
 
+    d2d2-world-common-tileset-player-arrow 32 16 16 16
+
     d2d2-world-common-tileset-ring  64 32 96 96
 
     d2d2-world-common-tileset-rope  176 128 16 8
