@@ -63,7 +63,7 @@ public class D2D2WorldArenaDesktopMain {
             }
         }
 
-        //System.setProperty("d2d2.experimental.bloom", "true");
+        // System.setProperty("d2d2.experimental.bloom", "true");
 
         // DebugPanel.setScale(2f);
 

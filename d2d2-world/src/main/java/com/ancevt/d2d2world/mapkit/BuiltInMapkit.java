@@ -96,7 +96,7 @@ public class BuiltInMapkit extends Mapkit {
                         | maxHealth = 100
                         | health = 100
                         | speed = 0.75
-                        | jumpPower = 3.5
+                        | jumpPower = 3.0
                         | collisionX = -6
                         | collisionY = -12
                         | collisionWidth = 12
@@ -128,7 +128,7 @@ public class BuiltInMapkit extends Mapkit {
                         | maxHealth = 100
                         | health = 100
                         | speed = 0.75
-                        | jumpPower = 3.5
+                        | jumpPower = 3.0
                         | collisionX = -6
                         | collisionY = -12
                         | collisionWidth = 12
