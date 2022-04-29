@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
@@ -262,10 +263,10 @@ public class World extends DisplayObjectContainer {
             packedSceneryBack = SceneryPacker.pack(currentRoom, 0, 4);
             getLayer(TARGET_LAYER_INDEX_BG).add(packedSceneryBack);
 
-            //sceneriesBuffer = gameObjects.stream()
-            //        .filter(gameObject -> gameObject instanceof Scenery scenery && scenery.isStatic())
-            //        .collect(Collectors.toSet());
-            //gameObjects.removeAll(sceneriesBuffer);
+            sceneriesBuffer = gameObjects.stream()
+                    .filter(gameObject -> gameObject instanceof Scenery scenery && scenery.isStatic())
+                    .collect(Collectors.toSet());
+            gameObjects.removeAll(sceneriesBuffer);
 
             packedSceneryFore = SceneryPacker.pack(currentRoom, 7, 8);
             getLayer(TARGET_LAYER_INDEX_FG).add(packedSceneryFore);
@@ -275,8 +276,8 @@ public class World extends DisplayObjectContainer {
             removePackedScenery(packedSceneryBack);
             removePackedScenery(packedSceneryFore);
 
-            //gameObjects.addAll(sceneriesBuffer);
-            //sceneriesBuffer.clear();
+            gameObjects.addAll(sceneriesBuffer);
+            sceneriesBuffer.clear();
 
             addSceneries();
         }
@@ -319,6 +320,7 @@ public class World extends DisplayObjectContainer {
             if (overlay.getState() == Overlay.STATE_BLACK) {
                 Room targetRoom = currentMap.getRoom(roomIdSwitchTo);
                 setRoom(targetRoom);
+                setSceneryPacked(true);
                 overlay.setSize(targetRoom.getWidth() * 2, targetRoom.getHeight() * 2 );
                 actor.setXY(actorX, actorY);
                 camera.setXY(actorX, actorY);

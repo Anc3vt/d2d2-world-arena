@@ -182,6 +182,7 @@ public class ServerCommandProcessor {
             MODULE_GENERAL.setMap(mapName);
             return "set map '" + mapName + "'";
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return e.getMessage();
         }
     }

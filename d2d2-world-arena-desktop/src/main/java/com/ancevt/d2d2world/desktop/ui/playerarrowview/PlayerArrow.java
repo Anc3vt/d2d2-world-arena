@@ -62,7 +62,6 @@ public class PlayerArrow extends DisplayObjectContainer {
                     target.getY() - playerArrowView.getY() + playerArrowView.getWorld().getY() > playerArrowView.getViewportHeight()
             );
 
-
             float absoluteX = getAbsoluteX();
             float absoluteY = getAbsoluteY();
             float targetAbsoluteX = target.getAbsoluteX();

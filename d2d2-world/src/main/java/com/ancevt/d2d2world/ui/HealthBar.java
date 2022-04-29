@@ -5,7 +5,7 @@ import com.ancevt.d2d2.display.Color;
 public class HealthBar extends ProgressBar {
 
     private final float WIDTH = 26;
-    private final float HEIGHT = 3;
+    private final float HEIGHT = 2f;
 
     public HealthBar() {
         setSize(WIDTH, HEIGHT);

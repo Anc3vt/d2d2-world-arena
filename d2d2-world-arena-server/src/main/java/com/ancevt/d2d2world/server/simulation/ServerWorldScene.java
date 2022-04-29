@@ -177,13 +177,15 @@ public class ServerWorldScene {
     private void world_removeGameObject(Event<World> event) {
         var e = (WorldEvent) event;
         if (e.getGameObject() instanceof PlayerActor playerActor) {
-            SENDER.sendToAllOfRoom(
-                    SpawnEffectDto.builder()
-                            .x(playerActor.getX())
-                            .y(playerActor.getY())
-                            .build(),
-                    e.getSource().getRoom().getId()
-            );
+            if(e.getSource().getRoom() != null) {
+                SENDER.sendToAllOfRoom(
+                        SpawnEffectDto.builder()
+                                .x(playerActor.getX())
+                                .y(playerActor.getY())
+                                .build(),
+                        e.getSource().getRoom().getId()
+                );
+            }
         }
     }
 

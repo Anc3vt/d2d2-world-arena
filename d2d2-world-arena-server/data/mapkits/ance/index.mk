@@ -1,7 +1,8 @@
 mapkit | name = ance
 
-
 id = _ance-roadsign | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=224,32,32,32
+id = _ance-0x48k | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=256,0,48,32
+id = _ance-graffity | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = ance-tileset.png | idle=176,48,48,48
 
 id = _ance_tsp | class = com.ancevt.d2d2world.gameobject.ThreeSpritesPlatform | atlas=ance-tileset.png | idle=320,96,48,16 | spriteLeft = 320,96,16,16 | spriteCenter = 336,96,16,16 | spriteRight = 352,96,16,16
 
