@@ -22,6 +22,7 @@ import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.regex.PatternMatcher;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
+import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
@@ -159,6 +160,8 @@ public class IntroRoot extends Root {
             }
 
             add(new UAFlag());
+
+            add(new FpsMeter(), D2D2.getStage().getStageWidth() - 50, 5);
 
             if (!MODULE_CONFIG.getString(PLAYERNAME).equals("") && !MODULE_CONFIG.getString(SERVER).equals("")) {
                 enter(MODULE_CONFIG.getString(SERVER), MODULE_CONFIG.getString(PLAYERNAME));
