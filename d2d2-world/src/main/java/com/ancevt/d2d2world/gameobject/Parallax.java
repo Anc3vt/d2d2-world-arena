@@ -6,6 +6,7 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.backend.norender.NoRenderStarter;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Slowing;
+import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.map.Room;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.Camera;
@@ -23,6 +24,7 @@ public class Parallax extends Sprite implements IGameObject, ISpeedable, IScalab
     private Camera camera;
     private float startX;
     private float startY;
+    private float offsetX;
 
     public Parallax(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
@@ -70,8 +72,18 @@ public class Parallax extends Sprite implements IGameObject, ISpeedable, IScalab
         if(room != null) {
             final float roomWidth = room.getWidth();
             final float width = getWidth();
-            setX(camera.getX() * speed + (roomWidth / width) - width / 3);
+            setX(camera.getX() * speed + (roomWidth / width) - width / 3 + offsetX);
         }
+    }
+
+    @Property
+    public void setOffsetX(float value) {
+        offsetX = value;
+    }
+
+    @Property
+    public float getOffsetX() {
+        return offsetX;
     }
 
     @Override
