@@ -102,6 +102,11 @@ public class DevVideoModes {
         chat.setHeight(ScreenUtils.getDimension().height() / 2);
         chat.openInput();
 
+        commands.add(new Command("/monitors", a-> {
+            chat.addMessage(LWJGLVideoModeUtils.getMonitors().toString());
+            return true;
+        }));
+
         commands.add(new Command("/list", a -> {
             GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor());
             List<GLFWVidMode> list = glfwVidModes.stream().toList();

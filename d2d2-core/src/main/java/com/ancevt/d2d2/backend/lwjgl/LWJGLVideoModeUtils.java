@@ -3,6 +3,7 @@ package com.ancevt.d2d2.backend.lwjgl;
 import com.ancevt.d2d2.backend.VideoMode;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.PointerBuffer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
 import static org.lwjgl.glfw.GLFW.glfwGetMonitorName;
+import static org.lwjgl.glfw.GLFW.glfwGetMonitors;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoModes;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
@@ -19,8 +21,18 @@ public class LWJGLVideoModeUtils {
 
     private static final Map<Long, String> monitorNameMap = new HashMap<>();
 
-    public static @NotNull List<VideoMode> getVideoModes(long monitor) {
+    public static @NotNull Map<Long, String> getMonitors() {
+        Map<Long, String> monitors = new HashMap();
+        PointerBuffer glfwMonitors = glfwGetMonitors();
+        for (int i = 0; i < glfwMonitors.limit(); i++) {
+            long monitor = glfwMonitors.get(i);
+            String name = glfwGetMonitorName(monitor);
+            monitors.put(monitor, name);
+        }
+        return monitors;
+    }
 
+    public static @NotNull List<VideoMode> getVideoModes(long monitor) {
         List<VideoMode> videoModes = new ArrayList<>();
 
         glfwGetVideoModes(monitor).stream().toList().forEach(glfwVidMode -> {
@@ -87,7 +99,7 @@ public class LWJGLVideoModeUtils {
     @SneakyThrows
     public static void linuxCare(long monitor, @NotNull VideoMode videoMode) {
         String monitorName = monitorNameMap.get(monitor);
-        if(monitorName == null) {
+        if (monitorName == null) {
             monitorName = glfwGetMonitorName(monitor);
             monitorNameMap.put(monitor, monitorName);
         }
@@ -101,14 +113,5 @@ public class LWJGLVideoModeUtils {
         Thread.sleep(1000);
     }
 
-    @SneakyThrows
-    public static void main(String[] args) {
-        new ProcessBuilder("xrandr",
-                "--output",
-                "HDMI-0",
-                "--mode",
-                640 + "x" + 480
-        ).start();
-    }
 
 }
