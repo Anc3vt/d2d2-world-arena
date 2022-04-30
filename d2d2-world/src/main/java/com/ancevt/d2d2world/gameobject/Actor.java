@@ -348,7 +348,7 @@ abstract public class Actor extends Animated implements
         }
 
         if (getCurrentWeaponClassname().equals(FireWeapon.class.getName())) {
-            if(underWaterTime != 0) return;
+            if (underWaterTime != 0) return;
         }
 
         if (!isServer() || !isAlive()/* || damagingTime > 0*/) return;
@@ -525,7 +525,7 @@ abstract public class Actor extends Animated implements
         if (toHealth > 0) {
             if (damagingTime > 0) return;
 
-            if(attackTime == 0) setAnimation(AnimationKey.DAMAGE);
+            if (attackTime == 0) setAnimation(AnimationKey.DAMAGE);
         }
 
         setHealthBy(getHealth() - toHealth, damaging, false);
@@ -702,7 +702,10 @@ abstract public class Actor extends Animated implements
         }
 
         if (hookTime == 0) {
-            setXY(hook.getX(), hook.getY() + 24);
+            float x = hook.getX() + hook.getWidth() / 2;
+            float y = hook.getY() + hook.getHeight() / 2;
+
+            setXY(x, y + 24);
             setAnimation(HOOK, false);
             setGravityEnabled(false);
             this.hook = hook;
@@ -896,6 +899,8 @@ abstract public class Actor extends Animated implements
         }
 
         if (weaponIndex == oldWeaponIndex) return;
+
+        if(weaponIndex >= weapons.size()) weaponIndex = 0;
 
         setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }

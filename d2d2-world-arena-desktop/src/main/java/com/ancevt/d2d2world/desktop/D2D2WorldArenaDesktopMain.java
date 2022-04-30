@@ -105,7 +105,7 @@ public class D2D2WorldArenaDesktopMain {
         IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
 
         D2D2.getStage().setRoot(introRoot);
-        D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
+        D2D2.getStage().setScaleMode(ScaleMode.REAL);
         D2D2.loop();
 
         if (GameRoot.INSTANCE != null) {

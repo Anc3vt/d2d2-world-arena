@@ -25,6 +25,8 @@ import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.IntRectangle;
 import com.ancevt.d2d2world.gameobject.IGameObject;
+import com.ancevt.d2d2world.gameobject.area.Area;
+import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,8 +57,19 @@ public class MapkitItem {
     }
 
     public Class<? extends IGameObject> getGameObjectClass() {
+        String classname = dataEntry.getString(DataKey.CLASS);
+        if (!classname.contains(".")) {
+            if (classname.contains("Area")) {
+                classname = Area.class.getPackageName() + "." + classname;
+            } else if (classname.contains("Pickup")) {
+                classname = Pickup.class.getPackageName() + "." + classname;
+            } else {
+                classname = IGameObject.class.getPackageName() + "." + classname;
+            }
+        }
+
         try {
-            return (Class<? extends IGameObject>) Class.forName(dataEntry.getString(DataKey.CLASS));
+            return (Class<? extends IGameObject>) Class.forName(classname);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }

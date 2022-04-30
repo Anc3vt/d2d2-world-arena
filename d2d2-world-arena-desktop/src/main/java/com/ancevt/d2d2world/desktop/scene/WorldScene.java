@@ -118,7 +118,6 @@ public class WorldScene extends DisplayObjectContainer {
 
         world = new World();
 
-
         world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
         world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
         world.addEventListener(hashCode() + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
@@ -149,12 +148,12 @@ public class WorldScene extends DisplayObjectContainer {
             }
         };
         shadowRadial.setColor(Color.BLACK);
-        shadowRadial.setScale(1.5f, 1.5f);
+        shadowRadial.setScale(D2D2World.SCALE, D2D2World.SCALE);
         world.add(shadowRadial);
 
         ((SyncDataReceiver) CLIENT.getSyncDataReceiver()).setWorld(world);
 
-        setScale(2f, 2f);
+        setScale(D2D2World.SCALE, D2D2World.SCALE);
 
         localPlayerController.setEnabled(true);
 
