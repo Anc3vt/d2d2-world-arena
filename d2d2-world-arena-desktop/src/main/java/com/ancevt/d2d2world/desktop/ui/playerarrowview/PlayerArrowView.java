@@ -11,7 +11,7 @@ import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 
 import java.util.HashMap;

@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.starter.norender;
+package com.ancevt.d2d2.backend.norender;
 
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.d2d2.D2D2;

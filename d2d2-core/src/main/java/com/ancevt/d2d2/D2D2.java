@@ -20,7 +20,7 @@ package com.ancevt.d2d2;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.texture.TextureManager;
-import com.ancevt.d2d2.starter.D2D2Starter;
+import com.ancevt.d2d2.backend.D2D2Starter;
 
 public class D2D2 {
 

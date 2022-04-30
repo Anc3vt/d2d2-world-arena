@@ -28,7 +28,7 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2.panels.TitledPanel;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

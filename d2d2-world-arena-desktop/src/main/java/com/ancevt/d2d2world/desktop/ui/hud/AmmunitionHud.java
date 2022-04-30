@@ -5,7 +5,7 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;

@@ -28,7 +28,7 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Clipboard;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.touch.TouchButton;
 import org.jetbrains.annotations.NotNull;
 

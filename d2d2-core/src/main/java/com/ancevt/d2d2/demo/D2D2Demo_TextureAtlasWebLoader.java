@@ -24,7 +24,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.TextureUrlLoaderEvent;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.display.texture.TextureUrlLoader;
 
 public class D2D2Demo_TextureAtlasWebLoader {

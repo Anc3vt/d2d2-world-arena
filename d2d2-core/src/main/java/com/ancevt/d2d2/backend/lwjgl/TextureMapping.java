@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.starter.lwjgl;
+package com.ancevt.d2d2.backend.lwjgl;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;

@@ -3,7 +3,7 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.starter.norender.NoRenderStarter;
+import com.ancevt.d2d2.backend.norender.NoRenderStarter;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Slowing;
 import com.ancevt.d2d2world.map.Room;

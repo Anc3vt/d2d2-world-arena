@@ -6,7 +6,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.starter.norender.NoRenderStarter;
+import com.ancevt.d2d2.backend.norender.NoRenderStarter;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.IdGenerator;

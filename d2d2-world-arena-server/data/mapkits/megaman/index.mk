@@ -1,8 +1,8 @@
 mapkit | name = megaman
 
-id = _ramp_01 | class = Jumper | atlas = megaman-tileset.png | idle=160,0,32,16 v 4 | powerX = 0 | powerY = -15 | collisionWidth = 32 | collisionHeight = 4 | sound = ramp.ogg
 id = _hook_0 | class = Scenery | atlas = megaman-tileset.png | idle=32,0,16,16
 id = _hook_1 | class = Scenery | atlas = megaman-tileset.png | idle=48,0,16,16
+id = _parallax_moon | class = Parallax | atlas = megaman-tileset.png | idle=64,64,32,32 | speed = 0.25
 id = _parallax_0 | class = Parallax | atlas = megaman-tileset.png | idle=0,128,192,48 | speed = 0.5
 id = _parallax_1 | class = Parallax | atlas = megaman-tileset.png | idle=0,176,192,48 | speed = 0.25
 id = _black-bg | class = Scenery | atlas = megaman-tileset.png | idle=32,160,16,16
@@ -21,4 +21,4 @@ id = _4 | class = Scenery | atlas = megaman-tileset.png | idle=64,16,32,48
 id = _5 | class = Scenery | atlas = megaman-tileset.png | idle=96,32,32,32
 id = _6 | class = Scenery | atlas = megaman-tileset.png | idle=128,32,32,32
 id = _7 | class = Scenery | atlas = megaman-tileset.png | idle=128,16,32,16
-
+id = _ramp_01 | class = Jumper | atlas = megaman-tileset.png | idle=160,0,32,16 v 4 | powerX = 0 | powerY = -15 | collisionWidth = 32 | collisionHeight = 4 | sound = ramp.ogg

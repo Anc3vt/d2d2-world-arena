@@ -15,13 +15,13 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.starter.norender;
+package com.ancevt.d2d2.backend.norender;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.starter.D2D2Starter;
+import com.ancevt.d2d2.backend.D2D2Starter;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.Stage;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLTextureEngine;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLTextureEngine;
 
 import static java.lang.Thread.sleep;
 
@@ -37,6 +37,11 @@ public class NoRenderStarter implements D2D2Starter {
     public NoRenderStarter(int width, int height) {
         D2D2.getTextureManager().setTextureEngine(new LWJGLTextureEngine());
         setSize(width, height);
+    }
+
+    @Override
+    public long getWindowId() {
+        return 0;
     }
 
     @Override
@@ -86,6 +91,11 @@ public class NoRenderStarter implements D2D2Starter {
 
     @Override
     public void setVisible(boolean visible) {
+    }
+
+    @Override
+    public IRenderer getRenderer() {
+        return renderer;
     }
 
     @Override
@@ -140,13 +150,13 @@ public class NoRenderStarter implements D2D2Starter {
     }
 
     @Override
-    public void setMonitor(int monitor) {
+    public void setMonitor(long monitor) {
 
     }
 
     @Override
-    public int getMonitor() {
-        return 0;
+    public long getMonitor() {
+        return 0L;
     }
 
     @Override

@@ -22,7 +22,7 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.starter.norender.NoRenderStarter;
+import com.ancevt.d2d2.backend.norender.NoRenderStarter;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.IGameObject;

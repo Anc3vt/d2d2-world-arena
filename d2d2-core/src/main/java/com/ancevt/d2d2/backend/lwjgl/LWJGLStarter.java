@@ -15,16 +15,17 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.starter.lwjgl;
+package com.ancevt.d2d2.backend.lwjgl;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.D2D2Starter;
+import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2.starter.D2D2Starter;
 import com.ancevt.d2d2.touch.TouchProcessor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +69,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowCloseCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -111,6 +113,7 @@ public class LWJGLStarter implements D2D2Starter {
     private int videoModeWidth;
     private int videoModeHeight;
     private long monitor;
+    private VideoMode previousVideoMode;
 
     public LWJGLStarter(int width, int height, String title) {
         this.width = width;
@@ -144,6 +147,11 @@ public class LWJGLStarter implements D2D2Starter {
         ((LWJGLRenderer) renderer).setLWJGLTextureEngine((LWJGLTextureEngine) D2D2.getTextureManager().getTextureEngine());
         windowId = createWindow();
         setVisible(true);
+    }
+
+    @Override
+    public long getWindowId() {
+        return windowId;
     }
 
     @Override
@@ -209,6 +217,11 @@ public class LWJGLStarter implements D2D2Starter {
         return visible;
     }
 
+    @Override
+    public IRenderer getRenderer() {
+        return renderer;
+    }
+
     private long createWindow() {
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -217,12 +230,14 @@ public class LWJGLStarter implements D2D2Starter {
 
         glfwDefaultWindowHints();
 
-        long resultWindowId = glfwCreateWindow(width, height, title, NULL, NULL);
+        long windowId = glfwCreateWindow(width, height, title, NULL, NULL);
 
-        if (resultWindowId == NULL)
+        if (windowId == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
-        glfwSetWindowSizeCallback(resultWindowId, new GLFWWindowSizeCallback() {
+        glfwSetWindowCloseCallback(windowId, window -> LWJGLVideoModeUtils.linuxCare(D2D2.getStarter().getMonitor(), previousVideoMode));
+
+        glfwSetWindowSizeCallback(windowId, new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long l, int width, int height) {
                 renderer.reshape(width, height);
@@ -230,7 +245,7 @@ public class LWJGLStarter implements D2D2Starter {
             }
         });
 
-        glfwSetScrollCallback(resultWindowId, new GLFWScrollCallback() {
+        glfwSetScrollCallback(windowId, new GLFWScrollCallback() {
             @Override
             public void invoke(long win, double dx, double dy) {
                 stage.getRoot().dispatchEvent(InputEvent.builder()
@@ -243,7 +258,7 @@ public class LWJGLStarter implements D2D2Starter {
             }
         });
 
-        glfwSetMouseButtonCallback(resultWindowId, new GLFWMouseButtonCallback() {
+        glfwSetMouseButtonCallback(windowId, new GLFWMouseButtonCallback() {
             @Override
             public void invoke(long window, int button, int action, int mods) {
                 isDown = action == 1;
@@ -260,7 +275,7 @@ public class LWJGLStarter implements D2D2Starter {
             }
         });
 
-        glfwSetCursorPosCallback(resultWindowId, new GLFWCursorPosCallback() {
+        glfwSetCursorPosCallback(windowId, new GLFWCursorPosCallback() {
             @Override
             public void invoke(long window, double x, double y) {
                 mouseX = (int) x;
@@ -280,7 +295,7 @@ public class LWJGLStarter implements D2D2Starter {
             }
         });
 
-        glfwSetCharCallback(resultWindowId, (window, codepoint) -> {
+        glfwSetCharCallback(windowId, (window, codepoint) -> {
             stage.getRoot().dispatchEvent(InputEvent.builder()
                     .type(InputEvent.KEY_TYPE)
                     .x(Mouse.getX())
@@ -291,7 +306,7 @@ public class LWJGLStarter implements D2D2Starter {
                     .build());
         });
 
-        glfwSetKeyCallback(resultWindowId, (window, key, scancode, action, mods) -> {
+        glfwSetKeyCallback(windowId, (window, key, scancode, action, mods) -> {
             if (action == GLFW_PRESS) {
                 stage.getRoot().dispatchEvent(InputEvent.builder()
                         .type(InputEvent.KEY_DOWN)
@@ -322,26 +337,17 @@ public class LWJGLStarter implements D2D2Starter {
         monitor = glfwGetPrimaryMonitor();
 
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        assert videoMode != null;
 
-        if (System.getProperty("window100400") != null) {
-            glfwSetWindowPos(
-                    resultWindowId,
-                    100,
-                    400 //(videoMode.height() - height) / 2
-            );
-        } else {
-            glfwSetWindowPos(
-                    resultWindowId,
-                    (videoMode.width() - width) / 2,
-                    (videoMode.height() - height) / 2
-            );
-        }
+        glfwSetWindowPos(
+                windowId,
+                (videoMode.width() - width) / 2,
+                (videoMode.height() - height) / 2
+        );
 
         videoModeWidth = videoMode.width();
         videoModeHeight = videoMode.height();
 
-        glfwMakeContextCurrent(resultWindowId);
+        glfwMakeContextCurrent(windowId);
         GL.createCapabilities();
 
         glfwSwapInterval(1);
@@ -351,13 +357,18 @@ public class LWJGLStarter implements D2D2Starter {
         // TODO: remove loading demo texture data info from here
         D2D2.getTextureManager().loadTextureDataInfo(DEMO_TEXTURE_DATA_INF_FILE);
 
-        renderer.init(resultWindowId);
+        renderer.init(windowId);
         renderer.reshape(width, height);
 
         glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
 
+        previousVideoMode = VideoMode.builder()
+                .width(videoModeWidth)
+                .height(videoModeHeight)
+                .refreshRate(videoMode.refreshRate())
+                .build();
 
-        return resultWindowId;
+        return windowId;
     }
 
     @Override
@@ -413,14 +424,15 @@ public class LWJGLStarter implements D2D2Starter {
         return fullscreen;
     }
 
-    public void setMonitor(int monitor) {
+    @Override
+    public void setMonitor(long monitor) {
         this.monitor = monitor;
-        if(isFullscreen()) setFullscreen(true);
+        if (isFullscreen()) setFullscreen(true);
     }
 
     @Override
-    public int getMonitor() {
-        return (int) monitor;
+    public long getMonitor() {
+        return monitor;
     }
 
     private int getTransformedX(int x) {

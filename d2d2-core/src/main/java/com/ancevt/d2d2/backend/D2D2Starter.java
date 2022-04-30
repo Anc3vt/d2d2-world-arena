@@ -15,11 +15,14 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2.starter;
+package com.ancevt.d2d2.backend;
 
+import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.Stage;
 
 public interface D2D2Starter {
+
+    long getWindowId();
 
     void create();
 
@@ -41,6 +44,8 @@ public interface D2D2Starter {
 
     boolean isVisible();
 
+    IRenderer getRenderer();
+
     void stop();
 
     void setMouseVisible(boolean mouseVisible);
@@ -55,9 +60,9 @@ public interface D2D2Starter {
 
     void setFullscreen(boolean value);
 
-    void setMonitor(int monitor);
+    void setMonitor(long monitor);
 
-    int getMonitor();
+    long getMonitor();
 
     default void setSmoothMode(boolean value) {}
 

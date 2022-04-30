@@ -3,7 +3,7 @@ package com.ancevt.d2d2world.fx;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2.starter.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import org.jetbrains.annotations.NotNull;
 
