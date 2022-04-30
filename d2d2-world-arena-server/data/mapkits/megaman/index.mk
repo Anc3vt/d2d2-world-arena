@@ -1,5 +1,9 @@
 mapkit | name = megaman
 
+id = _parallax_0 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = megaman-tileset.png | idle=0,128,192,48 | speed = 0.5
+id = _parallax_1 | class = com.ancevt.d2d2world.gameobject.Parallax | atlas = megaman-tileset.png | idle=0,176,192,48 | speed = 0.25
+
+id = _black-bg | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = megaman-tileset.png | idle=32,64,16,16
 id = _spike | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = megaman-tileset.png | idle=0,0,16,16
 id = _pipe | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = megaman-tileset.png | idle=16,0,16,16
 id = _ground-0 | class = com.ancevt.d2d2world.gameobject.Scenery | atlas = megaman-tileset.png | idle=0,16,32,16
