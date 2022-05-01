@@ -120,7 +120,7 @@ public class LWJGLVideoModeUtils {
 
         new ProcessBuilder("xrandr",
                 "--output",
-                monitorName,
+                "" + monitorName,
                 "--mode",
                 videoMode.getWidth() + "x" + videoMode.getHeight()
         ).start();

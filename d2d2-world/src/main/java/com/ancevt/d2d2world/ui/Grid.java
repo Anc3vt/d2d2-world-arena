@@ -40,6 +40,7 @@ public class Grid extends DisplayObjectContainer implements IColored {
     public Grid() {
         lines = new ArrayList<>();
         setColor(DEFAULT_COLOR);
+        setAlpha(0.25f);
 
         addEventListener(Event.EACH_FRAME, this::eachFrame);
     }
@@ -103,14 +104,13 @@ public class Grid extends DisplayObjectContainer implements IColored {
 
         public Line(Grid grid, byte orientation) {
             super(1.0f, 1.0f);
-
             float scale = grid.getAbsoluteScaleX();
             float w = D2D2.getStage().getWidth() + SIZE * 2;
             float h = D2D2.getStage().getHeight() + SIZE * 2;
 
             switch (orientation) {
-                case HORIZONTAL -> setScale(w / scale, 1.0f / scale);
-                case VERTICAL -> setScale(1.0f / scale, h / scale);
+                case HORIZONTAL -> setScale(w / scale, 2f / scale);
+                case VERTICAL -> setScale(2f / scale, h / scale);
             }
         }
 

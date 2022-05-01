@@ -334,7 +334,7 @@ public class Chat extends DisplayObjectContainer {
         input.moveCaretToEnd();
     }
 
-    public void dispose() {
+    public void saveHistory() {
         String toSave = history.stream().reduce("", (s1, s2) -> s1.concat('\n' + s2));
         FileSystemUtils.save("data/chat-history", toSave.getBytes(StandardCharsets.UTF_8));
     }

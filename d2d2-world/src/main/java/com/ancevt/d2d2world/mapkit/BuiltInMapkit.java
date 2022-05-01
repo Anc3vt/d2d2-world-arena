@@ -246,7 +246,7 @@ public class BuiltInMapkit extends Mapkit {
                         | class =""" + FireWeapon.FireBullet.class.getName() + """
                         | damagingPower = 20
                         | speed = 1f
-                        | collisionX = -8 | collisionY = -8 | collisionWidth = -4 | collisionHeight = 8
+                        | collisionX = -8 | collisionY = -16 | collisionWidth = -32 | collisionHeight = 32
                         | atlas = $ATLAS$
                         | idle = 32,80,64,64 h 4
                         """);

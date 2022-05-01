@@ -105,6 +105,8 @@ public class D2D2WorldEditorMain {
         root.addEventListener(InputEvent.MOUSE_WHEEL, e -> {
             if (editorContainer.isMouseAtPanels(Mouse.getX(), Mouse.getY())) return;
 
+            if(world.isPlaying()) return;
+
             InputEvent inputEvent = (InputEvent) e;
 
             float scale = cameraLayer.getScaleX();

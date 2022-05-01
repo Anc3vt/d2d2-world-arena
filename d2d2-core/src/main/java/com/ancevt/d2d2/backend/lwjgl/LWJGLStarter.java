@@ -72,7 +72,6 @@ import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowCloseCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
@@ -127,7 +126,7 @@ public class LWJGLStarter implements D2D2Starter {
     public void stop() {
         if(stopped) return;
         stopped = true;
-        glfwSetWindowShouldClose(windowId, true);
+        //glfwSetWindowShouldClose(windowId, true);
     }
 
     @Override

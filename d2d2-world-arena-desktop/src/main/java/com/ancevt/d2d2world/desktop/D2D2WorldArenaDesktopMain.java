@@ -28,6 +28,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
+import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +48,8 @@ import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
 @Slf4j
 public class D2D2WorldArenaDesktopMain {
+
+    private static VideoMode previousVideoMode;
 
     @SneakyThrows
     public static void main(String[] args) throws IOException {
@@ -108,7 +111,7 @@ public class D2D2WorldArenaDesktopMain {
             }
         });
 
-        VideoMode previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice());
+        previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice());
 
         if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
             D2D2.setFullscreen(true);
@@ -156,17 +159,17 @@ public class D2D2WorldArenaDesktopMain {
         getStage().setScaleMode(ScaleMode.REAL);
 
         D2D2.loop();
+        exit();
+    }
 
+    public static void exit() {
         if (isUnix()) {
             LWJGLVideoModeUtils.linuxCare(MonitorDevice.getMonitorDevice(), previousVideoMode);
         }
 
+        Chat.getInstance().saveHistory();
         DebugPanel.saveAll();
-
-        if (GameRoot.INSTANCE != null) {
-            GameRoot.INSTANCE.exit();
-        }
-
+        if(GameRoot.INSTANCE != null) GameRoot.INSTANCE.exit();
         System.exit(0);
     }
 }

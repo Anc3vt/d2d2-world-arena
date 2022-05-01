@@ -202,8 +202,6 @@ public class IntroRoot extends Root {
     }
 
     public void enter(String server, String localPlayerName) {
-        D2D2.getStage().removeEventListener(IntroRoot.class);
-
         if (!PatternMatcher.check(uiTextInputPlayerName.getText(), NAME_PATTERN)) return;
 
         log.info("Enter try, server: {}, player name: {}", server, localPlayerName);
@@ -227,6 +225,7 @@ public class IntroRoot extends Root {
                     }, () -> {
                         GameRoot gameRoot = new GameRoot();
                         gameRoot.setServerName(result.getName());
+                        D2D2.getStage().removeEventListener(IntroRoot.class);
                         D2D2.getStage().setRoot(gameRoot);
                         gameRoot.start(uiTextInputServer.getText(), localPlayerName);
                     });

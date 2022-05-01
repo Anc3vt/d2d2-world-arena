@@ -363,8 +363,11 @@ public class World extends DisplayObjectContainer {
             parallax.setCamera(getCamera());
         }
 
-        gameObjects.add(gameObject);
-        gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
+        if(!(gameObject instanceof Scenery scenery) || scenery.isStatic()) {
+            gameObjects.add(gameObject);
+            gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
+        }
+
         getLayer(layerIndex).add(gameObject);
 
         gameObject.setWorld(this);

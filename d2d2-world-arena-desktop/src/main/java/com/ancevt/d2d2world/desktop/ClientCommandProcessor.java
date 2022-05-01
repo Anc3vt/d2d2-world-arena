@@ -21,7 +21,6 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.media.SoundSystem;
-import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.net.client.PlayerManager;
 import com.ancevt.util.args.Args;
@@ -56,8 +55,8 @@ public class ClientCommandProcessor {
 
         switch (command) {
             case "/exit", "/q", "/quit" -> {
-                CLIENT.sendExitRequest();
-                GameRoot.INSTANCE.exit();
+                D2D2WorldArenaDesktopMain.exit();
+                return true;
             }
 
             case "//sound" -> {

@@ -161,7 +161,7 @@ public class DevVideoModes {
         root.add(chat, 10, 10);
 
         D2D2.loop();
-        chat.dispose();
+        chat.saveHistory();
         LWJGLVideoModeUtils.linuxCare(MonitorDevice.getMonitorDevice(), previousVideoMode);
     }
 

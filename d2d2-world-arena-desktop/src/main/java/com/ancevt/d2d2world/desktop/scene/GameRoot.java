@@ -27,7 +27,6 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
@@ -418,11 +417,10 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     public void exit() {
+        CLIENT.removeClientListener(this);
         CLIENT.sendExitRequest();
-        Chat.getInstance().dispose();
-        new Lock().lock(1, SECONDS);
-        DebugPanel.saveAll();
-        D2D2.exit();
+        CLIENT.close();
     }
+
 }
 
