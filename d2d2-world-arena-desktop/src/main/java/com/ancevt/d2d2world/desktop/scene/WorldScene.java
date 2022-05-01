@@ -162,7 +162,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         localPlayerController.setEnabled(true);
 
-        addEventListener(getClass(), Event.ADD_TO_STAGE, this::this_addToStage);
+        addEventListener(Event.ADD_TO_STAGE, Event.ADD_TO_STAGE, this::this_addToStage);
 
         CLIENT.addClientListener(new ClientListener() {
 
@@ -313,46 +313,51 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void resize(float w, float h) {
-        overlay = new Overlay(w, h);
         setXY(w / 2, h / 2);
-        add(overlay, -w / 2, -h / 2);
-        world.getCamera().setViewportSize(w, h);
-        world.getCamera().setBoundsLock(true);
 
-        ammunitionHud.setScale(3, 3);
-        getParent().add(ammunitionHud, getStage().getStageWidth() - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
+        float scale = h / D2D2World.ORIGIN_HEIGHT;
+        setScaleY(scale);
+        toScaleY(D2D2World.SCALE);
+        setScaleX(getScaleY());
+
+        overlay.setXY(-w / 2, -h / 2);
+
         playerArrowView.setViewport(
                 w / getAbsoluteScaleX(),
                 h / getAbsoluteScaleY()
         );
-        add(playerArrowView, -getX() / 2, -getY() / 2);
 
+        ammunitionHud.setXY(w - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
 
-        setScaleY(h / D2D2World.ORIGIN_HEIGHT);
-        toScaleY(D2D2World.SCALE);
-        setScaleX(getScaleY());
+        world.getCamera().setViewportSize(w, h);
     }
 
     private void this_addToStage(Event event) {
-        /*
-        removeEventListener(getClass());
-        final float w = getStage().getStageWidth();
-        final float h = getStage().getStageHeight();
+        removeEventListener(Event.ADD_TO_STAGE);
+
+        float w = D2D2.getStage().getWidth();
+        float h = D2D2.getStage().getHeight();
+
         overlay = new Overlay(w, h);
         setXY(w / 2, h / 2);
+
         add(overlay, -w / 2, -h / 2);
         world.getCamera().setViewportSize(w, h);
         world.getCamera().setBoundsLock(true);
 
         ammunitionHud.setScale(3, 3);
-        getParent().add(ammunitionHud, getStage().getStageWidth() - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
+        getParent().add(ammunitionHud, w - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
         playerArrowView.setViewport(
-                D2D2.getStage().getStageWidth() / getAbsoluteScaleX(),
-                D2D2.getStage().getStageHeight() / getAbsoluteScaleY()
+                w / getAbsoluteScaleX(),
+                h / getAbsoluteScaleY()
         );
+
         add(playerArrowView, -getX() / 2, -getY() / 2);
 
-         */
+        float scale = h / D2D2World.ORIGIN_HEIGHT;
+        setScaleY(scale);
+        toScaleY(D2D2World.SCALE);
+        setScaleX(getScaleY());
     }
 
     private void world_addGameObject(Event<World> event) {

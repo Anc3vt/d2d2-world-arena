@@ -3,10 +3,10 @@ package com.ancevt.d2d2world.server.simulation;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.norender.NoRenderStarter;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.backend.norender.NoRenderStarter;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
@@ -37,11 +37,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
 import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
 import static com.ancevt.d2d2world.server.ServerConfig.DEBUG_FORCED_SPAWN_AREA;
@@ -271,20 +274,9 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public void playerHook(int playerId, int hookGameObjectId) {
-        debug("ServerWorldScene:247: <A>----------------------------- playerId: " + playerId + ", hook: " + hookGameObjectId);
-
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
-            debug("ServerWorldScene:248: <A>PRESENT");
-
             World world = getWorldByGameObjectId(hookGameObjectId);
-
-            if (world != null) {
-                debug("ServerWorldScene:254: <b>hook:" + world.getGameObjectById(hookGameObjectId));
-                debug("ServerWorldScene:254: <A>world: " + world);
-            }
-
             if (world != null && world.getGameObjectById(hookGameObjectId) instanceof AreaHook hook) {
-                debug("ServerWorldScene:249: <A>playerHook: " + playerId + " " + hookGameObjectId);
                 playerActor.setHook(hook);
             }
         });
