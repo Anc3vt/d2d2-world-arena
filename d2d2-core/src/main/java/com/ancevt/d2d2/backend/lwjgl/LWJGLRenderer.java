@@ -51,6 +51,7 @@ public class LWJGLRenderer implements IRenderer {
     private final LWJGLStarter lwjglStarter;
     boolean smoothMode = false;
     private LWJGLTextureEngine textureEngine;
+    private double vertexBleedingFix = 0.5;
 
     public LWJGLRenderer(Stage stage, LWJGLStarter lwjglStarter) {
         this.stage = stage;
@@ -104,6 +105,16 @@ public class LWJGLRenderer implements IRenderer {
         GLFW.glfwSwapInterval(1);
 
         Mouse.setXY((int) mouseX[0], (int) mouseY[0]);
+    }
+
+    @Override
+    public void setVertexBleedingFix(double value) {
+        this.vertexBleedingFix = value;
+    }
+
+    @Override
+    public double getVertexBleeding() {
+        return vertexBleedingFix;
     }
 
     private double[] mouseX = new double[1];
@@ -223,31 +234,21 @@ public class LWJGLRenderer implements IRenderer {
                 GL30.glBegin(GL30.GL_QUADS);
 
                 final double bleedingFix = sprite.getBleedingFix();
-                final double bleedingFixVert = 0.5;
-
                 // L
                 GL30.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);
-
-                GL30.glVertex2d(px - bleedingFixVert, py + tH * scaleY + bleedingFixVert);
-
+                GL30.glVertex2d(px - vertexBleedingFix, py + tH * scaleY + vertexBleedingFix);
 
                 // _|
                 GL30.glTexCoord2d((w + x) - bleedingFix, (h + y) - bleedingFix);
-
-                GL30.glVertex2d(px + tW * scaleX + bleedingFixVert, py + tH * scaleY + bleedingFixVert);
-
+                GL30.glVertex2d(px + tW * scaleX + vertexBleedingFix, py + tH * scaleY + vertexBleedingFix);
 
                 // ^|
                 GL30.glTexCoord2d((w + x) - bleedingFix, y + bleedingFix);
-
-                GL30.glVertex2d(px + tW * scaleX + bleedingFixVert, py - bleedingFixVert);
-
+                GL30.glVertex2d(px + tW * scaleX + vertexBleedingFix, py - vertexBleedingFix);
 
                 // Г
                 GL30.glTexCoord2d(x + bleedingFix, y + bleedingFix);
-
-                GL30.glVertex2d(px - bleedingFixVert, py - bleedingFixVert);
-
+                GL30.glVertex2d(px - vertexBleedingFix, py - vertexBleedingFix);
 
                 GL30.glEnd();
             }
@@ -361,13 +362,16 @@ public class LWJGLRenderer implements IRenderer {
         float ch = -charHeight / textureAtlasHeight;
 
         GL30.glTexCoord2d(cx, -cy);
-        GL30.glVertex2d(x, y);
+        GL30.glVertex2d(x + vertexBleedingFix, y + vertexBleedingFix);
+
         GL30.glTexCoord2d(cx + cw, -cy);
-        GL30.glVertex2d(charWidth * scX + x, y);
+        GL30.glVertex2d(charWidth * scX + x + vertexBleedingFix, y + vertexBleedingFix);
+
         GL30.glTexCoord2d(cx + cw, -cy + ch);
-        GL30.glVertex2d(charWidth * scX + x, charHeight * -scY + y);
+        GL30.glVertex2d(charWidth * scX + x + vertexBleedingFix, charHeight * -scY + y - vertexBleedingFix);
+
         GL30.glTexCoord2d(cx, -cy + ch);
-        GL30.glVertex2d(x, charHeight * -scY + y);
+        GL30.glVertex2d(x - vertexBleedingFix, charHeight * -scY + y - vertexBleedingFix);
     }
 
     private void textureParamsLinear() {

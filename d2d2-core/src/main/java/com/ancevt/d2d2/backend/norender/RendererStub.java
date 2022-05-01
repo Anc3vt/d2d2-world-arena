@@ -48,6 +48,16 @@ public class RendererStub implements IRenderer {
         renderDisplayObject(stage);
     }
 
+    @Override
+    public void setVertexBleedingFix(double value) {
+
+    }
+
+    @Override
+    public double getVertexBleeding() {
+        return 0.0;
+    }
+
     private void renderDisplayObject(@NotNull IDisplayObject displayObject) {
         if (!displayObject.isVisible()) return;
 

@@ -65,6 +65,7 @@ public class D2D2WorldEditorMain {
 
         var screenDimension = ScreenUtils.getDimension();
         D2D2.init(new LWJGLStarter(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
+        D2D2.getStarter().getRenderer().setVertexBleedingFix(0);
         D2D2.getStarter().setWindowXY(0, 40);
         D2D2World.init(true, true);
 

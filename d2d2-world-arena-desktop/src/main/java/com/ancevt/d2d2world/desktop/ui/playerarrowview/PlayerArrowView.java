@@ -1,6 +1,8 @@
 package com.ancevt.d2d2world.desktop.ui.playerarrowview;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.debug.DebugGrid;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -11,7 +13,6 @@ import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 
 import java.util.HashMap;
@@ -23,13 +24,13 @@ public class PlayerArrowView extends DisplayObjectContainer {
     private float viewportWidth;
     private float viewportHeight;
 
-    //private final BorderedRect debugBorderedRect;
+    private final BorderedRect debugBorderedRect;
     private final Map<IDisplayObject, PlayerArrow> playerArrowMap;
 
     public PlayerArrowView(IDisplayObject world) {
         this.world = world;
-        //debugBorderedRect = new BorderedRect(null, Color.YELLOW);
-        //add(debugBorderedRect);
+        debugBorderedRect = new BorderedRect(null, Color.YELLOW);
+        add(debugBorderedRect);
 
         playerArrowMap = new HashMap<>();
     }
@@ -69,7 +70,7 @@ public class PlayerArrowView extends DisplayObjectContainer {
     public void setViewport(float width, float height) {
         this.viewportWidth = width;
         this.viewportHeight = height;
-        //debugBorderedRect.setSize(width, height);
+        debugBorderedRect.setSize(width, height);
     }
 
     public static void main(String[] args) {
