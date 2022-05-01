@@ -18,7 +18,15 @@
 package com.ancevt.d2d2.backend.lwjgl;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.display.*;
+import com.ancevt.d2d2.display.Color;
+import com.ancevt.d2d2.display.IDisplayObject;
+import com.ancevt.d2d2.display.IDisplayObjectContainer;
+import com.ancevt.d2d2.display.IFramedDisplayObject;
+import com.ancevt.d2d2.display.IRenderer;
+import com.ancevt.d2d2.display.ISprite;
+import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapCharInfo;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.display.text.BitmapText;
@@ -33,7 +41,9 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 
 import static java.lang.Math.round;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 
 public class LWJGLRenderer implements IRenderer {
 
@@ -213,22 +223,30 @@ public class LWJGLRenderer implements IRenderer {
                 GL30.glBegin(GL30.GL_QUADS);
 
                 final double bleedingFix = sprite.getBleedingFix();
+                final double bleedingFixVert = 0.5;
 
                 // L
                 GL30.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);
-                GL30.glVertex2d(px, py + tH * scaleY);
+
+                GL30.glVertex2d(px - bleedingFixVert, py + tH * scaleY + bleedingFixVert);
+
 
                 // _|
                 GL30.glTexCoord2d((w + x) - bleedingFix, (h + y) - bleedingFix);
-                GL30.glVertex2d(px + tW * scaleX, py + tH * scaleY);
+
+                GL30.glVertex2d(px + tW * scaleX + bleedingFixVert, py + tH * scaleY + bleedingFixVert);
+
 
                 // ^|
                 GL30.glTexCoord2d((w + x) - bleedingFix, y + bleedingFix);
-                GL30.glVertex2d(px + tW * scaleX, py + 0);
+
+                GL30.glVertex2d(px + tW * scaleX + bleedingFixVert, py - bleedingFixVert);
+
 
                 // Г
                 GL30.glTexCoord2d(x + bleedingFix, y + bleedingFix);
-                GL30.glVertex2d(round(px + 0), round(py + 0));
+
+                GL30.glVertex2d(px - bleedingFixVert, py - bleedingFixVert);
 
 
                 GL30.glEnd();
