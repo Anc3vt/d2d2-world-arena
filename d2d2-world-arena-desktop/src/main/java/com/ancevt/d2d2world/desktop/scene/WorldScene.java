@@ -327,10 +327,7 @@ public class WorldScene extends DisplayObjectContainer {
 
         overlay.setXY(-w / 2, -h / 2);
 
-        playerArrowView.setViewport(
-                w ,
-                h
-        );
+        playerArrowView.setViewport(w - 100,h);
 
         ammunitionHud.setXY(w - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
 

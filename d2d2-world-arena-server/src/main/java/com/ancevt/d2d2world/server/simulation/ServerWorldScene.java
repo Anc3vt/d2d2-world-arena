@@ -115,10 +115,14 @@ public class ServerWorldScene {
 
             CONFIG.ifKeyPresent(DEBUG_FORCED_SPAWN_AREA, value -> {
                 gameMap.getAllGameObjectsFromAllRooms().stream()
-                        .filter(gameObject -> gameObject instanceof AreaSpawn)
-                        .forEach(gameObject -> {
-                            AreaSpawn areaSpawn = (AreaSpawn) gameObject;
-                            if (!areaSpawn.getName().equals(value)) areaSpawn.setEnabled(false);
+                        .filter(gameObject -> gameObject instanceof AreaSpawn areaSpawn && areaSpawn.getName().equals(value))
+                        .findAny().ifPresent(debugForcedSpawnArea -> {
+                            gameMap.getAllGameObjectsFromAllRooms().stream()
+                                    .filter(gameObject -> gameObject instanceof AreaSpawn && gameObject != debugForcedSpawnArea)
+                                    .forEach(gameObject -> {
+                                        AreaSpawn areaSpawn = (AreaSpawn) gameObject;
+                                        areaSpawn.setEnabled(false);
+                                    });
                         });
             });
 
@@ -180,7 +184,7 @@ public class ServerWorldScene {
     private void world_removeGameObject(Event<World> event) {
         var e = (WorldEvent) event;
         if (e.getGameObject() instanceof PlayerActor playerActor) {
-            if(e.getSource().getRoom() != null) {
+            if (e.getSource().getRoom() != null) {
                 SENDER.sendToAllOfRoom(
                         SpawnEffectDto.builder()
                                 .x(playerActor.getX())

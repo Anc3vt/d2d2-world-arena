@@ -145,7 +145,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         INSTANCE = this;
 
-        addEventListener(Event.ADD_TO_STAGE, event->{
+        addEventListener(Event.ADD_TO_STAGE, event -> {
             getStage().addEventListener(IntroRoot.class, Event.RESIZE, resizeEvent -> {
                 worldScene.resize(getStage().getWidth(), getStage().getHeight());
             });
