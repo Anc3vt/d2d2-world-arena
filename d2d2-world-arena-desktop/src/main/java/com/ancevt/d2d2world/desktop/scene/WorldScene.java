@@ -264,7 +264,7 @@ public class WorldScene extends DisplayObjectContainer {
         ));
 
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
-                "//videmodelist",
+                "//videomodelist",
                 a -> {
                     GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor());
                     List<GLFWVidMode> list = glfwVidModes.stream().toList();
@@ -290,7 +290,6 @@ public class WorldScene extends DisplayObjectContainer {
                             found.setValue(true);
 
                             Chat.getInstance().addMessage(width + "x" + height + " " + refreshRate);
-                            Chat.getInstance().setHeight(height - 30);
 
                             LWJGLVideoModeUtils.setVideoMode(
                                     glfwGetPrimaryMonitor(),

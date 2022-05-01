@@ -38,6 +38,7 @@ import java.util.StringTokenizer;
 
 import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.DISPLAY_RESOLUTION;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.FULLSCREEN;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
@@ -99,7 +100,27 @@ public class D2D2WorldArenaDesktopMain {
         VideoMode previousVideoMode = LWJGLVideoModeUtils.getVideoMode(D2D2.getStarter().getMonitor());
 
         if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
-            LWJGLVideoModeUtils.setVideoMode(D2D2.getStarter().getMonitor(), D2D2.getStarter().getWindowId(), previousVideoMode);
+            D2D2.setFullscreen(true);
+
+            String displayResolutionString = MODULE_CONFIG.getString(DISPLAY_RESOLUTION);
+            if (!displayResolutionString.equals("")) {
+                StringTokenizer stringTokenizer = new StringTokenizer(displayResolutionString, "x");
+                int w = parseInt(stringTokenizer.nextToken());
+                int h = parseInt(stringTokenizer.nextToken());
+                LWJGLVideoModeUtils.setVideoMode(
+                        D2D2.getStarter().getMonitor(),
+                        D2D2.getStarter().getWindowId(),
+                        w, h, -1
+                );
+
+            } else {
+                for(var videoMode : LWJGLVideoModeUtils.getVideoModes(D2D2.getStarter().getMonitor())) {
+                    if (videoMode.getHeight() == 900 || videoMode.getHeight() == 1050) {
+                        LWJGLVideoModeUtils.setVideoMode(D2D2.getStarter().getMonitor(), D2D2.getStarter().getWindowId(), videoMode);
+                        break;
+                    }
+                }
+            }
         }
 
         String debugScreenSize = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
