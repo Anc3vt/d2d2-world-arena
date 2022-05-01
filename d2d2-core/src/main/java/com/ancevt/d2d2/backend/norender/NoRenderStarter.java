@@ -150,16 +150,6 @@ public class NoRenderStarter implements D2D2Starter {
     }
 
     @Override
-    public void setMonitor(long monitor) {
-
-    }
-
-    @Override
-    public long getMonitor() {
-        return 0L;
-    }
-
-    @Override
     public void setWindowXY(int x, int y) {
 
     }

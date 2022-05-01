@@ -15,6 +15,7 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.ScreenUtils;
+import com.ancevt.d2d2world.desktop.MonitorDevice;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
@@ -49,10 +50,13 @@ public class DevVideoModes {
         //D2D2.setFullscreen(true);
 
         long windowId = D2D2.getStarter().getWindowId();
-        VideoMode previousVideoMode = LWJGLVideoModeUtils.getVideoMode(glfwGetPrimaryMonitor());
+
+        MonitorDevice.setMonitorDevice(glfwGetPrimaryMonitor());
+
+        VideoMode previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice());
 
         LWJGLVideoModeUtils.setVideoMode(
-                glfwGetPrimaryMonitor(),
+                MonitorDevice.getMonitorDevice(),
                 windowId,
                 previousVideoMode
         );
@@ -108,7 +112,7 @@ public class DevVideoModes {
         }));
 
         commands.add(new Command("/list", a -> {
-            GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor());
+            GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDevice());
             List<GLFWVidMode> list = glfwVidModes.stream().toList();
             list.forEach(m -> chat.addMessage(m.width() + "x" + m.height() + " " + m.refreshRate()));
             return true;
@@ -121,7 +125,7 @@ public class DevVideoModes {
 
             Holder<Boolean> found = new Holder<>(false);
 
-            GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor()).stream().toList().forEach(glfwVidMode -> {
+            GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDevice()).stream().toList().forEach(glfwVidMode -> {
                 if (glfwVidMode.width() == width &&
                         glfwVidMode.height() == height &&
                         (glfwVidMode.refreshRate() == refreshRate || refreshRate == -1)) {
@@ -158,7 +162,7 @@ public class DevVideoModes {
 
         D2D2.loop();
         chat.dispose();
-        LWJGLVideoModeUtils.linuxCare(D2D2.getStarter().getMonitor(), previousVideoMode);
+        LWJGLVideoModeUtils.linuxCare(MonitorDevice.getMonitorDevice(), previousVideoMode);
     }
 
     private static boolean processCommand(String text) {

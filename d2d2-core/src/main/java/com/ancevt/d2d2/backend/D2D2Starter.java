@@ -60,10 +60,6 @@ public interface D2D2Starter {
 
     void setFullscreen(boolean value);
 
-    void setMonitor(long monitor);
-
-    long getMonitor();
-
     default void setSmoothMode(boolean value) {}
 
     default boolean isSmoothMode() { return false; }

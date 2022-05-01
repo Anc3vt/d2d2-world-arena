@@ -25,7 +25,6 @@ import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.ScreenUtils;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
@@ -38,11 +37,13 @@ import java.util.StringTokenizer;
 
 import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
+import static com.ancevt.d2d2world.desktop.DesktopConfig.DISPLAY_MONITOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.DISPLAY_RESOLUTION;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.FULLSCREEN;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
 import static java.lang.Integer.parseInt;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
 @Slf4j
 public class D2D2WorldArenaDesktopMain {
@@ -88,7 +89,6 @@ public class D2D2WorldArenaDesktopMain {
         log.info(version);
 
         String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYERNAME);
-        var screenDimension = ScreenUtils.getDimension();
 
         D2D2.init(new LWJGLStarter(
                 (int) D2D2World.ORIGIN_WIDTH,
@@ -97,7 +97,18 @@ public class D2D2WorldArenaDesktopMain {
         );
         D2D2World.init(false, false);
 
-        VideoMode previousVideoMode = LWJGLVideoModeUtils.getVideoMode(D2D2.getStarter().getMonitor());
+        MonitorDevice.setMonitorDevice(glfwGetPrimaryMonitor());
+
+        MODULE_CONFIG.ifKeyPresent(DISPLAY_MONITOR, monitorName -> {
+            if (monitorName.equals("primary")) {
+                MonitorDevice.setMonitorDevice(glfwGetPrimaryMonitor());
+            } else {
+                long monitor = LWJGLVideoModeUtils.getMonitorByName(monitorName);
+                MonitorDevice.setMonitorDevice(monitor);
+            }
+        });
+
+        VideoMode previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice());
 
         if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
             D2D2.setFullscreen(true);
@@ -108,15 +119,15 @@ public class D2D2WorldArenaDesktopMain {
                 int w = parseInt(stringTokenizer.nextToken());
                 int h = parseInt(stringTokenizer.nextToken());
                 LWJGLVideoModeUtils.setVideoMode(
-                        D2D2.getStarter().getMonitor(),
+                        MonitorDevice.getMonitorDevice(),
                         D2D2.getStarter().getWindowId(),
                         w, h, -1
                 );
 
             } else {
-                for(var videoMode : LWJGLVideoModeUtils.getVideoModes(D2D2.getStarter().getMonitor())) {
+                for(var videoMode : LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getMonitorDevice())) {
                     if (videoMode.getHeight() == 900 || videoMode.getHeight() == 1050) {
-                        LWJGLVideoModeUtils.setVideoMode(D2D2.getStarter().getMonitor(), D2D2.getStarter().getWindowId(), videoMode);
+                        LWJGLVideoModeUtils.setVideoMode(MonitorDevice.getMonitorDevice(), D2D2.getStarter().getWindowId(), videoMode);
                         break;
                     }
                 }
@@ -147,7 +158,7 @@ public class D2D2WorldArenaDesktopMain {
         D2D2.loop();
 
         if (isUnix()) {
-            LWJGLVideoModeUtils.linuxCare(D2D2.getStarter().getMonitor(), previousVideoMode);
+            LWJGLVideoModeUtils.linuxCare(MonitorDevice.getMonitorDevice(), previousVideoMode);
         }
 
         DebugPanel.saveAll();

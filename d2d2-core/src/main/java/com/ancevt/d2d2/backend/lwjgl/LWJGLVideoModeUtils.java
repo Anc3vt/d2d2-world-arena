@@ -1,5 +1,6 @@
 package com.ancevt.d2d2.backend.lwjgl;
 
+import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.backend.VideoMode;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,14 @@ public class LWJGLVideoModeUtils {
         return monitors;
     }
 
+    public static long getMonitorByName(String monitorName) {
+        Holder<Long> result = new Holder<>(0L);
+        getMonitors().forEach((monitor, name) -> {
+            if(monitorName.equals(name)) result.setValue(monitor);
+        });
+        return result.getValue();
+    }
+
     public static @NotNull List<VideoMode> getVideoModes(long monitor) {
         List<VideoMode> videoModes = new ArrayList<>();
 
@@ -46,6 +55,11 @@ public class LWJGLVideoModeUtils {
         });
 
         return videoModes;
+    }
+
+    public static @NotNull VideoMode getMaxVideoMode(long monitor) {
+        var videoModes = getVideoModes(monitor);
+        return videoModes.get(videoModes.size() - 1);
     }
 
     public static VideoMode getVideoMode(long monitor) {

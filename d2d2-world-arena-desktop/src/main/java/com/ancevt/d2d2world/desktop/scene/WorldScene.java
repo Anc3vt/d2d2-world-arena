@@ -35,6 +35,7 @@ import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
+import com.ancevt.d2d2world.desktop.MonitorDevice;
 import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -75,6 +76,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.data.Properties.getProperties;
@@ -87,7 +89,7 @@ import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static java.lang.Integer.parseInt;
 
 @Slf4j
 public class WorldScene extends DisplayObjectContainer {
@@ -256,9 +258,11 @@ public class WorldScene extends DisplayObjectContainer {
         ));
 
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
-                "//fullscreen",
+                "//monitorlist",
                 args -> {
-                    D2D2.setFullscreen(args.get(Boolean.class, 1));
+                    LWJGLVideoModeUtils.getMonitors().values().forEach(
+                            monitorName -> Chat.getInstance().addMessage(monitorName)
+                    );
                     return true;
                 }
         ));
@@ -266,7 +270,7 @@ public class WorldScene extends DisplayObjectContainer {
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//videomodelist",
                 a -> {
-                    GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor());
+                    GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDevice());
                     List<GLFWVidMode> list = glfwVidModes.stream().toList();
                     list.forEach(m -> Chat.getInstance().addMessage(m.width() + "x" + m.height() + " " + m.refreshRate()));
                     return true;
@@ -276,13 +280,14 @@ public class WorldScene extends DisplayObjectContainer {
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//videomode",
                 a -> {
-                    int width = a.get(int.class, 1, 0);
-                    int height = a.get(int.class, 2, 0);
-                    int refreshRate = a.get(int.class, 3, 0);
+                    StringTokenizer stringTokenizer = new StringTokenizer(a.get(String.class, 1, "0x0"), "x");
+                    int width = parseInt(stringTokenizer.nextToken());
+                    int height = parseInt(stringTokenizer.nextToken());
+                    int refreshRate = a.get(int.class, 2, -1);
 
                     Holder<Boolean> found = new Holder<>(false);
 
-                    GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor()).stream().toList().forEach(glfwVidMode -> {
+                    GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDevice()).stream().toList().forEach(glfwVidMode -> {
                         if (glfwVidMode.width() == width &&
                                 glfwVidMode.height() == height &&
                                 (glfwVidMode.refreshRate() == refreshRate || refreshRate == -1)) {
@@ -292,7 +297,7 @@ public class WorldScene extends DisplayObjectContainer {
                             Chat.getInstance().addMessage(width + "x" + height + " " + refreshRate);
 
                             LWJGLVideoModeUtils.setVideoMode(
-                                    glfwGetPrimaryMonitor(),
+                                    MonitorDevice.getMonitorDevice(),
                                     D2D2.getStarter().getWindowId(),
                                     width,
                                     height,

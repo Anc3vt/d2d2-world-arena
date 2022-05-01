@@ -238,7 +238,9 @@ public class LWJGLStarter implements D2D2Starter {
         if (windowId == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
-        glfwSetWindowCloseCallback(windowId, window -> LWJGLVideoModeUtils.linuxCare(D2D2.getStarter().getMonitor(), previousVideoMode));
+        monitor = glfwGetPrimaryMonitor();
+
+        glfwSetWindowCloseCallback(windowId, window -> LWJGLVideoModeUtils.linuxCare(monitor, previousVideoMode));
 
         glfwSetWindowSizeCallback(windowId, new GLFWWindowSizeCallback() {
             @Override
@@ -337,8 +339,6 @@ public class LWJGLStarter implements D2D2Starter {
             }
         });
 
-        monitor = glfwGetPrimaryMonitor();
-
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
         glfwSetWindowPos(
@@ -414,9 +414,9 @@ public class LWJGLStarter implements D2D2Starter {
             windowHeight = h[0];
         }
 
-        if (value)
+        if (value) {
             glfwSetWindowMonitor(windowId, monitor, 0, 0, videoModeWidth, videoModeHeight, GLFW_DONT_CARE);
-        else
+        } else
             glfwSetWindowMonitor(windowId, NULL, windowX, windowY, windowWidth, windowHeight, GLFW_DONT_CARE);
 
         this.fullscreen = value;
@@ -425,17 +425,6 @@ public class LWJGLStarter implements D2D2Starter {
     @Override
     public boolean isFullscreen() {
         return fullscreen;
-    }
-
-    @Override
-    public void setMonitor(long monitor) {
-        this.monitor = monitor;
-        if (isFullscreen()) setFullscreen(true);
-    }
-
-    @Override
-    public long getMonitor() {
-        return monitor;
     }
 
     private int getTransformedX(int x) {

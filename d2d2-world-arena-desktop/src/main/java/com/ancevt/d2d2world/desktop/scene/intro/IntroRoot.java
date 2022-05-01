@@ -48,7 +48,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.desktop.DesktopConfig.AUTO_ENTER;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.DISPLAY_MONITOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.PLAYERNAME;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SERVER;
@@ -194,13 +193,6 @@ public class IntroRoot extends Root {
                 case KeyCode.S -> {
                     if (e.isAlt()) D2D2.setSmoothMode(!D2D2.isSmoothMode());
                 }
-            }
-        });
-
-        MODULE_CONFIG.ifKeyPresent(DISPLAY_MONITOR, value -> {
-            if (!value.equals("primary")) {
-                int monitor = parseInt(value);
-                D2D2.getStarter().setMonitor(monitor);
             }
         });
     }

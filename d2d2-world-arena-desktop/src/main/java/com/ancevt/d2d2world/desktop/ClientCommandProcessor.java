@@ -19,12 +19,14 @@ package com.ancevt.d2d2world.desktop;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.hash.MD5;
+import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.net.client.PlayerManager;
 import com.ancevt.util.args.Args;
 import com.ancevt.util.texttable.TextTable;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +34,7 @@ import java.util.function.Function;
 
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 
+@Slf4j
 public class ClientCommandProcessor {
 
     public static final ClientCommandProcessor COMMAND_PROCESSOR = new ClientCommandProcessor();
@@ -104,11 +107,16 @@ public class ClientCommandProcessor {
         }
 
         Holder<Boolean> result = new Holder<>(false);
-        commands.stream()
-                .filter(c -> c.command.equals(command))
-                .findAny()
-                .ifPresent(c -> result.setValue(c.function().apply(tokens)));
-
+        try {
+            commands.stream()
+                    .filter(c -> c.command.equals(command))
+                    .findAny()
+                    .ifPresent(c -> result.setValue(c.function().apply(tokens)));
+        } catch (Exception ex) {
+            Chat.getInstance().addMessage(ex.toString(), Color.RED);
+            log.error(ex.getMessage(), ex);
+            result.setValue(true);
+        }
         return result.getValue();
     }
 
