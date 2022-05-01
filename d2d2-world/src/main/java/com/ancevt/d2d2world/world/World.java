@@ -321,7 +321,7 @@ public class World extends DisplayObjectContainer {
                 Room targetRoom = currentMap.getRoom(roomIdSwitchTo);
                 setRoom(targetRoom);
                 setSceneryPacked(true);
-                overlay.setSize(targetRoom.getWidth() * 2, targetRoom.getHeight() * 2 );
+                overlay.setSize(targetRoom.getWidth() * 2, targetRoom.getHeight() * 2);
                 actor.setXY(actorX, actorY);
                 camera.setXY(actorX, actorY);
                 addGameObject(actor, 5, false);
@@ -363,10 +363,8 @@ public class World extends DisplayObjectContainer {
             parallax.setCamera(getCamera());
         }
 
-        if(!(gameObject instanceof Scenery scenery) || scenery.isStatic()) {
-            gameObjects.add(gameObject);
-            gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
-        }
+        gameObjects.add(gameObject);
+        gameObjectMap.put(gameObject.getGameObjectId(), gameObject);
 
         getLayer(layerIndex).add(gameObject);
 

@@ -21,6 +21,7 @@ import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.gameobject.Scenery;
+import com.ancevt.d2d2world.gameobject.SceneryRect;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.*;
@@ -74,6 +75,16 @@ public class BuiltInMapkit extends Mapkit {
                         e.printStackTrace();
                     }
                 }
+
+                add("""
+                        id = scenery_rect 
+                        | class = """ + SceneryRect.class.getName() + """
+                        | idle = 0,0,0,0
+                        | atlas = $ATLAS$
+                        | width = 16
+                        | height = 16
+                        """);
+
                 add("""
                         id = water_scenery_surface
                         | class = """ + Scenery.class.getName() + """

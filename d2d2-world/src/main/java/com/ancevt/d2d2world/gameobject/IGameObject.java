@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface IGameObject extends IDisplayObject, IProcessable {
-
     default Map<String, Object> extra() {
         return DefaultMaps.extraMap.computeIfAbsent(this, k -> new HashMap<>());
     }

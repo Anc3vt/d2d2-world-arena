@@ -25,7 +25,7 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IRepeatable;
-import com.ancevt.d2d2world.gameobject.area.Area;
+import com.ancevt.d2d2world.gameobject.ISizable;
 
 public class Selection extends DisplayObjectContainer {
     private final BorderedRect rect;
@@ -45,7 +45,7 @@ public class Selection extends DisplayObjectContainer {
 
         add(rect);
 
-        if (gameObject instanceof IRepeatable || gameObject instanceof Area) {
+        if (gameObject instanceof IRepeatable || gameObject instanceof ISizable) {
             repeatControl = new RepeatControl();
             add(repeatControl, getWidth() - 8, getHeight() - 8);
         }

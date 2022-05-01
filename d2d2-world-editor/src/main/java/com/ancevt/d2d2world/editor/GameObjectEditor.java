@@ -39,9 +39,9 @@ import com.ancevt.d2d2world.gameobject.IMovable;
 import com.ancevt.d2d2world.gameobject.IRepeatable;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.IRotatable;
+import com.ancevt.d2d2world.gameobject.ISizable;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
-import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.FireWeapon;
 import com.ancevt.d2d2world.map.MapIO;
@@ -62,6 +62,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
+
 public class GameObjectEditor {
 
     private static final int GRID_SIZE = 16;
@@ -77,7 +79,7 @@ public class GameObjectEditor {
     private final Cursor cursor;
     private final List<IDisplayObject> collisionRects;
     private MapkitItem placingMapkitItem;
-    private Area resizingArea;
+    private ISizable resizingSizable;
     private boolean moving;
     private IRepeatable repeating;
     private boolean snapToGrid;
@@ -167,9 +169,7 @@ public class GameObjectEditor {
                     }
 
                     case 'S' -> {
-                        //setSnapToGrid(!isSnapToGrid());
                         snapToGridSelected();
-                        //setInfoText("Snap to grid: " + isSnapToGrid());
                     }
 
                     case 'R' -> editor.showRoomInfo();
@@ -250,7 +250,7 @@ public class GameObjectEditor {
             }
 
             repeating = null;
-            resizingArea = null;
+            resizingSizable = null;
             moving = false;
             selecting = false;
             return;
@@ -269,6 +269,8 @@ public class GameObjectEditor {
 
         IGameObject selectedGameObject = getGameObjectUnderPoint(editor.getCurrentLayerIndex(), worldX, worldY);
 
+        debug("GameObjectEditor:274: <A>" + selectedGameObject);
+
         if (!isSelected(selectedGameObject) && !editor.isShiftDown()) unselect();
 
         if (selectedGameObject != null) {
@@ -282,8 +284,8 @@ public class GameObjectEditor {
 
                 if (selectedGameObject instanceof IRepeatable r)
                     repeating = r;
-                else if (selectedGameObject instanceof Area)
-                    resizingArea = (Area) selectedGameObject;
+                else if (selectedGameObject instanceof ISizable)
+                    resizingSizable = (ISizable) selectedGameObject;
             }
         } else {
             moving = false;
@@ -335,14 +337,14 @@ public class GameObjectEditor {
 
             if (repeatX > 0) repeating.setRepeatX(repeatX);
             if (repeatY > 0) repeating.setRepeatY(repeatY);
-        } else if (resizingArea != null && selectedGameObjects.size() == 1 && selectedGameObjects.contains(resizingArea)) {
-            float w = worldX - resizingArea.getX();
-            float h = worldY - resizingArea.getY();
+        } else if (resizingSizable != null && selectedGameObjects.size() == 1 && selectedGameObjects.contains(resizingSizable)) {
+            float w = worldX - resizingSizable.getX();
+            float h = worldY - resizingSizable.getY();
 
             if (w >= 0 && h > 0) {
-                resizingArea.setSize(worldX - resizingArea.getX(), worldY - resizingArea.getY());
+                resizingSizable.setSize(worldX - resizingSizable.getX(), worldY - resizingSizable.getY());
             } else {
-                resizingArea.setSize(16f, 16f);
+                resizingSizable.setSize(16f, 16f);
             }
         } else if (!selectedGameObjects.isEmpty() && moving) {
             float scale = getWorld().getAbsoluteScaleX();
@@ -572,9 +574,9 @@ public class GameObjectEditor {
         for (IGameObject gameObject : selectedGameObjects) {
             snapToGrid(gameObject);
 
-            if (gameObject instanceof Area a) {
-                while ((int) a.getWidth() % GRID_SIZE != 0) a.setWidth(a.getWidth() + 1);
-                while ((int) a.getHeight() % GRID_SIZE != 0) a.setHeight(a.getHeight() + 1);
+            if (gameObject instanceof ISizable sizable  ) {
+                while ((int) sizable.getWidth() % GRID_SIZE != 0) sizable.setWidth(sizable.getWidth() + 1);
+                while ((int) sizable.getHeight() % GRID_SIZE != 0) sizable.setHeight(sizable.getHeight() + 1);
             }
         }
     }
@@ -610,7 +612,11 @@ public class GameObjectEditor {
     }
 
     private static boolean hitTest(float x, float y, @NotNull IDisplayObject o) {
-        float ox = o.getX(), oy = o.getY(), ow = o.getWidth(), oh = o.getHeight();
+        float ox = o.getX();
+        float oy = o.getY();
+        float ow = o.getWidth();
+        float oh = o.getHeight();
+
         if (o instanceof ICollision c) {
             ox += c.getCollisionX();
             oy += c.getCollisionY();
@@ -623,15 +629,20 @@ public class GameObjectEditor {
     }
 
     private static boolean hitTest(@NotNull IDisplayObject o1, IDisplayObject o2) {
-
-        float x1 = o1.getX(), y1 = o1.getY(), w1 = o1.getWidth(), h1 = o1.getHeight();
+        float x1 = o1.getX();
+        float y1 = o1.getY();
+        float w1 = o1.getWidth();
+        float h1 = o1.getHeight();
 
         if (o1 instanceof ICollision c) {
             x1 += c.getCollisionX();
             y1 += c.getCollisionY();
         }
 
-        float x2 = o2.getX(), y2 = o2.getY(), w2 = o2.getWidth(), h2 = o2.getHeight();
+        float x2 = o2.getX();
+        float y2 = o2.getY();
+        float w2 = o2.getWidth();
+        float h2 = o2.getHeight();
 
         if (o2 instanceof ICollision c) {
             x2 += c.getCollisionX();
@@ -684,7 +695,6 @@ public class GameObjectEditor {
 
     public final void select(IGameObject o) {
         if (!selectedGameObjects.contains(o) && !isGameObjectInLockedLayer(o)) {
-
             selectedGameObjects.add(o);
         }
         updateSelecting();
