@@ -126,12 +126,12 @@ public class IntroRoot extends Root {
 
             PlainRect plainRect = new PlainRect(
                     getStage().getStageWidth(),
-                    getStage().getStageHeight() - 200,
+                    getStage().getStageHeight() - 300,
                     Color.of(0x4d0072)
             );
             add(plainRect);
 
-            add(new CityBgSprite(), 0, 150);
+            add(new CityBgSprite(), 0, 200);
 
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);

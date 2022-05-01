@@ -565,7 +565,6 @@ public class GameObjectEditor {
         IdGenerator.getInstance().removeId(gameObject.getGameObjectId());
     }
 
-
     private World getWorld() {
         return editor.getWorld();
     }

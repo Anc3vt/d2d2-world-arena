@@ -362,7 +362,7 @@ public class LWJGLRenderer implements IRenderer {
         float ch = -charHeight / textureAtlasHeight;
 
         GL30.glTexCoord2d(cx, -cy);
-        GL30.glVertex2d(x + vertexBleedingFix, y + vertexBleedingFix);
+        GL30.glVertex2d(x - vertexBleedingFix, y + vertexBleedingFix);
 
         GL30.glTexCoord2d(cx + cw, -cy);
         GL30.glVertex2d(charWidth * scX + x + vertexBleedingFix, y + vertexBleedingFix);

@@ -24,7 +24,7 @@ import com.ancevt.d2d2.display.texture.Texture;
 
 public class CityBgSprite extends Sprite {
 
-    private static final float SPEED = 10;
+    private static final float SPEED = 0.5f;
     private static Texture texture;
 
     public static Texture createOrGetTexture() {
