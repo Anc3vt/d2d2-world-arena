@@ -79,6 +79,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
@@ -129,6 +130,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
         world.addEventListener(hashCode() + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
         world.addEventListener(hashCode() + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
+        world.addEventListener(hashCode() + WorldEvent.ACTOR_DEATH, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
 
         gameObjectTexts = new GameObjectTexts(world);
 
@@ -138,7 +140,8 @@ public class WorldScene extends DisplayObjectContainer {
         world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
         add(world);
 
-        playerArrowView = new PlayerArrowView(world);
+        playerArrowView = new PlayerArrowView();
+        //playerArrowView.setScale(D2D2World.SCALE, D2D2World.SCALE);
 
         shadowRadial = new ShadowRadial() {
             @Override
@@ -287,21 +290,21 @@ public class WorldScene extends DisplayObjectContainer {
 
                     Holder<Boolean> found = new Holder<>(false);
 
-                    GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDevice()).stream().toList().forEach(glfwVidMode -> {
-                        if (glfwVidMode.width() == width &&
-                                glfwVidMode.height() == height &&
-                                (glfwVidMode.refreshRate() == refreshRate || refreshRate == -1)) {
+                    LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getMonitorDevice()).forEach(videoMode -> {
+                        if (videoMode.getWidth() == width &&
+                                videoMode.getHeight() == height &&
+                                (videoMode.getRefreshRate() == refreshRate || refreshRate == -1)) {
 
                             found.setValue(true);
 
-                            Chat.getInstance().addMessage(width + "x" + height + " " + refreshRate);
+                            Chat.getInstance().addMessage(width + "x" + height + " " + videoMode.getRefreshRate());
 
                             LWJGLVideoModeUtils.setVideoMode(
                                     MonitorDevice.getMonitorDevice(),
                                     D2D2.getStarter().getWindowId(),
                                     width,
                                     height,
-                                    refreshRate
+                                    videoMode.getRefreshRate()
                             );
                         }
                     });
@@ -317,6 +320,14 @@ public class WorldScene extends DisplayObjectContainer {
         ammunitionHud = new AmmunitionHud();
     }
 
+    private void world_actorDeath(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (world.getGameObjectById(e.getDeadActorGameObjectId()) instanceof PlayerActor playerActor) {
+            playerArrowView.removePlayerArrow(playerActor);
+        }
+        debug("WorldScene:327: <A>world_actorDeath");
+    }
+
     public void resize(float w, float h) {
         setXY(w / 2, h / 2);
 
@@ -327,7 +338,13 @@ public class WorldScene extends DisplayObjectContainer {
 
         overlay.setXY(-w / 2, -h / 2);
 
-        playerArrowView.setViewport(w - 100,h);
+        playerArrowView.setXY(0, 0);
+        playerArrowView.setScale(getScaleX(), getScaleY());
+
+        playerArrowView.setViewport(
+                w / playerArrowView.getAbsoluteScaleX(),
+                h / playerArrowView.getAbsoluteScaleY()
+        );
 
         ammunitionHud.setXY(w - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
 
@@ -350,11 +367,11 @@ public class WorldScene extends DisplayObjectContainer {
         ammunitionHud.setScale(3, 3);
         getParent().add(ammunitionHud, w - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
         playerArrowView.setViewport(
-                w / getAbsoluteScaleX(),
-                h / getAbsoluteScaleY()
+                w / playerArrowView.getAbsoluteScaleX(),
+                h / playerArrowView.getAbsoluteScaleY()
         );
 
-        add(playerArrowView, -getX() / 2, -getY() / 2);
+        getParent().add(playerArrowView);
 
         float scale = h / D2D2World.ORIGIN_HEIGHT;
         setScaleY(scale);
@@ -603,6 +620,13 @@ public class WorldScene extends DisplayObjectContainer {
     /**
      * Calls from {@link GameRoot}
      */
+    public void playerDeath(int deadPlayerId, int killerPlayerId) {
+        getPlayerActorByPlayerId(deadPlayerId).ifPresent(playerArrowView::removePlayerArrow);
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
     public void remotePlayerExit(int playerId) {
     }
 
@@ -610,6 +634,7 @@ public class WorldScene extends DisplayObjectContainer {
      * Calls from {@link GameRoot}
      */
     public void setRoom(String roomId, float cameraX, float cameraY) {
+        playerArrowView.clear();
         world.setSceneryPacked(false);
         world.setRoom(world.getMap().getRoom(roomId));
         world.setSceneryPacked(true);
@@ -672,6 +697,8 @@ public class WorldScene extends DisplayObjectContainer {
         if (localPlayerActor == playerActor) return;
 
         localPlayerActor = playerActor;
+
+        playerArrowView.setFrom(localPlayerActor);
 
         if (overlay.getState() == Overlay.STATE_BLACK) {
             world.getCamera().setXY(localPlayerActor.getX(), localPlayerActor.getY());

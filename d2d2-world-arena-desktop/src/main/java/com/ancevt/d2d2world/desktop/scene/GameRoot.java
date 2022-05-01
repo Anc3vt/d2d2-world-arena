@@ -318,6 +318,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
                     PLAYER_MANAGER.getPlayerById(deadPlayerId).orElseThrow().decrementFrags();
                 });
+
+        worldScene.playerDeath(deadPlayerId, killerPlayerId);
     }
 
     /**

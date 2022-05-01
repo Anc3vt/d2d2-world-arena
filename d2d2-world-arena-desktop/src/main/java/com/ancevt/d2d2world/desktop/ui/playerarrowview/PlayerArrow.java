@@ -37,10 +37,24 @@ public class PlayerArrow extends DisplayObjectContainer {
         this.target = displayObject;
         removeEventListener(PlayerArrow.class);
         addEventListener(PlayerArrow.class, Event.EACH_FRAME, event -> {
+            IDisplayObject from = playerArrowView.getFrom();
+
+            float tax = target.getAbsoluteX() / target.getAbsoluteScaleX();
+            float tay = target.getAbsoluteY() / target.getAbsoluteScaleY();
+
+
+            /*
 
             setXY(
                     (target.getX() - playerArrowView.getX() + playerArrowView.getWorld().getX()) / 2 + playerArrowView.getViewportWidth() / 4,
                     (target.getY() - playerArrowView.getY() + playerArrowView.getWorld().getY()) / 2 + playerArrowView.getViewportHeight() / 4
+            );
+
+             */
+
+            setXY(
+                    tax / 2 + playerArrowView.getViewportWidth() / 4,
+                    tay / 2 + playerArrowView.getViewportHeight() / 4
             );
 
             if (getX() < 0) {
@@ -55,18 +69,23 @@ public class PlayerArrow extends DisplayObjectContainer {
                 setY(playerArrowView.getViewportHeight());
             }
 
+
             sprite.setVisible(
-                    target.getX() - playerArrowView.getX() + playerArrowView.getWorld().getX() < 0 ||
-                    target.getX() - playerArrowView.getX() + playerArrowView.getWorld().getX() > playerArrowView.getViewportWidth() ||
-                    target.getY() - playerArrowView.getY() + playerArrowView.getWorld().getY() < 0 ||
-                    target.getY() - playerArrowView.getY() + playerArrowView.getWorld().getY() > playerArrowView.getViewportHeight()
+                    tax < 0 ||
+                    tax > playerArrowView.getViewportWidth() ||
+                    tay < 0 ||
+                    tay > playerArrowView.getViewportHeight()
             );
 
-            float absoluteX = getAbsoluteX();
-            float absoluteY = getAbsoluteY();
-            float targetAbsoluteX = target.getAbsoluteX();
-            float targetAbsoluteY = target.getAbsoluteY();
-            float deg = -RadialUtils.getDegreeBetweenPoints(absoluteX, absoluteY, targetAbsoluteX, targetAbsoluteY);
+            if (playerArrowView.getFrom() == null) {
+                return;
+            }
+
+            float fromAbsoluteX = from.getAbsoluteX() / from.getAbsoluteScaleX();
+            float fromAbsoluteY = from.getAbsoluteY() / from.getAbsoluteScaleY();
+            float targetAbsoluteX = target.getAbsoluteX() / target.getAbsoluteScaleX();
+            float targetAbsoluteY = target.getAbsoluteY() / target.getAbsoluteScaleY();
+            float deg = -RadialUtils.getDegreeBetweenPoints(fromAbsoluteX, fromAbsoluteY, targetAbsoluteX, targetAbsoluteY);
             setRotation(deg);
 
             setAlpha(getAlpha() + alphaDirection);
