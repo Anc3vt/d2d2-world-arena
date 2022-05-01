@@ -422,7 +422,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         Chat.getInstance().dispose();
         new Lock().lock(1, SECONDS);
         DebugPanel.saveAll();
-        System.exit(0);
+        D2D2.exit();
     }
 }
 

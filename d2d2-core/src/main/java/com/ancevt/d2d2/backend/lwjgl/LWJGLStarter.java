@@ -114,6 +114,7 @@ public class LWJGLStarter implements D2D2Starter {
     private int videoModeHeight;
     private long monitor;
     private VideoMode previousVideoMode;
+    private boolean stopped;
 
     public LWJGLStarter(int width, int height, String title) {
         this.width = width;
@@ -124,6 +125,8 @@ public class LWJGLStarter implements D2D2Starter {
 
     @Override
     public void stop() {
+        if(stopped) return;
+        stopped = true;
         glfwSetWindowShouldClose(windowId, true);
     }
 

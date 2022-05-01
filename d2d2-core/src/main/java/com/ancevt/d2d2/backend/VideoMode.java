@@ -2,9 +2,11 @@ package com.ancevt.d2d2.backend;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Builder
+@RequiredArgsConstructor
 public class VideoMode {
     private final int width;
     private final int height;

@@ -17,9 +17,11 @@
  */
 package com.ancevt.d2d2world.desktop.scene;
 
+import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -62,6 +64,8 @@ import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWVidMode;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -83,6 +87,7 @@ import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
 @Slf4j
 public class WorldScene extends DisplayObjectContainer {
@@ -258,6 +263,53 @@ public class WorldScene extends DisplayObjectContainer {
                 }
         ));
 
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//videmodelist",
+                a -> {
+                    GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor());
+                    List<GLFWVidMode> list = glfwVidModes.stream().toList();
+                    list.forEach(m -> Chat.getInstance().addMessage(m.width() + "x" + m.height() + " " + m.refreshRate()));
+                    return true;
+                }
+        ));
+
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//videomode",
+                a -> {
+                    int width = a.get(int.class, 1, 0);
+                    int height = a.get(int.class, 2, 0);
+                    int refreshRate = a.get(int.class, 3, 0);
+
+                    Holder<Boolean> found = new Holder<>(false);
+
+                    GLFW.glfwGetVideoModes(glfwGetPrimaryMonitor()).stream().toList().forEach(glfwVidMode -> {
+                        if (glfwVidMode.width() == width &&
+                                glfwVidMode.height() == height &&
+                                (glfwVidMode.refreshRate() == refreshRate || refreshRate == -1)) {
+
+                            found.setValue(true);
+
+                            Chat.getInstance().addMessage(width + "x" + height + " " + refreshRate);
+                            Chat.getInstance().setHeight(height - 30);
+
+                            LWJGLVideoModeUtils.setVideoMode(
+                                    glfwGetPrimaryMonitor(),
+                                    D2D2.getStarter().getWindowId(),
+                                    width,
+                                    height,
+                                    refreshRate
+                            );
+                        }
+                    });
+
+                    if (!found.getValue()) {
+                        Chat.getInstance().addMessage("vid mode not found");
+                    }
+
+                    return true;
+                }
+        ));
+
         ammunitionHud = new AmmunitionHud();
     }
 
@@ -311,7 +363,7 @@ public class WorldScene extends DisplayObjectContainer {
                 if (player.isChatOpened()) showChatBubble(playerActor);
             });
 
-            if(!playerActor.isLocalPlayerActor()) {
+            if (!playerActor.isLocalPlayerActor()) {
                 playerArrowView.createPlayerArrow(playerActor, playerActor.getPlayerColor());
             }
 

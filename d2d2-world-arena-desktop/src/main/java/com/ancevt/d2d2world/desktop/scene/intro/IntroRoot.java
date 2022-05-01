@@ -49,7 +49,6 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.desktop.DesktopConfig.AUTO_ENTER;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.DISPLAY_MONITOR;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.FULLSCREEN;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.PLAYERNAME;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SERVER;
@@ -204,10 +203,6 @@ public class IntroRoot extends Root {
                 D2D2.getStarter().setMonitor(monitor);
             }
         });
-
-        if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
-            D2D2.setFullscreen(true);
-        }
     }
 
     private void keyEnter(Event event) {
