@@ -261,7 +261,29 @@ public class WorldScene extends DisplayObjectContainer {
         ammunitionHud = new AmmunitionHud();
     }
 
+    public void resize(float w, float h) {
+        overlay = new Overlay(w, h);
+        setXY(w / 2, h / 2);
+        add(overlay, -w / 2, -h / 2);
+        world.getCamera().setViewportSize(w, h);
+        world.getCamera().setBoundsLock(true);
+
+        ammunitionHud.setScale(3, 3);
+        getParent().add(ammunitionHud, getStage().getStageWidth() - (32 + (8 * 4)) * ammunitionHud.getScaleX(), 0);
+        playerArrowView.setViewport(
+                w / getAbsoluteScaleX(),
+                h / getAbsoluteScaleY()
+        );
+        add(playerArrowView, -getX() / 2, -getY() / 2);
+
+
+        setScaleY(h / D2D2World.ORIGIN_HEIGHT);
+        toScaleY(D2D2World.SCALE);
+        setScaleX(getScaleY());
+    }
+
     private void this_addToStage(Event event) {
+        /*
         removeEventListener(getClass());
         final float w = getStage().getStageWidth();
         final float h = getStage().getStageHeight();
@@ -278,6 +300,8 @@ public class WorldScene extends DisplayObjectContainer {
                 D2D2.getStage().getStageHeight() / getAbsoluteScaleY()
         );
         add(playerArrowView, -getX() / 2, -getY() / 2);
+
+         */
     }
 
     private void world_addGameObject(Event<World> event) {

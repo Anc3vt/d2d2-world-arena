@@ -23,12 +23,13 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
-import com.ancevt.d2d2world.sound.D2D2WorldSound;
+import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -38,6 +39,7 @@ import com.ancevt.d2d2world.net.client.Player;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
+import com.ancevt.d2d2world.sound.D2D2WorldSound;
 import com.ancevt.net.CloseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -46,10 +48,10 @@ import java.time.LocalDateTime;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
-import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_ENTER;
-import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_EXIT;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
+import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_ENTER;
+import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_EXIT;
 import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -87,7 +89,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 CLIENT.sendChatMessage(text);
             }
         });
-
 
         addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
@@ -131,7 +132,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             }
         });
 
-
         worldScene = new WorldScene();
         add(worldScene);
 
@@ -145,6 +145,12 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         FileReceiverManager.INSTANCE.addFileReceiverManagerListener(this);
 
         INSTANCE = this;
+
+        addEventListener(Event.ADD_TO_STAGE, event->{
+            getStage().addEventListener(IntroRoot.class, Event.RESIZE, resizeEvent -> {
+                worldScene.resize(getStage().getWidth(), getStage().getHeight());
+            });
+        });
     }
 
     /**

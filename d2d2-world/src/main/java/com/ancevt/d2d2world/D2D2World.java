@@ -28,7 +28,10 @@ import static com.ancevt.d2d2.D2D2.getTextureManager;
 
 public class D2D2World {
 
-    public static final float SCALE = 2.5f;
+    public static final float ORIGIN_WIDTH = 800f;
+    public static final float ORIGIN_HEIGHT = 600f;
+
+    public static final float SCALE = 1.80f;//2.5f;
 
     private static boolean server;
     private static Aim aim;

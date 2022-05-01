@@ -67,7 +67,7 @@ public class Chat extends DisplayObjectContainer {
     private boolean shadowEnabled;
     private int historyIndex;
 
-    private Chat() {
+    public Chat() {
         input = new UiTextInput();
         messages = new CopyOnWriteArrayList<>();
         displayedMessages = new CopyOnWriteArrayList<>();

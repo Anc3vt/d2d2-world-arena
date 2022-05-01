@@ -19,9 +19,9 @@ package com.ancevt.d2d2world.desktop;
 
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.media.SoundSystem;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.ScreenUtils;
 import com.ancevt.d2d2world.debug.DebugPanel;
@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
 import static java.lang.Integer.parseInt;
@@ -82,8 +83,11 @@ public class D2D2WorldArenaDesktopMain {
         String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYERNAME);
         var screenDimension = ScreenUtils.getDimension();
 
-        D2D2.init(new LWJGLStarter(screenDimension.width() / 2 + 100, screenDimension.height() / 2 + 100,
-                "(floating) D2D2 World Arena " + autoEnterPlayerName));
+        D2D2.init(new LWJGLStarter(
+                (int) D2D2World.ORIGIN_WIDTH,
+                (int) D2D2World.ORIGIN_HEIGHT,
+                "(floating) D2D2 World Arena " + autoEnterPlayerName)
+        );
         D2D2World.init(false, false);
 
         String debugScreenSize = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
@@ -102,10 +106,12 @@ public class D2D2WorldArenaDesktopMain {
             D2D2.getStarter().setWindowXY(x, y);
         }
 
+
         IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
 
-        D2D2.getStage().setRoot(introRoot);
-        D2D2.getStage().setScaleMode(ScaleMode.REAL);
+        getStage().setRoot(introRoot);
+        getStage().setScaleMode(ScaleMode.REAL);
+
         D2D2.loop();
 
         if (GameRoot.INSTANCE != null) {

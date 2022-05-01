@@ -31,6 +31,7 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.panels.Button;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.ui.Font;
 import com.ancevt.d2d2world.desktop.ui.UiText;
@@ -127,12 +128,12 @@ public class IntroRoot extends Root {
 
             PlainRect plainRect = new PlainRect(
                     getStage().getStageWidth(),
-                    getStage().getStageHeight() - 300,
-                    Color.DARK_BLUE
+                    getStage().getStageHeight() - 200,
+                    Color.of(0x4d0072)
             );
             add(plainRect);
 
-            add(new CityBgSprite(), 0, 205);
+            add(new CityBgSprite(), 0, 150);
 
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
@@ -157,6 +158,21 @@ public class IntroRoot extends Root {
 
             if (MODULE_CONFIG.getBoolean(AUTO_ENTER)) {
                 enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+            } else {
+                getStage().addEventListener(IntroRoot.class, Event.RESIZE, resizeEvent -> {
+                    float width = getStage().getWidth();
+                    float height = getStage().getHeight();
+                    var root = getStage().getRoot();
+
+                    root.setScaleY(height / D2D2World.ORIGIN_HEIGHT);
+                    root.setScaleX(root.getScaleY());
+
+                    float w = width;
+                    float ow = D2D2World.ORIGIN_WIDTH;
+                    float s = root.getScaleX();
+
+                    root.setX((w - ow * s) / 2);
+                });
             }
 
             add(new UAFlag());
@@ -166,6 +182,7 @@ public class IntroRoot extends Root {
             if (!MODULE_CONFIG.getString(PLAYERNAME).equals("") && !MODULE_CONFIG.getString(SERVER).equals("")) {
                 enter(MODULE_CONFIG.getString(SERVER), MODULE_CONFIG.getString(PLAYERNAME));
             }
+
 
         });
 
@@ -198,6 +215,8 @@ public class IntroRoot extends Root {
     }
 
     public void enter(String server, String localPlayerName) {
+        D2D2.getStage().removeEventListener(IntroRoot.class);
+
         if (!PatternMatcher.check(uiTextInputPlayerName.getText(), NAME_PATTERN)) return;
 
         log.info("Enter try, server: {}, player name: {}", server, localPlayerName);

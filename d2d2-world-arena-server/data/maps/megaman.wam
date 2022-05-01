@@ -18,7 +18,7 @@ room | id = room-8 | width = 992 | height = 340 | darkness = 0 | backgroundColor
 
 room | id = room-9 | width = 992 | height = 340 | darkness = 0 | backgroundColor = f1a2f 
 
-room | id = room-main | width = 1984 | height = 992 | darkness = 3 | backgroundColor = 271b8f 
+room | id = room-main | width = 1984 | height = 992 | darkness = 1 | backgroundColor = 271b8f 
 id = 141 | mapkit = megaman | item = _black-bg | layer = 0 | name = _141_1608841851 | x = 16.0 | y = 144.0 | repeatX = 123 | repeatY = 55 | rotation = 0.0 | scaleY = 1.0 | scaleX = 1.0 | alpha = 1.0 | colorHex = ffffff | static = true | bleedingFix = 5.0E-4 
 id = 1 | mapkit = megaman | item = _parallax_moon | layer = 0 | name = _1_-875940010 | x = 240.0 | y = 64.0 | speed = 0.9 | scaleY = 2.0 | scaleX = 2.0 | repeatX = 1 | repeatY = 1 | startX = 240.0 | startY = 64.0 | offsetX = 100.0 
 id = 93 | mapkit = megaman | item = _parallax_0 | layer = 1 | name = _93_-1192520893_93 | x = 16.0 | y = 144.0 | speed = 0.125 | scaleY = 1.0 | scaleX = 1.0 | repeatX = 10 | repeatY = 1 | startX = 16.0 | startY = 144.0 | offsetX = 0.0 
