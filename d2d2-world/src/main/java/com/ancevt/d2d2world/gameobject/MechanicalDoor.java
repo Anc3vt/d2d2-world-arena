@@ -61,6 +61,7 @@ public class MechanicalDoor extends Sprite implements
 
     public void close() {
         closing = true;
+        setAlpha(1f);
         if (mapkitItem.getDataEntry().containsKey(DataKey.CLOSE_SOUND)) {
             playSound(mapkitItem.getDataEntry().getString(DataKey.CLOSE_SOUND));
         }
@@ -76,6 +77,7 @@ public class MechanicalDoor extends Sprite implements
             if (collisionHeight <= 0) {
                 opening = false;
                 tact = getTimeTacts();
+                setAlpha(0f);
             }
         }
 
@@ -158,6 +160,7 @@ public class MechanicalDoor extends Sprite implements
         setCollisionWidth(closedCollisionWidth);
         setCollisionHeight(closedCollisionHeight);
         setTexture(mapkitItem.getTexture());
+        tact = 0;
         opening = false;
     }
 
