@@ -46,7 +46,7 @@ public class DesktopConfig {
     public static final String DEBUG_GAME_OBJECT_IDS = "debug.game-object-ids";
     public static final String DEBUG_CHARACTER = "debug.character-mapkit-item";
     public static final String AUTO_ENTER = "auto-enter";
-    public static final String FULLSCREEN = "fullscreen";
+    public static final String FULLSCREEN = "display.fullscreen";
     public static final String DEBUG_WINDOW_SIZE = "debug.window-size";
     public static final String SOUND_ENABLED = "sound-enabled";
     public static final String DEBUG_WINDOW_XY = "debug.window-xy";

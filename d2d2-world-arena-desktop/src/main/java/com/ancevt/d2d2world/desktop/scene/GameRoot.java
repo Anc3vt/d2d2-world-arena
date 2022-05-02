@@ -20,6 +20,7 @@ package com.ancevt.d2d2world.desktop.scene;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
@@ -28,6 +29,7 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
+import com.ancevt.d2d2world.desktop.MonitorDevice;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
@@ -107,6 +109,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                     setTabWindowVisible(true);
                 }
                 case KeyCode.F -> {
+                    LWJGLVideoModeUtils.linuxCare(
+                            MonitorDevice.getMonitorDevice(),
+                            LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice())
+                    );
+
                     if (e.isAlt()) D2D2.setFullscreen(!D2D2.isFullscreen());
                 }
                 case KeyCode.S -> {

@@ -47,12 +47,14 @@ import java.io.IOException;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
-import static org.lwjgl.glfw.GLFW.GLFW_DONT_CARE;
+import static org.lwjgl.glfw.GLFW.GLFW_DECORATED;
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_MOD_ALT;
 import static org.lwjgl.glfw.GLFW.GLFW_MOD_CONTROL;
 import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
@@ -70,7 +72,6 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowCloseCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
@@ -414,9 +415,14 @@ public class LWJGLStarter implements D2D2Starter {
         }
 
         if (value) {
-            glfwSetWindowMonitor(windowId, monitor, 0, 0, videoModeWidth, videoModeHeight, GLFW_DONT_CARE);
-        } else
-            glfwSetWindowMonitor(windowId, NULL, windowX, windowY, windowWidth, windowHeight, GLFW_DONT_CARE);
+            glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+            glfwSetWindowPos(windowId, 0, -20);
+            glfwSetWindowSize(windowId, videoModeWidth, videoModeHeight);
+        } else {
+            glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+            glfwSetWindowPos(windowId, windowX, windowY);
+            glfwSetWindowSize(windowId, windowWidth, windowHeight);
+        }
 
         this.fullscreen = value;
     }

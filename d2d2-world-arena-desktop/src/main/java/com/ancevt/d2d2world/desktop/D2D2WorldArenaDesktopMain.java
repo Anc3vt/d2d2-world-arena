@@ -98,6 +98,7 @@ public class D2D2WorldArenaDesktopMain {
                 (int) D2D2World.ORIGIN_HEIGHT,
                 "(floating) D2D2 World Arena " + autoEnterPlayerName)
         );
+
         D2D2World.init(false, false);
         D2D2WorldArenaDesktopAssets.load();
 
@@ -113,10 +114,7 @@ public class D2D2WorldArenaDesktopMain {
         });
 
         previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice());
-
         if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
-            D2D2.setFullscreen(true);
-
             String displayResolutionString = MODULE_CONFIG.getString(DISPLAY_RESOLUTION);
             if (!displayResolutionString.equals("")) {
                 StringTokenizer stringTokenizer = new StringTokenizer(displayResolutionString, "x");
@@ -125,14 +123,16 @@ public class D2D2WorldArenaDesktopMain {
                 LWJGLVideoModeUtils.setVideoMode(
                         MonitorDevice.getMonitorDevice(),
                         D2D2.getStarter().getWindowId(),
-                        w, h, -1
+                        w, h, 60
                 );
 
             } else {
                 for(var videoMode : LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getMonitorDevice())) {
-                    if (videoMode.getHeight() == 900 || videoMode.getHeight() == 1050) {
-                        LWJGLVideoModeUtils.setVideoMode(MonitorDevice.getMonitorDevice(), D2D2.getStarter().getWindowId(), videoMode);
-                        break;
+                    if(videoMode.getRefreshRate() == 60) {
+                        if (videoMode.getHeight() == 900 || videoMode.getHeight() == 1050) {
+                            LWJGLVideoModeUtils.setVideoMode(MonitorDevice.getMonitorDevice(), D2D2.getStarter().getWindowId(), videoMode);
+                            break;
+                        }
                     }
                 }
             }

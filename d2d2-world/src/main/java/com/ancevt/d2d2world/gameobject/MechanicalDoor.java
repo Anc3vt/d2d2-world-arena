@@ -3,7 +3,6 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
-import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +31,7 @@ public class MechanicalDoor extends Sprite implements
 
     @Override
     public void onCollide(ICollision collideWith) {
-        if (collideWith instanceof Actor || collideWith instanceof Weapon.Bullet) {
+        if (collideWith instanceof Actor /* || collideWith instanceof Weapon.Bullet */) {
             if (getCollisionHeight() > 0) open();
         }
     }
