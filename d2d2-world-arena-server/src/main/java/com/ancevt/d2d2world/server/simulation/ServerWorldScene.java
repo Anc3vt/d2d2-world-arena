@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
+import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessagePlayerAttack;
 import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
 import static com.ancevt.d2d2world.server.ServerConfig.DEBUG_FORCED_SPAWN_AREA;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
@@ -129,11 +130,12 @@ public class ServerWorldScene {
 
             gameMap.getRooms().forEach(room -> {
                 World world = new World(new SyncDataAggregator());
-                world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
-                world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
-                world.addEventListener(this, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
-                world.addEventListener(this, WorldEvent.BULLET_DOOR_TELEPORT, this::world_bulletDoorTeleport);
-                world.addEventListener(this, WorldEvent.DESTROYABLE_BOX_DESTROY, this::world_destroyableDestroy);
+                world.addEventListener(ServerWorldScene.class + WorldEvent.ACTOR_ATTACK, WorldEvent.ACTOR_ATTACK, this::world_actorAttack);
+                world.addEventListener(ServerWorldScene.class + WorldEvent.ACTOR_DEATH, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+                world.addEventListener(ServerWorldScene.class + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
+                world.addEventListener(ServerWorldScene.class + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
+                world.addEventListener(ServerWorldScene.class + WorldEvent.BULLET_DOOR_TELEPORT, WorldEvent.BULLET_DOOR_TELEPORT, this::world_bulletDoorTeleport);
+                world.addEventListener(ServerWorldScene.class + WorldEvent.DESTROYABLE_BOX_DESTROY, WorldEvent.DESTROYABLE_BOX_DESTROY, this::world_destroyableDestroy);
                 world.setMap(gameMap);
                 world.setRoom(room);
                 world.setSceneryPacked(true);
@@ -143,6 +145,14 @@ public class ServerWorldScene {
             });
         } else {
             log.warn("No such map \"{}\"", mapName);
+        }
+    }
+
+    private void world_actorAttack(Event<World> event) {
+        var e = (WorldEvent) event;
+        if (e.getActor() instanceof PlayerActor playerActor) {
+            int playerId = playerActor.getPlayerId();
+            SENDER.sendToAllOfRoom(createMessagePlayerAttack(playerId), playerActor.getWorld().getRoom().getId());
         }
     }
 

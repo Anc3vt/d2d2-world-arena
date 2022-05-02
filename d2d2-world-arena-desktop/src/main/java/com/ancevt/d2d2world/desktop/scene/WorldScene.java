@@ -524,7 +524,6 @@ public class WorldScene extends DisplayObjectContainer {
                 if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(true);
-                    D2D2WorldArenaDesktopAssets.getAim().attack();
                     if (oldState != localPlayerController.getState()) {
                         CLIENT.sendLocalPlayerController(localPlayerController.getState());
                     }
@@ -659,6 +658,17 @@ public class WorldScene extends DisplayObjectContainer {
         if (world.getGameObjectById(destroyableGameObjectId) instanceof DestroyableBox destroyableBox) {
             destroyableBox.doDestroyEffect();
         }
+    }
+
+    /**
+     * Calls from {@link GameRoot}
+     */
+    public void playerShoot(int playerId) {
+        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
+            if (playerActor.isLocalPlayerActor()) {
+                D2D2WorldArenaDesktopAssets.getAim().attack();
+            }
+        });
     }
 
     private void showChatBubble(@NotNull PlayerActor playerActor) {

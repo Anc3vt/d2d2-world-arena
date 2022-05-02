@@ -22,11 +22,13 @@ import com.ancevt.d2d2world.net.dto.Dto;
 
 public non-sealed interface ClientProtocolImplListener extends ProtocolImplListener {
 
-    void dtoFromServer(@NotNull Dto extraDto);
+    default void dtoFromServer(@NotNull Dto extraDto){}
 
-    void playerPingResponse();
+    default void playerPingResponse(){}
 
-    void fileData(@NotNull String headers, byte[] fileData);
+    default void fileData(@NotNull String headers, byte[] fileData){}
 
-    void serverSyncData(byte @NotNull [] syncData);
+    default void serverSyncData(byte @NotNull [] syncData){}
+
+    default void playerShoot(int playerId){}
 }

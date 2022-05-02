@@ -209,7 +209,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         } else if (dto instanceof SpawnEffectDto d) {
             clientListeners.forEach(l -> l.spawnEffect(d.getX(), d.getY()));
         } else if (dto instanceof DestroyableBoxDestroyDto d) {
-            clientListeners.forEach(l ->l.destroyableBoxDestroy(d.getDestroyableGameObjectId()));
+            clientListeners.forEach(l -> l.destroyableBoxDestroy(d.getDestroyableGameObjectId()));
         }
     }
 
@@ -257,6 +257,14 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     @Override
     public void serverSyncData(byte @NotNull [] syncData) {
         syncDataReceiver.bytesReceived(syncData);
+    }
+
+    /**
+     * {@link ClientProtocolImplListener} method
+     */
+    @Override
+    public void playerShoot(int playerId) {
+        clientListeners.forEach(l -> l.playerShoot(playerId));
     }
 
     // SENDERS:

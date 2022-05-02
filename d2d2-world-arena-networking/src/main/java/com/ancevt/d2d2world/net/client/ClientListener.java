@@ -64,7 +64,9 @@ public interface ClientListener {
 
     default void setRoom(String roomId, float cameraX, float cameraY){}
 
-    default void spawnEffect(float x, float y){};
+    default void spawnEffect(float x, float y){}
 
-    default void destroyableBoxDestroy(int destroyableGameObjectId){};
+    default void destroyableBoxDestroy(int destroyableGameObjectId){}
+
+    default void playerShoot(int playerId){}
 }

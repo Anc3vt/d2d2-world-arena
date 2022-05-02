@@ -362,6 +362,14 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     }
 
     /**
+     * {@link ClientListener} method
+     */
+    @Override
+    public void playerShoot(int playerId) {
+        worldScene.playerShoot(playerId);
+    }
+
+    /**
      * {@link FileReceiverManager.FileReceiverManagerListener} method
      */
     @Override

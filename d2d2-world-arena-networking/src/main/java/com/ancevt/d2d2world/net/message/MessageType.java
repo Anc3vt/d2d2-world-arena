@@ -57,12 +57,18 @@ public class MessageType {
      * b)t i)hookGameObjectId
      */
     public static final int CLIENT_PLAYER_HOOK = 9;
-    //                                           CLIENT <=== SERVER
+    //                                           SERVER ===> CLIENT
 
     /**
      * b)t B)DATA
      */
     public static final int SERVER_SYNC_DATA = 120;
+
+
+    /**
+     * b)t)
+     */
+    public static final int SERVER_PLAYER_ATTACK = 121;
 
     //                                           CLIENT <==> SERVER
 

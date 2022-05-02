@@ -64,6 +64,12 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                     clientProtocolImplListeners.forEach(ClientProtocolImplListener::playerPingResponse);
                 }
 
+                case MessageType.SERVER_PLAYER_ATTACK -> {
+                    int playerId = in.readInt();
+                    log.trace("received <b>SERVER_PLAYER_SHOOT<> {}", playerId);
+                    clientProtocolImplListeners.forEach(l -> l.playerShoot(playerId));
+                }
+
                 case MessageType.SERVER_SYNC_DATA -> {
                     int length = in.readShort();
                     byte[] syncData = in.readBytes(length);

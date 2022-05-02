@@ -17,7 +17,7 @@ public class Particle extends DisplayObjectContainer {
     private ISprite sprite;
 
     private Particle() {
-        Texture texture = textureManager().getTexture("d2d2-world-particles-default0");
+        Texture texture = textureManager().getTexture("d2d2-world-particle");
 
         Texture[] textures = new Texture[]{
                 texture.getSubtexture(0, 0, 16, 16),

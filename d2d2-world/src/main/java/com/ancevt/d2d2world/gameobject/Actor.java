@@ -357,6 +357,14 @@ abstract public class Actor extends Animated implements
             getCurrentWeapon().shoot(getWorld());
             getWorld().getSyncDataAggregator().changeWeaponState(this, getCurrentWeapon().getClass().getName(), getCurrentWeapon().getAmmunition());
         }
+
+        if (isOnWorld()) {
+            getWorld().dispatchEvent(WorldEvent.builder()
+                    .type(WorldEvent.ACTOR_ATTACK)
+                    .actor(this)
+                    .build()
+            );
+        }
     }
 
     @Override

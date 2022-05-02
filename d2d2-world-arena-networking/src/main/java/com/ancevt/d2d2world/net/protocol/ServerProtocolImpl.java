@@ -17,8 +17,10 @@
  */
 package com.ancevt.d2d2world.net.protocol;
 
+import com.ancevt.commons.io.ByteOutputWriter;
 import com.ancevt.d2d2world.net.dto.client.PlayerPingReportDto;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.d2d2world.net.dto.Dto;
@@ -145,5 +147,13 @@ public final class ServerProtocolImpl extends ProtocolImpl {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    @Contract(value = " -> new", pure = true)
+    public static byte @NotNull [] createMessagePlayerAttack(int playerId) {
+        return ByteOutputWriter.newInstance()
+                .writeByte(MessageType.SERVER_PLAYER_ATTACK)
+                .writeInt(playerId)
+                .toByteArray();
     }
 }
