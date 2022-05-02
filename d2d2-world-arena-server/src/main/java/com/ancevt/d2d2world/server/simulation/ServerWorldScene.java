@@ -7,6 +7,7 @@ import com.ancevt.d2d2.backend.norender.NoRenderStarter;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
+import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
@@ -104,6 +105,7 @@ public class ServerWorldScene {
 
     @SneakyThrows(IOException.class)
     public void loadMap(String mapName) {
+        DefaultMaps.clear();
         reset();
         clear();
 

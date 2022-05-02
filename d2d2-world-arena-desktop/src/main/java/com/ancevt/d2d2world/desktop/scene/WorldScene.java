@@ -442,6 +442,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     public void loadMap(String mapFilename) {
+        DefaultMaps.clear();
         IdGenerator.getInstance().clear();
         world.clear();
         overlay.startIn();
@@ -461,7 +462,6 @@ public class WorldScene extends DisplayObjectContainer {
         world.getPlayProcessor().setAsyncProcessingEnabled(false);
         world.setSceneryPacked(false);
         world.clear();
-        DefaultMaps.clear();
 
         Async.run(() -> {
             try {

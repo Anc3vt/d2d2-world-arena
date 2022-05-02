@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (me@ancevt.com)
+ *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,8 +22,12 @@ import com.ancevt.d2d2world.data.Property;
 public interface IDirectioned extends IGameObject{
 
 	@Property
-	void setDirection(int direction);
+	default void setDirection(int direction) {
+		DefaultMaps.directionedMap.put(this, direction);
+	}
 
 	@Property
-	int getDirection();
+	default int getDirection() {
+		return DefaultMaps.directionedMap.getOrDefault(this, 0);
+	}
 }

@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (me@ancevt.com)
+ *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,13 +21,21 @@ import com.ancevt.d2d2world.data.Property;
 
 public interface IDamaging extends ICollision {
 
-    @Property
-    void setDamagingPower(int damagingPower);
+	@Property
+	default void setDamagingPower(int damagingPower) {
+		DefaultMaps.damagingPowerMap.put(this, damagingPower);
+	}
 
-    @Property
-    int getDamagingPower();
+	@Property
+	default int getDamagingPower() {
+		return DefaultMaps.damagingPowerMap.getOrDefault(this, 0);
+	}
 
-    void setDamagingOwnerActor(Actor actor);
+	default void setDamagingOwnerActor(Actor actor) {
+		DefaultMaps.damagingOwnerActorMap.put(this, actor);
+	}
 
-    Actor getDamagingOwnerActor();
+    default Actor getDamagingOwnerActor() {
+		return DefaultMaps.damagingOwnerActorMap.get(this);
+	}
 }

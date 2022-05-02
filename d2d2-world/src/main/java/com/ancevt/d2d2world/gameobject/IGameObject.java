@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (me@ancevt.com)
+ *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,14 +18,15 @@
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
+import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public interface IGameObject extends IDisplayObject, IProcessable {
+
     default Map<String, Object> extra() {
         return DefaultMaps.extraMap.computeIfAbsent(this, k -> new HashMap<>());
     }
@@ -34,7 +35,14 @@ public interface IGameObject extends IDisplayObject, IProcessable {
         return 0;
     }
 
-    int getGameObjectId();
+
+    default void setGameObjectId(int id) {
+        DefaultMaps.gameObjectIdMap.put(this, id);
+    }
+
+    default int getGameObjectId() {
+        return DefaultMaps.gameObjectIdMap.getOrDefault(this, 0);
+    }
 
     @Property
     String getName();
@@ -56,11 +64,21 @@ public interface IGameObject extends IDisplayObject, IProcessable {
 
     boolean isSavable();
 
-    MapkitItem getMapkitItem();
+    default void setMapkitItem(MapkitItem mapkitItem) {
+        DefaultMaps.mapkitItemMap.put(this, mapkitItem);
+    }
 
-    void setWorld(World world);
+    default MapkitItem getMapkitItem() {
+        return DefaultMaps.mapkitItemMap.get(this);
+    }
 
-    World getWorld();
+    default void setWorld(World world) {
+        DefaultMaps.worldMap.putIfAbsent(this, world);
+    }
+
+    default World getWorld() {
+        return DefaultMaps.worldMap.get(this);
+    }
 
     default boolean isOnWorld() {
         return getWorld() != null;
@@ -69,36 +87,4 @@ public interface IGameObject extends IDisplayObject, IProcessable {
     default void onAddToWorld(World world) {
         setWorld(world);
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

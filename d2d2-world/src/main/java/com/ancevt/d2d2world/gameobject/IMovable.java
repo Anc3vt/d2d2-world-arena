@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (me@ancevt.com)
+ *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,10 +22,14 @@ import com.ancevt.d2d2world.data.Property;
 public interface IMovable extends IResettable {
 
     @Property
-    void setStartX(float x);
+    default void setStartX(float x) {
+        DefaultMaps.startXMap.put(this, x);
+    }
 
     @Property
-    void setStartY(float y);
+    default void setStartY(float y) {
+        DefaultMaps.startYMap.put(this, y);
+    }
 
     default void setStartXY(float x, float y) {
         setStartX(x);
@@ -33,16 +37,28 @@ public interface IMovable extends IResettable {
     }
 
     @Property
-    float getStartX();
+    default float getStartX() {
+        return DefaultMaps.startXMap.getOrDefault(this, 0f);
+    }
 
     @Property
-    float getStartY();
+    default float getStartY() {
+        return DefaultMaps.startYMap.getOrDefault(this, 0f);
+    }
 
-    float getMovingSpeedX();
+    default float getMovingSpeedX() {
+        return DefaultMaps.movingSpeedXMap.getOrDefault(this, 0f);
+    }
 
-    float getMovingSpeedY();
+    default float getMovingSpeedY() {
+        return DefaultMaps.movingSpeedYMap.getOrDefault(this, 0f);
+    }
 
-    void setMovingSpeedX(float value);
+    default void setMovingSpeedX(float value) {
+        DefaultMaps.movingSpeedXMap.put(this, value);
+    }
 
-    void setMovingSpeedY(float value);
+    default void setMovingSpeedY(float value) {
+        DefaultMaps.movingSpeedYMap.put(this, value);
+    }
 }

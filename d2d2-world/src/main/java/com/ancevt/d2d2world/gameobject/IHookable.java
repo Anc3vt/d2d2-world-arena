@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (me@ancevt.com)
+ *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,7 +21,11 @@ import com.ancevt.d2d2world.gameobject.area.AreaHook;
 
 public interface IHookable extends IGravitational, ICollision {
 
-    void setHook(final AreaHook hook);
+    default void setHook(final AreaHook hook) {
+        DefaultMaps.hookMap.put(this, hook);
+    }
 
-    AreaHook getHook();
+    default AreaHook getHook() {
+        return DefaultMaps.hookMap.get(this);
+    }
 }

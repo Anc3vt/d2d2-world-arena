@@ -1,6 +1,6 @@
 /*
  *   D2D2 World
- *   Copyright (C) 2022 Ancevt (me@ancevt.com)
+ *   Copyright (C) 2022 Ancevt (i@ancevt.ru)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,14 +22,22 @@ import com.ancevt.d2d2world.data.Property;
 public interface ITight extends ICollision {
 
     @Property
-    void setFloorOnly(boolean b);
+    default void setFloorOnly(boolean b) {
+        DefaultMaps.floorOnlyMap.put(this, b);
+    }
 
     @Property
-    boolean isFloorOnly() ;
+    default boolean isFloorOnly() {
+        return DefaultMaps.floorOnlyMap.getOrDefault(this, false);
+    }
 
     @Property
-    void setPushable(boolean b) ;
+    default void setPushable(boolean b) {
+        DefaultMaps.pushableMap.put(this, b);
+    }
 
     @Property
-    boolean isPushable() ;
+    default boolean isPushable() {
+        return DefaultMaps.pushableMap.getOrDefault(this, false);
+    }
 }
