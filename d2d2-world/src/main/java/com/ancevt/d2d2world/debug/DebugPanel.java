@@ -176,11 +176,11 @@ public class DebugPanel extends DisplayObjectContainer {
         debugPanels.values().forEach(DebugPanel::save);
     }
 
-    public static Optional<DebugPanel> createIfEnabled(String propertyName) {
-        return createIfEnabled(propertyName, null);
+    public static Optional<DebugPanel> show(String propertyName) {
+        return show(propertyName, null);
     }
 
-    public static Optional<DebugPanel> createIfEnabled(String propertyName, Object value) {
+    public static Optional<DebugPanel> show(String propertyName, Object value) {
         if (enabled) {
             DebugPanel debugPanel = debugPanels.get(propertyName);
             if(debugPanel == null) {
@@ -196,8 +196,8 @@ public class DebugPanel extends DisplayObjectContainer {
         return Optional.empty();
     }
 
-    public static Optional<DebugPanel> createIfEnabled(String propertyName, @NotNull Supplier<Object> supplier) {
-        return createIfEnabled(propertyName, supplier.get());
+    public static Optional<DebugPanel> show(String propertyName, @NotNull Supplier<Object> supplier) {
+        return show(propertyName, supplier.get());
     }
 
     public static void setProperty(String key, Object value) {

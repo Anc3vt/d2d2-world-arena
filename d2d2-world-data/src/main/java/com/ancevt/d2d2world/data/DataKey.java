@@ -58,6 +58,8 @@ public class DataKey {
     public static final String DESTROY_SOUND = "destroySound";
     public static final String BLINK = "blink";
     public static final String BROKEN_PARTS = "brokenParts";
+    public static final String OPEN_SOUND = "openSound";
+    public static final String CLOSE_SOUND = "closeSound";
 
 
     public static String READABLE_NAME = "readableName";
