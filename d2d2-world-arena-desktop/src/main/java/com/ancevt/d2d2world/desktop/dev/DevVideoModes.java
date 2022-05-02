@@ -14,7 +14,6 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2world.ScreenUtils;
 import com.ancevt.d2d2world.desktop.MonitorDevice;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -103,7 +102,6 @@ public class DevVideoModes {
                 chat.addMessage("Unknown command: " + e.getText(), Color.RED);
             }
         });
-        chat.setHeight(ScreenUtils.getDimension().height() / 2);
         chat.openInput();
 
         commands.add(new Command("/monitors", a-> {

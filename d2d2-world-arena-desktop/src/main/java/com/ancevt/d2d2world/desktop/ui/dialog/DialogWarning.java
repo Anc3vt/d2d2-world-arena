@@ -30,6 +30,7 @@ import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2.panels.TitledPanel;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -57,7 +58,7 @@ public class DialogWarning extends TitledPanel implements EventListener {
 
     private void addToStage(Event event) {
         setXY((getStage().getWidth() - getWidth()) / 2, (getStage().getHeight() - getHeight()) / 2);
-        Sprite icon = new Sprite("d2d2-world-common-tileset-warning");
+        Sprite icon = new Sprite(D2D2WorldArenaDesktopAssets.getWarningTexture());
         add(icon, 20, 20);
 
         Button button = new Button("OK") {

@@ -21,7 +21,6 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -114,15 +113,6 @@ public class PlayerActor extends Actor {
                         .bullet(bullet)
                         .build());
             }
-        }
-    }
-
-    @Override
-    public void attack() {
-        super.attack();
-
-        if (isLocalPlayerActor()) {
-            D2D2World.getAim().attack();
         }
     }
 

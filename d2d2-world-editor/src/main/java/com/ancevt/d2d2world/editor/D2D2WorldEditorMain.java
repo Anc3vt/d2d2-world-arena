@@ -31,7 +31,7 @@ import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.ScreenUtils;
+import com.ancevt.d2d2world.editor.util.ScreenUtils;
 import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
 import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;

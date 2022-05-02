@@ -7,7 +7,7 @@
             <pattern>%-5level [%logger{0}] %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="SERVER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>log/d2d2-world-arena-server.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
@@ -22,6 +22,6 @@
 
     <root level="trace" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER_FILE"/>
+        <appender-ref ref="FILE"/>
     </root>
 </configuration>

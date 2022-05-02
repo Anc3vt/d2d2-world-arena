@@ -1,0 +1,10 @@
+:d2d2-world-arena-desktop.png
+    d2d2-world-arena-desktop-player-arrow  32 16 16 16
+    d2d2-world-arena-desktop-aim           0 0 32 32
+    d2d2-world-arena-desktop-preloader     0 32 64 64
+    d2d2-world-arena-desktop-warning       64 0 32 32
+    d2d2-world-arena-desktop-chat-bubble   64 32 32 32
+    d2d2-world-arena-desktop-char-select-door 64 64 8 48
+    d2d2-world-arena-desktop-spawn-effect  0 96 32 96
+    d2d2-world-arena-desktop-controls-help 96 0 240 176
+

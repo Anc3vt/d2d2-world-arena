@@ -34,6 +34,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
+import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.MonitorDevice;
 import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
@@ -42,7 +43,6 @@ import com.ancevt.d2d2world.desktop.ui.chat.Chat;
 import com.ancevt.d2d2world.desktop.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.desktop.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.desktop.ui.playerarrowview.PlayerArrowView;
-import com.ancevt.d2d2world.fx.SpawnEffect;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.DestroyableBox;
@@ -496,7 +496,7 @@ public class WorldScene extends DisplayObjectContainer {
 
             world.getCamera().setAttachedTo(localPlayerActor);
 
-            world.add(D2D2World.getAim());
+            world.add(D2D2WorldArenaDesktopAssets.getAim());
 
             start();
 
@@ -524,6 +524,7 @@ public class WorldScene extends DisplayObjectContainer {
                 if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(true);
+                    D2D2WorldArenaDesktopAssets.getAim().attack();
                     if (oldState != localPlayerController.getState()) {
                         CLIENT.sendLocalPlayerController(localPlayerController.getState());
                     }
@@ -769,7 +770,6 @@ public class WorldScene extends DisplayObjectContainer {
         }
     }
 
-
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
         playerActor.setPlayerName(playerName);
         playerActor.setPlayerId(playerId);
@@ -799,7 +799,7 @@ public class WorldScene extends DisplayObjectContainer {
         }
 
         if (localPlayerActor != null) {
-            D2D2World.getAim().setXY(localPlayerActor.getAimX(), localPlayerActor.getAimY());
+            D2D2WorldArenaDesktopAssets.getAim().setXY(localPlayerActor.getAimX(), localPlayerActor.getAimY());
         }
         frameCounter++;
     }

@@ -26,7 +26,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
@@ -143,13 +143,12 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         FileReceiverManager.INSTANCE.addFileReceiverManagerListener(this);
 
-        INSTANCE = this;
-
         addEventListener(Event.ADD_TO_STAGE, event -> {
-            getStage().addEventListener(IntroRoot.class, Event.RESIZE, resizeEvent -> {
-                worldScene.resize(getStage().getWidth(), getStage().getHeight());
-            });
+            getStage().addEventListener(IntroRoot.class, Event.RESIZE,
+                    resizeEvent -> worldScene.resize(getStage().getWidth(), getStage().getHeight()));
         });
+
+        INSTANCE = this;
     }
 
     /**
@@ -215,7 +214,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 , Color.WHITE);
         worldScene.start();
 
-        D2D2World.getAim().setColor(Color.WHITE);
+        D2D2WorldArenaDesktopAssets.getAim().setColor(Color.WHITE);
 
         String rconPassword = MODULE_CONFIG.getString(DesktopConfig.RCON_PASSWORD);
         if (!rconPassword.isEmpty()) {

@@ -24,7 +24,7 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.desktop.net.HttpUtfLoader;
-import com.ancevt.d2d2world.ui.Preloader;
+import com.ancevt.d2d2world.desktop.ui.component.Preloader;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.http.HttpResponse;

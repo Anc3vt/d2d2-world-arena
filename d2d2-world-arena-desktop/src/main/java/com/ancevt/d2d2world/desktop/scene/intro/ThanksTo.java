@@ -29,7 +29,7 @@ import com.ancevt.d2d2.display.texture.TextureUrlLoader;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TextureUrlLoaderEvent;
 import com.ancevt.d2d2world.desktop.ui.UiText;
-import com.ancevt.d2d2world.ui.Preloader;
+import com.ancevt.d2d2world.desktop.ui.component.Preloader;
 
 public class ThanksTo extends DisplayObjectContainer {
 

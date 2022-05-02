@@ -7,6 +7,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.D2D2WorldAssets;
 
 public class Rope extends Sprite {
 
@@ -43,7 +44,7 @@ public class Rope extends Sprite {
 
         root.getStage().setScaleMode(ScaleMode.EXTENDED);
 
-        Rope rope = new Rope(D2D2World.getRopeTexture());
+        Rope rope = new Rope(D2D2WorldAssets.getRopeTexture());
         rope.setLength(100);
         rope.setDegree(60);
 

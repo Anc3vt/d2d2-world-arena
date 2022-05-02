@@ -39,7 +39,7 @@ public class StandardWeapon extends Weapon {
 
     @Override
     public boolean shoot(@NotNull World world) {
-        if(!super.shoot(world)) return false;
+        if (!super.shoot(world)) return false;
         Bullet bullet = getNextBullet(getOwner().getArmDegree());
         if (world.getGameObjectById(bullet.getGameObjectId()) == null) {
             bullet.setDamagingOwnerActor(getOwner());
@@ -99,7 +99,7 @@ public class StandardWeapon extends Weapon {
 
         @Override
         public void destroy() {
-            if(setToRemove) return;
+            if (setToRemove) return;
 
             setSpeed(0);
             setToRemove = true;

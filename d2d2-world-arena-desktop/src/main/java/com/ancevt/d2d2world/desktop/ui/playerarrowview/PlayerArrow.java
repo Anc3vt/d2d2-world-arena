@@ -5,7 +5,7 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 import com.ancevt.d2d2world.math.RadialUtils;
 
 public class PlayerArrow extends DisplayObjectContainer {
@@ -19,7 +19,7 @@ public class PlayerArrow extends DisplayObjectContainer {
 
     public PlayerArrow(PlayerArrowView playerArrowView) {
         this.playerArrowView = playerArrowView;
-        sprite = new Sprite(D2D2World.getPlayerArrowTexture());
+        sprite = new Sprite(D2D2WorldArenaDesktopAssets.getPlayerArrowTexture());
         add(sprite, -sprite.getWidth() - 2, -sprite.getHeight() / 2);
     }
 
@@ -41,16 +41,6 @@ public class PlayerArrow extends DisplayObjectContainer {
 
             float tax = target.getAbsoluteX() / target.getAbsoluteScaleX();
             float tay = target.getAbsoluteY() / target.getAbsoluteScaleY();
-
-
-            /*
-
-            setXY(
-                    (target.getX() - playerArrowView.getX() + playerArrowView.getWorld().getX()) / 2 + playerArrowView.getViewportWidth() / 4,
-                    (target.getY() - playerArrowView.getY() + playerArrowView.getWorld().getY()) / 2 + playerArrowView.getViewportHeight() / 4
-            );
-
-             */
 
             setXY(
                     tax / 2 + playerArrowView.getViewportWidth() / 4,

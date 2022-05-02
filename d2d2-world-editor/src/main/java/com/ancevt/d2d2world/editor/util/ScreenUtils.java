@@ -1,4 +1,4 @@
-package com.ancevt.d2d2world;
+package com.ancevt.d2d2world.editor.util;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -2,7 +2,7 @@ package com.ancevt.d2d2world.ui;
 
 import com.ancevt.d2d2.display.Color;
 
-public class HealthBar extends ProgressBar {
+public class HealthBar extends Bar {
 
     private final float WIDTH = 26;
     private final float HEIGHT = 2f;

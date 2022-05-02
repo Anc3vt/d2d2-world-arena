@@ -17,15 +17,6 @@
  */
 package com.ancevt.d2d2world;
 
-import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2world.gameobject.IGameObject;
-import org.jetbrains.annotations.NotNull;
-
-import static com.ancevt.d2d2.D2D2.getTextureManager;
-
 public class D2D2World {
 
     public static final float ORIGIN_WIDTH = 800f;
@@ -34,7 +25,6 @@ public class D2D2World {
     public static final float SCALE = 1.80f;//2.5f;
 
     private static boolean server;
-    private static Aim aim;
     private static boolean editor;
 
     private D2D2World() {
@@ -43,39 +33,7 @@ public class D2D2World {
     public static void init(boolean server, boolean editor) {
         D2D2World.server = server;
         D2D2World.editor = editor;
-        getTextureManager().loadTextureDataInfo("d2d2-world-common-texture-data.inf");
-    }
-
-    public static Texture getPlayerArrowTexture() {
-        return getTextureManager().getTexture("d2d2-world-common-tileset-player-arrow");
-    }
-
-    public static Texture getControlsHelpTexture() {
-        return getTextureManager().getTexture("d2d2-world-common-tileset-controls-help");
-    }
-
-    public static Texture getAimTexture() {
-        return getTextureManager().getTexture("d2d2-world-common-tileset-aim");
-    }
-
-    public static Texture getSpawnEffectTexture() {
-        return getTextureManager().getTexture("d2d2-world-common-tileset-spawn-effect");
-    }
-
-    public static Texture getWaterBubbleTexture() {
-        return getTextureManager().getTexture("d2d2-world-common-tileset-water-bubble");
-    }
-
-    public static Texture getRopeTexture() {
-        return getTextureManager().getTexture("d2d2-world-common-tileset-rope");
-    }
-
-    public static Texture getPickupBubbleTexture32() {
-        return getTextureManager().getTexture("pickup-bubble-32");
-    }
-
-    public static Texture getPickupBubbleTexture16() {
-        return getTextureManager().getTexture("pickup-bubble-16");
+        D2D2WorldAssets.load();
     }
 
     public static boolean isServer() {
@@ -86,42 +44,6 @@ public class D2D2World {
         return editor;
     }
 
-    public static Aim getAim() {
-        return aim == null ? aim = new Aim() : aim;
-    }
 
-    public static class Aim extends DisplayObjectContainer {
-        private final Sprite sprite;
 
-        public Aim() {
-            sprite = new Sprite(getAimTexture());
-            add(sprite, -sprite.getWidth()/2, -sprite.getHeight()/2 - 3);
-        }
-
-        @Override
-        public void onEachFrame() {
-            if(getScaleX() > 1.0) {
-                toScale(0.9f, 0.9f);
-                if(getScaleX() < 0.1) {
-                    setScale(1f, 1f);
-                }
-            }
-        }
-
-        public void setColor(Color color) {
-            sprite.setColor(color);
-        }
-
-        public Color getColor() {
-            return sprite.getColor();
-        }
-
-        public void attack() {
-            setScale(2.0f, 2.0f);
-        }
-
-        public void setTarget(@NotNull IGameObject gameObject) {
-            setXY(gameObject.getX(), gameObject.getY());
-        }
-    }
 }

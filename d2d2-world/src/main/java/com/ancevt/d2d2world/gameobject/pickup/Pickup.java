@@ -5,7 +5,7 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.D2D2WorldAssets;
 import com.ancevt.d2d2world.constant.SoundKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.ICollision;
@@ -54,7 +54,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
         this.mapkitItem = mapkitItem;
         this.gameObjectId = gameObjectId;
         container = new DisplayObjectContainer();
-        bubbleSprite = new Sprite(D2D2World.getPickupBubbleTexture32());
+        bubbleSprite = new Sprite(D2D2WorldAssets.getPickupBubbleTexture32());
         bubbleSprite.setAlpha(0.75f);
         image = new Sprite(mapkitItem.getTexture());
         container.add(image);

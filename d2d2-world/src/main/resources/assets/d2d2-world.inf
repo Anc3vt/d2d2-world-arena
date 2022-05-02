@@ -1,0 +1,10 @@
+:d2d2-world.png
+    d2d2-world-ring               0 32 96 96
+    d2d2-world-rope               32 16 16 8
+    d2d2-world-water-bubble       48 0 8 8
+    d2d2-world-pickup-bubble-32px 0  0 32 32
+    d2d2-world-pickup-bubble-16px 32 0 16 16
+
+:d2d2-world-particles.png
+    d2d2-world-particle           0 0 48 16
+

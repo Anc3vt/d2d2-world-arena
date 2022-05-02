@@ -2,7 +2,7 @@ package com.ancevt.d2d2world.gameobject.area;
 
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.D2D2WorldAssets;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.Actor;
@@ -167,7 +167,7 @@ public class AreaWater extends Area implements IDamaging {
 
     private static class Bubble extends Sprite {
         public Bubble() {
-            super(D2D2World.getWaterBubbleTexture());
+            super(D2D2WorldAssets.getWaterBubbleTexture());
         }
     }
 }

@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.ui;
+package com.ancevt.d2d2world.desktop.ui.component;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -23,6 +23,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 
 public class Preloader extends DisplayObjectContainer {
 
@@ -30,7 +31,7 @@ public class Preloader extends DisplayObjectContainer {
     private int timer = FRAMES_PER_ROTATE;
 
     public Preloader() {
-        add(new Sprite("d2d2-world-common-tileset-preloader"), -32, -32);
+        add(new Sprite(D2D2WorldArenaDesktopAssets.getPreloaderTexture()), -32, -32);
     }
 
     @Override

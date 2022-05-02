@@ -1,8 +1,8 @@
-package com.ancevt.d2d2world.fx;
+package com.ancevt.d2d2world.desktop.scene;
 
 import com.ancevt.d2d2.display.*;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 import org.jetbrains.annotations.NotNull;
 
 public class SpawnEffect extends DisplayObjectContainer {
@@ -24,7 +24,7 @@ public class SpawnEffect extends DisplayObjectContainer {
     private int time;
 
     public SpawnEffect() {
-        texture = D2D2World.getSpawnEffectTexture();
+        texture = D2D2WorldArenaDesktopAssets.getSpawnEffectTexture();
 
         textureX = texture.x();
         textureY = texture.y();

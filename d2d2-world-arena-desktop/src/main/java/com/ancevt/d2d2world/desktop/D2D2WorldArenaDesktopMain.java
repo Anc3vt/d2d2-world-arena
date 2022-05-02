@@ -99,6 +99,7 @@ public class D2D2WorldArenaDesktopMain {
                 "(floating) D2D2 World Arena " + autoEnterPlayerName)
         );
         D2D2World.init(false, false);
+        D2D2WorldArenaDesktopAssets.load();
 
         MonitorDevice.setMonitorDevice(glfwGetPrimaryMonitor());
 

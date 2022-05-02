@@ -1,21 +1,19 @@
 package com.ancevt.d2d2world.desktop.scene;
 
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 
 public class ChatBubble extends Sprite {
 
     private float factor = -0.05f;
 
     public ChatBubble() {
-        super("d2d2-world-common-tileset-chat-hint");
+        super(D2D2WorldArenaDesktopAssets.getChatBubbleTexture());
     }
 
     @Override
     public void onEachFrame() {
-        super.onEachFrame();
-
         setAlpha(getAlpha() + factor);
-
         if(getAlpha() < 0.0f || getAlpha() > 1.0f) factor = -factor;
     }
 
