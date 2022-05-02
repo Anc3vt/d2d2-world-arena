@@ -137,7 +137,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         add(Chat.getInstance(), 10, 10);
 
         FpsMeter fpsMeter = new FpsMeter();
-        add(fpsMeter, D2D2.getStage().getStageWidth() - 50, 2);
+        add(fpsMeter, 10, 2);
 
         tabWindow = new TabWindow();
 
