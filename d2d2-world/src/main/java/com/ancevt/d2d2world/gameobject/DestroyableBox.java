@@ -210,11 +210,6 @@ public class DestroyableBox extends DisplayObjectContainer implements
         setDestroyed(true);
     }
 
-    @Override
-    public void setCollisionEnabled(boolean value) {
-        collisionEnabled = value;
-    }
-
     private void rebuildIcon() {
         if (!isNullOrEmpty(icon) && isIconVisible()) {
             if (iconSprite != null) iconSprite.removeFromParent();
@@ -249,6 +244,11 @@ public class DestroyableBox extends DisplayObjectContainer implements
                 add(iconSprite);
             }
         }
+    }
+
+    @Override
+    public void setCollisionEnabled(boolean value) {
+        collisionEnabled = value;
     }
 
     @Override

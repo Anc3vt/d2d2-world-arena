@@ -1,5 +1,6 @@
 mapkit | name = megaman
 
+id = _door_0 | class = MechanicalDoor | atlas = megaman-tileset.png | idle=96,64,16,64 | collisionWidth = 16 | collisionHeight = 64 | closedCollisionWidth = 16 | closedCollisionHeight = 64 | timeTacts = 100 | openSound=mech-door-open.ogg | closeSound = mech-door-close.ogg
 id = _hook_0 | class = Scenery | atlas = megaman-tileset.png | idle=32,0,16,16
 id = _hook_1 | class = Scenery | atlas = megaman-tileset.png | idle=48,0,16,16
 id = _parallax_moon | class = Parallax | atlas = megaman-tileset.png | idle=64,64,32,32 | speed = 0.25
