@@ -317,6 +317,14 @@ public class WorldScene extends DisplayObjectContainer {
                 }
         ));
 
+        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+                "//cls",
+                a->{
+                    Chat.getInstance().clear();
+                    return true;
+                }
+        ));
+
         ammunitionHud = new AmmunitionHud();
     }
 
@@ -473,8 +481,6 @@ public class WorldScene extends DisplayObjectContainer {
                 log.error(e.getMessage(), e);
             }
         });
-
-        //DefaultMaps.clear();
     }
 
     private void mapLoaded() {

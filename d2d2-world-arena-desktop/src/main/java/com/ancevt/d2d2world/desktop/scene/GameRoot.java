@@ -109,12 +109,14 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                     setTabWindowVisible(true);
                 }
                 case KeyCode.F -> {
-                    LWJGLVideoModeUtils.linuxCare(
-                            MonitorDevice.getMonitorDevice(),
-                            LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice())
-                    );
+                    if(e.isAlt()) {
+                        LWJGLVideoModeUtils.linuxCare(
+                                MonitorDevice.getMonitorDevice(),
+                                LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice())
+                        );
 
-                    if (e.isAlt()) D2D2.setFullscreen(!D2D2.isFullscreen());
+                        D2D2.setFullscreen(!D2D2.isFullscreen());
+                    }
                 }
                 case KeyCode.S -> {
                     if (e.isAlt()) D2D2.setSmoothMode(!D2D2.isSmoothMode());
