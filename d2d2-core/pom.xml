@@ -47,6 +47,14 @@
         </repository>
         <repository>
             <id>args2-mvn-repo</id>
+            <url>https://raw.github.com/Anc3vt/args2/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>texttable-mvn-repo</id>
             <url>https://raw.github.com/Anc3vt/texttable/mvn-repo/</url>
             <snapshots>
                 <enabled>true</enabled>
@@ -126,6 +134,12 @@
             <groupId>com.ancevt.commons</groupId>
             <artifactId>ancevt-commons</artifactId>
             <version>${ancevt-commons.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ancevt.util</groupId>
+            <artifactId>args</artifactId>
+            <version>2.0.3</version>
         </dependency>
 
         <!-- Sound -->

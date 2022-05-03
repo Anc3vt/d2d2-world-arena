@@ -63,6 +63,7 @@ import com.ancevt.d2d2world.sync.SyncMotion;
 import com.ancevt.d2d2world.world.Overlay;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
+import com.ancevt.util.args.Args;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -76,7 +77,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.commons.unix.UnixDisplay.debug;
@@ -90,7 +90,6 @@ import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
-import static java.lang.Integer.parseInt;
 
 @Slf4j
 public class WorldScene extends DisplayObjectContainer {
@@ -283,9 +282,10 @@ public class WorldScene extends DisplayObjectContainer {
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//videomode",
                 a -> {
-                    StringTokenizer stringTokenizer = new StringTokenizer(a.get(String.class, 1, "0x0"), "x");
-                    int width = parseInt(stringTokenizer.nextToken());
-                    int height = parseInt(stringTokenizer.nextToken());
+                    var tokens = new Args(a.get(String.class, 1, "0x0"), 'x');
+                    int width = tokens.next(int.class);
+                    int height = tokens.next(int.class);
+
                     int refreshRate = a.get(int.class, 2, -1);
 
                     Holder<Boolean> found = new Holder<>(false);

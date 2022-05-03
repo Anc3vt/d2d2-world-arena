@@ -29,12 +29,12 @@ import com.ancevt.d2d2world.debug.DebugPanel;
 import com.ancevt.d2d2world.desktop.scene.GameRoot;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
+import com.ancevt.util.args.Args;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
@@ -43,7 +43,6 @@ import static com.ancevt.d2d2world.desktop.DesktopConfig.DISPLAY_RESOLUTION;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.FULLSCREEN;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.SOUND_ENABLED;
-import static java.lang.Integer.parseInt;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
 @Slf4j
@@ -117,9 +116,9 @@ public class D2D2WorldArenaDesktopMain {
         if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
             String displayResolutionString = MODULE_CONFIG.getString(DISPLAY_RESOLUTION);
             if (!displayResolutionString.equals("")) {
-                StringTokenizer stringTokenizer = new StringTokenizer(displayResolutionString, "x");
-                int w = parseInt(stringTokenizer.nextToken());
-                int h = parseInt(stringTokenizer.nextToken());
+                var a = new Args(displayResolutionString, 'x');
+                int w = a.next(int.class);
+                int h = a.next(int.class);
                 LWJGLVideoModeUtils.setVideoMode(
                         MonitorDevice.getMonitorDevice(),
                         D2D2.getStarter().getWindowId(),
@@ -127,8 +126,8 @@ public class D2D2WorldArenaDesktopMain {
                 );
 
             } else {
-                for(var videoMode : LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getMonitorDevice())) {
-                    if(videoMode.getRefreshRate() == 60) {
+                for (var videoMode : LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getMonitorDevice())) {
+                    if (videoMode.getRefreshRate() == 60) {
                         if (videoMode.getHeight() == 900 || videoMode.getHeight() == 1050) {
                             LWJGLVideoModeUtils.setVideoMode(MonitorDevice.getMonitorDevice(), D2D2.getStarter().getWindowId(), videoMode);
                             break;
@@ -140,17 +139,17 @@ public class D2D2WorldArenaDesktopMain {
 
         String debugScreenSize = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
         if (!debugScreenSize.equals("")) {
-            StringTokenizer tokenizer = new StringTokenizer(debugScreenSize, "x");
-            int width = parseInt(tokenizer.nextToken());
-            int height = parseInt(tokenizer.nextToken());
+            var a = new Args(debugScreenSize, 'x');
+            int width = a.next(int.class);
+            int height = a.next(int.class);
             D2D2.getStarter().setSize(width, height);
         }
 
         String debugWindowLocation = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_XY);
         if (!debugWindowLocation.equals("")) {
-            StringTokenizer tokenizer = new StringTokenizer(debugWindowLocation, ",");
-            int x = parseInt(tokenizer.nextToken());
-            int y = parseInt(tokenizer.nextToken());
+            var a = new Args(debugWindowLocation, ',');
+            int x = a.next(int.class);
+            int y = a.next(int.class);
             D2D2.getStarter().setWindowXY(x, y);
         }
 
@@ -170,7 +169,7 @@ public class D2D2WorldArenaDesktopMain {
 
         Chat.getInstance().saveHistory();
         DebugPanel.saveAll();
-        if(GameRoot.INSTANCE != null) GameRoot.INSTANCE.exit();
+        if (GameRoot.INSTANCE != null) GameRoot.INSTANCE.exit();
 
         log.info("exit");
         System.exit(0);

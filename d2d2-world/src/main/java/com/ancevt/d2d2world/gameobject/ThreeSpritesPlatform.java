@@ -5,10 +5,7 @@ import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-
-import java.util.StringTokenizer;
-
-import static java.lang.Integer.parseInt;
+import com.ancevt.util.args.Args;
 
 public class ThreeSpritesPlatform extends Platform {
 
@@ -89,11 +86,11 @@ public class ThreeSpritesPlatform extends Platform {
     }
 
     private Texture createTexture(String textureCoords) {
-        StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, DELIMITER);
-        int x = parseInt(stringTokenizer.nextToken());
-        int y = parseInt(stringTokenizer.nextToken());
-        int w = parseInt(stringTokenizer.nextToken());
-        int h = parseInt(stringTokenizer.nextToken());
+        var a = new Args(textureCoords, DELIMITER);
+        int x = a.next(int.class);
+        int y = a.next(int.class);
+        int w = a.next(int.class);
+        int h = a.next(int.class);
         return getMapkitItem().getTextureAtlas().createTexture(x, y, w, h);
     }
 

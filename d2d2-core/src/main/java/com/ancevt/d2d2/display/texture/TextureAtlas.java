@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2.display.texture;
 
+import com.ancevt.util.args.Args;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,13 +64,8 @@ public class TextureAtlas {
      * @return
      */
     public Texture createTexture(String textureCoords) {
-        StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, ",");
-        return new Texture(this,
-                parseInt(stringTokenizer.nextToken().trim()),
-                parseInt(stringTokenizer.nextToken().trim()),
-                parseInt(stringTokenizer.nextToken().trim()),
-                parseInt(stringTokenizer.nextToken().trim())
-        );
+        var a = new Args(textureCoords, ',');
+        return new Texture(this, a.next(int.class), a.next(int.class), a.next(int.class), a.next(int.class));
     }
 
     public static @NotNull String convertCoords(@NotNull String textureCoords) {
@@ -99,9 +95,7 @@ public class TextureAtlas {
             }
 
             textureCoords = stringBuilder.toString();
-        } else
-
-        if (textureCoords.contains("v")) {
+        } else if (textureCoords.contains("v")) {
             StringTokenizer stringTokenizer = new StringTokenizer(textureCoords, "v");
             String firstToken = stringTokenizer.nextToken().trim();
             int count = parseInt(stringTokenizer.nextToken().trim());
