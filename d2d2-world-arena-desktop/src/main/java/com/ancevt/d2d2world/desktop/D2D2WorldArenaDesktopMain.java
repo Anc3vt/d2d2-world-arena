@@ -171,6 +171,8 @@ public class D2D2WorldArenaDesktopMain {
         Chat.getInstance().saveHistory();
         DebugPanel.saveAll();
         if(GameRoot.INSTANCE != null) GameRoot.INSTANCE.exit();
+
+        log.info("exit");
         System.exit(0);
     }
 }

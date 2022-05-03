@@ -22,6 +22,7 @@ import com.ancevt.d2d2.backend.D2D2Starter;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ScaleMode;
+import com.ancevt.d2d2.display.ShaderProgram;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.event.InputEvent;
@@ -29,6 +30,7 @@ import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.touch.TouchProcessor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -37,12 +39,16 @@ import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL20;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
@@ -125,9 +131,8 @@ public class LWJGLStarter implements D2D2Starter {
 
     @Override
     public void stop() {
-        if(stopped) return;
+        if (stopped) return;
         stopped = true;
-        //glfwSetWindowShouldClose(windowId, true);
     }
 
     @Override
@@ -480,4 +485,97 @@ public class LWJGLStarter implements D2D2Starter {
     public int getWindowY() {
         return windowY;
     }
+
+    @Override
+    public void disposeShaderProgram(@NotNull ShaderProgram shaderProgram) {
+        GL20.glUseProgram(0);
+        GL20.glDeleteShader(shaderProgram.getVertexShaderHandle());
+        GL20.glDeleteShader(shaderProgram.getFragmentShaderHandle());
+        GL20.glDeleteProgram(shaderProgram.getId());
+    }
+
+    @Override
+    public int prepareShaderProgram(@NotNull ShaderProgram shaderProgram) {
+        StringBuilder logStringBuilder = new StringBuilder();
+
+        int vertexShaderHandle = loadShader(GL20.GL_VERTEX_SHADER, shaderProgram.getVertexShaderSource(), logStringBuilder);
+        int fragmentShaderHandle = loadShader(GL20.GL_FRAGMENT_SHADER, shaderProgram.getFragmentShaderSource(), logStringBuilder);
+
+        if (vertexShaderHandle == -1 || fragmentShaderHandle == -1) {
+            shaderProgram.setLog(logStringBuilder.toString());
+            return -1;
+        }
+
+        shaderProgram.setHandles(vertexShaderHandle, fragmentShaderHandle);
+
+        int program = GL20.glCreateProgram();
+        if (program == 0) {
+            shaderProgram.setLog(logStringBuilder.toString());
+            return -1;
+        }
+
+        GL20.glAttachShader(program, vertexShaderHandle);
+        GL20.glAttachShader(program, fragmentShaderHandle);
+        GL20.glLinkProgram(program);
+
+        ByteBuffer tmp = ByteBuffer.allocateDirect(4);
+        tmp.order(ByteOrder.nativeOrder());
+        IntBuffer buff = tmp.asIntBuffer();
+
+        GL20.glGetProgramiv(program, GL20.GL_LINK_STATUS, buff);
+
+        int linked = buff.get(0);
+        if (linked == 0) {
+            logStringBuilder.append(GL20.glGetProgramInfoLog(program));
+            shaderProgram.setLog(logStringBuilder.toString());
+            return -1;
+        }
+
+        return program;
+    }
+
+    private int loadShader(int type, String source, StringBuilder logStringBuilder) {
+        IntBuffer intbuf = newIntBuffer(1);
+
+        int shader = GL20.glCreateShader(type);
+        if (shader == 0) return -1;
+
+        GL20.glShaderSource(shader, source);
+        GL20.glCompileShader(shader);
+        GL20.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
+
+        int compiled = intbuf.get(0);
+        if (compiled == 0) {
+            String infoLog = GL20.glGetShaderInfoLog(shader);
+            logStringBuilder.append(type == GL20.GL_VERTEX_SHADER ? "Vertex shader\n" : "Fragment shader:\n");
+            logStringBuilder.append(infoLog);
+            return -1;
+        }
+
+        return shader;
+    }
+
+    public static @NotNull IntBuffer newIntBuffer (int numInts) {
+        ByteBuffer buffer = ByteBuffer.allocateDirect(numInts * 4);
+        buffer.order(ByteOrder.nativeOrder());
+        return buffer.asIntBuffer();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

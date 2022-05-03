@@ -20,6 +20,7 @@ package com.ancevt.d2d2.backend.norender;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.D2D2Starter;
 import com.ancevt.d2d2.display.IRenderer;
+import com.ancevt.d2d2.display.ShaderProgram;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLTextureEngine;
 
@@ -162,5 +163,15 @@ public class NoRenderStarter implements D2D2Starter {
     @Override
     public int getWindowY() {
         return 0;
+    }
+
+    @Override
+    public int prepareShaderProgram(ShaderProgram shaderProgram) {
+        return 0;
+    }
+
+    @Override
+    public void disposeShaderProgram(ShaderProgram shaderProgram) {
+
     }
 }

@@ -127,5 +127,4 @@ public class LWJGLVideoModeUtils {
         Thread.sleep(1000);
     }
 
-
 }

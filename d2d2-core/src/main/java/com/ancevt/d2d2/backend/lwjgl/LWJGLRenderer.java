@@ -37,7 +37,7 @@ import com.ancevt.d2d2.event.EventPool;
 import com.ancevt.d2d2.input.Mouse;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.glu.GLU;
 
 import static java.lang.Math.round;
@@ -60,18 +60,18 @@ public class LWJGLRenderer implements IRenderer {
 
     @Override
     public void init(long windowId) {
-        GL30.glEnable(GL_BLEND);
-        GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL20.glEnable(GL_BLEND);
+        GL20.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
     public void reshape(int width, int height) {
-        GL30.glViewport(0, 0, width, height);
-        GL30.glMatrixMode(GL30.GL_PROJECTION);
-        GL30.glLoadIdentity();
+        GL20.glViewport(0, 0, width, height);
+        GL20.glMatrixMode(GL20.GL_PROJECTION);
+        GL20.glLoadIdentity();
         GLU.gluOrtho2D(0, width, height, 0);
-        GL30.glMatrixMode(GL30.GL_MODELVIEW);
-        GL30.glLoadIdentity();
+        GL20.glMatrixMode(GL20.GL_MODELVIEW);
+        GL20.glLoadIdentity();
     }
 
     @Override
@@ -83,11 +83,11 @@ public class LWJGLRenderer implements IRenderer {
 
         clear();
 
-        GL30.glMatrixMode(GL30.GL_MODELVIEW);
-        GL30.glLoadIdentity();
+        GL20.glMatrixMode(GL20.GL_MODELVIEW);
+        GL20.glLoadIdentity();
 
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_MIRRORED_REPEAT);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_MIRRORED_REPEAT);
+        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_MIRRORED_REPEAT);
+        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_MIRRORED_REPEAT);
 
         renderDisplayObject(stage,
                 0,
@@ -125,8 +125,8 @@ public class LWJGLRenderer implements IRenderer {
         float backgroundColorRed = backgroundColor.getR() / 255.0f;
         float backgroundColorGreen = backgroundColor.getG() / 255.0f;
         float backgroundColorBlue = backgroundColor.getB() / 255.0f;
-        GL30.glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, 1.0f);
-        GL30.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        GL20.glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, 1.0f);
+        GL20.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
     private synchronized void renderDisplayObject(@NotNull IDisplayObject displayObject,
@@ -152,9 +152,9 @@ public class LWJGLRenderer implements IRenderer {
 
         float a = displayObject.getAlpha() * toAlpha;
 
-        GL30.glPushMatrix();
-        GL30.glTranslatef(x, y, 0);
-        GL30.glRotatef(r, 0, 0, 1);
+        GL20.glPushMatrix();
+        GL20.glTranslatef(x, y, 0);
+        GL20.glRotatef(r, 0, 0, 1);
 
         if (displayObject instanceof IDisplayObjectContainer) {
             IDisplayObjectContainer container = (IDisplayObjectContainer) displayObject;
@@ -175,7 +175,7 @@ public class LWJGLRenderer implements IRenderer {
             f.processFrame();
         }
 
-        GL30.glPopMatrix();
+        GL20.glPopMatrix();
     }
 
     private void renderSprite(@NotNull ISprite sprite, float alpha, float scaleX, float scaleY) {
@@ -188,8 +188,12 @@ public class LWJGLRenderer implements IRenderer {
 
         //textureParamsHandle();
 
-        GL30.glEnable(GL_BLEND);
-        GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL20.glEnable(GL_BLEND);
+        GL20.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        if(sprite.getShaderProgram() != null) {
+            GL20.glUseProgram(sprite.getShaderProgram().getId());
+        }
 
         boolean bindResult = D2D2.getTextureManager().getTextureEngine().bind(textureAtlas);
 
@@ -202,7 +206,7 @@ public class LWJGLRenderer implements IRenderer {
         final Color color = sprite.getColor();
 
         if (color != null) {
-            GL30.glColor4f(
+            GL20.glColor4f(
                     color.getR() / 255f,
                     color.getG() / 255f,
                     color.getB() / 255f,
@@ -231,31 +235,33 @@ public class LWJGLRenderer implements IRenderer {
                 float px = round(rX * tW * scaleX);
                 float py = round(rY * tH * scaleY);
 
-                GL30.glBegin(GL30.GL_QUADS);
+                GL20.glBegin(GL20.GL_QUADS);
 
                 final double bleedingFix = sprite.getBleedingFix();
                 // L
-                GL30.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);
-                GL30.glVertex2d(px - vertexBleedingFix, py + tH * scaleY + vertexBleedingFix);
+                GL20.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);
+                GL20.glVertex2d(px - vertexBleedingFix, py + tH * scaleY + vertexBleedingFix);
 
                 // _|
-                GL30.glTexCoord2d((w + x) - bleedingFix, (h + y) - bleedingFix);
-                GL30.glVertex2d(px + tW * scaleX + vertexBleedingFix, py + tH * scaleY + vertexBleedingFix);
+                GL20.glTexCoord2d((w + x) - bleedingFix, (h + y) - bleedingFix);
+                GL20.glVertex2d(px + tW * scaleX + vertexBleedingFix, py + tH * scaleY + vertexBleedingFix);
 
                 // ^|
-                GL30.glTexCoord2d((w + x) - bleedingFix, y + bleedingFix);
-                GL30.glVertex2d(px + tW * scaleX + vertexBleedingFix, py - vertexBleedingFix);
+                GL20.glTexCoord2d((w + x) - bleedingFix, y + bleedingFix);
+                GL20.glVertex2d(px + tW * scaleX + vertexBleedingFix, py - vertexBleedingFix);
 
                 // Г
-                GL30.glTexCoord2d(x + bleedingFix, y + bleedingFix);
-                GL30.glVertex2d(px - vertexBleedingFix, py - vertexBleedingFix);
+                GL20.glTexCoord2d(x + bleedingFix, y + bleedingFix);
+                GL20.glVertex2d(px - vertexBleedingFix, py - vertexBleedingFix);
 
-                GL30.glEnd();
+                GL20.glEnd();
             }
         }
 
-        GL30.glDisable(GL_BLEND);
-        D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
+        GL20.glDisable(GL_BLEND);
+        //D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
+
+        GL20.glUseProgram(0);
     }
 
     private void renderBitmapText(@NotNull BitmapText bitmapText, float alpha, float scaleX, float scaleY) {
@@ -264,8 +270,8 @@ public class LWJGLRenderer implements IRenderer {
         BitmapFont bitmapFont = bitmapText.getBitmapFont();
         TextureAtlas textureAtlas = bitmapFont.getTextureAtlas();
 
-        GL30.glEnable(GL_BLEND);
-        GL30.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GL20.glEnable(GL_BLEND);
+        GL20.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         boolean bindResult = D2D2.getTextureManager().getTextureEngine().bind(textureAtlas);
 
@@ -277,7 +283,7 @@ public class LWJGLRenderer implements IRenderer {
 
         Color color = bitmapText.getColor();
 
-        GL30.glColor4f(
+        GL20.glColor4f(
                 (float) color.getR() / 255f,
                 (float) color.getG() / 255f,
                 (float) color.getB() / 255f,
@@ -298,7 +304,7 @@ public class LWJGLRenderer implements IRenderer {
         float drawX = 0;
         float drawY = 0;
 
-        GL30.glBegin(GL30.GL_QUADS);
+        GL20.glBegin(GL20.GL_QUADS);
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -326,9 +332,9 @@ public class LWJGLRenderer implements IRenderer {
             drawX += (charWidth + (c != '\n' ? spacing : 0)) * scaleX;
         }
 
-        GL30.glEnd();
+        GL20.glEnd();
 
-        GL30.glDisable(GL_BLEND);
+        GL20.glDisable(GL_BLEND);
         D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
 
         textureParamsNearest();
@@ -361,32 +367,32 @@ public class LWJGLRenderer implements IRenderer {
         float cw = charWidth / textureAtlasWidth;
         float ch = -charHeight / textureAtlasHeight;
 
-        GL30.glTexCoord2d(cx, -cy);
-        GL30.glVertex2d(x - vertexBleedingFix, y + vertexBleedingFix);
+        GL20.glTexCoord2d(cx, -cy);
+        GL20.glVertex2d(x - vertexBleedingFix, y + vertexBleedingFix);
 
-        GL30.glTexCoord2d(cx + cw, -cy);
-        GL30.glVertex2d(charWidth * scX + x + vertexBleedingFix, y + vertexBleedingFix);
+        GL20.glTexCoord2d(cx + cw, -cy);
+        GL20.glVertex2d(charWidth * scX + x + vertexBleedingFix, y + vertexBleedingFix);
 
-        GL30.glTexCoord2d(cx + cw, -cy + ch);
-        GL30.glVertex2d(charWidth * scX + x + vertexBleedingFix, charHeight * -scY + y - vertexBleedingFix);
+        GL20.glTexCoord2d(cx + cw, -cy + ch);
+        GL20.glVertex2d(charWidth * scX + x + vertexBleedingFix, charHeight * -scY + y - vertexBleedingFix);
 
-        GL30.glTexCoord2d(cx, -cy + ch);
-        GL30.glVertex2d(x - vertexBleedingFix, charHeight * -scY + y - vertexBleedingFix);
+        GL20.glTexCoord2d(cx, -cy + ch);
+        GL20.glVertex2d(x - vertexBleedingFix, charHeight * -scY + y - vertexBleedingFix);
     }
 
     private void textureParamsLinear() {
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_CLAMP_TO_EDGE);
+        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_CLAMP_TO_EDGE);
         if (smoothMode) {
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
+            GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_LINEAR);
+            GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_LINEAR);
         }
     }
 
     private void textureParamsNearest() {
         if (smoothMode) {
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);
-            GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_NEAREST);
+            GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
+            GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_NEAREST);
         }
     }
 
@@ -395,32 +401,3 @@ public class LWJGLRenderer implements IRenderer {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -31,4 +31,8 @@ public interface ISprite extends IDisplayObject, IColored, IRepeatable {
     void setBleedingFix(float v);
 
     float getBleedingFix();
+
+    ShaderProgram getShaderProgram();
+
+    void setShaderProgram(ShaderProgram shaderProgram);
 }

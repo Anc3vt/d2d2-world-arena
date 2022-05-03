@@ -18,6 +18,7 @@
 package com.ancevt.d2d2.backend;
 
 import com.ancevt.d2d2.display.IRenderer;
+import com.ancevt.d2d2.display.ShaderProgram;
 import com.ancevt.d2d2.display.Stage;
 
 public interface D2D2Starter {
@@ -69,4 +70,8 @@ public interface D2D2Starter {
     int getWindowX();
 
     int getWindowY();
+
+    int prepareShaderProgram(ShaderProgram shaderProgram);
+
+    void disposeShaderProgram(ShaderProgram shaderProgram);
 }

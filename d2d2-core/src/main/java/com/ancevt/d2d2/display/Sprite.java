@@ -30,6 +30,7 @@ public class Sprite extends DisplayObject implements ISprite {
     private Color color;
     private Texture texture;
     private float bleedingFix = 0.0005f;
+    private ShaderProgram shaderProgram;
 
     public Sprite() {
         setColor(DEFAULT_COLOR);
@@ -148,6 +149,16 @@ public class Sprite extends DisplayObject implements ISprite {
     @Override
     public TextureManager textureManager() {
         return D2D2.getTextureManager();
+    }
+
+    @Override
+    public void setShaderProgram(ShaderProgram shaderProgram) {
+        this.shaderProgram = shaderProgram;
+    }
+
+    @Override
+    public ShaderProgram getShaderProgram() {
+        return shaderProgram;
     }
 }
 
