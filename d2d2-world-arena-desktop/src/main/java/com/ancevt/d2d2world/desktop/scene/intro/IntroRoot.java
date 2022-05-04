@@ -125,13 +125,13 @@ public class IntroRoot extends Root {
             removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
 
             PlainRect plainRect = new PlainRect(
-                    getStage().getStageWidth(),
-                    getStage().getStageHeight() - 300,
+                    getStage().getWidth() * 2,
+                    getStage().getHeight() - 300,
                     Color.of(0x4d0072)
             );
             add(plainRect);
 
-            add(new CityBgSprite(), 0, 200);
+            add(new CityBgSprite(), -1920, 200);
 
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
@@ -162,8 +162,11 @@ public class IntroRoot extends Root {
                     float height = getStage().getHeight();
                     var root = getStage().getRoot();
 
-                    root.setScaleY(height / D2D2World.ORIGIN_HEIGHT);
-                    root.setScaleX(root.getScaleY());
+                    plainRect.setWidth(D2D2.getStage().getWidth() * 2);
+                    plainRect.setX(-D2D2.getStage().getWidth());
+
+                    //root.setScaleY(height / D2D2World.ORIGIN_HEIGHT);
+                    //root.setScaleX(root.getScaleY());
 
                     float w = width;
                     float ow = D2D2World.ORIGIN_WIDTH;

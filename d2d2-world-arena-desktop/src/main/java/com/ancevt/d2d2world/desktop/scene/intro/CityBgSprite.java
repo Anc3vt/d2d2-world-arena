@@ -24,7 +24,7 @@ import com.ancevt.d2d2.display.texture.Texture;
 
 public class CityBgSprite extends Sprite {
 
-    private static final float SPEED = 0.5f;
+    private static final float SPEED = 1f;
     private static Texture texture;
 
     public static Texture createOrGetTexture() {
@@ -37,15 +37,15 @@ public class CityBgSprite extends Sprite {
     public CityBgSprite() {
         super(createOrGetTexture());
         setColor(Color.BLACK);
-        setRepeatX(3);
+        setRepeatX(10);
         setScale(2f,2f);
     }
 
     @Override
     public void onEachFrame() {
         moveX(-SPEED);
-        if(getX() < -getTexture().width() * getScaleX()) {
-            setX(0);
+        if(getX() < -getTexture().width() * 2 * getScaleX()) {
+            setX(-getTexture().width() * 2);
         }
     }
 }
