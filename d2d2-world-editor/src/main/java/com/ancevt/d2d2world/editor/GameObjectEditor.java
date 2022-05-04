@@ -62,8 +62,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
-
 public class GameObjectEditor {
 
     private static final int GRID_SIZE = 16;
@@ -268,8 +266,6 @@ public class GameObjectEditor {
         getWorld().add(selectArea);
 
         IGameObject selectedGameObject = getGameObjectUnderPoint(editor.getCurrentLayerIndex(), worldX, worldY);
-
-        debug("GameObjectEditor:274: <A>" + selectedGameObject);
 
         if (!isSelected(selectedGameObject) && !editor.isShiftDown()) unselect();
 

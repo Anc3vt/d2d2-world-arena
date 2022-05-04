@@ -57,7 +57,7 @@ import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
 @Slf4j
 public class ServerWorldScene {
 
-    public static final ServerWorldScene WORLD_SCENE = new ServerWorldScene();
+    public static final ServerWorldScene SERVER_WORLD_SCENE = new ServerWorldScene();
     /**
      * roomId => world
      */
@@ -262,7 +262,7 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public int spawnPlayerFirstTime(@NotNull Player player, @NotNull String mapkitItemId) {
-        PlayerActor playerActor = WORLD_SCENE.createPlayerActor(player, mapkitItemId);
+        PlayerActor playerActor = SERVER_WORLD_SCENE.createPlayerActor(player, mapkitItemId);
         playerActor.setVisible(true);
         playerActor.setAnimation(IDLE);
         sendGameObjectsSyncData(player.getId());

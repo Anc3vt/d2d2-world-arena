@@ -37,7 +37,7 @@ import static com.ancevt.d2d2world.server.player.BanList.BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
-import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.WORLD_SCENE;
+import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.SERVER_WORLD_SCENE;
 
 @Slf4j
 public class ServerCommandProcessor {
@@ -77,8 +77,8 @@ public class ServerCommandProcessor {
         repl.addCommand("reset", this::cmd_reset);
     }
 
-    private Object cmd_reset(Args args) {
-        WORLD_SCENE.resetAllResettableGameObjects();
+    private @NotNull Object cmd_reset(Args args) {
+        SERVER_WORLD_SCENE.resetAllResettableGameObjects();
         return "";
     }
 
@@ -90,7 +90,7 @@ public class ServerCommandProcessor {
 
     private @NotNull @Unmodifiable Object cmd_setprop(@NotNull Args args) {
         int gameObjectId = args.get(int.class, 0);
-        IGameObject gameObject = WORLD_SCENE.getWorldByGameObjectId(gameObjectId).getGameObjectById(gameObjectId);
+        IGameObject gameObject = SERVER_WORLD_SCENE.getWorldByGameObjectId(gameObjectId).getGameObjectById(gameObjectId);
         String prop = args.get(String.class, 1) + "=" + args.get(String.class, 2);
         setProperties(gameObject, DataEntry.newInstance(prop));
         return getProperties(gameObject).toString();
@@ -101,12 +101,12 @@ public class ServerCommandProcessor {
         String roomId = args.get(String.class, 1);
         float x = args.get(float.class, 2, 64f);
         float y = args.get(float.class, 3, 64f);
-        WORLD_SCENE.instantSwitchRoomForPlayerActor(playerId, roomId, x, y);
+        SERVER_WORLD_SCENE.instantSwitchRoomForPlayerActor(playerId, roomId, x, y);
         return "";
     }
 
     private @Nullable Object cmd_kill(@NotNull Args args) {
-        WORLD_SCENE.getPlayerActorByPlayerId(args.get(int.class, 0)).ifPresent(playerActor -> playerActor.setHealth(0));
+        SERVER_WORLD_SCENE.getPlayerActorByPlayerId(args.get(int.class, 0)).ifPresent(playerActor -> playerActor.setHealth(0));
         return "";
     }
 
@@ -114,7 +114,7 @@ public class ServerCommandProcessor {
         int gameObjectId = args.get(int.class, 0);
         if (gameObjectId == 0) return null;
 
-        World world = WORLD_SCENE.getWorldByGameObjectId(gameObjectId);
+        World world = SERVER_WORLD_SCENE.getWorldByGameObjectId(gameObjectId);
         if (world == null) {
             return null;
         }
@@ -129,7 +129,7 @@ public class ServerCommandProcessor {
 
     private Object cmd_fps(Args args) {
         try {
-            int fps = WORLD_SCENE.getFps();
+            int fps = SERVER_WORLD_SCENE.getFps();
             System.out.println(fps);
             return fps;
         } catch (Exception e) {

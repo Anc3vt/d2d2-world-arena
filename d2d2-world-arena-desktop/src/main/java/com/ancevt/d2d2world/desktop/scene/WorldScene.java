@@ -79,7 +79,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
@@ -123,21 +122,10 @@ public class WorldScene extends DisplayObjectContainer {
 
         chatBubbles = new HashSet<>();
 
-        world = new World();
-
-        world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
-        world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
-        world.addEventListener(hashCode() + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
-        world.addEventListener(hashCode() + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
-        world.addEventListener(hashCode() + WorldEvent.ACTOR_DEATH, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+        world = createWorld();
+        add(world);
 
         gameObjectTexts = new GameObjectTexts(world);
-
-        world.getPlayProcessor().setAsyncProcessingEnabled(false);
-        world.getCamera().setBoundsLock(true);
-        world.setVisible(false);
-        world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
-        add(world);
 
         playerArrowView = new PlayerArrowView();
         //playerArrowView.setScale(D2D2World.SCALE, D2D2World.SCALE);
@@ -328,12 +316,27 @@ public class WorldScene extends DisplayObjectContainer {
         ammunitionHud = new AmmunitionHud();
     }
 
+    private @NotNull World createWorld() {
+        var world = new World();
+        world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
+        world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
+        world.addEventListener(hashCode() + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
+        world.addEventListener(hashCode() + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
+        world.addEventListener(hashCode() + WorldEvent.ACTOR_DEATH, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+
+        world.getPlayProcessor().setAsyncProcessingEnabled(false);
+        world.getCamera().setBoundsLock(true);
+        world.setVisible(false);
+        world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
+
+        return world;
+    }
+
     private void world_actorDeath(Event<World> event) {
         var e = (WorldEvent) event;
         if (world.getGameObjectById(e.getDeadActorGameObjectId()) instanceof PlayerActor playerActor) {
             playerArrowView.removePlayerArrow(playerActor);
         }
-        debug("WorldScene:327: <A>world_actorDeath");
     }
 
     public void resize(float w, float h) {
@@ -641,6 +644,7 @@ public class WorldScene extends DisplayObjectContainer {
      */
     public void setRoom(String roomId, float cameraX, float cameraY) {
         playerArrowView.clear();
+        clearChatBubbles();
         world.setSceneryPacked(false);
         world.setRoom(world.getMap().getRoom(roomId));
         world.setSceneryPacked(true);
