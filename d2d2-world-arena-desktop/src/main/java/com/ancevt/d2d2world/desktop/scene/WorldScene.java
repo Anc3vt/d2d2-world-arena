@@ -33,7 +33,6 @@ import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
-import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 import com.ancevt.d2d2world.desktop.DesktopConfig;
 import com.ancevt.d2d2world.desktop.MonitorDevice;
@@ -66,8 +65,6 @@ import com.ancevt.d2d2world.world.WorldEvent;
 import com.ancevt.util.args.Args;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWVidMode;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -192,44 +189,48 @@ public class WorldScene extends DisplayObjectContainer {
                     .build());
         });
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//tostring",
+                "print game object info by game object id",
                 args -> {
                     IGameObject gameObject = world.getGameObjectById(args.get(int.class, 1));
                     if (gameObject == null) {
                         Chat.getInstance().addMessage("no such game object", Color.YELLOW);
-                        return true;
+                        return null;
                     }
                     Chat.getInstance().addMessage(gameObject.toString() + "\n"
                             + getProperties(gameObject) + "\n"
                             + gameObject.getMapkitItem().getDataEntry().toString(), Color.YELLOW
                     );
-                    return true;
+                    return null;
                 }
-        ));
+        );
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//gameobjectids",
+                "print list of game object ids",
                 args -> {
                     StringBuilder sb = new StringBuilder();
                     world.getGameObjects().forEach(o -> sb.append(o.getGameObjectId()).append(','));
                     Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
-                    return true;
+                    return null;
                 }
-        ));
+        );
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//gameobjectnames",
+                "print list of game object names",
                 args -> {
                     StringBuilder sb = new StringBuilder();
                     world.getGameObjects().forEach(o -> sb.append(o.getName()).append(','));
                     Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
-                    return true;
+                    return null;
                 }
-        ));
+        );
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//config",
+                "print client config [[-k [-v]]]",
                 args -> {
                     String key = args.get(String.class, "-k");
                     String value = args.get(String.class, "-v");
@@ -243,38 +244,41 @@ public class WorldScene extends DisplayObjectContainer {
                     if (key == null && value == null) {
                         Chat.getInstance().addMessage(MODULE_CONFIG.passwordSafeToString(), Color.YELLOW);
                     }
-                    return true;
+                    return null;
                 }
-        ));
+        );
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//monitorlist",
+                "print list of avialable monitors",
                 args -> {
                     LWJGLVideoModeUtils.getMonitors().values().forEach(
                             monitorName -> Chat.getInstance().addMessage(monitorName)
                     );
-                    return true;
+                    return null;
                 }
-        ));
+        );
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//videomodelist",
-                a -> {
-                    GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDevice());
-                    List<GLFWVidMode> list = glfwVidModes.stream().toList();
-                    list.forEach(m -> Chat.getInstance().addMessage(m.width() + "x" + m.height() + " " + m.refreshRate()));
-                    return true;
+                "print list of video modes",
+                args -> {
+                    LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getMonitorDevice()).forEach(videoMode ->
+                            Chat.getInstance().addMessage(videoMode.getWidth() + "x" + videoMode.getHeight() + " " + videoMode.getRefreshRate())
+                    );
+                    return null;
                 }
-        ));
+        );
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//videomode",
-                a -> {
-                    var tokens = new Args(a.get(String.class, 1, "0x0"), 'x');
+                "set video mode [<width>x<height> <refresh rate or -1>]",
+                args -> {
+                    var tokens = new Args(args.get(String.class, 1, "0x0"), 'x');
                     int width = tokens.next(int.class);
                     int height = tokens.next(int.class);
 
-                    int refreshRate = a.get(int.class, 2, -1);
+                    int refreshRate = args.get(int.class, 2, 60);
 
                     Holder<Boolean> found = new Holder<>(false);
 
@@ -301,17 +305,18 @@ public class WorldScene extends DisplayObjectContainer {
                         Chat.getInstance().addMessage("vid mode not found");
                     }
 
-                    return true;
+                    return null;
                 }
-        ));
+        );
 
-        COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
+        COMMAND_PROCESSOR.getCommandSet().registerCommand(
                 "//cls",
-                a->{
+                "clear chat",
+                args -> {
                     Chat.getInstance().clear();
-                    return true;
+                    return null;
                 }
-        ));
+        );
 
         ammunitionHud = new AmmunitionHud();
     }
