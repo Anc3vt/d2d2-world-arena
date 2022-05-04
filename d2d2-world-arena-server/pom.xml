@@ -56,6 +56,10 @@
             <artifactId>repl</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.ancevt.util</groupId>
+            <artifactId>commands</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-world</artifactId>
         </dependency>

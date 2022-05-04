@@ -60,6 +60,14 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>commands-mvn-repo</id>
+            <url>https://raw.github.com/Anc3vt/commands/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
 
     <modules>
@@ -107,6 +115,11 @@
                 <groupId>com.ancevt.util</groupId>
                 <artifactId>repl</artifactId>
                 <version>0.0.12</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ancevt.util</groupId>
+                <artifactId>commands</artifactId>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.d2d2</groupId>

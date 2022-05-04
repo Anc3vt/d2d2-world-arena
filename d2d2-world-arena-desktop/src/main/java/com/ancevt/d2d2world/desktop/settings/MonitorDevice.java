@@ -48,6 +48,7 @@ public class MonitorDevice {
     }
 
     public long getMonitorDeviceId() {
+        if(monitorDeviceId == 0L) monitorDeviceId = LWJGLVideoModeUtils.getPrimaryMonitorId();
         return monitorDeviceId;
     }
 

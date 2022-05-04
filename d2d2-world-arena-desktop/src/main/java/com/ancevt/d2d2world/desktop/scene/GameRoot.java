@@ -109,10 +109,10 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                     setTabWindowVisible(true);
                 }
                 case KeyCode.F -> {
-                    if(e.isAlt()) {
+                    if (e.isAlt()) {
                         LWJGLVideoModeUtils.linuxCare(
-                                MonitorDevice.getMonitorDeviceId(),
-                                LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDeviceId())
+                                MonitorDevice.getInstance().getMonitorDeviceId(),
+                                LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId())
                         );
 
                         D2D2.setFullscreen(!D2D2.isFullscreen());
@@ -124,6 +124,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 case KeyCode.T -> {
                     if (!Chat.getInstance().isInputOpened()) {
                         Chat.getInstance().openInput();
+                    }
+                }
+                case KeyCode.ENTER -> {
+                    if (e.isAlt()) {
+                        MonitorDevice.getInstance().setFullscreen(!MonitorDevice.getInstance().isFullscreen());
                     }
                 }
             }
@@ -153,8 +158,11 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
         FileReceiverManager.INSTANCE.addFileReceiverManagerListener(this);
 
         addEventListener(Event.ADD_TO_STAGE, event -> {
-            getStage().addEventListener(IntroRoot.class, Event.RESIZE,
-                    resizeEvent -> worldScene.resize(getStage().getWidth(), getStage().getHeight()));
+            getStage().addEventListener(IntroRoot.class, Event.RESIZE, resizeEvent -> {
+                Chat.getInstance().setWidth(getStage().getWidth());
+                Chat.getInstance().setHeight(getStage().getHeight() / 3);
+                worldScene.resize(getStage().getWidth(), getStage().getHeight());
+            });
         });
 
         INSTANCE = this;

@@ -14,6 +14,7 @@ import java.util.Map;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
 import static org.lwjgl.glfw.GLFW.glfwGetMonitorName;
 import static org.lwjgl.glfw.GLFW.glfwGetMonitors;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoModes;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
@@ -36,7 +37,7 @@ public class LWJGLVideoModeUtils {
     public static long getMonitorByName(String monitorName) {
         Holder<Long> result = new Holder<>(0L);
         getMonitors().forEach((monitor, name) -> {
-            if(monitorName.equals(name)) result.setValue(monitor);
+            if (monitorName.equals(name)) result.setValue(monitor);
         });
         return result.getValue();
     }
@@ -60,6 +61,10 @@ public class LWJGLVideoModeUtils {
     public static @NotNull VideoMode getMaxVideoMode(long monitor) {
         var videoModes = getVideoModes(monitor);
         return videoModes.get(videoModes.size() - 1);
+    }
+
+    public static long getPrimaryMonitorId() {
+        return glfwGetPrimaryMonitor();
     }
 
     public static VideoMode getVideoMode(long monitor) {
@@ -126,5 +131,4 @@ public class LWJGLVideoModeUtils {
         ).start();
         Thread.sleep(1000);
     }
-
 }
