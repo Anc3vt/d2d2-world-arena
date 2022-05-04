@@ -28,8 +28,8 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
-import com.ancevt.d2d2world.desktop.DesktopConfig;
-import com.ancevt.d2d2world.desktop.MonitorDevice;
+import com.ancevt.d2d2world.desktop.settings.DesktopConfig;
+import com.ancevt.d2d2world.desktop.settings.MonitorDevice;
 import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
@@ -48,7 +48,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_ENTER;
@@ -111,8 +111,8 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 case KeyCode.F -> {
                     if(e.isAlt()) {
                         LWJGLVideoModeUtils.linuxCare(
-                                MonitorDevice.getMonitorDevice(),
-                                LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDevice())
+                                MonitorDevice.getMonitorDeviceId(),
+                                LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getMonitorDeviceId())
                         );
 
                         D2D2.setFullscreen(!D2D2.isFullscreen());

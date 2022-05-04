@@ -16,7 +16,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
-import com.ancevt.d2d2world.desktop.DesktopConfig;
+import com.ancevt.d2d2world.desktop.settings.DesktopConfig;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;

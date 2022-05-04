@@ -12,6 +12,10 @@ public class VideoMode {
     private final int height;
     private final int refreshRate;
 
+    public String getResolution() {
+        return width + "x" + height;
+    }
+
     @Override
     public String toString() {
         return "VideoMode{" +

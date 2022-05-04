@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.desktop;
+package com.ancevt.d2d2world.desktop.settings;
 
 import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import lombok.extern.slf4j.Slf4j;

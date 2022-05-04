@@ -47,10 +47,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.d2d2world.desktop.DesktopConfig.AUTO_ENTER;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.PLAYERNAME;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.SERVER;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.AUTO_ENTER;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.PLAYERNAME;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.SERVER;
 import static java.lang.Integer.parseInt;
 
 @Slf4j

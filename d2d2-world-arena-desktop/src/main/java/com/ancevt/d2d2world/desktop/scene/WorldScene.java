@@ -35,8 +35,8 @@ import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.desktop.ClientCommandProcessor;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
-import com.ancevt.d2d2world.desktop.DesktopConfig;
-import com.ancevt.d2d2world.desktop.MonitorDevice;
+import com.ancevt.d2d2world.desktop.settings.DesktopConfig;
+import com.ancevt.d2d2world.desktop.settings.MonitorDevice;
 import com.ancevt.d2d2world.desktop.scene.charselect.CharSelectScene;
 import com.ancevt.d2d2world.desktop.ui.UiText;
 import com.ancevt.d2d2world.desktop.ui.chat.Chat;
@@ -81,9 +81,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.DEBUG_WORLD_ALPHA;
-import static com.ancevt.d2d2world.desktop.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.DEBUG_WORLD_ALPHA;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.MODULE_CONFIG;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
@@ -260,7 +260,7 @@ public class WorldScene extends DisplayObjectContainer {
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
                 "//videomodelist",
                 a -> {
-                    GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDevice());
+                    GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(MonitorDevice.getMonitorDeviceId());
                     List<GLFWVidMode> list = glfwVidModes.stream().toList();
                     list.forEach(m -> Chat.getInstance().addMessage(m.width() + "x" + m.height() + " " + m.refreshRate()));
                     return true;
@@ -268,31 +268,22 @@ public class WorldScene extends DisplayObjectContainer {
         ));
 
         COMMAND_PROCESSOR.getCommands().add(new ClientCommandProcessor.Command(
-                "//videomode",
+                "//resolution",
                 a -> {
-                    var tokens = new Args(a.get(String.class, 1, "0x0"), 'x');
-                    int width = tokens.next(int.class);
-                    int height = tokens.next(int.class);
-
-                    int refreshRate = a.get(int.class, 2, -1);
+                    String resolution = a.get(String.class, 1, "0x0");
 
                     Holder<Boolean> found = new Holder<>(false);
 
-                    LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getMonitorDevice()).forEach(videoMode -> {
-                        if (videoMode.getWidth() == width &&
-                                videoMode.getHeight() == height &&
-                                (videoMode.getRefreshRate() == refreshRate || refreshRate == -1)) {
-
+                    LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
+                        if (videoMode.getResolution().equals(resolution) && videoMode.getRefreshRate() == 60) {
                             found.setValue(true);
 
-                            Chat.getInstance().addMessage(width + "x" + height + " " + videoMode.getRefreshRate());
+                            Chat.getInstance().addMessage(resolution + " " + videoMode.getRefreshRate());
 
                             LWJGLVideoModeUtils.setVideoMode(
-                                    MonitorDevice.getMonitorDevice(),
+                                    MonitorDevice.getInstance().getMonitorDeviceId(),
                                     D2D2.getStarter().getWindowId(),
-                                    width,
-                                    height,
-                                    videoMode.getRefreshRate()
+                                    videoMode
                             );
                         }
                     });
