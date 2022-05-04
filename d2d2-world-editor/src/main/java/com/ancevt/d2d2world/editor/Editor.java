@@ -19,6 +19,7 @@ package com.ancevt.d2d2world.editor;
 
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.input.KeyCode;
+import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.map.Room;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.util.args.Args;
@@ -91,9 +92,14 @@ public class Editor {
                 if (down) gameObjectEditor.enter();
             }
             case KeyCode.BACKSPACE -> {
-                if (down) gameObjectEditor.getSelectedGameObject().ifPresent(
-                        gameObject -> gameObject.setScaleX(gameObject.getScaleX() * -1f)
-                );
+                if (down) gameObjectEditor.getSelectedGameObject().ifPresent(gameObject -> {
+
+                    if (gameObject instanceof AreaCollision areaCollision) {
+                        areaCollision.setFloorOnly(!areaCollision.isFloorOnly());
+                    } else {
+                        gameObject.setScaleX(gameObject.getScaleX() * -1f);
+                    }
+                });
             }
             case KeyCode.PAGE_UP -> {
                 if (down) prevRoom();

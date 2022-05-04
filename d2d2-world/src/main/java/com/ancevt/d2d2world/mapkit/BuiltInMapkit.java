@@ -229,7 +229,7 @@ public class BuiltInMapkit extends Mapkit {
                         | class =""" + RailWeapon.RailBullet.class.getName() + """
                         | damagingPower = 49
                         | speed = 32
-                        | collisionX = -8 | collisionY = -8 | collisionWidth = 16 | collisionHeight = 16
+                        | collisionX = -8 | collisionY = -2 | collisionWidth = 16 | collisionHeight = 4
                         | atlas = $ATLAS$
                         | idle = 32,48,32,16
                         """);

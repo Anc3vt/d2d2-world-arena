@@ -320,7 +320,7 @@ public class GameObjectEditor {
             selectGameObjectsInSelectedArea();
         }
 
-        cursor.setXY(worldX - GRID_SIZE / 2, worldY - GRID_SIZE / 2);
+        cursor.setXY(worldX - GRID_SIZE / 2f, worldY - GRID_SIZE / 2f);
         if (isSnapToGrid()) {
             snapToGrid(cursor);
         }
