@@ -58,17 +58,19 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
         } else {
             isStatic = true;
         }
+
+        setVertexBleedingFix(0.5);
     }
 
     @Override
     @Property
-    public void setBleedingFix(float v) {
+    public void setBleedingFix(double v) {
         super.setBleedingFix(v);
     }
 
     @Override
     @Property
-    public float getBleedingFix() {
+    public double getBleedingFix() {
         return super.getBleedingFix();
     }
 

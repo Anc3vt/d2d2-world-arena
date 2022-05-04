@@ -29,8 +29,9 @@ public class Sprite extends DisplayObject implements ISprite {
     private int repeatY;
     private Color color;
     private Texture texture;
-    private float bleedingFix = 0.0005f;
+    private double bleedingFix = 0.0005f;
     private ShaderProgram shaderProgram;
+    private double vertexBleedingFix;
 
     public Sprite() {
         setColor(DEFAULT_COLOR);
@@ -137,12 +138,12 @@ public class Sprite extends DisplayObject implements ISprite {
     }
 
     @Override
-    public void setBleedingFix(float v) {
+    public void setBleedingFix(double v) {
         this.bleedingFix = v;
     }
 
     @Override
-    public float getBleedingFix() {
+    public double getBleedingFix() {
         return bleedingFix;
     }
 
@@ -159,6 +160,16 @@ public class Sprite extends DisplayObject implements ISprite {
     @Override
     public ShaderProgram getShaderProgram() {
         return shaderProgram;
+    }
+
+    @Override
+    public void setVertexBleedingFix(double v) {
+        vertexBleedingFix = v;
+    }
+
+    @Override
+    public double getVertexBleedingFix() {
+        return vertexBleedingFix;
     }
 }
 

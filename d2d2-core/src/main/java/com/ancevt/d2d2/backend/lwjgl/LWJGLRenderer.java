@@ -51,7 +51,6 @@ public class LWJGLRenderer implements IRenderer {
     private final LWJGLStarter lwjglStarter;
     boolean smoothMode = false;
     private LWJGLTextureEngine textureEngine;
-    private double vertexBleedingFix = 0.5;
 
     public LWJGLRenderer(Stage stage, LWJGLStarter lwjglStarter) {
         this.stage = stage;
@@ -105,16 +104,6 @@ public class LWJGLRenderer implements IRenderer {
         GLFW.glfwSwapInterval(1);
 
         Mouse.setXY((int) mouseX[0], (int) mouseY[0]);
-    }
-
-    @Override
-    public void setVertexBleedingFix(double value) {
-        this.vertexBleedingFix = value;
-    }
-
-    @Override
-    public double getVertexBleeding() {
-        return vertexBleedingFix;
     }
 
     private double[] mouseX = new double[1];
@@ -230,6 +219,9 @@ public class LWJGLRenderer implements IRenderer {
         float repeatX = sprite.getRepeatX();
         float repeatY = sprite.getRepeatY();
 
+        double vertexBleedingFix = sprite.getVertexBleedingFix();
+        final double bleedingFix = sprite.getBleedingFix();
+
         for (int rY = 0; rY < repeatY; rY++) {
             for (int rX = 0; rX < repeatX; rX++) {
                 float px = round(rX * tW * scaleX);
@@ -237,7 +229,6 @@ public class LWJGLRenderer implements IRenderer {
 
                 GL20.glBegin(GL20.GL_QUADS);
 
-                final double bleedingFix = sprite.getBleedingFix();
                 // L
                 GL20.glTexCoord2d(x + bleedingFix, (h + y) - bleedingFix);
                 GL20.glVertex2d(px - vertexBleedingFix, py + tH * scaleY + vertexBleedingFix);
@@ -304,6 +295,8 @@ public class LWJGLRenderer implements IRenderer {
         float drawX = 0;
         float drawY = 0;
 
+        double vertexBleedingFix = bitmapText.getVertexBleedingFix();
+
         GL20.glBegin(GL20.GL_QUADS);
 
         for (int i = 0; i < text.length(); i++) {
@@ -327,7 +320,7 @@ public class LWJGLRenderer implements IRenderer {
                 }
             }
 
-            drawChar(drawX, (drawY + scaleY * charHeight), textureWidth, textureHeight, charInfo, scaleX, scaleY);
+            drawChar(drawX, (drawY + scaleY * charHeight), textureWidth, textureHeight, charInfo, scaleX, scaleY, vertexBleedingFix);
 
             drawX += (charWidth + (c != '\n' ? spacing : 0)) * scaleX;
         }
@@ -351,7 +344,8 @@ public class LWJGLRenderer implements IRenderer {
             int textureAtlasHeight,
             @NotNull BitmapCharInfo charInfo,
             float scX,
-            float scY) {
+            float scY,
+            double vertexBleedingFix) {
 
         //scX = nextHalf(scX);
         scY = nextHalf(scY);

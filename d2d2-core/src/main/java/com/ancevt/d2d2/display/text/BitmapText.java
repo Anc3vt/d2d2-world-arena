@@ -43,6 +43,8 @@ public class BitmapText extends DisplayObject implements IColored {
 	
 	private float boundWidth;
 	private float boundHeight;
+
+	private double vertexBleedingFix = 0.0;
 	
 	public BitmapText(final BitmapFont bitmapFont, float boundWidth, float boundHeight, String text) {
 		setBitmapFont(bitmapFont);
@@ -71,7 +73,15 @@ public class BitmapText extends DisplayObject implements IColored {
 	public BitmapText() {
 		this(BitmapFont.getDefaultBitmapFont(), DEFAULT_BOUND_WIDTH, DEFAULT_BOUND_HEIGHT, DEFAULT_TEXT);
 	}
-	
+
+	public void setVertexBleedingFix(double vertexBleedingFix) {
+		this.vertexBleedingFix = vertexBleedingFix;
+	}
+
+	public double getVertexBleedingFix() {
+		return vertexBleedingFix;
+	}
+
 	public int getTextWidth() {
 		if(getText() == null) return 0;
 		
