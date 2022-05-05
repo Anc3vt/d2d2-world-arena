@@ -98,6 +98,7 @@ public class D2D2WorldArenaDesktopMain {
         D2D2WorldArenaDesktopAssets.load();
 
         previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
+        MonitorDevice.getInstance().setStartResolution(previousVideoMode.getResolution());
 
         String displayResolutionString = MODULE_CONFIG.getString(DISPLAY_RESOLUTION);
         if (!displayResolutionString.equals("")) {
