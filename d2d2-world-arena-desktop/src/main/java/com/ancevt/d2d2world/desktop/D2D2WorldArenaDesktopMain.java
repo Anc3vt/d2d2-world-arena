@@ -48,7 +48,7 @@ import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.SOUND_ENABLED;
 @Slf4j
 public class D2D2WorldArenaDesktopMain {
 
-    private static VideoMode previousVideoMode;
+    private static VideoMode startVideoMode;
 
     @SneakyThrows
     public static void main(String[] args) throws IOException {
@@ -97,8 +97,8 @@ public class D2D2WorldArenaDesktopMain {
         D2D2World.init(false, false);
         D2D2WorldArenaDesktopAssets.load();
 
-        previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
-        MonitorDevice.getInstance().setStartResolution(previousVideoMode.getResolution());
+        startVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
+        MonitorDevice.getInstance().setStartResolution(startVideoMode.getResolution());
 
         String displayResolutionString = MODULE_CONFIG.getString(DISPLAY_RESOLUTION);
         if (!displayResolutionString.equals("")) {
@@ -145,7 +145,7 @@ public class D2D2WorldArenaDesktopMain {
 
     public static void exit() {
         if (isUnix()) {
-            LWJGLVideoModeUtils.linuxCare(MonitorDevice.getInstance().getMonitorDeviceId(), previousVideoMode);
+            LWJGLVideoModeUtils.linuxCare(MonitorDevice.getInstance().getMonitorDeviceId(), startVideoMode);
         }
 
         Chat.getInstance().saveHistory();

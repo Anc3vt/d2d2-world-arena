@@ -7,4 +7,8 @@
     d2d2-world-arena-desktop-char-select-door 64 64 8 48
     d2d2-world-arena-desktop-spawn-effect  0 96 32 96
     d2d2-world-arena-desktop-controls-help 96 0 240 176
+    d2d2-world-arena-desktop-arrow-button  80 64 16 16
+    d2d2-world-arena-desktop-button-left-part 32 112 16 16
+    d2d2-world-arena-desktop-button-right-part 48 112 16 16
+    d2d2-world-arena-desktop-button-middle-part 40 112 1 16
 

@@ -2,7 +2,9 @@ package com.ancevt.d2d2world.desktop.settings;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
+import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.util.args.Args;
 import org.lwjgl.glfw.GLFW;
@@ -134,4 +136,54 @@ public class MonitorDevice {
                 ", fullscreen=" + fullscreen +
                 '}';
     }
+
+    public static void main(String[] args) {
+        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+        D2D2World.init(true, true);
+
+
+
+
+
+
+
+
+
+        D2D2.loop();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
