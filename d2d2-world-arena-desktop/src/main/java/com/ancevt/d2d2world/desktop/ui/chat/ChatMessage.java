@@ -67,6 +67,9 @@ public class ChatMessage extends DisplayObjectContainer {
 
         nameUiText.setHeight(DEFAULT_HEIGHT);
 
+        textUiText.setVertexBleedingFix(0);
+        nameUiText.setVertexBleedingFix(0);
+
         add(nameUiText);
         add(textUiText);
     }
@@ -84,6 +87,9 @@ public class ChatMessage extends DisplayObjectContainer {
         textUiText.setHeight(DEFAULT_HEIGHT);
         textUiText.setColor(textColor);
         textUiText.setText(messageText);
+
+        textUiText.setVertexBleedingFix(0);
+
         add(textUiText);
     }
 

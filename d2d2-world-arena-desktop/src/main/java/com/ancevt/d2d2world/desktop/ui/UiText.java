@@ -40,6 +40,7 @@ public class UiText extends DisplayObjectContainer {
     private boolean shadowEnabled;
     private Color color;
     private boolean autoSize;
+    private double vertexBleedingFix;
 
     public UiText() {
         color = DEFAULT_COLOR;
@@ -135,6 +136,16 @@ public class UiText extends DisplayObjectContainer {
         return color;
     }
 
+    public void setVertexBleedingFix(double v) {
+        vertexBleedingFix = v;
+        if (bitmapTextShadow != null) bitmapTextShadow.setVertexBleedingFix(vertexBleedingFix);
+        if (bitmapText != null) bitmapTextShadow.setVertexBleedingFix(vertexBleedingFix);
+    }
+
+    public double getVertexBleedingFix() {
+        return vertexBleedingFix;
+    }
+
     public void redraw() {
         if (shadow != null) {
             shadow.removeFromParent();
@@ -144,6 +155,7 @@ public class UiText extends DisplayObjectContainer {
             bitmapTextShadow = new BitmapText(Font.getBitmapFont());
             bitmapTextShadow.setBounds(getWidth(), getHeight());
             bitmapTextShadow.setColor(Color.BLACK);
+            bitmapTextShadow.setVertexBleedingFix(vertexBleedingFix);
             bitmapTextShadow.setText(text);
 
             if (autoSize) {
@@ -159,6 +171,7 @@ public class UiText extends DisplayObjectContainer {
         bitmapText = new BitmapText(Font.getBitmapFont());
         bitmapText.setBounds(getWidth(), getHeight());
         bitmapText.setColor(getColor());
+        bitmapText.setVertexBleedingFix(vertexBleedingFix);
         bitmapText.setText(text);
 
         if (autoSize) {

@@ -220,7 +220,7 @@ public class LWJGLRenderer implements IRenderer {
         float repeatY = sprite.getRepeatY();
 
         double vertexBleedingFix = sprite.getVertexBleedingFix();
-        final double bleedingFix = sprite.getBleedingFix();
+        double bleedingFix = sprite.getTextureBleedingFix();
 
         for (int rY = 0; rY < repeatY; rY++) {
             for (int rX = 0; rX < repeatX; rX++) {
@@ -295,6 +295,7 @@ public class LWJGLRenderer implements IRenderer {
         float drawX = 0;
         float drawY = 0;
 
+        double textureBleedingFix = bitmapText.getTextureBleedingFix();
         double vertexBleedingFix = bitmapText.getVertexBleedingFix();
 
         GL20.glBegin(GL20.GL_QUADS);
@@ -320,7 +321,15 @@ public class LWJGLRenderer implements IRenderer {
                 }
             }
 
-            drawChar(drawX, (drawY + scaleY * charHeight), textureWidth, textureHeight, charInfo, scaleX, scaleY, vertexBleedingFix);
+            drawChar(drawX,
+                    (drawY + scaleY * charHeight),
+                    textureWidth,
+                    textureHeight,
+                    charInfo,
+                    scaleX,
+                    scaleY,
+                    textureBleedingFix,
+                    vertexBleedingFix);
 
             drawX += (charWidth + (c != '\n' ? spacing : 0)) * scaleX;
         }
@@ -345,6 +354,7 @@ public class LWJGLRenderer implements IRenderer {
             @NotNull BitmapCharInfo charInfo,
             float scX,
             float scY,
+            double textureBleedingFix,
             double vertexBleedingFix) {
 
         //scX = nextHalf(scX);

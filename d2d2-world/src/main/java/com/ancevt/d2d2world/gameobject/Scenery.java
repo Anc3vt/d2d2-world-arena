@@ -64,14 +64,14 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
 
     @Override
     @Property
-    public void setBleedingFix(double v) {
-        super.setBleedingFix(v);
+    public void setTextureBleedingFix(double v) {
+        super.setTextureBleedingFix(v);
     }
 
     @Override
     @Property
-    public double getBleedingFix() {
-        return super.getBleedingFix();
+    public double getTextureBleedingFix() {
+        return super.getTextureBleedingFix();
     }
 
     @Override

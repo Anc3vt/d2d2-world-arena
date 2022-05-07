@@ -24,6 +24,6 @@ import org.jetbrains.annotations.NotNull;
 public class PackedScenery extends Sprite {
 	public PackedScenery(final @NotNull TextureAtlas textureAtlas) {
 		super(textureAtlas.createTexture());
-		setBleedingFix(0f);
+		setTextureBleedingFix(0f);
 	}
 }
