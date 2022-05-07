@@ -100,7 +100,7 @@ public class TcpServer implements IServer {
 
                 dispatchConnectionAccepted(connectionWithClient);
 
-                new Thread(connectionWithClient::readLoop, "tcpB254_servconn" + connectionWithClient.getId()).start();
+                new Thread(connectionWithClient::readLoop, "tcpservconn" + connectionWithClient.getId()).start();
             }
 
             dispatchServerClosed(new CloseStatus());
@@ -113,7 +113,7 @@ public class TcpServer implements IServer {
 
     @Override
     public void asyncListen(String host, int port) {
-        Thread thread = new Thread(() -> listen(host, port), "tcpB254ServListen_" + host + "_" + port);
+        Thread thread = new Thread(() -> listen(host, port), "tcpservlisten_" + host + "_" + port);
         thread.start();
     }
 
