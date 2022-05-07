@@ -105,8 +105,8 @@ public class MonitorDevice {
             GLFW.glfwSetWindowMonitor(
                     D2D2.getStarter().getWindowId(),
                     0L,
-                    0,
-                    0,
+                    100,
+                    100,
                     (int) D2D2World.ORIGIN_WIDTH,
                     (int) D2D2World.ORIGIN_HEIGHT,
                     GLFW_DONT_CARE

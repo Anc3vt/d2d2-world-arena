@@ -8,6 +8,9 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +54,14 @@ public class Chooser<T> extends DisplayObjectContainer {
     }
 
     private void applyButton_buttonPressed(Event<Button> event) {
+        setCurrentItemAsSelected();
+    }
+
+    private void setCurrentItemAsSelected() {
         selectedItemPair = items.get(index);
         applyButton.setEnabled(false);
         uiText.setColor(Color.WHITE);
+        dispatchEvent(ChooserEvent.builder().type(ChooserEvent.CHOOSER_APPLY).build());
     }
 
     public void setWidth(float width) {
@@ -106,7 +114,7 @@ public class Chooser<T> extends DisplayObjectContainer {
         uiText.setX((getWidth() - w) / 2);
 
         applyButton.setEnabled(selectedItemPair != items.get(index));
-        uiText.setColor(selectedItemPair == items.get(index) ? Color.WHITE : Color.GRAY);
+        uiText.setColor(selectedItemPair == items.get(index) ? Color.LIGHT_GREEN : Color.WHITE);
     }
 
     public int getIndex() {
@@ -131,6 +139,13 @@ public class Chooser<T> extends DisplayObjectContainer {
     public void dispose() {
         buttonLeft.dispose();
         buttonRight.dispose();
+    }
+
+    @Data
+    @SuperBuilder
+    @EqualsAndHashCode(callSuper = true)
+    public static class ChooserEvent extends Event<Chooser<?>> {
+        public static final String CHOOSER_APPLY = "chooserApply";
     }
 
     public static void main(String[] args) {
