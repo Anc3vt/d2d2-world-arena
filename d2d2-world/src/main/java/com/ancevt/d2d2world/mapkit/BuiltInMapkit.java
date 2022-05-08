@@ -24,7 +24,14 @@ import com.ancevt.d2d2world.gameobject.Scenery;
 import com.ancevt.d2d2world.gameobject.SceneryRect;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
-import com.ancevt.d2d2world.gameobject.weapon.*;
+import com.ancevt.d2d2world.gameobject.weapon.ArrowWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.FireWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.RailWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.RaveWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.StandardWeapon;
+import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -288,4 +295,28 @@ public class BuiltInMapkit extends Mapkit {
         Reflections reflections = new Reflections(Pickup.class.getPackage().getName(), Scanners.SubTypes);
         return new HashSet<>(reflections.getSubTypesOf(Pickup.class));
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

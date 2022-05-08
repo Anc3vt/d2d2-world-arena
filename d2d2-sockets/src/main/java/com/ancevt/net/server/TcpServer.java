@@ -1,5 +1,5 @@
 /*
- *   TCPB254
+ *   D2D2 Sockets
  *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
