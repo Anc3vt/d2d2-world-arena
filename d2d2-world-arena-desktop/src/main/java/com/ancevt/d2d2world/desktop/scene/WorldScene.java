@@ -87,7 +87,7 @@ import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
 
 @Slf4j
-public class WorldScene extends DisplayObjectContainer {
+public class WorldScene extends DisplayObjectContainer implements ClientListener {
 
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
@@ -151,6 +151,8 @@ public class WorldScene extends DisplayObjectContainer {
         localPlayerController.setEnabled(true);
 
         addEventListener(Event.ADD_TO_STAGE, Event.ADD_TO_STAGE, this::this_addToStage);
+
+        CLIENT.addClientListener(this);
 
         CLIENT.addClientListener(new ClientListener() {
 
@@ -579,8 +581,14 @@ public class WorldScene extends DisplayObjectContainer {
         }
     }
 
+
+    @Override
+    public void mapContentLoaded(@NotNull String mapFilename) {
+        loadMap(mapFilename);
+    }
+
     /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
     public void playerChatEvent(int playerId, String action) {
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
@@ -592,13 +600,13 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
-    public void setLocalPlayerActorGameObjectId(int playerActorGameObjectId) {
+    public void localPlayerActorGameObjectId(int playerActorGameObjectId) {
         PlayerActor playerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
 
         if (playerActor == null) {
-            Async.runLater(1, TimeUnit.SECONDS, () -> setLocalPlayerActorGameObjectId(playerActorGameObjectId));
+            Async.runLater(1, TimeUnit.SECONDS, () -> localPlayerActorGameObjectId(playerActorGameObjectId));
             return;
         }
 
@@ -606,7 +614,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
     public void playerEnterRoomStartResponseReceived() {
         world.roomSwitchOverlayStartOut();
@@ -614,20 +622,14 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
     public void playerDeath(int deadPlayerId, int killerPlayerId) {
         getPlayerActorByPlayerId(deadPlayerId).ifPresent(playerArrowView::removePlayerArrow);
     }
 
     /**
-     * Calls from {@link GameRoot}
-     */
-    public void remotePlayerExit(int playerId) {
-    }
-
-    /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
     public void setRoom(String roomId, float cameraX, float cameraY) {
         playerArrowView.clear();
@@ -641,7 +643,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
     public void spawnEffect(float x, float y) {
         SpawnEffect.doSpawnEffect(x, y, world.getLayer(5));
@@ -649,7 +651,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
     public void destroyableBoxDestroy(int destroyableGameObjectId) {
         if (world.getGameObjectById(destroyableGameObjectId) instanceof DestroyableBox destroyableBox) {
@@ -658,7 +660,7 @@ public class WorldScene extends DisplayObjectContainer {
     }
 
     /**
-     * Calls from {@link GameRoot}
+     * {@link ClientListener} method
      */
     public void playerShoot(int playerId) {
         getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {

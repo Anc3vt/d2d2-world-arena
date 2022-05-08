@@ -53,13 +53,13 @@ public class D2D2Demo_Input {
         root.add(container, Mouse.getX(), Mouse.getY());
 
         cursor = container;
-        cursor.setAlpha(0.25f);
+        //cursor.setAlpha(0.25f);
 
         DebugGrid debugGrid = new DebugGrid();
         //debugGrid.setScale(2f,2f);
         root.add(debugGrid);
 
-        D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
+        D2D2.getStage().setScaleMode(ScaleMode.REAL);
         D2D2.loop();
     }
 

@@ -205,7 +205,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     @Override
     public void playerExit(@NotNull Player remotePlayer) {
         D2D2WorldSound.playSoundAsset(PLAYER_EXIT);
-        worldScene.remotePlayerExit(remotePlayer.getId());
     }
 
     /**
@@ -295,22 +294,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
      * {@link ClientListener} method
      */
     @Override
-    public void mapContentLoaded(String mapFilename) {
-        worldScene.loadMap(mapFilename);
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void localPlayerActorGameObjectId(int playerActorGameObjectId) {
-        worldScene.setLocalPlayerActorGameObjectId(playerActorGameObjectId);
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
     public void playerDeath(int deadPlayerId, int killerPlayerId) {
         Player deadPlayer = PLAYER_MANAGER.getPlayerById(deadPlayerId).orElseThrow();
 
@@ -328,56 +311,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
                     PLAYER_MANAGER.getPlayerById(deadPlayerId).orElseThrow().decrementFrags();
                 });
-
-        worldScene.playerDeath(deadPlayerId, killerPlayerId);
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void playerChatEvent(int playerId, String action) {
-        worldScene.playerChatEvent(playerId, action);
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void playerEnterRoomStartResponseReceived() {
-        worldScene.playerEnterRoomStartResponseReceived();
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void setRoom(String roomId, float cameraX, float cameraY) {
-        worldScene.setRoom(roomId, cameraX, cameraY);
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void spawnEffect(float x, float y) {
-        worldScene.spawnEffect(x, y);
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void destroyableBoxDestroy(int destroyableGameObjectId) {
-        worldScene.destroyableBoxDestroy(destroyableGameObjectId);
-    }
-
-    /**
-     * {@link ClientListener} method
-     */
-    @Override
-    public void playerShoot(int playerId) {
-        worldScene.playerShoot(playerId);
     }
 
     /**
