@@ -25,6 +25,7 @@ import com.ancevt.d2d2world.gameobject.SceneryRect;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
 import com.ancevt.d2d2world.gameobject.weapon.*;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 
@@ -257,7 +258,7 @@ public class BuiltInMapkit extends Mapkit {
                         | class =""" + FireWeapon.FireBullet.class.getName() + """
                         | damagingPower = 20
                         | speed = 1f
-                        | collisionX = -8 | collisionY = -16 | collisionWidth = -32 | collisionHeight = 32
+                        | collisionX = -8 | collisionY = -16 | collisionWidth = 32 | collisionHeight = 32
                         | atlas = $ATLAS$
                         | idle = 32,80,64,64 h 4
                         """);
@@ -275,7 +276,7 @@ public class BuiltInMapkit extends Mapkit {
         }
     }
 
-    public static WeaponPickup createWeaponPickupMapkitItem(Weapon weapon) {
+    public static @NotNull WeaponPickup createWeaponPickupMapkitItem(@NotNull Weapon weapon) {
         WeaponPickup weaponPickup = (WeaponPickup) getInstance().getItemById("pickup_" + WeaponPickup.class.getSimpleName()).createGameObject(IdGenerator.getInstance().getNewId());
         weaponPickup.setWeaponClassname(weapon.getClass().getName());
         weaponPickup.setAmmunition(weapon.getAmmunition());
