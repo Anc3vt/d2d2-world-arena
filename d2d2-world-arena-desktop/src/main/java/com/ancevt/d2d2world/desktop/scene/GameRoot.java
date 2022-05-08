@@ -47,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
-import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.CONFIG;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_ENTER;
@@ -227,7 +227,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         D2D2WorldArenaDesktopAssets.getAim().setColor(Color.WHITE);
 
-        String rconPassword = MODULE_CONFIG.getString(DesktopConfig.RCON_PASSWORD);
+        String rconPassword = CONFIG.getString(DesktopConfig.RCON_PASSWORD);
         if (!rconPassword.isEmpty()) {
             CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
         }

@@ -40,9 +40,7 @@ import java.util.Properties;
 
 import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
-import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.DISPLAY_RESOLUTION;
-import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.FULLSCREEN;
-import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.CONFIG;
 import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.SOUND_ENABLED;
 
 @Slf4j
@@ -52,14 +50,14 @@ public class D2D2WorldArenaDesktopMain {
 
     @SneakyThrows
     public static void main(String[] args) throws IOException {
-        MODULE_CONFIG.load();
+        CONFIG.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
                 String key = split[0];
                 String value = split[1];
-                MODULE_CONFIG.setProperty(key, value);
+                CONFIG.setProperty(key, value);
             } else if (arg.startsWith("-S")) {
                 arg = arg.substring(2);
                 String[] split = arg.split("=");
@@ -74,7 +72,7 @@ public class D2D2WorldArenaDesktopMain {
             }
         }
 
-        SoundSystem.setEnabled(MODULE_CONFIG.getBoolean(SOUND_ENABLED));
+        SoundSystem.setEnabled(CONFIG.getBoolean(SOUND_ENABLED));
 
         // Load project properties
         Properties properties = new Properties();
@@ -86,7 +84,7 @@ public class D2D2WorldArenaDesktopMain {
         log.info(projectName);
         log.info(version);
 
-        String autoEnterPlayerName = MODULE_CONFIG.getString(DesktopConfig.PLAYERNAME);
+        String autoEnterPlayerName = CONFIG.getString(DesktopConfig.PLAYERNAME);
 
         D2D2.init(new LWJGLStarter(
                 (int) D2D2World.ORIGIN_WIDTH,
@@ -100,25 +98,7 @@ public class D2D2WorldArenaDesktopMain {
         startVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
         MonitorDevice.getInstance().setStartResolution(startVideoMode.getResolution());
 
-        String displayResolutionString = MODULE_CONFIG.getString(DISPLAY_RESOLUTION);
-        if (!displayResolutionString.equals("")) {
-            MonitorDevice.getInstance().setResolution(displayResolutionString);
-        } else {
-            for (var videoMode : LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getInstance().getMonitorDeviceId())) {
-                if (videoMode.getRefreshRate() == 60) {
-                    if (videoMode.getHeight() == 900 || videoMode.getHeight() == 1050) {
-                        MonitorDevice.getInstance().setResolution(videoMode.getResolution());
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (MODULE_CONFIG.getBoolean(FULLSCREEN)) {
-            MonitorDevice.getInstance().setFullscreen(true);
-        }
-
-        String debugWindowSize = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
+        String debugWindowSize = CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
         if (!debugWindowSize.equals("")) {
             var a = new Args(debugWindowSize, 'x');
             int width = a.next(int.class);
@@ -126,7 +106,7 @@ public class D2D2WorldArenaDesktopMain {
             D2D2.getStarter().setSize(width, height);
         }
 
-        String debugWindowXY = MODULE_CONFIG.getString(DesktopConfig.DEBUG_WINDOW_XY);
+        String debugWindowXY = CONFIG.getString(DesktopConfig.DEBUG_WINDOW_XY);
         if (!debugWindowXY.equals("")) {
             var a = new Args(debugWindowXY, ',');
             int x = a.next(int.class);

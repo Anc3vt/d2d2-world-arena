@@ -17,14 +17,13 @@
  */
 package com.ancevt.d2d2world.desktop.scene.intro;
 
-import lombok.extern.slf4j.Slf4j;
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.desktop.net.HttpUtfLoader;
 import com.ancevt.d2d2world.desktop.ui.component.Preloader;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.http.HttpResponse;
@@ -36,23 +35,18 @@ import java.util.Map;
 public class ThanksToContainer extends DisplayObjectContainer {
 
     private final Preloader preloader;
-    private Stage stage;
     private final List<ThanksTo> thanksToList;
 
     public ThanksToContainer() {
         preloader = new Preloader();
         thanksToList = new ArrayList<>();
-        addEventListener(1, Event.ADD_TO_STAGE, this::this_addToStage);
-        addEventListener(2, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
-    }
+        addEventListener(Event.REMOVE_FROM_STAGE, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
 
-    private void this_addToStage(Event event) {
-        stage = getStage();
-        add(preloader, stage.getStageWidth() / 2, 50);
+        add(preloader, D2D2.getStage().getWidth() / 2, 50);
     }
 
     private void this_removeFromStage(Event event) {
-        removeEventListener(2);
+        removeEventListener(Event.REMOVE_FROM_STAGE);
         dispose();
     }
 
@@ -88,7 +82,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
         }
 
         float totalWidth = map.size() * ThanksTo.IMAGE_WIDTH + 70;
-        setX((stage.getStageWidth() - totalWidth) / 2);
+        setX((D2D2.getStage().getStageWidth() - totalWidth) / 2);
 
         Holder<Integer> xHolder = new Holder<>(30);
         map.forEach((name, line) -> {
@@ -103,7 +97,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
             add(thanksTo);
             thanksToList.add(thanksTo);
             xHolder.setValue(
-                    (int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (stage.getStageWidth() / ThanksTo.IMAGE_WIDTH))
+                    (int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (D2D2.getStage().getStageWidth() / ThanksTo.IMAGE_WIDTH))
             );
         });
     }

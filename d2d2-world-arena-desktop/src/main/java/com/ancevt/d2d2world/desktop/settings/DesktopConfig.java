@@ -35,7 +35,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Slf4j
 public class DesktopConfig {
 
-    public static final DesktopConfig MODULE_CONFIG = new DesktopConfig();
+    public static final DesktopConfig CONFIG = new DesktopConfig();
 
     public static final String FILE_NAME = "d2d2-world-arena-desktop.conf";
 
@@ -46,7 +46,7 @@ public class DesktopConfig {
     public static final String DEBUG_GAME_OBJECT_IDS = "debug.game-object-ids";
     public static final String DEBUG_CHARACTER = "debug.character-mapkit-item";
     public static final String AUTO_ENTER = "auto-enter";
-    public static final String FULLSCREEN = "display.fullscreen";
+    public static final String DISPLAY_FULLSCREEN = "display.fullscreen";
     public static final String DEBUG_WINDOW_SIZE = "debug.window-size";
     public static final String SOUND_ENABLED = "sound-enabled";
     public static final String DEBUG_WINDOW_XY = "debug.window-xy";
@@ -58,7 +58,7 @@ public class DesktopConfig {
         put(DEBUG_WORLD_ALPHA, "1.0");
         put(DEBUG_GAME_OBJECT_IDS, "false");
         put(AUTO_ENTER, "false");
-        put(FULLSCREEN, "true");
+        put(DISPLAY_FULLSCREEN, "true");
         put(SOUND_ENABLED, "true");
         put(DISPLAY_MONITOR, "primary");
         put(DISPLAY_RESOLUTION, "");

@@ -92,6 +92,17 @@ public class Chooser<T> extends DisplayObjectContainer {
         setIndex(getIndex() + 1);
     }
 
+    public void setCurrentItemByKey(String key) {
+        for (int i = 0; i < items.size(); i ++) {
+            var p = items.get(i);
+            if (key.equals(p.getFirst())) {
+                selectedItemPair = p;
+                setIndex(i);
+                return ;
+            }
+        }
+    }
+
     public void setIndex(int index) {
         this.index = index;
         if (this.index <= 0) {

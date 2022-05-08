@@ -10,15 +10,15 @@ import com.ancevt.d2d2world.desktop.settings.MonitorDevice;
 
 public class ResolutionChooser extends Chooser<VideoMode> {
 
+    public static final String WINDOWED = "windowed";
+
     public ResolutionChooser() {
         setWidth(180f);
 
-        VideoMode maxVideoMode = LWJGLVideoModeUtils.getMaxVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
-
-        addItem("windowed", null);
+        addItem(WINDOWED, null);
 
         LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
-            if (videoMode.getRefreshRate() != 60) return;
+            if (videoMode.getRefreshRate() != 60 || videoMode.getHeight() < 600) return;
 
             String key = videoMode.getWidth() + "x" + videoMode.getHeight();
             addItem(key, videoMode);

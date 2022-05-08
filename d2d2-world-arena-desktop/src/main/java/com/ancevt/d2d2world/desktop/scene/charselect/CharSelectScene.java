@@ -82,7 +82,7 @@ public class CharSelectScene extends DisplayObjectContainer {
             }
         }
 
-        String debugCharacterMapkitItem = DesktopConfig.MODULE_CONFIG.getString(DesktopConfig.DEBUG_CHARACTER);
+        String debugCharacterMapkitItem = DesktopConfig.CONFIG.getString(DesktopConfig.DEBUG_CHARACTER);
 
         if (!debugCharacterMapkitItem.isEmpty()) {
             MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItemById(debugCharacterMapkitItem);

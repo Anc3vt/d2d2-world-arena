@@ -79,7 +79,7 @@ import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
 import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.DEBUG_WORLD_ALPHA;
-import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.MODULE_CONFIG;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.CONFIG;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
@@ -170,9 +170,9 @@ public class WorldScene extends DisplayObjectContainer {
 
         });
 
-        MODULE_CONFIG.addConfigChangeListener(this::config_configChangeListener);
+        CONFIG.addConfigChangeListener(this::config_configChangeListener);
 
-        config_configChangeListener(DEBUG_GAME_OBJECT_IDS, MODULE_CONFIG.getBoolean(DEBUG_GAME_OBJECT_IDS));
+        config_configChangeListener(DEBUG_GAME_OBJECT_IDS, CONFIG.getBoolean(DEBUG_GAME_OBJECT_IDS));
 
         Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_OPEN, event -> {
             CLIENT.sendDto(PlayerChatEventDto.builder()
@@ -234,14 +234,14 @@ public class WorldScene extends DisplayObjectContainer {
                     String key = args.get(String.class, "-k");
                     String value = args.get(String.class, "-v");
                     if (key != null) {
-                        Chat.getInstance().addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GRAY);
+                        Chat.getInstance().addMessage(key + "=" + CONFIG.getString(key), Color.DARK_GRAY);
                     }
                     if (key != null && value != null) {
-                        MODULE_CONFIG.setProperty(key, value);
-                        Chat.getInstance().addMessage(key + "=" + MODULE_CONFIG.getString(key), Color.DARK_GREEN);
+                        CONFIG.setProperty(key, value);
+                        Chat.getInstance().addMessage(key + "=" + CONFIG.getString(key), Color.DARK_GREEN);
                     }
                     if (key == null && value == null) {
-                        Chat.getInstance().addMessage(MODULE_CONFIG.passwordSafeToString(), Color.YELLOW);
+                        Chat.getInstance().addMessage(CONFIG.passwordSafeToString(), Color.YELLOW);
                     }
                     return null;
                 }
@@ -314,7 +314,7 @@ public class WorldScene extends DisplayObjectContainer {
         world.getPlayProcessor().setAsyncProcessingEnabled(false);
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
-        world.setAlpha(MODULE_CONFIG.getFloat(DEBUG_WORLD_ALPHA));
+        world.setAlpha(CONFIG.getFloat(DEBUG_WORLD_ALPHA));
 
         return world;
     }
