@@ -20,7 +20,7 @@ package com.ancevt.d2d2.backend.lwjgl;
 public class OSDetector {
 
 
-    private static String OS = System.getProperty("os.name").toLowerCase();
+    private static final String OS = System.getProperty("os.name").toLowerCase();
 
     public static void main(String[] args) {
         System.out.println("os.name: " + OS);
