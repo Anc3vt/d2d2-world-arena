@@ -21,7 +21,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
 
@@ -65,7 +65,7 @@ public class ControlsHelp extends Sprite {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
         D2D2World.init(false, false);
         root.setBackgroundColor(Color.DARK_GRAY);
 

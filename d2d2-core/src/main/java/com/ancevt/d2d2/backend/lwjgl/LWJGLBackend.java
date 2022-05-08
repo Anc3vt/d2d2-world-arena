@@ -18,7 +18,7 @@
 package com.ancevt.d2d2.backend.lwjgl;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.backend.D2D2Starter;
+import com.ancevt.d2d2.backend.D2D2Backend;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ScaleMode;
@@ -90,7 +90,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 @Slf4j
-public class LWJGLStarter implements D2D2Starter {
+public class LWJGLBackend implements D2D2Backend {
 
     private static final String DEMO_TEXTURE_DATA_INF_FILE = "d2d2-core-demo-texture-data.inf";
 
@@ -122,7 +122,7 @@ public class LWJGLStarter implements D2D2Starter {
     private VideoMode previousVideoMode;
     private boolean stopped;
 
-    public LWJGLStarter(int width, int height, String title) {
+    public LWJGLBackend(int width, int height, String title) {
         this.width = width;
         this.height = height;
         this.title = title;

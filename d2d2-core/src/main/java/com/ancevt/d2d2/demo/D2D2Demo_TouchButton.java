@@ -26,7 +26,7 @@ import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.TouchButtonEvent;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.touch.TouchButton;
 
 import java.util.Objects;
@@ -34,7 +34,7 @@ import java.util.Objects;
 public class D2D2Demo_TouchButton {
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, D2D2Demo_TouchButton.class.getName() + "(floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_TouchButton.class.getName() + "(floating)"));
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {

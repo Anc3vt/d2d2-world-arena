@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.server.simulation;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.backend.norender.NoRenderStarter;
+import com.ancevt.d2d2.backend.norender.NoRenderBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
@@ -109,7 +109,7 @@ public class ServerWorldScene {
     }
 
     public void start() {
-        root = D2D2.init(new NoRenderStarter(900, 600));
+        root = D2D2.init(new NoRenderBackend(900, 600));
         root.addEventListener(hashCode() + Event.EACH_FRAME, Event.EACH_FRAME, this::root_eachFrame);
         fpsMeter = new FpsMeter();
         root.add(fpsMeter);

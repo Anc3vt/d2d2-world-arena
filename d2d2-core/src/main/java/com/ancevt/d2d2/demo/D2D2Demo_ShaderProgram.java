@@ -18,7 +18,7 @@
 package com.ancevt.d2d2.demo;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
@@ -34,7 +34,7 @@ public class D2D2Demo_ShaderProgram {
 
     @SneakyThrows
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         root.add(new FpsMeter());
 
         Sprite sprite = new Sprite("satellite");

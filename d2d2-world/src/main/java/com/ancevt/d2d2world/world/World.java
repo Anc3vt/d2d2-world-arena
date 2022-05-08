@@ -22,7 +22,7 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.backend.norender.NoRenderStarter;
+import com.ancevt.d2d2.backend.norender.NoRenderBackend;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.IGameObject;
@@ -359,7 +359,7 @@ public class World extends DisplayObjectContainer {
 
         IdGenerator.getInstance().addId(gameObject.getGameObjectId());
 
-        if (gameObject instanceof Parallax parallax && !(D2D2.getStarter() instanceof NoRenderStarter)) {
+        if (gameObject instanceof Parallax parallax && !(D2D2.getBackend() instanceof NoRenderBackend)) {
             parallax.setCamera(getCamera());
         }
 
@@ -389,7 +389,7 @@ public class World extends DisplayObjectContainer {
         gameObjects.remove(gameObject);
         gameObjectMap.remove(gameObject.getGameObjectId());
 
-        if (gameObject instanceof Parallax parallax && !(D2D2.getStarter() instanceof NoRenderStarter)) {
+        if (gameObject instanceof Parallax parallax && !(D2D2.getBackend() instanceof NoRenderBackend)) {
             parallax.setCamera(null);
         }
 

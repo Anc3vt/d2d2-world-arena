@@ -33,7 +33,7 @@ public class ShaderProgram {
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
 
-        id = D2D2.getStarter().prepareShaderProgram(this);
+        id = D2D2.getBackend().prepareShaderProgram(this);
 
         if (id == -1) {
             throw new IllegalStateException(getLog());
@@ -74,7 +74,7 @@ public class ShaderProgram {
     }
 
     public void dispose () {
-        D2D2.getStarter().disposeShaderProgram(this);
+        D2D2.getBackend().disposeShaderProgram(this);
         disposed = true;
     }
 

@@ -22,11 +22,11 @@ import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
 public class D2D2Demo_BitmapText_toSprite {
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, "D2D2Demo2"));
+        D2D2.init(new LWJGLBackend(800, 600, "D2D2Demo2"));
         Root root = new Root();
 
         BitmapText bitmapText = new BitmapText();

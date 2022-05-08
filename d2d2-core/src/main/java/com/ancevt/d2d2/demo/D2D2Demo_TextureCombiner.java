@@ -29,7 +29,7 @@ import com.ancevt.d2d2.display.texture.TextureCombiner;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
 public class D2D2Demo_TextureCombiner {
     private static Root root;
@@ -37,7 +37,7 @@ public class D2D2Demo_TextureCombiner {
     private static Sprite sprite2;
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, "D2D2Demo TextureCombiner (floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, "D2D2Demo TextureCombiner (floating)"));
 
         D2D2.getStage().setScaleMode(ScaleMode.REAL);
 

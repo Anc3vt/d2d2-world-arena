@@ -18,16 +18,16 @@
 package com.ancevt.d2d2.demo;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_BitmapFonts {
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, D2D2Demo_BitmapFonts.class.getName()));
+        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_BitmapFonts.class.getName()));
         Root root = D2D2.getStage().getRoot();
 
         BitmapFont font2 = BitmapFont.loadBitmapFont("PressStart2P.bmf");

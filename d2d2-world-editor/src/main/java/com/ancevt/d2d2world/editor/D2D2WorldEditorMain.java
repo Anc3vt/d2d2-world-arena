@@ -21,6 +21,7 @@ import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.properties.PropertyWrapper;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
@@ -29,7 +30,6 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.media.SoundSystem;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.editor.util.ScreenUtils;
 import com.ancevt.d2d2world.debug.DebugPanel;
@@ -64,8 +64,8 @@ public class D2D2WorldEditorMain {
         MapIO.setMapFileName(a.get("--map-filename", "map0.wam"));
 
         var screenDimension = ScreenUtils.getDimension();
-        D2D2.init(new LWJGLStarter(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
-        D2D2.getStarter().setWindowXY(0, 40);
+        D2D2.init(new LWJGLBackend(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
+        D2D2.getBackend().setWindowXY(0, 40);
         D2D2World.init(true, true);
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");

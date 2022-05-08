@@ -38,10 +38,10 @@ public class Mouse {
     }
 
     public static void setVisible(boolean visible) {
-        D2D2.getStarter().setMouseVisible(visible);
+        D2D2.getBackend().setMouseVisible(visible);
     }
 
     public static boolean isVisible() {
-        return D2D2.getStarter().isMouseVisible();
+        return D2D2.getBackend().isMouseVisible();
     }
 }

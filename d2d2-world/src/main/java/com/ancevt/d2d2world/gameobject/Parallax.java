@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.backend.norender.NoRenderStarter;
+import com.ancevt.d2d2.backend.norender.NoRenderBackend;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Slowing;
 import com.ancevt.d2d2world.data.Property;
@@ -82,7 +82,7 @@ public class Parallax extends Sprite implements IGameObject, ISpeedable, IScalab
 
     @Override
     public void process() {
-        if (D2D2.getStarter() instanceof NoRenderStarter) return;
+        if (D2D2.getBackend() instanceof NoRenderBackend) return;
 
         final Room room = getWorld().getRoom();
 

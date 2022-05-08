@@ -48,11 +48,11 @@ import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 public class LWJGLRenderer implements IRenderer {
 
     private final Stage stage;
-    private final LWJGLStarter lwjglStarter;
+    private final LWJGLBackend lwjglStarter;
     boolean smoothMode = false;
     private LWJGLTextureEngine textureEngine;
 
-    public LWJGLRenderer(Stage stage, LWJGLStarter lwjglStarter) {
+    public LWJGLRenderer(Stage stage, LWJGLBackend lwjglStarter) {
         this.stage = stage;
         this.lwjglStarter = lwjglStarter;
     }

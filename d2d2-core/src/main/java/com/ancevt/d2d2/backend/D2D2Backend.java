@@ -21,7 +21,7 @@ import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ShaderProgram;
 import com.ancevt.d2d2.display.Stage;
 
-public interface D2D2Starter {
+public interface D2D2Backend {
 
     long getWindowId();
 

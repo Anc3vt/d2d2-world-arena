@@ -27,7 +27,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.touch.TouchButton;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
@@ -206,7 +206,7 @@ public class CharSelectScene extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         MapIO.setMapkitsDirectory("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
         D2D2World.init(false, false);
 

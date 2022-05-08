@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.desktop.settings;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2world.D2D2World;
@@ -116,11 +116,11 @@ public class MonitorDevice {
                     .findAny()
                     .orElseThrow();
 
-            LWJGLVideoModeUtils.setVideoMode(getMonitorDeviceId(), D2D2.getStarter().getWindowId(), videoMode);
+            LWJGLVideoModeUtils.setVideoMode(getMonitorDeviceId(), D2D2.getBackend().getWindowId(), videoMode);
             LWJGLVideoModeUtils.linuxCare(getMonitorDeviceId(), videoMode);
         } else {
             GLFW.glfwSetWindowMonitor(
-                    D2D2.getStarter().getWindowId(),
+                    D2D2.getBackend().getWindowId(),
                     0L,
                     100,
                     100,
@@ -155,7 +155,7 @@ public class MonitorDevice {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
         D2D2World.init(true, true);
 
 

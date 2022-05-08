@@ -18,12 +18,12 @@
 package com.ancevt.d2d2world.desktop.scene;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +81,7 @@ public class ShadowRadial extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
         root.setBackgroundColor(Color.WHITE);
 
         ShadowRadial shadowRadial = new ShadowRadial();

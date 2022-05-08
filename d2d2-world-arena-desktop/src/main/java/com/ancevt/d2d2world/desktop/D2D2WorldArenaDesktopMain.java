@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.desktop;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
 import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.media.SoundSystem;
@@ -86,7 +86,7 @@ public class D2D2WorldArenaDesktopMain {
 
         String autoEnterPlayerName = CONFIG.getString(DesktopConfig.PLAYERNAME);
 
-        D2D2.init(new LWJGLStarter(
+        D2D2.init(new LWJGLBackend(
                 (int) D2D2World.ORIGIN_WIDTH,
                 (int) D2D2World.ORIGIN_HEIGHT,
                 "(floating) D2D2 World Arena " + autoEnterPlayerName)
@@ -103,7 +103,7 @@ public class D2D2WorldArenaDesktopMain {
             var a = new Args(debugWindowSize, 'x');
             int width = a.next(int.class);
             int height = a.next(int.class);
-            D2D2.getStarter().setSize(width, height);
+            D2D2.getBackend().setSize(width, height);
         }
 
         String debugWindowXY = CONFIG.getString(DesktopConfig.DEBUG_WINDOW_XY);
@@ -111,7 +111,7 @@ public class D2D2WorldArenaDesktopMain {
             var a = new Args(debugWindowXY, ',');
             int x = a.next(int.class);
             int y = a.next(int.class);
-            D2D2.getStarter().setWindowXY(x, y);
+            D2D2.getBackend().setWindowXY(x, y);
         }
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);

@@ -18,12 +18,12 @@
 package com.ancevt.d2d2world.sync;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -98,7 +98,7 @@ public class SyncMotion {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
 
         Sprite sprite = new Sprite("satellite");
 

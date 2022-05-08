@@ -18,15 +18,15 @@
 package com.ancevt.d2d2.demo;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_AddToStageContainer {
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         Root root = D2D2.getStage().getRoot();
 
         DisplayObjectContainer container = new DisplayObjectContainer();

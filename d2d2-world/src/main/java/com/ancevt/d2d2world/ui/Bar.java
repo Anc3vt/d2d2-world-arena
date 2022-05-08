@@ -22,7 +22,7 @@ import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
 public class Bar extends DisplayObjectContainer {
 	
@@ -115,7 +115,7 @@ public class Bar extends DisplayObjectContainer {
 	}
 
 	public static void main(String[] args) {
-		Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+		Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
 
 		Bar p = new Bar();
 		root.add(p);

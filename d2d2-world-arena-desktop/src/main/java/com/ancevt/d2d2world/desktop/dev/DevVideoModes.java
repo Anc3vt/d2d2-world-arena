@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.desktop.dev;
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -53,7 +53,7 @@ public class DevVideoModes {
 
     public static void main(String[] args) {
         //Root root = D2D2.init(new LWJGLStarter(1920, 1080, "(floating)"));
-        Root root = D2D2.init(new LWJGLStarter(640, 480, "(floating)"));
+        Root root = D2D2.init(new LWJGLBackend(640, 480, "(floating)"));
 
         TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas("d2d2-picture-test.png");
         Sprite sprite = new Sprite(textureAtlas.createTexture());
@@ -65,7 +65,7 @@ public class DevVideoModes {
 
         //D2D2.setFullscreen(true);
 
-        long windowId = D2D2.getStarter().getWindowId();
+        long windowId = D2D2.getBackend().getWindowId();
 
         MonitorDevice.getInstance().setMonitorDeviceId(glfwGetPrimaryMonitor());
 

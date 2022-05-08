@@ -18,6 +18,7 @@
 package com.ancevt.d2d2.demo;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.DebugGrid;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
@@ -28,7 +29,6 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
 
 public class D2D2Demo_Input {
 
@@ -36,7 +36,7 @@ public class D2D2Demo_Input {
     private static IDisplayObject cursor;
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, D2D2Demo_Input.class.getName() + "(floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_Input.class.getName() + "(floating)"));
 
         Root root = D2D2.getStage().getRoot();
 

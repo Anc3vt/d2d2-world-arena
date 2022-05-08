@@ -28,14 +28,14 @@ import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Clipboard;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.touch.TouchButton;
 import org.jetbrains.annotations.NotNull;
 
 public class UiTextInput extends DisplayObjectContainer implements EventListener {
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLStarter(800, 600, "(floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         Root root = D2D2.getStage().getRoot();
         root.setBackgroundColor(Color.WHITE);
 

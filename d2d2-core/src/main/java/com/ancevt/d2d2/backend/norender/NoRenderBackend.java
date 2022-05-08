@@ -18,7 +18,7 @@
 package com.ancevt.d2d2.backend.norender;
 
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.backend.D2D2Starter;
+import com.ancevt.d2d2.backend.D2D2Backend;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ShaderProgram;
 import com.ancevt.d2d2.display.Stage;
@@ -26,7 +26,7 @@ import com.ancevt.d2d2.backend.lwjgl.LWJGLTextureEngine;
 
 import static java.lang.Thread.sleep;
 
-public class NoRenderStarter implements D2D2Starter {
+public class NoRenderBackend implements D2D2Backend {
 
     private int width;
     private int height;
@@ -35,7 +35,7 @@ public class NoRenderStarter implements D2D2Starter {
     private IRenderer renderer;
     private boolean alive;
 
-    public NoRenderStarter(int width, int height) {
+    public NoRenderBackend(int width, int height) {
         D2D2.getTextureManager().setTextureEngine(new LWJGLTextureEngine());
         setSize(width, height);
     }

@@ -26,7 +26,7 @@ import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.event.TouchButtonEvent;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLStarter;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.touch.TouchButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -222,7 +222,7 @@ public class DebugPanel extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLStarter(800, 600, "(floating"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
         root.setBackgroundColor(Color.DARK_GRAY);
         DebugPanel debugPanel = new DebugPanel("dwa");
         root.add(debugPanel);
