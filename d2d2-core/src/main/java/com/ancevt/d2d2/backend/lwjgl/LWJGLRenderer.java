@@ -101,8 +101,6 @@ public class LWJGLRenderer implements IRenderer {
 
         GLFW.glfwGetCursorPos(lwjglStarter.windowId, mouseX, mouseY);
 
-        GLFW.glfwSwapInterval(1);
-
         Mouse.setXY((int) mouseX[0], (int) mouseY[0]);
     }
 
@@ -180,10 +178,6 @@ public class LWJGLRenderer implements IRenderer {
         GL20.glEnable(GL_BLEND);
         GL20.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        if(sprite.getShaderProgram() != null) {
-            GL20.glUseProgram(sprite.getShaderProgram().getId());
-        }
-
         boolean bindResult = D2D2.getTextureManager().getTextureEngine().bind(textureAtlas);
 
         if (!bindResult) {
@@ -250,9 +244,7 @@ public class LWJGLRenderer implements IRenderer {
         }
 
         GL20.glDisable(GL_BLEND);
-        //D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
-
-        GL20.glUseProgram(0);
+        D2D2.getTextureManager().getTextureEngine().disable(textureAtlas);
     }
 
     private void renderBitmapText(@NotNull BitmapText bitmapText, float alpha, float scaleX, float scaleY) {
