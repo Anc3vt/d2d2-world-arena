@@ -31,7 +31,6 @@ import com.ancevt.d2d2world.desktop.ui.Font;
 import com.ancevt.d2d2world.desktop.ui.UiTextInput;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputEvent;
 import com.ancevt.d2d2world.desktop.ui.UiTextInputProcessor;
-import com.ancevt.util.repl.ReplInterpreter;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -378,25 +377,6 @@ public class Chat extends DisplayObjectContainer {
             idCounter.setValue(idCounter.getValue() + 1);
             chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, "Hello, i'm Ancevt" + i, Color.WHITE);
         }
-
-        ReplInterpreter repl = new ReplInterpreter();
-        repl.addCommand("p", a -> {
-            idCounter.setValue(idCounter.getValue() + 1);
-            int playerId = a.get(int.class, new String[]{"-p"}, 0);
-            String playerName = a.get(String.class, new String[]{"-n"}, "Name");
-            int playerColor = a.get(int.class, new String[]{"-c"}, 0xFFFF00);
-            String messageText = a.get(String.class, new String[]{"-m"});
-            chat.addPlayerMessage(idCounter.getValue(), playerId, playerName, playerColor, messageText, Color.WHITE);
-            return null;
-        });
-
-        repl.addCommand("s", a -> {
-            idCounter.setValue(idCounter.getValue() + 1);
-            String messageText = a.get(String.class, new String[]{"-m"});
-            //chat.addServerMessage(idCounter.getValue(), messageText, Color.GRAY);
-            return null;
-        });
-        new Thread(repl::start).start();
 
         UiTextInputProcessor.enableRoot(root);
         root.addEventListener(InputEvent.KEY_DOWN, event -> {
