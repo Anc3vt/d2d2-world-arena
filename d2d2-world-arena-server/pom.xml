@@ -53,10 +53,6 @@
         </dependency>
         <dependency>
             <groupId>com.ancevt.util</groupId>
-            <artifactId>repl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ancevt.util</groupId>
             <artifactId>commands</artifactId>
         </dependency>
         <dependency>
