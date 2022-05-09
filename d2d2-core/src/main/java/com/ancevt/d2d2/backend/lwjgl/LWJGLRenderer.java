@@ -24,7 +24,6 @@ import com.ancevt.d2d2.display.IDisplayObjectContainer;
 import com.ancevt.d2d2.display.IFramedDisplayObject;
 import com.ancevt.d2d2.display.IRenderer;
 import com.ancevt.d2d2.display.ISprite;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapCharInfo;
@@ -48,19 +47,24 @@ import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 public class LWJGLRenderer implements IRenderer {
 
     private final Stage stage;
-    private final LWJGLBackend lwjglStarter;
+    private final LWJGLBackend lwjglBackend;
     boolean smoothMode = false;
     private LWJGLTextureEngine textureEngine;
 
     public LWJGLRenderer(Stage stage, LWJGLBackend lwjglStarter) {
         this.stage = stage;
-        this.lwjglStarter = lwjglStarter;
+        this.lwjglBackend = lwjglStarter;
     }
 
     @Override
     public void init(long windowId) {
         GL20.glEnable(GL_BLEND);
         GL20.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_MIRRORED_REPEAT);
+        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_MIRRORED_REPEAT);
+
+        GL20.glMatrixMode(GL20.GL_MODELVIEW);
     }
 
     @Override
@@ -75,18 +79,11 @@ public class LWJGLRenderer implements IRenderer {
 
     @Override
     public void renderFrame() {
-        Root root = stage.getRoot();
-        if (root == null) return;
-
         textureEngine.loadTextureAtlases();
 
         clear();
 
-        GL20.glMatrixMode(GL20.GL_MODELVIEW);
         GL20.glLoadIdentity();
-
-        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_MIRRORED_REPEAT);
-        GL20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_MIRRORED_REPEAT);
 
         renderDisplayObject(stage,
                 0,
@@ -99,13 +96,13 @@ public class LWJGLRenderer implements IRenderer {
 
         textureEngine.unloadTextureAtlases();
 
-        GLFW.glfwGetCursorPos(lwjglStarter.windowId, mouseX, mouseY);
+        GLFW.glfwGetCursorPos(lwjglBackend.windowId, mouseX, mouseY);
 
         Mouse.setXY((int) mouseX[0], (int) mouseY[0]);
     }
 
-    private double[] mouseX = new double[1];
-    private double[] mouseY = new double[1];
+    private final double[] mouseX = new double[1];
+    private final double[] mouseY = new double[1];
 
     private void clear() {
         Color backgroundColor = stage.getRoot().getBackgroundColor();
@@ -138,6 +135,9 @@ public class LWJGLRenderer implements IRenderer {
         float y = toScaleY * displayObject.getY();
 
         float a = displayObject.getAlpha() * toAlpha;
+
+        x = round(x);
+        y = round(y);
 
         GL20.glPushMatrix();
         GL20.glTranslatef(x, y, 0);

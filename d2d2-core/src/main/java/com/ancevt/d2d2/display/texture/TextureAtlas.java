@@ -64,7 +64,7 @@ public class TextureAtlas {
      * @return
      */
     public Texture createTexture(String textureCoords) {
-        var a = new Args(textureCoords, ',');
+        var a = Args.of(textureCoords, ',');
         return new Texture(this, a.next(int.class), a.next(int.class), a.next(int.class), a.next(int.class));
     }
 

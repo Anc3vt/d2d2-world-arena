@@ -72,7 +72,7 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
             }
         }
 
-        Args a = new Args(args);
+        Args a = Args.of(args);
 
         Integer portToKill = a.get(int.class, "--kill");
         if (portToKill != null) {

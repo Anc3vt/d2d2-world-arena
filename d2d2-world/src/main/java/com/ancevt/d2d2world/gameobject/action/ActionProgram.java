@@ -82,7 +82,7 @@ public class ActionProgram {
 
             int count = (int) calculate(split[0]);
             String word = split[1];
-            Args values = new Args(split[2]);
+            Args values = Args.of(split[2]);
 
             Runnable function = switch (word) {
                 case "moveX" -> {

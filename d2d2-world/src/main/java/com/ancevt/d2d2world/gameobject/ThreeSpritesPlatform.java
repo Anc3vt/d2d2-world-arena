@@ -103,7 +103,7 @@ public class ThreeSpritesPlatform extends Platform {
     }
 
     private Texture createTexture(String textureCoords) {
-        var a = new Args(textureCoords, DELIMITER);
+        var a = Args.of(textureCoords, DELIMITER);
         int x = a.next(int.class);
         int y = a.next(int.class);
         int w = a.next(int.class);

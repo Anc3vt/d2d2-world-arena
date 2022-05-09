@@ -181,7 +181,7 @@ public class DevVideoModes {
     }
 
     private static boolean processCommand(String text) {
-        Args tokens = new Args(text);
+        Args tokens = Args.of(text);
         String command = tokens.get(String.class, 0);
         Holder<Boolean> result = new Holder<>(false);
         commands.stream()

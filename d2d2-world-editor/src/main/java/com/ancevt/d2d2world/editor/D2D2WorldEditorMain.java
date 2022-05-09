@@ -54,7 +54,7 @@ public class D2D2WorldEditorMain {
 
         PropertyWrapper.argsToProperties(args, System.getProperties());
 
-        Args a = new Args(args);
+        Args a = Args.of(args);
 
         SoundSystem.setEnabled(!a.contains("--disable-sound"));
         UnixDisplay.setEnabled(a.contains("--colorize-logs"));

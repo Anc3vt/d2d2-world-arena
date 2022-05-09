@@ -104,7 +104,7 @@ public class MonitorDevice {
     }
 
     private void apply() {
-        Args args = new Args(resolution, "x");
+        Args args = Args.of(resolution, "x");
         int w = args.next(int.class);
         int h = args.next(int.class);
 
@@ -130,7 +130,7 @@ public class MonitorDevice {
             );
 
             if (isUnix()) {
-                Args startResolutionArgs = new Args(getStartResolution(), "x");
+                Args startResolutionArgs = Args.of(getStartResolution(), "x");
                 int startResolutionWidth = startResolutionArgs.next(int.class);
                 int startResolutionHeight = startResolutionArgs.next(int.class);
                 LWJGLVideoModeUtils.linuxCare(getMonitorDeviceId(),

@@ -25,7 +25,7 @@ import static java.lang.String.format;
 public class SceneryMapkitItemGenerator {
 
     public static void main(String[] args) {
-        Args a = new Args(args);
+        Args a = Args.of(args);
 
         if (a.contains("--help")) {
             System.out.println("[-x 0 -y 0] -w 128 -h 128 [-sw 16 -sh 16] -p prefix -a atlas-name.png ");

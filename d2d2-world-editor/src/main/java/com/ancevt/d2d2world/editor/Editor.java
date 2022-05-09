@@ -51,7 +51,7 @@ public class Editor {
         gameObjectEditor.addPlayerActor();
 
         if (System.getProperties().containsKey("start-position")) {
-            Args args = new Args(System.getProperty("start-position"), ',');
+            Args args = Args.of(System.getProperty("start-position"), ',');
             String roomId = args.next();
             float x = args.next(float.class);
             float y = args.next(float.class);

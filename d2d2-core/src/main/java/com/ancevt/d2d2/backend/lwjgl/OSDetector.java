@@ -17,6 +17,9 @@
  */
 package com.ancevt.d2d2.backend.lwjgl;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class OSDetector {
 
 
@@ -36,6 +39,10 @@ public class OSDetector {
         } else {
             System.out.println("Your OS is not support!!");
         }
+
+        List<Float> listA = new LinkedList<>();
+        List<Float> listB = new LinkedList<>();
+
     }
 
     public static boolean isWindows() {

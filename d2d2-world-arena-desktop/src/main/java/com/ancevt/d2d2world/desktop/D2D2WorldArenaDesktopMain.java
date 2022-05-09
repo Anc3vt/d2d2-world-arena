@@ -100,7 +100,7 @@ public class D2D2WorldArenaDesktopMain {
 
         String debugWindowSize = CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
         if (!debugWindowSize.equals("")) {
-            var a = new Args(debugWindowSize, 'x');
+            var a = Args.of(debugWindowSize, 'x');
             int width = a.next(int.class);
             int height = a.next(int.class);
             D2D2.getBackend().setSize(width, height);
@@ -108,7 +108,7 @@ public class D2D2WorldArenaDesktopMain {
 
         String debugWindowXY = CONFIG.getString(DesktopConfig.DEBUG_WINDOW_XY);
         if (!debugWindowXY.equals("")) {
-            var a = new Args(debugWindowXY, ',');
+            var a = Args.of(debugWindowXY, ',');
             int x = a.next(int.class);
             int y = a.next(int.class);
             D2D2.getBackend().setWindowXY(x, y);

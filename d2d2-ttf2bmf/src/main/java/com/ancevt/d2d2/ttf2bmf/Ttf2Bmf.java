@@ -41,10 +41,10 @@ public class Ttf2Bmf {
     public static boolean d2d2WorldSpecial;
 
     public static void main(String[] args) throws IOException {
-        Args a = new Args(args);
+        Args a = Args.of(args);
 
         if (a.contains("--debug-dev")) {
-            a = new Args(new String[]{
+            a = Args.of(new String[]{
                     "--input", "/home/ancevt/.fonts/PressStart2P.ttf",
                     "--output", "PressStart2P.bmf",
                     "-s", "8",
