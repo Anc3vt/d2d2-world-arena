@@ -37,7 +37,7 @@ public class D2D2Demo_TextureAtlasWebLoader {
         Preloader preloader = new Preloader();
         preloader.setScale(0.5f, 0.5f);
 
-        TextureUrlLoader loader = new TextureUrlLoader("https://d2d2.ancevt.com/test.png");
+        TextureUrlLoader loader = new TextureUrlLoader("https://d2d2.world/test.png");
         loader.addEventListener(TextureUrlLoaderEvent.TEXTURE_LOAD_START, event -> {
             root.add(preloader, 252 / 2, 167 / 2);
         });

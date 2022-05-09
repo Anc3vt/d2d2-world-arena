@@ -56,7 +56,7 @@ public class HttpUtfLoader {
     }
 
     public static void main(String[] args) {
-        HttpUtfLoader.loadAsync("https://d2d2.ancevt.com/thanksto/", r -> {
+        HttpUtfLoader.loadAsync("https://d2d2.world/thanksto/", r -> {
                     System.out.println(r.body());
                 },
                 (response, throwable) -> {

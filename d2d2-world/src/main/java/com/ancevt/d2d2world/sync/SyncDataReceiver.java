@@ -305,6 +305,11 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     private void setAnimation(int gameObjectId, int animKey, boolean loop) {
         if (world.getGameObjectById(gameObjectId) instanceof IAnimated a) {
+
+            if (a instanceof PlayerActor playerActor) {
+                if (playerActor.isLocalPlayerActor()) return;
+            }
+
             a.setAnimation(animKey, loop);
         }
     }

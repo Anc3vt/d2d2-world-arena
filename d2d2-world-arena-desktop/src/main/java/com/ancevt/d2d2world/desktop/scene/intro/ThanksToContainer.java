@@ -55,7 +55,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
     }
 
     private void loadHtml() {
-        HttpUtfLoader.loadAsync("https://d2d2.ancevt.com/thanksto/", this::loadHtmlResult, this::loadHtmlError);
+        HttpUtfLoader.loadAsync("https://d2d2.world/thanksto/", this::loadHtmlResult, this::loadHtmlError);
     }
 
     private void loadHtmlResult(@NotNull HttpResponse<String> response) {
@@ -87,7 +87,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
         Holder<Integer> xHolder = new Holder<>(30);
         map.forEach((name, line) -> {
             ThanksTo thanksTo = new ThanksTo(
-                    "https://d2d2.ancevt.com/thanksto/" + line.pngFileName(),
+                    "https://d2d2.world/thanksto/" + line.pngFileName(),
                     name,
                     line.fileSize()
             );

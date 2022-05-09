@@ -282,6 +282,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                             found.setValue(true);
                             Chat.getInstance().addMessage(resolution + " " + videoMode.getRefreshRate());
                             MonitorDevice.getInstance().setResolution(resolution);
+                            MonitorDevice.getInstance().setFullscreen(true);
                         }
                     });
 
@@ -337,6 +338,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         setScaleX(getScaleY());
 
         overlay.setXY(-w / 2, -h / 2);
+        overlay.setSize(w, h);
 
         playerArrowView.setXY(0, 0);
         playerArrowView.setScale(getScaleX(), getScaleY());
@@ -442,9 +444,9 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     }
 
     public void loadMap(String mapFilename) {
-        DefaultMaps.clear();
         IdGenerator.getInstance().clear();
         world.clear();
+        DefaultMaps.clear();
         overlay.startIn();
         Lock lock = new Lock();
         overlay.addEventListener(Event.CHANGE, Event.CHANGE, event -> {

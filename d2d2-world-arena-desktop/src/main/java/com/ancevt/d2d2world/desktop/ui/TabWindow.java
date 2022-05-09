@@ -61,11 +61,10 @@ public class TabWindow extends DisplayObjectContainer {
     }
 
     private void addToStage(Event event) {
-        float sw = getStage().getStageWidth();
-        float sh = getStage().getStageHeight();
+        float sw = getStage().getWidth();
+        float sh = getStage().getHeight();
 
         setXY(STAGE_PADDING, STAGE_PADDING);
-        plainRect.setSize(sw - STAGE_PADDING * 2, sh - STAGE_PADDING * 2);
         plainRect.setAlpha(BACKGROUND_ALPHA);
 
         add(uiServerName, 10, 10);
@@ -82,6 +81,7 @@ public class TabWindow extends DisplayObjectContainer {
 
     private void redraw() {
         int y = 70;
+        plainRect.setSize(D2D2.getStage().getWidth() - STAGE_PADDING * 2, D2D2.getStage().getHeight() - STAGE_PADDING * 2);
         for (Player player : remotePlayers) {
             Color color = Color.of(player.getColor());
             addPlayerTexts(y, player.getId(), player.getName(), player.getFrags(), player.getPing(), color);

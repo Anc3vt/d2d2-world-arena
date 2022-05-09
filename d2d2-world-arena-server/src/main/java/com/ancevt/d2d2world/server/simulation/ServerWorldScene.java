@@ -122,9 +122,10 @@ public class ServerWorldScene {
 
     @SneakyThrows(IOException.class)
     public void loadMap(String mapName) {
-        DefaultMaps.clear();
         reset();
         clear();
+
+        DefaultMaps.clear();
 
         if (MODULE_CONTENT_MANAGER.containsMap(mapName)) {
             ServerContentManager.Map scmMap = MODULE_CONTENT_MANAGER.getMapByName(mapName);
