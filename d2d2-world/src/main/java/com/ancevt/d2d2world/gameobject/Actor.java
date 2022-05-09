@@ -351,19 +351,30 @@ abstract public class Actor extends Animated implements
             if (underWaterTime != 0) return;
         }
 
-        if (!isServer() || !isAlive()/* || damagingTime > 0*/) return;
+        if (isAlive()) {
+            // client-side shooting
+            if (isServer()) {
+                if (getCurrentWeapon() != null) {
+                    getCurrentWeapon().shoot(getWorld());
+                    getWorld().getSyncDataAggregator().changeWeaponState(
+                            this,
+                            getCurrentWeapon().getClass().getName(),
+                            getCurrentWeapon().getAmmunition()
+                    );
+                }
 
-        if (getCurrentWeapon() != null) {
-            getCurrentWeapon().shoot(getWorld());
-            getWorld().getSyncDataAggregator().changeWeaponState(this, getCurrentWeapon().getClass().getName(), getCurrentWeapon().getAmmunition());
-        }
-
-        if (isOnWorld()) {
-            getWorld().dispatchEvent(WorldEvent.builder()
-                    .type(WorldEvent.ACTOR_ATTACK)
-                    .actor(this)
-                    .build()
-            );
+                if (isOnWorld()) {
+                    getWorld().dispatchEvent(WorldEvent.builder()
+                            .type(WorldEvent.ACTOR_ATTACK)
+                            .actor(this)
+                            .build()
+                    );
+                }
+            } else { // server-side shooting
+                if (getCurrentWeapon() != null) {
+                    getCurrentWeapon().shoot(getWorld());
+                }
+            }
         }
     }
 
@@ -908,7 +919,7 @@ abstract public class Actor extends Animated implements
 
         if (weaponIndex == oldWeaponIndex) return;
 
-        if(weaponIndex >= weapons.size()) weaponIndex = 0;
+        if (weaponIndex >= weapons.size()) weaponIndex = 0;
 
         setCurrentWeaponClassname(weapons.get(weaponIndex).getClass().getName());
     }

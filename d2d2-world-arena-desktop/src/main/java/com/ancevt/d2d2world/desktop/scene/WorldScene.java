@@ -77,9 +77,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.desktop.ClientCommandProcessor.COMMAND_PROCESSOR;
+import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.CONFIG;
 import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
 import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.DEBUG_WORLD_ALPHA;
-import static com.ancevt.d2d2world.desktop.settings.DesktopConfig.CONFIG;
 import static com.ancevt.d2d2world.net.client.Client.CLIENT;
 import static com.ancevt.d2d2world.net.client.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
@@ -665,11 +665,11 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
      * {@link ClientListener} method
      */
     public void playerShoot(int playerId) {
-        getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
-            if (playerActor.isLocalPlayerActor()) {
+        if (playerId == CLIENT.getLocalPlayerId()) {
+            getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
                 D2D2WorldArenaDesktopAssets.getAim().attack();
-            }
-        });
+            });
+        }
     }
 
     private void showChatBubble(@NotNull PlayerActor playerActor) {

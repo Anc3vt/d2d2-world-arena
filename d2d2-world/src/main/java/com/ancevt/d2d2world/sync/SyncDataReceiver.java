@@ -258,7 +258,12 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
         if (gameObject instanceof Weapon.Bullet bullet) {
             int ownerGameObjectId = dataEntry.getInt(DataKey.OWNER_GAME_OBJECT_ID);
-            bullet.setDamagingOwnerActor((Actor) world.getGameObjectById(ownerGameObjectId));
+
+            Actor ownerActor = (Actor) world.getGameObjectById(ownerGameObjectId);
+            if (ownerActor instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
+                return;
+            }
+            bullet.setDamagingOwnerActor(ownerActor);
         }
 
         if (needAddToWorld) {
