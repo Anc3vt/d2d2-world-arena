@@ -60,6 +60,14 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>texttable-mvn-repo</id>
+            <url>https://raw.github.com/Anc3vt/texttable/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
 
     <modules>
@@ -102,6 +110,11 @@
                 <groupId>com.ancevt.commons</groupId>
                 <artifactId>ancevt-commons</artifactId>
                 <version>1.0.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ancevt.util</groupId>
+                <artifactId>texttable</artifactId>
+                <version>0.0.1</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.util</groupId>
@@ -279,7 +292,7 @@
                     <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
                     <branch>refs/heads/mvn-repo</branch>
                     <includes><include>**/*</include></includes>
-                    <repositoryName>ancevt-commons</repositoryName>
+                    <repositoryName>d2d2</repositoryName>
                     <repositoryOwner>Anc3vt</repositoryOwner>
                 </configuration>
                 <executions>
