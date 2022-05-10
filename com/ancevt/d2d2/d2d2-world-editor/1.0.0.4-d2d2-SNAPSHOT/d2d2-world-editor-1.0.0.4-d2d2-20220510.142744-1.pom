@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.ancevt.d2d2</groupId>
         <artifactId>d2d2</artifactId>
+        <groupId>com.ancevt.d2d2</groupId>
         <version>1.0.0.4-d2d2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>d2d2-world</artifactId>
+    <artifactId>d2d2-world-editor</artifactId>
     <version>1.0.0.4-d2d2-SNAPSHOT</version>
 
-    <name>D2D2 World</name>
+    <name>D2D2 World Editor</name>
     <url>https://github.com/Anc3vt/d2d2</url>
 
     <licenses>
@@ -49,6 +49,7 @@
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -56,21 +57,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sipgate</groupId>
-            <artifactId>mp3-wav</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <dependency>
             <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ancevt.d2d2</groupId>
-            <artifactId>d2d2-panels</artifactId>
+            <artifactId>d2d2-world</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.ancevt.d2d2world</groupId>
-            <artifactId>d2d2-world-data</artifactId>
+            <groupId>com.ancevt.d2d2</groupId>
+            <artifactId>d2d2-panels</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ancevt.util</groupId>
@@ -83,10 +79,6 @@
         <dependency>
             <groupId>org.openjdk.nashorn</groupId>
             <artifactId>nashorn-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
         </dependency>
     </dependencies>
 
@@ -127,20 +119,22 @@
             </plugin>
         </plugins>
     </build>
+
     <profiles>
         <profile>
-            <id>scenery-gen</id>
+            <id>editor</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
                         <version>${maven-assembly-plugin.version}</version>
+
                         <configuration>
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>com.ancevt.d2d2world.tools.SceneryMapkitItemGenerator</mainClass>
+                                    <mainClass>com.ancevt.d2d2world.editor.D2D2WorldEditorMain</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
