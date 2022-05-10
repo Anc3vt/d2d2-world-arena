@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.ancevt.d2d2</groupId>
+  <artifactId>d2d2-world-arena-desktop</artifactId>
+  <version>1.0.0.4-d2d2-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20220510.142744</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20220510142744</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.0.0.4-d2d2-20220510.142744-1</value>
+        <updated>20220510142744</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.0.0.4-d2d2-20220510.142744-1</value>
+        <updated>20220510142744</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>sources</classifier>
+        <extension>jar</extension>
+        <value>1.0.0.4-d2d2-20220510.142744-1</value>
+        <updated>20220510142744</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
