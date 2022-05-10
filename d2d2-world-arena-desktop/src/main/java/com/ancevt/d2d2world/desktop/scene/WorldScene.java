@@ -93,7 +93,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
     private final AmmunitionHud ammunitionHud;
     private Overlay overlay;
-    private final ShadowRadial shadowRadial;
     private boolean eventsAdded;
 
     private long frameCounter;
@@ -125,24 +124,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
         playerArrowView = new PlayerArrowView();
         //playerArrowView.setScale(D2D2World.SCALE, D2D2World.SCALE);
-
-        shadowRadial = new ShadowRadial() {
-            @Override
-            public void onEachFrame() {
-                if (localPlayerActor != null) {
-                    setXY(localPlayerActor.getX(), localPlayerActor.getY());
-
-                    if (world.getRoom() != null) {
-                        if (getY() > world.getRoom().getHeight() + world.getRoom().getHeight() / 2f) {
-                            setY(world.getRoom().getHeight() + world.getRoom().getHeight() / 2f);
-                        }
-                    }
-                }
-            }
-        };
-        shadowRadial.setColor(Color.BLACK);
-        shadowRadial.setScale(3, 3);
-        world.add(shadowRadial);
 
         ((SyncDataReceiver) CLIENT.getSyncDataReceiver()).setWorld(world);
 
@@ -413,7 +394,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private void world_roomSwitchComplete(Event<World> event) {
         clearChatBubbles();
         CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
-        shadowRadial.setValue(world.getRoom().getDarkness());
     }
 
     private void world_playerActorTakeBullet(Event<World> event) {
@@ -553,12 +533,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 if (oldState != localPlayerController.getState()) {
                     CLIENT.sendLocalPlayerController(localPlayerController.getState());
                 }
-                if (e.getKeyCode() == KeyCode.F11) {
-                    if (shadowRadial.getValue() == 0) return;
-                    shadowRadial.setValue(shadowRadial.getValue() - 1);
-                } else if (e.getKeyCode() == KeyCode.F12) {
-                    shadowRadial.setValue(shadowRadial.getValue() + 1);
-                }
                 if (e.getKeyCode() == KeyCode.F9) {
                     overlay.startIn();
                 }
@@ -619,7 +593,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
      */
     public void playerEnterRoomStartResponseReceived() {
         world.roomSwitchOverlayStartOut();
-        shadowRadial.setValue(world.getRoom().getDarkness());
     }
 
     /**
@@ -639,7 +612,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         world.setRoom(world.getMap().getRoom(roomId));
         world.setSceneryPacked(true);
         world.getCamera().setXY(cameraX, cameraY);
-        shadowRadial.setValue(world.getRoom().getDarkness());
         CLIENT.sendPlayerActorRequest();
     }
 
