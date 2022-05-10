@@ -103,13 +103,13 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     public void onAddToWorld(World world) {
         ICollision.super.onAddToWorld(world);
         this.world = world;
-        world.addEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId(), WorldEvent.WORLD_PROCESS, this::world_worldProcess);
-        addEventListener(Event.REMOVE_FROM_STAGE + getGameObjectId(), Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
+        world.addEventListener(this, WorldEvent.WORLD_PROCESS, this::world_worldProcess);
+        addEventListener(this, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
     }
 
     private void this_removeFromStage(Event event) {
-        removeEventListener(Event.REMOVE_FROM_STAGE + getGameObjectId());
-        world.removeEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId());
+        removeEventListener(this, Event.REMOVE_FROM_STAGE);
+        world.removeEventListener(this, WorldEvent.WORLD_PROCESS);
     }
 
     private void world_worldProcess(Event event) {
@@ -193,7 +193,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
                 pickUpTimeMillis = System.currentTimeMillis();
 
                 if (respawnTimeMillis <= 0) {
-                    world.removeEventListener(WorldEvent.WORLD_PROCESS + getGameObjectId());
+                    world.removeEventListener(this, WorldEvent.WORLD_PROCESS);
                     // delayed actually removing pickup game object from serverside world
                     Async.runLater(1, TimeUnit.SECONDS, () -> world.removeGameObject(this, false));
                 }

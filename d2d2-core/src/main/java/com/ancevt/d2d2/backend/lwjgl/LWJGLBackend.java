@@ -281,7 +281,7 @@ public class LWJGLBackend implements D2D2Backend {
                         .mouseButton(button)
                         .build());
 
-                TouchProcessor.instance.screenTouch(mouseX, mouseY, 0, isDown);
+                TouchProcessor.instance.screenTouch(mouseX, mouseY, 0, button, isDown);
             }
         });
 

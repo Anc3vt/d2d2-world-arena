@@ -82,11 +82,11 @@ public class AutomaticWeapon extends Weapon {
 
         public AutomaticBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(AutomaticBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(AutomaticWeapon.class);
+            removeEventListener(this, Event.ADD_TO_STAGE);
             Sprite sprite = new Sprite(getMapkitItem().getTexture());
             sprite.setColor(Color.GRAY);
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);

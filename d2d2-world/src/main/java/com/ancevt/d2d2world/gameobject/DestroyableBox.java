@@ -22,7 +22,6 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.fx.Particle;
@@ -177,7 +176,7 @@ public class DestroyableBox extends DisplayObjectContainer implements
 
         blinkSprite.removeFromParent();
         blinkSprite.setAlpha(1.0f);
-        blinkSprite.removeEventListener(blinkSprite);
+        blinkSprite.removeEventListener(this, Event.EACH_FRAME);
 
         if (!destroyed && isOnWorld() && mapkitItem.getDataEntry().containsKey(DataKey.BROKEN_PARTS)) {
 
@@ -199,7 +198,7 @@ public class DestroyableBox extends DisplayObjectContainer implements
                 .gameObject(this)
                 .build());
 
-        if(isEditor()) {
+        if (isEditor()) {
             doDestroyEffect();
         }
 
@@ -217,7 +216,7 @@ public class DestroyableBox extends DisplayObjectContainer implements
                 healthPickup.setValue(value);
             }
 
-            if(gameObject instanceof Pickup pickup) {
+            if (gameObject instanceof Pickup pickup) {
                 pickup.setDisappearAfterTact(Pickup.PICKUP_DISAPPEAR_AFTER_TACT);
             }
             gameObject.setXY(getX() + sprite.getWidth() / 2, getY() + sprite.getHeight() / 3);
@@ -231,7 +230,7 @@ public class DestroyableBox extends DisplayObjectContainer implements
         if (!isNullOrEmpty(icon) && isIconVisible()) {
             if (iconSprite != null) iconSprite.removeFromParent();
 
-            if(!destroyed) {
+            if (!destroyed) {
                 iconSprite = new Sprite(getMapkitItem().getTextureAtlas().createTexture(icon)) {
 
                     private static final int SPEED = 25;
@@ -418,14 +417,11 @@ public class DestroyableBox extends DisplayObjectContainer implements
         if (blinkSprite != null) {
             blinkSprite.setAlpha(1f);
             add(blinkSprite);
-            blinkSprite.addEventListener(blinkSprite, Event.EACH_FRAME, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    blinkSprite.setAlpha(blinkSprite.getAlpha() - 0.1f);
-                    if (blinkSprite.getAlpha() <= 0) {
-                        blinkSprite.removeEventListener(Event.EACH_FRAME, this);
-                        blinkSprite.removeFromParent();
-                    }
+            blinkSprite.addEventListener(this, Event.EACH_FRAME, event -> {
+                blinkSprite.setAlpha(blinkSprite.getAlpha() - 0.1f);
+                if (blinkSprite.getAlpha() <= 0) {
+                    blinkSprite.removeEventListener(this, Event.EACH_FRAME);
+                    blinkSprite.removeFromParent();
                 }
             });
         }

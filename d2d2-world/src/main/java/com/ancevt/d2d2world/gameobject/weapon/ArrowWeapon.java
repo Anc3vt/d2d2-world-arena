@@ -95,13 +95,13 @@ public class ArrowWeapon extends Weapon {
 
         public ArrowBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(ArrowBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
             setPushable(false);
             setFloorOnly(false);
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(PlasmaWeapon.class);
+            removeEventListener(this, Event.ADD_TO_STAGE);
             sprite = new Sprite(getMapkitItem().getTexture());
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);

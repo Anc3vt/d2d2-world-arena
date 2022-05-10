@@ -87,11 +87,11 @@ public class StandardWeapon extends Weapon {
 
         public StandardBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(StandardBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(StandardBullet.class);
+            removeEventListener(this, Event.ADD_TO_STAGE);
             var a = getMapkitItem().getTextureAtlas();
             FramedSprite framedSprite = new FramedSprite(
                     a.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))

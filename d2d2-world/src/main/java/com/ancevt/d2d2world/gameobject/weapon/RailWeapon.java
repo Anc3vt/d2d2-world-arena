@@ -83,11 +83,11 @@ public class RailWeapon extends Weapon {
 
         public RailBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(RailBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(RailWeapon.class);
+            removeEventListener(this, Event.ADD_TO_STAGE);
             Sprite sprite = new Sprite(getMapkitItem().getTexture());
             sprite.setXY(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
             add(sprite);

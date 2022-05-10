@@ -61,7 +61,7 @@ public class CharSelectScene extends DisplayObjectContainer {
         UiText uiLabel = new UiText("Select a character:");
         add(uiLabel, 10, 14);
 
-        addEventListener(Event.ADD_TO_STAGE, Event.ADD_TO_STAGE, this::this_addToStage);
+        addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
         setScale(1.5f, 1.5f);
     }
 
@@ -72,7 +72,7 @@ public class CharSelectScene extends DisplayObjectContainer {
     }
 
     private void this_addToStage(Event event) {
-        removeEventListener(Event.ADD_TO_STAGE);
+        removeEventListener(this, Event.ADD_TO_STAGE);
 
         final float sw = getStage().getStageWidth();
         final float sh = getStage().getStageHeight();
@@ -143,13 +143,13 @@ public class CharSelectScene extends DisplayObjectContainer {
 
             borderedRect = new BorderedRect(mapkitItem.getTexture().width(), mapkitItem.getTexture().height(), Color.of(0x111111), Color.BLACK);
 
-            addEventListener(Event.ADD_TO_STAGE, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
 
             touchButton = new TouchButton(true);
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(Event.ADD_TO_STAGE);
+            removeEventListener(this, Event.ADD_TO_STAGE);
 
             final float w = mapkitItem.getTexture().width();
             final float h = mapkitItem.getTexture().height();
@@ -167,9 +167,9 @@ public class CharSelectScene extends DisplayObjectContainer {
             add(uiText, -uiText.getTextWidth() / 2 + uiText.getCharWidth() / 2, h - 16);
 
             touchButton.setSize(w, h + 20);
-            touchButton.addEventListener(TouchButtonEvent.TOUCH_HOVER, TouchButtonEvent.TOUCH_HOVER, this::touchButton_touchHover);
-            touchButton.addEventListener(TouchButtonEvent.TOUCH_HOVER_OUT, TouchButtonEvent.TOUCH_HOVER_OUT, this::touchButton_touchHoverOut);
-            touchButton.addEventListener(TouchButtonEvent.TOUCH_UP, TouchButtonEvent.TOUCH_UP, this::touchButton_touchUp);
+            touchButton.addEventListener(this, TouchButtonEvent.TOUCH_HOVER, this::touchButton_touchHover);
+            touchButton.addEventListener(this, TouchButtonEvent.TOUCH_HOVER_OUT, this::touchButton_touchHoverOut);
+            touchButton.addEventListener(this, TouchButtonEvent.TOUCH_UP, this::touchButton_touchUp);
             add(touchButton, borderedRect.getX(), borderedRect.getY());
 
             Mouse.setVisible(true);

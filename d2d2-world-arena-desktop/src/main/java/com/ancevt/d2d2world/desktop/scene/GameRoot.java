@@ -27,7 +27,6 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.desktop.D2D2WorldArenaDesktopAssets;
-import com.ancevt.d2d2world.desktop.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.desktop.settings.DesktopConfig;
 import com.ancevt.d2d2world.desktop.settings.MonitorDevice;
 import com.ancevt.d2d2world.desktop.ui.TabWindow;
@@ -151,8 +150,9 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         FileReceiverManager.INSTANCE.addFileReceiverManagerListener(this);
 
-        addEventListener(Event.ADD_TO_STAGE, event -> {
-            getStage().addEventListener(IntroRoot.class, Event.RESIZE, resizeEvent -> {
+        addEventListener(this, Event.ADD_TO_STAGE, event -> {
+            removeEventListener(this, Event.ADD_TO_STAGE);
+            getStage().addEventListener(this, Event.RESIZE, resizeEvent -> {
                 Chat.getInstance().setWidth(getStage().getWidth());
                 Chat.getInstance().setHeight(getStage().getHeight() / 3);
                 worldScene.resize(getStage().getWidth(), getStage().getHeight());

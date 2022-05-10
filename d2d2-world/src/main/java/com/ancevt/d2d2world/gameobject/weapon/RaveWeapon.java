@@ -100,7 +100,7 @@ public class RaveWeapon extends Weapon {
 
         public RaveWeaponBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(RaveWeaponBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
             setAlpha(0.0f);
         }
 
@@ -115,7 +115,7 @@ public class RaveWeapon extends Weapon {
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(RaveWeapon.class);
+            removeEventListener(this, Event.ADD_TO_STAGE);
 
             var a = getMapkitItem().getTextureAtlas();
             FramedSprite framedSprite = new FramedSprite(

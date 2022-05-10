@@ -54,8 +54,8 @@ public class DebugActorCreator {
             }
         });
 
-        playerActor.addEventListener(playerActor, ActorEvent.ACTOR_DEATH, event -> {
-            playerActor.removeEventListener(playerActor);
+        playerActor.addEventListener(DebugActorCreator.class, ActorEvent.ACTOR_DEATH, event -> {
+            playerActor.removeEventListener(DebugActorCreator.class, ActorEvent.ACTOR_DEATH);
             var e = (ActorEvent) event;
             Async.runLater(2, TimeUnit.SECONDS, () -> {
                 createTestPlayerActor(targetPlayerActor, world);

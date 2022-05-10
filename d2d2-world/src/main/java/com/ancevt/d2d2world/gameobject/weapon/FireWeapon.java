@@ -92,11 +92,11 @@ public class FireWeapon extends Weapon {
 
         public FireBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(FireBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(StandardWeapon.StandardBullet.class);
+            removeEventListener(this, Event.ADD_TO_STAGE);
             TextureAtlas textureAtlas = getMapkitItem().getTextureAtlas();
             FramedSprite framedSprite = new FramedSprite(
                     textureAtlas.createTextures(getMapkitItem().getDataEntry().getString(DataKey.IDLE))

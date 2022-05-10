@@ -72,7 +72,7 @@ public class GameObjectTexts extends DisplayObjectContainer {
                 bitmapText = new BitmapText();
                 bitmapText.setText(String.valueOf(gameObject.getGameObjectId()));
                 bitmapText.setScale(0.5f, 0.5f);
-                gameObject.addEventListener(GameObjectTexts.class, REMOVE_FROM_STAGE, this::gameObject_removeFromStage);
+                gameObject.addEventListener(this, REMOVE_FROM_STAGE, this::gameObject_removeFromStage);
                 bitmapTextMap.put(gameObject, bitmapText);
                 add(bitmapText);
             }
@@ -82,7 +82,7 @@ public class GameObjectTexts extends DisplayObjectContainer {
 
     private void gameObject_removeFromStage(@NotNull Event event) {
         if (event.getSource() instanceof IGameObject gameObject) {
-            gameObject.removeEventListener(GameObjectTexts.class);
+            gameObject.removeEventListener(this, REMOVE_FROM_STAGE);
             BitmapText bitmapText = bitmapTextMap.get(gameObject);
             if (bitmapText != null) {
                 Async.runLater(5, TimeUnit.SECONDS, bitmapText::removeFromParent);

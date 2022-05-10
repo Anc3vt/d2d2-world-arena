@@ -53,10 +53,10 @@ public class SyncMotion {
         motionState.targetX = x;
         motionState.targetY = y;
 
-        o.removeEventListener(SyncMotion.class);
+        o.removeEventListener(SyncMotion.class, Event.REMOVE_FROM_STAGE);
         o.addEventListener(SyncMotion.class, Event.REMOVE_FROM_STAGE, event -> {
             map.remove(o);
-            o.removeEventListener(SyncMotion.class);
+            o.removeEventListener(SyncMotion.class, Event.REMOVE_FROM_STAGE);
         });
     }
 

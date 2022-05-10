@@ -36,5 +36,9 @@ public class TouchButtonEvent extends Event<TouchButton> {
 
     private final int x;
     private final int y;
+    private final int mouseButton;
+    private final boolean leftMouseButton;
+    private final boolean rightMouseButton;
+    private final boolean middleMouseButton;
     private final boolean onArea;
 }

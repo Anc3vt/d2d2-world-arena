@@ -119,9 +119,9 @@ public class PlayerActor extends Actor {
     public void setLocalAim(boolean value) {
         this.localAim = value;
         if (value) {
-            addEventListener("localAim", Event.EACH_FRAME, this::this_eachFrameLocalAim);
+            addEventListener(this, Event.EACH_FRAME, this::this_eachFrameLocalAim);
         } else {
-            removeAllEventListeners("localAim");
+            removeEventListener(this, Event.EACH_FRAME);
         }
     }
 

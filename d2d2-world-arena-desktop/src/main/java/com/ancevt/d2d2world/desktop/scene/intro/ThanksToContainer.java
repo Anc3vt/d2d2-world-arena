@@ -40,13 +40,13 @@ public class ThanksToContainer extends DisplayObjectContainer {
     public ThanksToContainer() {
         preloader = new Preloader();
         thanksToList = new ArrayList<>();
-        addEventListener(Event.REMOVE_FROM_STAGE, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
+        addEventListener(this, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
 
         add(preloader, D2D2.getStage().getWidth() / 2, 50);
     }
 
     private void this_removeFromStage(Event event) {
-        removeEventListener(Event.REMOVE_FROM_STAGE);
+        removeEventListener(this, Event.REMOVE_FROM_STAGE);
         dispose();
     }
 

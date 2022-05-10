@@ -31,11 +31,12 @@ public class EventPool {
         return createEvent(type, null);
     }
 
-    public static TouchButtonEvent createTouchEvent(String type, int x, int y, boolean onArea) {
+    public static TouchButtonEvent createTouchButtonEvent(String type, int x, int y, int button, boolean onArea) {
         return TouchButtonEvent.builder()
                 .type(type)
                 .x(x)
                 .y(y)
+                .mouseButton(button)
                 .onArea(onArea)
                 .build();
     }

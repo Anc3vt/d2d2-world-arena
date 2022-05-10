@@ -41,7 +41,7 @@ import static com.ancevt.d2d2world.server.player.BanList.BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
-import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.SERVER_WORLD_SCENE;
+import static com.ancevt.d2d2world.server.scene.ServerWorldScene.SERVER_WORLD_SCENE;
 
 @Slf4j
 public class ServerCommandProcessor {

@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.server.simulation;
+package com.ancevt.d2d2world.server.scene;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
@@ -93,13 +93,17 @@ public class ServerWorldScene {
     }
 
     private void clear() {
-        worlds.values().forEach(w -> {
-            w.setPlaying(false);
-            w.setSceneryPacked(false);
-            w.removeEventListener(hashCode() + Event.EACH_FRAME);
-            w.removeEventListener(this);
-            w.clear();
-            w.removeFromParent();
+        worlds.values().forEach(world -> {
+            world.setPlaying(false);
+            world.setSceneryPacked(false);
+            world.removeEventListener(this, WorldEvent.ACTOR_DEATH);
+            world.removeEventListener(this, WorldEvent.ADD_GAME_OBJECT);
+            world.removeEventListener(this, WorldEvent.ACTOR_ATTACK);
+            world.removeEventListener(this, WorldEvent.REMOVE_GAME_OBJECT);
+            world.removeEventListener(this, WorldEvent.BULLET_DOOR_TELEPORT);
+            world.removeEventListener(this, WorldEvent.DESTROYABLE_BOX_DESTROY);
+            world.clear();
+            world.removeFromParent();
         });
         worlds.clear();
     }
@@ -110,7 +114,7 @@ public class ServerWorldScene {
 
     public void start() {
         root = D2D2.init(new NoRenderBackend(900, 600));
-        root.addEventListener(hashCode() + Event.EACH_FRAME, Event.EACH_FRAME, this::root_eachFrame);
+        root.addEventListener(this, Event.EACH_FRAME, this::root_eachFrame);
         fpsMeter = new FpsMeter();
         root.add(fpsMeter);
         Async.run(D2D2::loop);
@@ -150,12 +154,12 @@ public class ServerWorldScene {
 
             gameMap.getRooms().forEach(room -> {
                 World world = new World(new SyncDataAggregator());
-                world.addEventListener(ServerWorldScene.class + WorldEvent.ACTOR_ATTACK, WorldEvent.ACTOR_ATTACK, this::world_actorAttack);
-                world.addEventListener(ServerWorldScene.class + WorldEvent.ACTOR_DEATH, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
-                world.addEventListener(ServerWorldScene.class + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
-                world.addEventListener(ServerWorldScene.class + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
-                world.addEventListener(ServerWorldScene.class + WorldEvent.BULLET_DOOR_TELEPORT, WorldEvent.BULLET_DOOR_TELEPORT, this::world_bulletDoorTeleport);
-                world.addEventListener(ServerWorldScene.class + WorldEvent.DESTROYABLE_BOX_DESTROY, WorldEvent.DESTROYABLE_BOX_DESTROY, this::world_destroyableDestroy);
+                world.addEventListener(this, WorldEvent.ACTOR_ATTACK, this::world_actorAttack);
+                world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+                world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
+                world.addEventListener(this, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
+                world.addEventListener(this, WorldEvent.BULLET_DOOR_TELEPORT, this::world_bulletDoorTeleport);
+                world.addEventListener(this, WorldEvent.DESTROYABLE_BOX_DESTROY, this::world_destroyableDestroy);
                 world.setMap(gameMap);
                 world.setRoom(room);
                 world.setSceneryPacked(true);

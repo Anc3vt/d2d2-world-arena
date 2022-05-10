@@ -854,21 +854,21 @@ public class GameObjectEditor {
 
         Root root = D2D2.getStage().getRoot();
 
-        root.removeEventListener(hashCode() + InputEvent.KEY_DOWN);
-        root.addEventListener(hashCode() + InputEvent.KEY_DOWN, InputEvent.KEY_DOWN, event -> {
+        root.removeEventListener(this, InputEvent.KEY_DOWN);
+        root.addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
             if (e.getKeyCode() == KeyCode.F) playerActor.nextWeapon();
         });
 
-        root.removeEventListener(hashCode() + InputEvent.KEY_UP);
-        root.addEventListener(hashCode() + InputEvent.KEY_UP, InputEvent.KEY_UP, event -> {
+        root.removeEventListener(this, InputEvent.KEY_UP);
+        root.addEventListener(this, InputEvent.KEY_UP, event -> {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
         });
 
-        root.removeEventListener(hashCode() + InputEvent.MOUSE_WHEEL);
-        root.addEventListener(hashCode() + InputEvent.MOUSE_WHEEL, InputEvent.MOUSE_WHEEL, event -> {
+        root.removeEventListener(this, InputEvent.MOUSE_WHEEL);
+        root.addEventListener(this, InputEvent.MOUSE_WHEEL, event -> {
             var e = (InputEvent) event;
             if (e.getDelta() > 0) {
                 playerActor.nextWeapon();

@@ -17,8 +17,10 @@
  */
 package com.ancevt.d2d2.touch;
 
-import com.ancevt.d2d2.event.EventPool;
 import com.ancevt.d2d2.event.TouchButtonEvent;
+import com.ancevt.d2d2.input.MouseButton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -28,6 +30,10 @@ public class TouchProcessor {
     public static final TouchProcessor instance = new TouchProcessor();
 
     private final List<TouchButton> touchableComponents;
+
+    private boolean leftMouseButton;
+    private boolean rightMouseButton;
+    private boolean middleMouseButton;
 
     private TouchProcessor() {
         touchableComponents = new CopyOnWriteArrayList<>();
@@ -48,12 +54,18 @@ public class TouchProcessor {
         }
     }
 
-    public final void screenTouch(final int x, final int y, final int pointer, final boolean down) {
+    public final void screenTouch(final int x, final int y, final int pointer, int button, final boolean down) {
 
         final Touch t = Touch.touch(pointer);
         if (t == null) return;
 
         t.setUp(x, y, down);
+
+        switch (button) {
+            case MouseButton.LEFT -> leftMouseButton = down;
+            case MouseButton.RIGHT -> rightMouseButton = down;
+            case MouseButton.MIDDLE -> middleMouseButton = down;
+        }
 
         if (!down && t.getTouchButton() != null) {
 
@@ -68,11 +80,18 @@ public class TouchProcessor {
 
                 final boolean onArea = x >= tcX && x <= tcX + tcW && y >= tcY && y <= tcY + tcH;
 
-                touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_UP,
-                                (int) (x - tcX), (int) (y - tcY), onArea
-                        )
+                touchButton.dispatchEvent(TouchButtonEvent.builder()
+                        .type(TouchButtonEvent.TOUCH_UP)
+                        .x((int) (x - tcX))
+                        .y((int) (y - tcY))
+                        .mouseButton(button)
+                        .onArea(onArea)
+                        .leftMouseButton(leftMouseButton)
+                        .rightMouseButton(rightMouseButton)
+                        .middleMouseButton(middleMouseButton)
+                        .build()
                 );
+
                 touchButton.setDragging(false);
                 t.setTouchButton(null);
                 return;
@@ -88,10 +107,16 @@ public class TouchProcessor {
             if (touchButton.isOnScreen() && x >= tcX && x <= tcX + tcW && y >= tcY && y <= tcY + tcH && down) {
                 t.setTouchButton(touchButton);
                 t.getTouchButton().setDragging(true);
-                touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_DOWN,
-                                (int) (x - tcX), (int) (y - tcY), true
-                        )
+                touchButton.dispatchEvent(TouchButtonEvent.builder()
+                        .type(TouchButtonEvent.TOUCH_DOWN)
+                        .x((int) (x - tcX))
+                        .y((int) (y - tcY))
+                        .mouseButton(button)
+                        .onArea(true)
+                        .leftMouseButton(leftMouseButton)
+                        .rightMouseButton(rightMouseButton)
+                        .middleMouseButton(middleMouseButton)
+                        .build()
                 );
             }
         }
@@ -108,23 +133,33 @@ public class TouchProcessor {
             final boolean onArea = x >= tcX && x <= tcX + tcW && y >= tcY && y <= tcY + tcH;
 
             if (touchButton.isOnScreen() && touchButton.isDragging()) {
-                touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(TouchButtonEvent.TOUCH_DRAG,
-                                (int) (x - tcX), (int) (y - tcY), onArea
-                        )
+                touchButton.dispatchEvent(TouchButtonEvent.builder()
+                        .type(TouchButtonEvent.TOUCH_DRAG)
+                        .x((int) (x - tcX))
+                        .y((int) (y - tcY))
+                        .onArea(onArea)
+                        .leftMouseButton(leftMouseButton)
+                        .rightMouseButton(rightMouseButton)
+                        .middleMouseButton(middleMouseButton)
+                        .build()
                 );
             }
             if (touchButton.isOnScreen()) {
-                touchButton.dispatchEvent(
-                        EventPool.createTouchEvent(onArea ? TouchButtonEvent.TOUCH_HOVER : TouchButtonEvent.TOUCH_HOVER_OUT,
-                                (int) (x - tcX), (int) (y - tcY), true
-                        )
+                touchButton.dispatchEvent(TouchButtonEvent.builder()
+                        .type(TouchButtonEvent.TOUCH_HOVER)
+                        .x((int) (x - tcX))
+                        .y((int) (y - tcY))
+                        .onArea(true)
+                        .leftMouseButton(leftMouseButton)
+                        .rightMouseButton(rightMouseButton)
+                        .middleMouseButton(middleMouseButton)
+                        .build()
                 );
             }
         }
     }
 
-    public final String getActiveList() {
+    public final @NotNull String getActiveList() {
         final StringBuilder sb = new StringBuilder();
 
         for (TouchButton current : touchableComponents) {
@@ -147,7 +182,7 @@ class Touch {
 
     private static final Touch[] touches = new Touch[MAX_TOUCHES];
 
-    public static Touch touch(final int pointer) {
+    public static @Nullable Touch touch(final int pointer) {
         for (Touch value : touches) {
             if (pointer >= MAX_TOUCHES) return null;
             if (value != null && value.getPointer() == pointer) return value;

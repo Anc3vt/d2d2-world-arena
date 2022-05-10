@@ -22,7 +22,7 @@ public class D2D2World {
     public static final float ORIGIN_WIDTH = 800f;
     public static final float ORIGIN_HEIGHT = 600f;
 
-    public static final float SCALE = 1.80f;//2.5f;
+    public static final float SCALE = 1.6f;//2.5f;
 
     private static boolean server;
     private static boolean editor;

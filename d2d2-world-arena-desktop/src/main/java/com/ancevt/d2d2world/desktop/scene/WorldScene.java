@@ -150,7 +150,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
         localPlayerController.setEnabled(true);
 
-        addEventListener(Event.ADD_TO_STAGE, Event.ADD_TO_STAGE, this::this_addToStage);
+        addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
 
         CLIENT.addClientListener(this);
 
@@ -308,11 +308,11 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
     private @NotNull World createWorld() {
         var world = new World();
-        world.addEventListener(hashCode() + WorldEvent.PLAYER_ACTOR_TAKE_BULLET, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
-        world.addEventListener(hashCode() + WorldEvent.ROOM_SWITCH_COMPLETE, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
-        world.addEventListener(hashCode() + WorldEvent.ADD_GAME_OBJECT, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
-        world.addEventListener(hashCode() + WorldEvent.REMOVE_GAME_OBJECT, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
-        world.addEventListener(hashCode() + WorldEvent.ACTOR_DEATH, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
+        world.addEventListener(this, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
+        world.addEventListener(this, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
+        world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
+        world.addEventListener(this, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
+        world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
 
         world.getPlayProcessor().setAsyncProcessingEnabled(false);
         world.getCamera().setBoundsLock(true);
@@ -354,7 +354,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     }
 
     private void this_addToStage(Event event) {
-        removeEventListener(Event.ADD_TO_STAGE);
+        removeEventListener(this, Event.ADD_TO_STAGE);
 
         float w = D2D2.getStage().getWidth();
         float h = D2D2.getStage().getHeight();
@@ -396,7 +396,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
             if (localPlayerActor != null) {
                 if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
-                    PLAYER_MANAGER.getPlayerById(CLIENT.getLocalPlayerId());
                     setLocalPlayerActor(playerActor);
                 }
             }
@@ -449,10 +448,10 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         DefaultMaps.clear();
         overlay.startIn();
         Lock lock = new Lock();
-        overlay.addEventListener(Event.CHANGE, Event.CHANGE, event -> {
+        overlay.addEventListener(this, Event.CHANGE, event -> {
             if (overlay.getState() == Overlay.STATE_BLACK) {
                 lock.unlockIfLocked();
-                overlay.removeEventListener(Event.CHANGE);
+                overlay.removeEventListener(this, Event.CHANGE);
             }
         });
         lock.lock();
@@ -495,7 +494,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
             gameObjectTexts.clear();
 
             world.getCamera().setAttachedTo(localPlayerActor);
-
+            world.setSceneryPacked(true);
             world.add(D2D2WorldArenaDesktopAssets.getAim());
 
             start();
@@ -797,6 +796,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     @Override
     public void onEachFrame() {
         super.onEachFrame();
+
         if (!CLIENT.isConnected() || !CLIENT.isEnteredServer()) return;
 
         SyncMotion.process();

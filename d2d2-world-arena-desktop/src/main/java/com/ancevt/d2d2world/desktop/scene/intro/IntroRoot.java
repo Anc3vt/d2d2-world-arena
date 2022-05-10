@@ -164,7 +164,7 @@ public class IntroRoot extends Root {
             if (CONFIG.getBoolean(AUTO_ENTER)) {
                 enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
             } else {
-                getStage().addEventListener(IntroRoot.class, Event.RESIZE, resizeEvent -> {
+                getStage().addEventListener(this, Event.RESIZE, resizeEvent -> {
                     float width = getStage().getWidth();
                     float height = getStage().getHeight();
                     var root = getStage().getRoot();
@@ -273,7 +273,7 @@ public class IntroRoot extends Root {
                     }, () -> {
                         GameRoot gameRoot = new GameRoot();
                         gameRoot.setServerName(result.getName());
-                        D2D2.getStage().removeEventListener(IntroRoot.class);
+                        D2D2.getStage().removeEventListener(this, Event.RESIZE);
                         D2D2.getStage().setRoot(gameRoot);
                         gameRoot.start(uiTextInputServer.getText(), localPlayerName);
                     });

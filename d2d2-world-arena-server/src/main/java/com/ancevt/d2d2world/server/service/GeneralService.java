@@ -56,7 +56,7 @@ import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CO
 import static com.ancevt.d2d2world.server.player.BanList.BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
-import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.SERVER_WORLD_SCENE;
+import static com.ancevt.d2d2world.server.scene.ServerWorldScene.SERVER_WORLD_SCENE;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener {

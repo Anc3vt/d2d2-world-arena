@@ -48,7 +48,7 @@ import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static com.ancevt.d2d2world.server.repl.ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
-import static com.ancevt.d2d2world.server.simulation.ServerWorldScene.SERVER_WORLD_SCENE;
+import static com.ancevt.d2d2world.server.scene.ServerWorldScene.SERVER_WORLD_SCENE;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j

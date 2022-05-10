@@ -1,5 +1,5 @@
 /*
- *   D2D2 World
+ *   D2D2 core
  *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ancevt.d2d2world.debug;
+package com.ancevt.d2d2.debug;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
@@ -77,11 +77,15 @@ public class DebugPanel extends DisplayObjectContainer {
         touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, this::touchButton_touchDown);
         touchButton.addEventListener(TouchButtonEvent.TOUCH_DRAG, this::touchButton_touchDrag);
 
-        addEventListener(DebugPanel.class, Event.ADD_TO_STAGE, this::this_addToStage);
+        addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
 
         add(touchButton);
 
         setScale(scale, scale);
+    }
+
+    public void setText(Object text) {
+        System.setProperty(systemPropertyName, String.valueOf(text));
     }
 
     public static void setScale(float scale) {
@@ -101,11 +105,11 @@ public class DebugPanel extends DisplayObjectContainer {
     }
 
     private void this_addToStage(Event event) {
+        removeEventListener(this, Event.ADD_TO_STAGE);
         load();
         Root root = D2D2.getStage().getRoot();
         root.addEventListener(InputEvent.KEY_DOWN, this::root_keyDown);
         root.addEventListener(InputEvent.KEY_UP, this::root_keyUp);
-        removeEventListener(DebugPanel.class);
     }
 
     private void root_keyDown(Event event) {
@@ -126,6 +130,7 @@ public class DebugPanel extends DisplayObjectContainer {
         var e = (TouchButtonEvent) event;
         oldX = (int) (e.getX() + getX());
         oldY = (int) (e.getY() + getY());
+        dispatchEvent(event);
     }
 
     private void touchButton_touchDrag(Event event) {
@@ -133,8 +138,15 @@ public class DebugPanel extends DisplayObjectContainer {
 
         if (shiftDown) {
             bg.setSize(e.getX() + 1, e.getY() + 1);
-            text.setBounds(e.getX() + 1, e.getY() + 1);
-            touchButton.setSize(e.getX() + 1, e.getY() + 1);
+            if (bg.getWidth() < 5f) {
+                bg.setWidth(5f);
+            }
+            if (bg.getHeight() < 5f) {
+                bg.setHeight(5f);
+            }
+
+            text.setBounds(bg.getWidth(), bg.getHeight());
+            touchButton.setSize(bg.getWidth(), bg.getHeight());
             return;
         }
 
@@ -194,18 +206,18 @@ public class DebugPanel extends DisplayObjectContainer {
     }
 
     public static Optional<DebugPanel> show(String propertyName) {
-        return show(propertyName, null);
+        return show(propertyName, "");
     }
 
     public static Optional<DebugPanel> show(String propertyName, Object value) {
         if (enabled) {
             DebugPanel debugPanel = debugPanels.get(propertyName);
-            if(debugPanel == null) {
-                 debugPanel = new DebugPanel(propertyName);
+            if (debugPanel == null) {
+                debugPanel = new DebugPanel(propertyName);
             }
 
             D2D2.getStage().getRoot().add(debugPanel);
-            if(propertyName != null) {
+            if (propertyName != null) {
                 System.setProperty(propertyName, String.valueOf(value));
             }
             return Optional.of(debugPanel);
@@ -222,36 +234,22 @@ public class DebugPanel extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
+        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         root.setBackgroundColor(Color.DARK_GRAY);
-        DebugPanel debugPanel = new DebugPanel("dwa");
-        root.add(debugPanel);
 
-        root.addEventListener(Event.EACH_FRAME, event -> System.setProperty("dwa", debugPanel.getX() + ""));
+        DebugPanel.setEnabled(true);
 
-        System.setProperty("dwa", debugPanel.getX() + "");
+        root.addEventListener(Event.EACH_FRAME, event -> {
+            DebugPanel.show("debug-panel").ifPresent(debugPanel -> {
+                debugPanel.setText(debugPanel.getX());
+            });
+        });
+
         D2D2.loop();
         DebugPanel.saveAll();
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

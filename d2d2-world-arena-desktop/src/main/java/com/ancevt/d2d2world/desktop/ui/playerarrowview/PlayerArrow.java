@@ -52,8 +52,8 @@ public class PlayerArrow extends DisplayObjectContainer {
         if (this.target == displayObject) return;
 
         this.target = displayObject;
-        removeEventListener(PlayerArrow.class);
-        addEventListener(PlayerArrow.class, Event.EACH_FRAME, event -> {
+        removeEventListener(this, Event.EACH_FRAME);
+        addEventListener(this, Event.EACH_FRAME, event -> {
             IDisplayObject from = playerArrowView.getFrom();
 
             float tax = target.getAbsoluteX() / target.getAbsoluteScaleX();

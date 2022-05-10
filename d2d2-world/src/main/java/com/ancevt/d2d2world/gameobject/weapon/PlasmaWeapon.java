@@ -83,11 +83,11 @@ public class PlasmaWeapon extends Weapon {
 
         public PlasmaBullet(@NotNull MapkitItem mapkitItem, int gameObjectId) {
             super(mapkitItem, gameObjectId);
-            addEventListener(PlasmaBullet.class, Event.ADD_TO_STAGE, this::this_addToStage);
+            addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
         }
 
         private void this_addToStage(Event event) {
-            removeEventListener(PlasmaWeapon.class);
+            removeEventListener(this, Event.ADD_TO_STAGE);
             sprite = new Sprite(getMapkitItem().getTexture());
             if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
                 sprite.setColor(Color.of(0x00FFFF));
