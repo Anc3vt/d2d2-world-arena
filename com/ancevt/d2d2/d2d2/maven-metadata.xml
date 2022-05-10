@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>com.ancevt.d2d2</groupId>
-  <artifactId>d2d2-sockets</artifactId>
+  <artifactId>d2d2</artifactId>
   <versioning>
     <versions>
       <version>1.0.0.4-d2d2-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20220509225939</lastUpdated>
+    <lastUpdated>20220510142744</lastUpdated>
   </versioning>
 </metadata>
