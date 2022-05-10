@@ -50,8 +50,8 @@ public class ShadowRadial extends DisplayObjectContainer {
         for (int i = 0; i < value; i++) {
             Sprite sprite = new Sprite(texture);
             sprite.setColor(color);
-            float sw = D2D2.getStage().getStageWidth();
-            float sh = D2D2.getStage().getStageHeight();
+            float sw = D2D2.getStage().getWidth();
+            float sh = D2D2.getStage().getHeight();
 
             float scaleX = sw / sprite.getWidth();
             float scaleY = sh / sprite.getHeight();

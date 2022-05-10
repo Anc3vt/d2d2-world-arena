@@ -141,7 +141,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
             }
         };
         shadowRadial.setColor(Color.BLACK);
-        shadowRadial.setScale(D2D2World.SCALE, D2D2World.SCALE);
+        shadowRadial.setScale(3, 3);
         world.add(shadowRadial);
 
         ((SyncDataReceiver) CLIENT.getSyncDataReceiver()).setWorld(world);
