@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.ancevt.d2d2</groupId>
+  <artifactId>d2d2-world-arena-server</artifactId>
+  <versioning>
+    <release>1.0.0.4-alpha</release>
+    <versions>
+      <version>1.0.0.4-alpha</version>
+    </versions>
+    <lastUpdated>20220511003224</lastUpdated>
+  </versioning>
+</metadata>
