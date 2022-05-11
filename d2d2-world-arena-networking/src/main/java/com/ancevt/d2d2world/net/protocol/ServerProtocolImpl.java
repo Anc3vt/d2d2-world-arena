@@ -17,17 +17,15 @@
  */
 package com.ancevt.d2d2world.net.protocol;
 
-import com.ancevt.commons.io.ByteOutputWriter;
-import com.ancevt.d2d2world.net.dto.client.PlayerPingReportDto;
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.io.ByteInputReader;
+import com.ancevt.commons.io.ByteOutputWriter;
 import com.ancevt.d2d2world.net.dto.Dto;
-import com.ancevt.d2d2world.net.message.Message;
+import com.ancevt.d2d2world.net.dto.client.PlayerPingReportDto;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import com.ancevt.d2d2world.net.transfer.Headers;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -54,12 +52,13 @@ public final class ServerProtocolImpl extends ProtocolImpl {
     }
 
     public void bytesReceived(int connectionId, byte[] bytes) {
-        Message message = Message.of(bytes);
-        ByteInputReader in = message.inputReader();
+        ByteInputReader in = ByteInputReader.newInstance(bytes);
+
+        int type = in.readByte();
 
         try {
 
-            switch (message.getType()) {
+            switch (type) {
 
                 case MessageType.HANDSHAKE -> {
                     log.trace("received <b>HANDSHAKE<> {}", connectionId);
@@ -149,7 +148,6 @@ public final class ServerProtocolImpl extends ProtocolImpl {
         }
     }
 
-    @Contract(value = " -> new", pure = true)
     public static byte @NotNull [] createMessagePlayerAttack(int playerId) {
         return ByteOutputWriter.newInstance()
                 .writeByte(MessageType.SERVER_PLAYER_ATTACK)

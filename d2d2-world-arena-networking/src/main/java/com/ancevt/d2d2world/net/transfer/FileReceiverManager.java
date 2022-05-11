@@ -18,8 +18,6 @@
 package com.ancevt.d2d2world.net.transfer;
 
 import org.jetbrains.annotations.NotNull;
-import com.ancevt.commons.io.ByteInputReader;
-import com.ancevt.d2d2world.net.message.Message;
 
 import java.util.List;
 import java.util.Map;
@@ -47,14 +45,6 @@ public class FileReceiverManager {
 
     public void removeFileReceiverManagerListener(FileReceiverManagerListener l) {
         fileReceiverManagerListeners.remove(l);
-    }
-
-    public void fileData(byte[] fullMessageBytes) {
-        ByteInputReader in = Message.of(fullMessageBytes).inputReader();
-        Headers headers = Headers.of(in.readUtf(short.class));
-        int contentLength = in.readInt();
-        byte[] fileData = in.readBytes(contentLength);
-        fileData(headers, fileData);
     }
 
     public void fileData(@NotNull Headers headers, byte @NotNull [] fileData) {

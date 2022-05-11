@@ -27,7 +27,7 @@ echo Client default game server is $DEFAULT_GAME_SERVER
 
 sleep 3
 
-mvn clean install -Ddefault-game-server=$DEFAULT_GAME_SERVER -Pdesktop -Pexe \
+mvn clean install -Ddefault-game-server=$DEFAULT_GAME_SERVER -Pclient -Pexe \
 || {
     printf "\nAborted"
     exit;
@@ -35,8 +35,8 @@ mvn clean install -Ddefault-game-server=$DEFAULT_GAME_SERVER -Pdesktop -Pexe \
 
 mkdir -p buildtmp/
 cd buildtmp/
-cp -v ../d2d2-world-arena-desktop/target/*dep* .
-cp -v ../d2d2-world-arena-desktop/target/*exe .
+cp -v ../d2d2-world-arena-client/target/*dep* .
+cp -v ../d2d2-world-arena-client/target/*exe .
 
 rename 's/-jar-with-dependencies//' *.jar
 

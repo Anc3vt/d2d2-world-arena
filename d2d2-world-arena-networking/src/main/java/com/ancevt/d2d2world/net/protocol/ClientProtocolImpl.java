@@ -17,16 +17,15 @@
  */
 package com.ancevt.d2d2world.net.protocol;
 
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.commons.io.ByteOutputWriter;
 import com.ancevt.d2d2world.net.dto.Dto;
-import com.ancevt.d2d2world.net.message.Message;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import com.ancevt.d2d2world.net.transfer.Headers;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,11 +52,12 @@ public final class ClientProtocolImpl extends ProtocolImpl {
     }
 
     public void bytesReceived(byte[] bytes) {
-        Message message = Message.of(bytes);
-        ByteInputReader in = message.inputReader();
+        ByteInputReader in = ByteInputReader.newInstance(bytes);
+
+        int type = in.readByte();
 
         try {
-            switch (message.getType()) {
+            switch (type) {
 
                 case MessageType.PING -> {
                     log.trace("received <b>PING<>");
@@ -99,7 +99,7 @@ public final class ClientProtocolImpl extends ProtocolImpl {
             }
 
         } catch (Exception e) {
-            log.error("message" + message.getBytes().length, e);
+            log.error("message" + bytes.length, e);
         }
     }
 

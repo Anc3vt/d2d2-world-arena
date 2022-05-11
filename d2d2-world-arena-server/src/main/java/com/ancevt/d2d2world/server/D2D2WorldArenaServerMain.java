@@ -22,17 +22,14 @@ import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.net.client.ClientSender;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
-import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import com.ancevt.net.CloseStatus;
 import com.ancevt.net.connection.ConnectionListener;
 import com.ancevt.net.connection.ConnectionListenerAdapter;
 import com.ancevt.net.connection.IConnection;
-import com.ancevt.net.connection.TcpConnection;
 import com.ancevt.net.server.ServerListener;
 import com.ancevt.util.args.Args;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +40,17 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.MODULE_SERVER_PROTOCOL;
-import static com.ancevt.d2d2world.server.ServerConfig.*;
+import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
+import static com.ancevt.d2d2world.server.ServerConfig.SERVER_HOST;
+import static com.ancevt.d2d2world.server.ServerConfig.SERVER_MAX_PLAYERS;
+import static com.ancevt.d2d2world.server.ServerConfig.SERVER_NAME;
+import static com.ancevt.d2d2world.server.ServerConfig.SERVER_PORT;
+import static com.ancevt.d2d2world.server.ServerConfig.WORLD_DEFAULT_MAP;
 import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
 import static com.ancevt.d2d2world.server.repl.ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
+import static com.ancevt.d2d2world.server.scene.ServerWorldScene.SERVER_WORLD_SCENE;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
 import static com.ancevt.d2d2world.server.service.ServerUnit.MODULE_SERVER_UNIT;
-import static com.ancevt.d2d2world.server.scene.ServerWorldScene.SERVER_WORLD_SCENE;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
@@ -73,15 +75,6 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
         }
 
         Args a = Args.of(args);
-
-        Integer portToKill = a.get(int.class, "--kill");
-        if (portToKill != null) {
-            IConnection connection = TcpConnection.create();
-            connection.asyncConnectAndAwait("localhost", portToKill, 5, SECONDS);
-            new ClientSender(connection).send(LocalServerKillDto.INSTANCE);
-            System.exit(0);
-        }
-
         String version = getServerVersion();
 
         if (a.contains("-v", "--version")) {

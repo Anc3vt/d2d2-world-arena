@@ -1,5 +1,5 @@
 /*
- *   D2D2 World Arena Desktop
+ *   D2D2 World Arena Client
  *   Copyright (C) 2022 Ancevt (me@ancevt.com)
  *
  *   This program is free software: you can redistribute it and/or modify

@@ -18,11 +18,13 @@
 package com.ancevt.d2d2world.transfer.test;
 
 import com.ancevt.commons.concurrent.Lock;
+import com.ancevt.commons.io.ByteInputReader;
 import com.ancevt.d2d2world.data.file.FileSystemUtils;
 import com.ancevt.d2d2world.net.message.MessageType;
 import com.ancevt.d2d2world.net.transfer.FileReceiver;
 import com.ancevt.d2d2world.net.transfer.FileReceiverManager;
 import com.ancevt.d2d2world.net.transfer.FileSender;
+import com.ancevt.d2d2world.net.transfer.Headers;
 import com.ancevt.net.TcpFactory;
 import com.ancevt.net.connection.ConnectionListenerAdapter;
 import com.ancevt.net.connection.IConnection;
@@ -43,8 +45,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
-import static java.nio.file.StandardOpenOption.*;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -102,8 +105,12 @@ public class FileTransferTest {
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
             public void connectionBytesReceived(byte[] bytes) {
-                if ((bytes[0] & 0xFF) == MessageType.FILE_DATA) {
-                    FileReceiverManager.INSTANCE.fileData(bytes);
+                ByteInputReader in = ByteInputReader.newInstance(bytes);
+                if (in.readByte() == MessageType.FILE_DATA) {
+                    Headers headers = Headers.of(in.readUtf(short.class));
+                    int contentLength = in.readInt();
+                    byte[] fileData = in.readBytes(contentLength);
+                    FileReceiverManager.INSTANCE.fileData(headers, fileData);
                 }
             }
         });
@@ -173,7 +180,6 @@ public class FileTransferTest {
                 files.forEach(file -> {
                     FileSender fileSender = new FileSender(file.getPath(), true, true);
                     fileSender.send(connectionWithClient);
-                    debug("<y>send fileSender " + fileSender);
                 });
             }
         });
@@ -185,8 +191,12 @@ public class FileTransferTest {
         connection.addConnectionListener(new ConnectionListenerAdapter() {
             @Override
             public void connectionBytesReceived(byte[] bytes) {
-                if ((bytes[0] & 0xFF) == MessageType.FILE_DATA) {
-                    FileReceiverManager.INSTANCE.fileData(bytes);
+                ByteInputReader in = ByteInputReader.newInstance(bytes);
+                if (in.readByte() == MessageType.FILE_DATA) {
+                    Headers headers = Headers.of(in.readUtf(short.class));
+                    int contentLength = in.readInt();
+                    byte[] fileData = in.readBytes(contentLength);
+                    FileReceiverManager.INSTANCE.fileData(headers, fileData);
                 }
             }
         });
@@ -203,7 +213,6 @@ public class FileTransferTest {
 
             @Override
             public synchronized void fileReceiverComplete(FileReceiver fileReceiver) {
-                debug("<g>Complete: " + fileReceiver);
                 receivedFiles.add(new File(fileReceiver.getPath()));
 
                 if (receivedFiles.size() == files.size()) {
