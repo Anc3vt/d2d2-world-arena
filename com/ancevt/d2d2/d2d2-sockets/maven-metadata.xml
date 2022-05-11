@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>com.ancevt.d2d2</groupId>
-  <artifactId>d2d2-world-editor</artifactId>
+  <artifactId>d2d2-sockets</artifactId>
   <versioning>
     <versions>
       <version>1.0.0.5-alpha-SNAPSHOT</version>
