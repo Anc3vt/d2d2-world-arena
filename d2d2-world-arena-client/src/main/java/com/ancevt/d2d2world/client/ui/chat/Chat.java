@@ -15,6 +15,7 @@ import com.ancevt.d2d2world.client.ui.Font;
 import com.ancevt.d2d2world.client.ui.UiTextInput;
 import com.ancevt.d2d2world.client.ui.UiTextInputEvent;
 import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class Chat extends DisplayObjectContainer {
 
     private static Chat instace;
@@ -196,6 +198,16 @@ public class Chat extends DisplayObjectContainer {
 
         addMessage(new ChatMessage(0, messageText, textColor));
         redraw();
+    }
+
+    public void print(@NotNull String messageText) {
+        log.info(messageText);
+        addMessage(messageText);
+    }
+
+    public void print(@NotNull String messageText, @NotNull Color color) {
+        log.info(messageText);
+        addMessage(messageText, color);
     }
 
     public void addMessage(@NotNull String messageText) {

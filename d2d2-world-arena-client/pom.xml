@@ -294,7 +294,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath/>
-                                    <mainClass>com.ancevt.d2d2world.client.dev.DevVideoModes</mainClass>
+                                    <mainClass>com.ancevt.d2d2world.client.dev.DevVideoModes2</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

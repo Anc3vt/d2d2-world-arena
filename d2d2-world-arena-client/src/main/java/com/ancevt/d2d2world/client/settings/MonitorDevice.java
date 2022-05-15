@@ -1,11 +1,10 @@
 
 package com.ancevt.d2d2world.client.settings;
 
+import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.util.args.Args;
 import org.lwjgl.glfw.GLFW;
@@ -28,14 +27,11 @@ public class MonitorDevice {
 
     private String resolution;
     private boolean fullscreen;
-    private String monitorDeviceName;
 
     private MonitorDevice() {
     }
 
     public void setMonitorDeviceByName(String monitorDeviceName) {
-        this.monitorDeviceName = monitorDeviceName;
-
         Map<Long, String> monitors = LWJGLVideoModeUtils.getMonitors();
 
         long monitorDeviceId = monitors.keySet()
@@ -48,7 +44,16 @@ public class MonitorDevice {
     }
 
     public String getMonitorDeviceName() {
-        return monitorDeviceName;
+        monitorDeviceId = getMonitorDeviceId();
+
+        Holder<String> monitorNameHolder = new Holder<>();
+
+        var monitors = LWJGLVideoModeUtils.getMonitors();
+        monitors.forEach((id, name) -> {
+            if (id == monitorDeviceId) monitorNameHolder.setValue(name);
+        });
+
+        return monitorNameHolder.getValue();
     }
 
     public void setMonitorDeviceId(long monitorDeviceId) {
@@ -67,6 +72,10 @@ public class MonitorDevice {
     }
 
     public String getResolution() {
+        if (resolution == null) {
+            resolution = LWJGLVideoModeUtils.getVideoMode(getMonitorDeviceId()).getResolution();
+        }
+
         return resolution;
     }
 
@@ -83,12 +92,17 @@ public class MonitorDevice {
         this.startResolution = startResolution;
     }
 
+    public void rememberResolutionAsStart() {
+        String resolution = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId()).getResolution();
+        setStartResolution(resolution);
+    }
+
     public String getStartResolution() {
         return startResolution;
     }
 
     private void apply() {
-        Args args = Args.of(resolution, "x");
+        Args args = Args.of(getResolution(), "x");
         int w = args.next(int.class);
         int h = args.next(int.class);
 
@@ -101,7 +115,9 @@ public class MonitorDevice {
                     .orElseThrow();
 
             LWJGLVideoModeUtils.setVideoMode(getMonitorDeviceId(), D2D2.getBackend().getWindowId(), videoMode);
-            LWJGLVideoModeUtils.linuxCare(getMonitorDeviceId(), videoMode);
+            if (isUnix()) {
+                LWJGLVideoModeUtils.linuxCare(getMonitorDeviceId(), videoMode);
+            }
         } else {
             GLFW.glfwSetWindowMonitor(
                     D2D2.getBackend().getWindowId(),
@@ -132,59 +148,10 @@ public class MonitorDevice {
     public String toString() {
         return "MonitorDevice{" +
                 "monitorDeviceId=" + getMonitorDeviceId() +
-                ", monitorDeviceName='" + monitorDeviceName + '\'' +
-                ", resolution='" + resolution + '\'' +
-                ", fullscreen=" + fullscreen +
+                ", monitorDeviceName='" + getMonitorDeviceName() + '\'' +
+                ", resolution='" + getResolution() + '\'' +
+                ", fullscreen=" + isFullscreen() +
                 '}';
     }
 
-    public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
-        D2D2World.init(true, true);
-
-
-
-
-
-
-
-
-
-        D2D2.loop();
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
