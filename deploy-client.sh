@@ -33,6 +33,7 @@ mvn clean install -Ddefault-game-server=$DEFAULT_GAME_SERVER -Pclient -Pexe \
     exit;
 }
 
+mkdir -p build/
 mkdir -p buildtmp/
 cd buildtmp/
 cp -v ../d2d2-world-arena-client/target/*dep* .
@@ -40,6 +41,7 @@ cp -v ../d2d2-world-arena-client/target/*exe .
 
 rename 's/-jar-with-dependencies//' *.jar
 
+cp * ../build/
 scp * "$BUILD_WEB_TARGET"
 
 echo Client deployment complete

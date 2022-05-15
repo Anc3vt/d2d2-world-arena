@@ -7,11 +7,11 @@
     <parent>
         <groupId>com.ancevt.d2d2</groupId>
         <artifactId>d2d2</artifactId>
-        <version>1.0.0.5-alpha-SNAPSHOT</version>
+        <version>1.0.0.5-alpha</version>
     </parent>
 
     <artifactId>d2d2-world-arena-client</artifactId>
-    <version>1.0.0.5-alpha-SNAPSHOT</version>
+    <version>1.0.0.5-alpha</version>
     <name>D2D2 World Arena Client</name>
     <url>https://github.com/Anc3vt/d2d2</url>
 
@@ -127,6 +127,20 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/natives</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
         </plugins>
     </build>

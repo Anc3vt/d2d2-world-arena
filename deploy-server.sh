@@ -32,12 +32,14 @@ mvn clean install -Pserver \
     exit;
 }
 
+mkdir -p build/
 mkdir -p buildtmp/
 cd buildtmp/
 cp -v ../d2d2-world-arena-server/target/*dep* .
 
 rename 's/-jar-with-dependencies//' *.jar
 
+cp * ../build/
 scp * "$BUILD_WEB_TARGET"
 scp * "$HOST:app"
 
