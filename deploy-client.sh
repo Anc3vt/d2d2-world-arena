@@ -42,5 +42,5 @@ rename 's/-jar-with-dependencies//' *.jar
 
 scp * "$BUILD_WEB_TARGET"
 
-echo Complete
+echo Client deployment complete
 
