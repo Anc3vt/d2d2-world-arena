@@ -103,12 +103,10 @@ public class FileTransferTest {
         FileReceiverManager.INSTANCE.addFileReceiverManagerListener(new FileReceiverManager.FileReceiverManagerListener() {
             @Override
             public void fileReceiverProgress(FileReceiver fileReceiver) {
-                System.out.println("Progress: " + fileReceiver);
             }
 
             @Override
             public void fileReceiverComplete(FileReceiver fileReceiver) {
-                System.out.println("Complete: " + fileReceiver);
                 lock.unlockIfLocked();
             }
         });
@@ -192,7 +190,6 @@ public class FileTransferTest {
 
             @Override
             public void fileReceiverProgress(FileReceiver fileReceiver) {
-                System.out.println("Progress: " + fileReceiver);
             }
 
             @Override

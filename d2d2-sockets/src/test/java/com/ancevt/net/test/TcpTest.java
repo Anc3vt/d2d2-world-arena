@@ -26,7 +26,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -70,7 +69,7 @@ public class TcpTest {
 
             @Override
             public void connectionEstablished(IConnection connectionWithClient) {
-                debug("com.ancevt.net.tcpb254.test.TcpTest.connectionEstablished(TcpTest:67): <A>established");
+
             }
 
             @Override
