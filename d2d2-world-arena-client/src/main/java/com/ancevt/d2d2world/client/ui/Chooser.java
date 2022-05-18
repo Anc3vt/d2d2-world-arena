@@ -8,7 +8,7 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -162,7 +162,7 @@ public class Chooser<T> extends DisplayObjectContainer {
 
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
-        D2D2WorldArenaDesktopAssets.load();
+        D2D2WorldArenaClientAssets.load();
 
         Chooser<String> chooser = new Chooser<>();
         chooser.addItem("windowed", "windowed");

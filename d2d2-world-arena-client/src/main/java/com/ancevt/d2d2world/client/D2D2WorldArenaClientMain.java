@@ -1,15 +1,15 @@
 
 package com.ancevt.d2d2world.client;
 
+import com.ancevt.commons.properties.PropertyWrapper;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
-import com.ancevt.d2d2.display.ScaleMode;
+import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2world.client.scene.GameRoot;
 import com.ancevt.d2d2world.client.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.client.settings.DesktopConfig;
@@ -18,6 +18,7 @@ import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.util.args.Args;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -33,7 +34,7 @@ public class D2D2WorldArenaClientMain {
     private static VideoMode startVideoMode;
 
     @SneakyThrows
-    public static void main(String[] args) throws IOException {
+    public static void main(String @NotNull [] args) throws IOException {
         CONFIG.load();
         for (String arg : args) {
             if (arg.startsWith("-P")) {
@@ -56,6 +57,8 @@ public class D2D2WorldArenaClientMain {
             }
         }
 
+        PropertyWrapper.argsToProperties(args, System.getProperties());
+
         SoundSystem.setEnabled(CONFIG.getBoolean(SOUND_ENABLED));
 
         // Load project properties
@@ -77,7 +80,7 @@ public class D2D2WorldArenaClientMain {
         );
 
         D2D2World.init(false, false);
-        D2D2WorldArenaDesktopAssets.load();
+        D2D2WorldArenaClientAssets.load();
 
         startVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
         MonitorDevice.getInstance().setStartResolution(startVideoMode.getResolution());
@@ -101,7 +104,6 @@ public class D2D2WorldArenaClientMain {
         IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
 
         getStage().setRoot(introRoot);
-        getStage().setScaleMode(ScaleMode.REAL);
 
         D2D2.loop();
         exit();

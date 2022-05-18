@@ -10,7 +10,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.net.Player;
 import com.ancevt.d2d2world.client.settings.DesktopConfig;
@@ -208,7 +208,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 , Color.WHITE);
         worldScene.start();
 
-        D2D2WorldArenaDesktopAssets.getAim().setColor(Color.WHITE);
+        D2D2WorldArenaClientAssets.getAim().setColor(Color.WHITE);
 
         String rconPassword = CONFIG.getString(DesktopConfig.RCON_PASSWORD);
         if (!rconPassword.isEmpty()) {
@@ -356,8 +356,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     public void exit() {
         CLIENT.removeClientListener(this);
         CLIENT.sendExitRequest();
-        CLIENT.close();
     }
 
 }
-

@@ -5,6 +5,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.texture.TextureManager;
 import com.ancevt.d2d2.backend.D2D2Backend;
+import org.jetbrains.annotations.NotNull;
 
 public class D2D2 {
 
@@ -34,11 +35,11 @@ public class D2D2 {
         return backend;
     }
 
-    public static Root init(D2D2Backend starter) {
-        Root root;
-        D2D2.backend = starter;
-        starter.create();
-        getStage().setRoot(root = new Root());
+    public static @NotNull Root init(@NotNull D2D2Backend backend) {
+        D2D2.backend = backend;
+        backend.create();
+        Root root = new Root();
+        getStage().setRoot(root);
         return root;
     }
 

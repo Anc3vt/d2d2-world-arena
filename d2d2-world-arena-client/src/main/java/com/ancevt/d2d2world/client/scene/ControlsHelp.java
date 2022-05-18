@@ -7,7 +7,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 
 public class ControlsHelp extends Sprite {
 
@@ -18,7 +18,7 @@ public class ControlsHelp extends Sprite {
     private int tact;
 
     public ControlsHelp() {
-        super(D2D2WorldArenaDesktopAssets.getControlsHelpTexture());
+        super(D2D2WorldArenaClientAssets.getControlsHelpTexture());
         setColor(new Color(0xFF, 0x80, 0xFF));
     }
 

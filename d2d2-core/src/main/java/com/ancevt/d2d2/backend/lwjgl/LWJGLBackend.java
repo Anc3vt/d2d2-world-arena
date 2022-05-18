@@ -34,6 +34,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
+import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
@@ -229,7 +230,11 @@ public class LWJGLBackend implements D2D2Backend {
 
         monitor = glfwGetPrimaryMonitor();
 
-        glfwSetWindowCloseCallback(windowId, window -> LWJGLVideoModeUtils.linuxCare(monitor, previousVideoMode));
+        glfwSetWindowCloseCallback(windowId, window -> {
+            if (isUnix()) {
+                LWJGLVideoModeUtils.linuxCare(monitor, previousVideoMode);
+            }
+        });
 
         glfwSetWindowSizeCallback(windowId, new GLFWWindowSizeCallback() {
             @Override
@@ -450,6 +455,12 @@ public class LWJGLBackend implements D2D2Backend {
             glfwSwapBuffers(windowId);
         }
 
+        String prop = System.getProperty("d2d2.glfw.no-terminate");
+        if (prop != null && prop.equals("true")) {
+            log.warn("d2d2.glfw.no-terminate is set");
+            return;
+        }
+
         glfwTerminate();
     }
 
@@ -539,7 +550,7 @@ public class LWJGLBackend implements D2D2Backend {
         return shader;
     }
 
-    public static @NotNull IntBuffer newIntBuffer (int numInts) {
+    public static @NotNull IntBuffer newIntBuffer(int numInts) {
         ByteBuffer buffer = ByteBuffer.allocateDirect(numInts * 4);
         buffer.order(ByteOrder.nativeOrder());
         return buffer.asIntBuffer();

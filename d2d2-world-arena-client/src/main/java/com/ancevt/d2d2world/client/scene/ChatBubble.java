@@ -2,14 +2,14 @@
 package com.ancevt.d2d2world.client.scene;
 
 import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 
 public class ChatBubble extends Sprite {
 
     private float factor = -0.05f;
 
     public ChatBubble() {
-        super(D2D2WorldArenaDesktopAssets.getChatBubbleTexture());
+        super(D2D2WorldArenaClientAssets.getChatBubbleTexture());
     }
 
     @Override

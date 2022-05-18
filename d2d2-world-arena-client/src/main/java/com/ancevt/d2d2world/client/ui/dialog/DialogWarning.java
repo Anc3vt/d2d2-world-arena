@@ -14,7 +14,7 @@ import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2.panels.TitledPanel;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -42,7 +42,7 @@ public class DialogWarning extends TitledPanel implements EventListener {
 
     private void addToStage(Event event) {
         setXY((getStage().getWidth() - getWidth()) / 2, (getStage().getHeight() - getHeight()) / 2);
-        Sprite icon = new Sprite(D2D2WorldArenaDesktopAssets.getWarningTexture());
+        Sprite icon = new Sprite(D2D2WorldArenaClientAssets.getWarningTexture());
         add(icon, 20, 20);
 
         Button button = new Button("OK") {

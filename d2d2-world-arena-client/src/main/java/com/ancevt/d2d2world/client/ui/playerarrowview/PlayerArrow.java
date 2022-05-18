@@ -6,7 +6,7 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.math.RadialUtils;
 
 public class PlayerArrow extends DisplayObjectContainer {
@@ -20,7 +20,7 @@ public class PlayerArrow extends DisplayObjectContainer {
 
     public PlayerArrow(PlayerArrowView playerArrowView) {
         this.playerArrowView = playerArrowView;
-        sprite = new Sprite(D2D2WorldArenaDesktopAssets.getPlayerArrowTexture());
+        sprite = new Sprite(D2D2WorldArenaClientAssets.getPlayerArrowTexture());
         add(sprite, -sprite.getWidth() - 2, -sprite.getHeight() / 2);
     }
 

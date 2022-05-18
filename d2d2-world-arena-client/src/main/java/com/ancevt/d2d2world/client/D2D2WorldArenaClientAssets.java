@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.d2d2.D2D2.getTextureManager;
 
-public class D2D2WorldArenaDesktopAssets {
+public class D2D2WorldArenaClientAssets {
 
     private static Aim aim;
 

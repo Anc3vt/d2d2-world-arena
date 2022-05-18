@@ -10,7 +10,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.touch.TouchButton;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -30,9 +30,9 @@ public class Button extends DisplayObjectContainer {
     private float width;
 
     public Button(String text) {
-        leftPart = new Sprite(D2D2WorldArenaDesktopAssets.getButtonLeftPartTexture());
-        rightPart = new Sprite(D2D2WorldArenaDesktopAssets.getButtonRightPartTexture());
-        middlePart = new Sprite(D2D2WorldArenaDesktopAssets.getButtonMiddlePartTexture());
+        leftPart = new Sprite(D2D2WorldArenaClientAssets.getButtonLeftPartTexture());
+        rightPart = new Sprite(D2D2WorldArenaClientAssets.getButtonRightPartTexture());
+        middlePart = new Sprite(D2D2WorldArenaClientAssets.getButtonMiddlePartTexture());
 
         uiText = new UiText();
 
@@ -102,7 +102,7 @@ public class Button extends DisplayObjectContainer {
 
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
-        D2D2WorldArenaDesktopAssets.load();
+        D2D2WorldArenaClientAssets.load();
         Button button = new Button("Test");
         button.addEventListener(ButtonEvent.BUTTON_PRESSED, event -> {
             debug("Button:104: <A>TEST");

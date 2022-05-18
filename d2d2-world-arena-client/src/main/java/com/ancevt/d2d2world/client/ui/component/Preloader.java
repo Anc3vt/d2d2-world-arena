@@ -7,7 +7,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 
 public class Preloader extends DisplayObjectContainer {
 
@@ -15,7 +15,7 @@ public class Preloader extends DisplayObjectContainer {
     private int timer = FRAMES_PER_ROTATE;
 
     public Preloader() {
-        add(new Sprite(D2D2WorldArenaDesktopAssets.getPreloaderTexture()), -32, -32);
+        add(new Sprite(D2D2WorldArenaClientAssets.getPreloaderTexture()), -32, -32);
     }
 
     @Override

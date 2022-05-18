@@ -6,7 +6,7 @@ import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.settings.MonitorDevice;
 
 public class ResolutionChooser extends Chooser<VideoMode> {
@@ -28,7 +28,7 @@ public class ResolutionChooser extends Chooser<VideoMode> {
 
     public static void main(String[] args) {
         Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
-        D2D2WorldArenaDesktopAssets.load();
+        D2D2WorldArenaClientAssets.load();
 
         var startVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
         MonitorDevice.getInstance().setStartResolution(startVideoMode.getResolution());

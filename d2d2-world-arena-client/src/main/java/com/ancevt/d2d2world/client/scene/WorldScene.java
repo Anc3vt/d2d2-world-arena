@@ -17,7 +17,7 @@ import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
-import com.ancevt.d2d2world.client.D2D2WorldArenaDesktopAssets;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.scene.charselect.CharSelectScene;
 import com.ancevt.d2d2world.client.settings.DesktopConfig;
@@ -459,7 +459,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
             world.getCamera().setAttachedTo(localPlayerActor);
             world.setSceneryPacked(true);
-            world.add(D2D2WorldArenaDesktopAssets.getAim());
+            world.add(D2D2WorldArenaClientAssets.getAim());
 
             start();
 
@@ -622,7 +622,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     public void playerShoot(int playerId) {
         if (playerId == CLIENT.getLocalPlayerId()) {
             getPlayerActorByPlayerId(playerId).ifPresent(playerActor -> {
-                D2D2WorldArenaDesktopAssets.getAim().attack();
+                D2D2WorldArenaClientAssets.getAim().attack();
             });
         }
     }
@@ -766,7 +766,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         }
 
         if (localPlayerActor != null) {
-            D2D2WorldArenaDesktopAssets.getAim().setXY(localPlayerActor.getAimX(), localPlayerActor.getAimY());
+            D2D2WorldArenaClientAssets.getAim().setXY(localPlayerActor.getAimX(), localPlayerActor.getAimY());
         }
         frameCounter++;
     }
