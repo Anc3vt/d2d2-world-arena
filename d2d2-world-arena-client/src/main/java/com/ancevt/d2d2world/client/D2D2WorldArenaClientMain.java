@@ -12,7 +12,7 @@ import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.scene.GameRoot;
 import com.ancevt.d2d2world.client.scene.intro.IntroRoot;
-import com.ancevt.d2d2world.client.settings.DesktopConfig;
+import com.ancevt.d2d2world.client.settings.ClientConfig;
 import com.ancevt.d2d2world.client.settings.MonitorDevice;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.util.args.Args;
@@ -25,8 +25,8 @@ import java.util.Properties;
 
 import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.CONFIG;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.SOUND_ENABLED;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.SOUND_ENABLED;
 
 @Slf4j
 public class D2D2WorldArenaClientMain {
@@ -71,7 +71,7 @@ public class D2D2WorldArenaClientMain {
         log.info(projectName);
         log.info(version);
 
-        String autoEnterPlayerName = CONFIG.getString(DesktopConfig.PLAYERNAME);
+        String autoEnterPlayerName = CONFIG.getString(ClientConfig.PLAYERNAME);
 
         D2D2.init(new LWJGLBackend(
                 (int) D2D2World.ORIGIN_WIDTH,
@@ -85,7 +85,7 @@ public class D2D2WorldArenaClientMain {
         startVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
         MonitorDevice.getInstance().setStartResolution(startVideoMode.getResolution());
 
-        String debugWindowSize = CONFIG.getString(DesktopConfig.DEBUG_WINDOW_SIZE);
+        String debugWindowSize = CONFIG.getString(ClientConfig.DEBUG_WINDOW_SIZE);
         if (!debugWindowSize.equals("")) {
             var a = Args.of(debugWindowSize, 'x');
             int width = a.next(int.class);
@@ -93,7 +93,7 @@ public class D2D2WorldArenaClientMain {
             D2D2.getBackend().setSize(width, height);
         }
 
-        String debugWindowXY = CONFIG.getString(DesktopConfig.DEBUG_WINDOW_XY);
+        String debugWindowXY = CONFIG.getString(ClientConfig.DEBUG_WINDOW_XY);
         if (!debugWindowXY.equals("")) {
             var a = Args.of(debugWindowXY, ',');
             int x = a.next(int.class);

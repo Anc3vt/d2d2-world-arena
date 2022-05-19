@@ -17,7 +17,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
-import com.ancevt.d2d2world.client.settings.DesktopConfig;
+import com.ancevt.d2d2world.client.settings.ClientConfig;
 import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
@@ -83,7 +83,7 @@ public class CharSelectScene extends DisplayObjectContainer {
             }
         }
 
-        String debugCharacterMapkitItem = DesktopConfig.CONFIG.getString(DesktopConfig.DEBUG_CHARACTER);
+        String debugCharacterMapkitItem = ClientConfig.CONFIG.getString(ClientConfig.DEBUG_CHARACTER);
 
         if (!debugCharacterMapkitItem.isEmpty()) {
             MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItemById(debugCharacterMapkitItem);

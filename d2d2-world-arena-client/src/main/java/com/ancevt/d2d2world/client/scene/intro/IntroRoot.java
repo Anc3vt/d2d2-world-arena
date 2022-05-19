@@ -18,17 +18,18 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.client.net.ServerInfoRetriever;
 import com.ancevt.d2d2world.client.scene.GameRoot;
 import com.ancevt.d2d2world.client.settings.MonitorDevice;
 import com.ancevt.d2d2world.client.ui.Chooser;
+import com.ancevt.d2d2world.client.ui.DialogWindow;
 import com.ancevt.d2d2world.client.ui.Font;
+import com.ancevt.d2d2world.client.ui.MonitorChooser;
 import com.ancevt.d2d2world.client.ui.ResolutionChooser;
 import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.client.ui.UiTextInput;
 import com.ancevt.d2d2world.client.ui.UiTextInputEvent;
 import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
-import com.ancevt.d2d2world.client.ui.dialog.DialogWarning;
-import com.ancevt.d2d2world.client.net.ServerInfoRetriever;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -36,12 +37,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.AUTO_ENTER;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.CONFIG;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.DISPLAY_FULLSCREEN;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.DISPLAY_RESOLUTION;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.PLAYERNAME;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.SERVER;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.AUTO_ENTER;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.DISPLAY_FULLSCREEN;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.DISPLAY_MONITOR;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.DISPLAY_RESOLUTION;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.PLAYERNAME;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.SERVER;
 import static java.lang.Integer.parseInt;
 
 @Slf4j
@@ -175,10 +177,28 @@ public class IntroRoot extends Root {
                 enter(CONFIG.getString(SERVER), CONFIG.getString(PLAYERNAME));
             }
 
+            MonitorChooser monitorChooser = new MonitorChooser();
+            add(monitorChooser, 270, 500);
+            monitorChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_APPLY, e -> {
+                long monitorId = monitorChooser.getSelectedItemObject();
+                MonitorDevice.getInstance().setMonitorDeviceId(monitorId);
+                CONFIG.setProperty(DISPLAY_MONITOR, monitorId);
+                CONFIG.save();
+            });
+
+            long monitorId = CONFIG.getLong(DISPLAY_MONITOR);
+            if (monitorId == 0L) {
+                MonitorDevice.getInstance().setToPrimaryMonitorDeviceId();
+                monitorChooser.setCurrentItemByValue(MonitorDevice.getInstance().getPrimaryMonitorId());
+            } else {
+                MonitorDevice.getInstance().setMonitorDeviceId(monitorId);
+                monitorChooser.setCurrentItemByValue(monitorId);
+            }
+
             ResolutionChooser resolutionChooser = new ResolutionChooser();
-            add(resolutionChooser, 270, 520);
+            add(resolutionChooser, 270, monitorChooser.getY() + 35);
             resolutionChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_APPLY, e -> {
-                VideoMode videoMode = resolutionChooser.getSelectedItem();
+                VideoMode videoMode = resolutionChooser.getSelectedItemObject();
 
                 if (videoMode == null) {
                     MonitorDevice.getInstance().setFullscreen(false);
@@ -268,11 +288,12 @@ public class IntroRoot extends Root {
 
     private void warningDialog(String text) {
         UiTextInputProcessor.INSTANCE.unfocus();
-        DialogWarning dialogWarning = new DialogWarning("Error", text);
-        dialogWarning.addEventListener(DialogWarning.DialogWarningEvent.DIALOG_OK, event -> {
-            uiTextInputPlayerName.requestFocus();
-        });
-        add(dialogWarning);
+        DialogWindow dialogWindow = DialogWindow.show(text, D2D2.getStage().getRoot());
+        dialogWindow.setXY(
+                (D2D2World.ORIGIN_WIDTH - dialogWindow.getWidth()) / 2,
+                (D2D2World.ORIGIN_HEIGHT - dialogWindow.getHeight()) / 2
+        );
+        dialogWindow.setOnCloseFunction(uiTextInputPlayerName::requestFocus);
     }
 
     private @Nullable ServerInfoDto retrieveServerInfo(@NotNull String server) {

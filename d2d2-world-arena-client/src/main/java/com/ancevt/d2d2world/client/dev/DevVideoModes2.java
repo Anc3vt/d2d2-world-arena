@@ -150,6 +150,11 @@ public class DevVideoModes2 {
             return null;
         });
 
+        commandSet.registerCommand("/nextmonitor", "Set the next monitor as current", args -> {
+
+            return null;
+        });
+
         commandSet.registerCommand("/donothing", "Do nothing", args -> null);
 
         commandSet.registerCommand("/q", "Exit", args -> {

@@ -14,12 +14,13 @@ import java.util.function.Consumer;
 
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Slf4j
-public class DesktopConfig {
+public class ClientConfig {
 
-    public static final DesktopConfig CONFIG = new DesktopConfig();
+    public static final ClientConfig CONFIG = new ClientConfig();
 
     public static final String FILE_NAME = "d2d2-world-arena-desktop.conf";
 
@@ -52,7 +53,7 @@ public class DesktopConfig {
 
     private final Properties properties;
 
-    private DesktopConfig() {
+    private ClientConfig() {
         properties = new Properties();
         changeListeners = new ArrayList<>();
     }
@@ -108,6 +109,14 @@ public class DesktopConfig {
             return parseInt(properties.getProperty(key, String.valueOf(defaults.get(key))));
         } catch (NumberFormatException ex) {
             return 0;
+        }
+    }
+
+    public long getLong(@NotNull String key) {
+        try {
+            return parseLong(properties.getProperty(key, String.valueOf(defaults.get(key))));
+        } catch (NumberFormatException ex) {
+            return 0L;
         }
     }
 

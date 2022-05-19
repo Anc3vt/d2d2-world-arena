@@ -9,6 +9,8 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.util.args.Args;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
@@ -28,7 +30,19 @@ public class MonitorDevice {
     private String resolution;
     private boolean fullscreen;
 
+    private final long[] monitors;
+
     private MonitorDevice() {
+        List<Long> monitorList = new ArrayList<>();
+        LWJGLVideoModeUtils.getMonitors().forEach((id, name) -> monitorList.add(id));
+        monitors = new long[monitorList.size()];
+        for (int i = 0; i < monitors.length; i++) {
+            monitors[i] = monitorList.get(i);
+        }
+    }
+
+    public Map<Long, String> getMonitors() {
+        return Map.copyOf(LWJGLVideoModeUtils.getMonitors());
     }
 
     public void setMonitorDeviceByName(String monitorDeviceName) {
@@ -59,6 +73,15 @@ public class MonitorDevice {
     public void setMonitorDeviceId(long monitorDeviceId) {
         this.monitorDeviceId = monitorDeviceId;
         apply();
+    }
+
+    public void setToPrimaryMonitorDeviceId() {
+        setMonitorDeviceId(LWJGLVideoModeUtils.getPrimaryMonitorId());
+        apply();
+    }
+
+    public long getPrimaryMonitorId() {
+        return LWJGLVideoModeUtils.getPrimaryMonitorId();
     }
 
     public long getMonitorDeviceId() {

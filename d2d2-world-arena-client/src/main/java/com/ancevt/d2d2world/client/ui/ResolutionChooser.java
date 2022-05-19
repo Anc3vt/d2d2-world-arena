@@ -36,7 +36,7 @@ public class ResolutionChooser extends Chooser<VideoMode> {
         ResolutionChooser resolutionChooser = new ResolutionChooser();
         root.add(resolutionChooser);
         resolutionChooser.addEventListener(ChooserEvent.CHOOSER_APPLY, event -> {
-            VideoMode videoMode = resolutionChooser.getSelectedItem();
+            VideoMode videoMode = resolutionChooser.getSelectedItemObject();
 
             if (videoMode == null) {
                 MonitorDevice.getInstance().setFullscreen(false);

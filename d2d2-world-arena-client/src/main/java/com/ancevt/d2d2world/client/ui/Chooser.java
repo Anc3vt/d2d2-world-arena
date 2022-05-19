@@ -94,12 +94,23 @@ public class Chooser<T> extends DisplayObjectContainer {
     }
 
     public void setCurrentItemByKey(String key) {
-        for (int i = 0; i < items.size(); i ++) {
+        for (int i = 0; i < items.size(); i++) {
             var p = items.get(i);
             if (key.equals(p.getFirst())) {
                 selectedItemPair = p;
                 setIndex(i);
-                return ;
+                return;
+            }
+        }
+    }
+
+    public void setCurrentItemByValue(T value) {
+        for (int i = 0; i < items.size(); i++) {
+            var p = items.get(i);
+            if (value == p.getSecond() || p.getSecond().equals(value)) {
+                selectedItemPair = p;
+                setIndex(i);
+                return;
             }
         }
     }
@@ -121,6 +132,22 @@ public class Chooser<T> extends DisplayObjectContainer {
         }
 
         uiText.setText(items.get(index).getFirst());
+        uiText.setWidth(getWidth());
+
+        float width = getWidth() - buttonLeft.getWidth() * 3;
+
+        if (uiText.getTextWidth() > width) {
+            String text = uiText.getText();
+            int l = (int) (width / uiText.getCharWidth()) - 5;
+            if (l <= text.length()) {
+                try {
+                    text = text.substring(0, l).concat("...");
+                } catch (StringIndexOutOfBoundsException e) {
+                    text = "[!]";
+                }
+            }
+            uiText.setText(text);
+        }
 
         float w = uiText.getTextWidth() + 8;
         uiText.setX((getWidth() - w) / 2);
@@ -137,7 +164,7 @@ public class Chooser<T> extends DisplayObjectContainer {
         return items.size();
     }
 
-    public T getSelectedItem() {
+    public T getSelectedItemObject() {
         return selectedItemPair.getSecond();
     }
 
@@ -165,11 +192,13 @@ public class Chooser<T> extends DisplayObjectContainer {
         D2D2WorldArenaClientAssets.load();
 
         Chooser<String> chooser = new Chooser<>();
+        chooser.setWidth(180f);
         chooser.addItem("windowed", "windowed");
         chooser.addItem("640x480", "640x480");
         chooser.addItem("1920x1080", "1920x1080");
+        chooser.addItem("Универсальный монитор PnP", "Универсальный монитор PnP");
 
-        root.add(chooser);
+        root.add(chooser, 100, 100);
 
         D2D2.loop();
     }

@@ -29,6 +29,10 @@ public class Button extends DisplayObjectContainer {
     private final TouchButton touchButton;
     private float width;
 
+    public Button() {
+        this("");
+    }
+
     public Button(String text) {
         leftPart = new Sprite(D2D2WorldArenaClientAssets.getButtonLeftPartTexture());
         rightPart = new Sprite(D2D2WorldArenaClientAssets.getButtonRightPartTexture());

@@ -20,7 +20,7 @@ import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.scene.charselect.CharSelectScene;
-import com.ancevt.d2d2world.client.settings.DesktopConfig;
+import com.ancevt.d2d2world.client.settings.ClientConfig;
 import com.ancevt.d2d2world.client.settings.MonitorDevice;
 import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
@@ -63,9 +63,9 @@ import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.client.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.client.net.Client.CLIENT;
 import static com.ancevt.d2d2world.client.net.PlayerManager.PLAYER_MANAGER;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.CONFIG;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.DEBUG_GAME_OBJECT_IDS;
-import static com.ancevt.d2d2world.client.settings.DesktopConfig.DEBUG_WORLD_ALPHA;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.DEBUG_GAME_OBJECT_IDS;
+import static com.ancevt.d2d2world.client.settings.ClientConfig.DEBUG_WORLD_ALPHA;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
@@ -386,7 +386,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     }
 
     private void config_configChangeListener(@NotNull String key, Object value) {
-        if (Objects.equals(key, DesktopConfig.DEBUG_GAME_OBJECT_IDS)) {
+        if (Objects.equals(key, ClientConfig.DEBUG_GAME_OBJECT_IDS)) {
             var v = Boolean.parseBoolean(value.toString());
 
             if (v) {
