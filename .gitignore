@@ -41,7 +41,7 @@ nb-configuration.xml
 *.swp
 *-non-free.bmf
 
-d2d2-world-arena-desktop/data
+d2d2-world-arena-client/data
 playername.txt
 ban.list
 *.tmp
@@ -49,5 +49,5 @@ buildtmp/
 build.info
 .run/
 data/
-d2d2-world-arena-desktop.conf
+d2d2-world-arena-client.conf
 

@@ -22,7 +22,7 @@ public class ClientConfig {
 
     public static final ClientConfig CONFIG = new ClientConfig();
 
-    public static final String FILE_NAME = "d2d2-world-arena-desktop.conf";
+    public static final String FILE_NAME = "d2d2-world-arena-client.conf";
 
     public static final String SERVER = "server";
     public static final String PLAYERNAME = "playername";
@@ -75,7 +75,7 @@ public class ClientConfig {
 
     public void save() {
         try {
-            properties.store(new FileOutputStream("d2d2-world-arena-desktop.conf"), null);
+            properties.store(new FileOutputStream(FILE_NAME), null);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

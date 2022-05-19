@@ -8,10 +8,10 @@
         </encoder>
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/d2d2-world-arena-desktop.log</file>
+        <file>log/d2d2-world-arena-client.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>log/d2d2-world-arena-desktop.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>log/d2d2-world-arena-client.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
 
