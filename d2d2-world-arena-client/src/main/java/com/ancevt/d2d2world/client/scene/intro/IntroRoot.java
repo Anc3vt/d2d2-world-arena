@@ -178,12 +178,18 @@ public class IntroRoot extends Root {
             }
 
             MonitorChooser monitorChooser = new MonitorChooser();
+            ResolutionChooser resolutionChooser = new ResolutionChooser();
+
             add(monitorChooser, 270, 500);
             monitorChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_APPLY, e -> {
                 long monitorId = monitorChooser.getSelectedItemObject();
                 MonitorDevice.getInstance().setMonitorDeviceId(monitorId);
                 CONFIG.setProperty(DISPLAY_MONITOR, monitorId);
                 CONFIG.save();
+            });
+
+            monitorChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_SWITCH, e-> {
+                resolutionChooser.fill();
             });
 
             long monitorId = CONFIG.getLong(DISPLAY_MONITOR);
@@ -195,7 +201,6 @@ public class IntroRoot extends Root {
                 monitorChooser.setCurrentItemByValue(monitorId);
             }
 
-            ResolutionChooser resolutionChooser = new ResolutionChooser();
             add(resolutionChooser, 270, monitorChooser.getY() + 35);
             resolutionChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_APPLY, e -> {
                 VideoMode videoMode = resolutionChooser.getSelectedItemObject();

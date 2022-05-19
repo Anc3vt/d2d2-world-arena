@@ -15,6 +15,11 @@ public class ResolutionChooser extends Chooser<VideoMode> {
 
     public ResolutionChooser() {
         setWidth(180f);
+        fill();
+    }
+
+    public void fill() {
+        clear();
 
         addItem(WINDOWED, null);
 

@@ -86,11 +86,20 @@ public class Chooser<T> extends DisplayObjectContainer {
 
     private void prev() {
         setIndex(getIndex() - 1);
-
+        dispatchEvent(ChooserEvent.builder()
+                .type(ChooserEvent.CHOOSER_SWITCH)
+                .build());
     }
 
     private void next() {
         setIndex(getIndex() + 1);
+        dispatchEvent(ChooserEvent.builder()
+                .type(ChooserEvent.CHOOSER_SWITCH)
+                .build());
+    }
+
+    public void clear() {
+        items.clear();
     }
 
     public void setCurrentItemByKey(String key) {
@@ -185,6 +194,7 @@ public class Chooser<T> extends DisplayObjectContainer {
     @EqualsAndHashCode(callSuper = true)
     public static class ChooserEvent extends Event<Chooser<?>> {
         public static final String CHOOSER_APPLY = "chooserApply";
+        public static final String CHOOSER_SWITCH = "chooserSwitch";
     }
 
     public static void main(String[] args) {
