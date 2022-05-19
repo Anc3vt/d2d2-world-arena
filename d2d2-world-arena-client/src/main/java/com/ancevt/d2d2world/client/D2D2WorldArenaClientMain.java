@@ -6,14 +6,14 @@ import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
+import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.scene.GameRoot;
 import com.ancevt.d2d2world.client.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.client.settings.ClientConfig;
-import com.ancevt.d2d2world.client.settings.MonitorDevice;
+import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.util.args.Args;
 import lombok.SneakyThrows;
@@ -82,8 +82,8 @@ public class D2D2WorldArenaClientMain {
         D2D2World.init(false, false);
         D2D2WorldArenaClientAssets.load();
 
-        startVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
-        MonitorDevice.getInstance().setStartResolution(startVideoMode.getResolution());
+        startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
+        MonitorManager.getInstance().setStartResolution(startVideoMode.getResolution());
 
         String debugWindowSize = CONFIG.getString(ClientConfig.DEBUG_WINDOW_SIZE);
         if (!debugWindowSize.equals("")) {
@@ -111,7 +111,7 @@ public class D2D2WorldArenaClientMain {
 
     public static void exit() {
         if (isUnix()) {
-            LWJGLVideoModeUtils.linuxCare(MonitorDevice.getInstance().getMonitorDeviceId(), startVideoMode);
+            GLFWUtils.linuxCare(MonitorManager.getInstance().getMonitorDeviceId(), startVideoMode);
         }
 
         Chat.getInstance().saveHistory();

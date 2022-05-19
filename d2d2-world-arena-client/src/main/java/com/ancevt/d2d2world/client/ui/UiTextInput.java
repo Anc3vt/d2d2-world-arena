@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class UiTextInput extends DisplayObjectContainer implements EventListener {
 
+    private boolean enabled;
+
     public static void main(String[] args) {
         D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         Root root = D2D2.getStage().getRoot();
@@ -55,6 +57,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     private String text;
 
     public UiTextInput() {
+        enabled = true;
         background = new PlainRect(DEFAULT_WIDTH, DEFAULT_HEIGHT, BACKGROUND_COLOR);
         selection = new PlainRect(0, DEFAULT_HEIGHT - 8, SELECTION_COLOR);
         touchButton = new TouchButton(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -68,7 +71,7 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         // add(selection, uiText.getX(), 4); // selection is completely not implemented yet
         add(uiText);
 
-        caret = new Caret();
+        caret = new Caret(this);
         caret.setXY(uiText.getX(), 4);
 
         text = "";
@@ -214,6 +217,8 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
             }
 
             case TouchButtonEvent.TOUCH_DOWN -> {
+                if (!enabled) return;
+
                 TouchButtonEvent touchButtonEvent = (TouchButtonEvent) event;
                 UiTextInputProcessor.INSTANCE.focus(this);
 
@@ -227,6 +232,8 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     }
 
     public void key(int keyCode, char keyChar, boolean control, boolean shift, boolean alt, boolean down) {
+        if (!enabled) return;
+
         if (down) {
             if (KeyCode.isShift(keyCode)) {
                 selecting = true;
@@ -244,6 +251,8 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
     }
 
     private void keyDown(int keyCode, char keyChar, boolean control, boolean shift) {
+        if (!enabled) return;
+
         switch (keyCode) {
 
             case KeyCode.RIGHT -> {
@@ -385,22 +394,34 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         UiTextInputProcessor.INSTANCE.focus(this);
     }
 
+    public void setEnabled(boolean b) {
+        enabled = b;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
     private static class Caret extends PlainRect {
 
         public static final int BLINK_DELAY = 25;
 
         private int blinkCounter = BLINK_DELAY;
+        private UiTextInput uiTextInput;
 
-        public Caret() {
+        public Caret(UiTextInput uiTextInput) {
             super(1, DEFAULT_HEIGHT - 8, Color.WHITE);
+            this.uiTextInput = uiTextInput;
         }
 
         @Override
         public void onEachFrame() {
-            blinkCounter--;
-            if (blinkCounter <= 0) {
-                blinkCounter = BLINK_DELAY;
-                setAlpha(getAlpha() == 1f ? 0f : 1f);
+            if(uiTextInput.isEnabled()) {
+                blinkCounter--;
+                if (blinkCounter <= 0) {
+                    blinkCounter = BLINK_DELAY;
+                    setAlpha(getAlpha() == 1f ? 0f : 1f);
+                }
             }
         }
     }

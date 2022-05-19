@@ -4,7 +4,7 @@ import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
+import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
@@ -12,7 +12,7 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2world.client.settings.MonitorDevice;
+import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
@@ -37,7 +37,7 @@ public class DevVideoModes2 {
         chat = new Chat();
         root.add(chat, 10f, 10f);
 
-        MonitorDevice.getInstance().rememberResolutionAsStart();
+        MonitorManager.getInstance().rememberResolutionAsStart();
 
         root.addEventListener(InputEvent.KEY_DOWN, event -> {
             InputEvent inputEvent = (InputEvent) event;
@@ -101,52 +101,52 @@ public class DevVideoModes2 {
         });
 
         commandSet.registerCommand("/monitors", "Print monitor list", args -> {
-            LWJGLVideoModeUtils.getMonitors().values().forEach(monitorName -> chat.print(monitorName));
+            GLFWUtils.getMonitors().values().forEach(monitorName -> chat.print(monitorName));
             return null;
         });
 
         commandSet.registerCommand("/info", "Print current MonitorDevice state", args -> {
-            MonitorDevice monitorDevice = MonitorDevice.getInstance();
-            chat.print("Monitor device id: " + monitorDevice.getMonitorDeviceId());
-            chat.print("Monitor device name: " + monitorDevice.getMonitorDeviceName());
-            chat.print("Fullscreen: " + monitorDevice.isFullscreen());
-            chat.print("Resolution: " + monitorDevice.getResolution());
-            chat.print("Start resolution: " + monitorDevice.getStartResolution());
+            MonitorManager monitorManager = MonitorManager.getInstance();
+            chat.print("Monitor device id: " + monitorManager.getMonitorDeviceId());
+            chat.print("Monitor device name: " + monitorManager.getMonitorDeviceName());
+            chat.print("Fullscreen: " + monitorManager.isFullscreen());
+            chat.print("Resolution: " + monitorManager.getResolution());
+            chat.print("Start resolution: " + monitorManager.getStartResolution());
             return null;
         });
 
         commandSet.registerCommand("/vm", "Print current video mode", args -> {
-            VideoMode videoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
+            VideoMode videoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
             chat.print(videoMode.getResolution() + " " + videoMode.getRefreshRate());
             return null;
         });
 
         commandSet.registerCommand("/vms", "Print video mode list", args -> {
-            LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
+            GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
                 chat.print(videoMode.getResolution() + " " + videoMode.getRefreshRate());
             });
             return null;
         });
 
         commandSet.registerCommand("/maxvm", "Print max video mode", args -> {
-            VideoMode maxVideoMode = LWJGLVideoModeUtils.getMaxVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
+            VideoMode maxVideoMode = GLFWUtils.getMaxVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
             chat.print(maxVideoMode.getResolution() + " " + maxVideoMode.getRefreshRate());
             return null;
         });
 
         commandSet.registerCommand("/setmaxvm", "Set max video mode", args -> {
-            VideoMode maxVideoMode = LWJGLVideoModeUtils.getMaxVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
-            MonitorDevice.getInstance().setResolution(maxVideoMode.getResolution());
+            VideoMode maxVideoMode = GLFWUtils.getMaxVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
+            MonitorManager.getInstance().setResolution(maxVideoMode.getResolution());
             return null;
         });
 
         commandSet.registerCommand("/fs", "Print if fullscreen mode is on", args->{
-            chat.print("" + MonitorDevice.getInstance().isFullscreen());
+            chat.print("" + MonitorManager.getInstance().isFullscreen());
             return null;
         });
 
         commandSet.registerCommand("/setfs", "Set full screen", args -> {
-            MonitorDevice.getInstance().setFullscreen(args.get(boolean.class, 1, false));
+            MonitorManager.getInstance().setFullscreen(args.get(boolean.class, 1, false));
             return null;
         });
 

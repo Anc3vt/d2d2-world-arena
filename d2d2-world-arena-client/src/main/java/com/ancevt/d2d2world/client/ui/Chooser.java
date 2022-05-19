@@ -24,10 +24,11 @@ public class Chooser<T> extends DisplayObjectContainer {
     private final ArrowButton buttonRight;
     private final UiText uiText;
     private final List<Pair<String, T>> items;
-    private final Button applyButton;
+    private final Button buttonApply;
     private int index;
     private float width;
     private Pair<String, T> selectedItemPair;
+    private boolean enabled;
 
     public Chooser() {
         items = new ArrayList<>();
@@ -42,14 +43,14 @@ public class Chooser<T> extends DisplayObjectContainer {
 
         uiText = new UiText();
 
-        applyButton = new Button("Apply");
-        applyButton.addEventListener(Button.ButtonEvent.BUTTON_PRESSED, this::applyButton_buttonPressed);
+        buttonApply = new Button("Apply");
+        buttonApply.addEventListener(Button.ButtonEvent.BUTTON_PRESSED, this::applyButton_buttonPressed);
 
         add(uiText);
 
         add(buttonLeft);
         add(buttonRight);
-        add(applyButton);
+        add(buttonApply);
 
         setWidth(DEFAULT_WIDTH);
     }
@@ -60,7 +61,7 @@ public class Chooser<T> extends DisplayObjectContainer {
 
     private void setCurrentItemAsSelected() {
         selectedItemPair = items.get(index);
-        applyButton.setEnabled(false);
+        buttonApply.setEnabled(false);
         uiText.setColor(Color.WHITE);
         dispatchEvent(ChooserEvent.builder().type(ChooserEvent.CHOOSER_APPLY).build());
     }
@@ -68,7 +69,7 @@ public class Chooser<T> extends DisplayObjectContainer {
     public void setWidth(float width) {
         this.width = width;
         buttonRight.setX(width - buttonLeft.getWidth() - buttonRight.getWidth());
-        applyButton.setX(width + 10);
+        buttonApply.setX(width + 10);
     }
 
     @Override
@@ -161,7 +162,7 @@ public class Chooser<T> extends DisplayObjectContainer {
         float w = uiText.getTextWidth() + 8;
         uiText.setX((getWidth() - w) / 2);
 
-        applyButton.setEnabled(selectedItemPair != items.get(index));
+        buttonApply.setEnabled(selectedItemPair != items.get(index));
         uiText.setColor(selectedItemPair == items.get(index) ? Color.LIGHT_GREEN : Color.WHITE);
     }
 
@@ -187,6 +188,15 @@ public class Chooser<T> extends DisplayObjectContainer {
     public void dispose() {
         buttonLeft.dispose();
         buttonRight.dispose();
+    }
+
+    public void setEnabled(boolean b) {
+        enabled = b;
+        buttonApply.setEnabled(b);
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     @Data

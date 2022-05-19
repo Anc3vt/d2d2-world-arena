@@ -1,4 +1,4 @@
-package com.ancevt.d2d2world.client.ui;
+package com.ancevt.d2d2world.client.ui.dialog;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
@@ -10,6 +10,8 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
+import com.ancevt.d2d2world.client.ui.Button;
+import com.ancevt.d2d2world.client.ui.UiText;
 import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.d2d2.event.Event.ADD_TO_STAGE;
@@ -23,7 +25,10 @@ public class DialogWindow extends DisplayObjectContainer {
 
     private final PlainRect bg;
     private final UiText uiText;
-    private Runnable onCloseFunction;
+    private final Button buttonOk;
+    private final Button buttonCancel;
+    private Runnable onOkFunction;
+    private Runnable onCancelFunction;
 
     public DialogWindow() {
         bg = new PlainRect(DEFAULT_WIDTH, DEFAULT_HEIGHT, Color.BLACK);
@@ -31,17 +36,18 @@ public class DialogWindow extends DisplayObjectContainer {
         add(bg);
 
         uiText = new UiText();
-        uiText.setSize(bg.getWidth(), bg.getHeight() - PADDING_CONTROLS);
+        uiText.setSize(bg.getWidth() - PADDING * 2, bg.getHeight() - PADDING_CONTROLS);
         add(uiText, PADDING, PADDING);
 
-        Button buttonOk = new Button("OK");
-        buttonOk.setXY((getWidth() - buttonOk.getWidth()) / 2, getHeight() - PADDING_CONTROLS);
+        buttonOk = new Button("OK");
+        buttonOk.setXY((getWidth() - buttonOk.getWidth()) / 2 - 50, getHeight() - PADDING_CONTROLS);
+        buttonOk.addEventListener(Button.ButtonEvent.BUTTON_PRESSED, event -> ok());
         add(buttonOk);
 
-        buttonOk.addEventListener(Button.ButtonEvent.BUTTON_PRESSED, event -> {
-            var e = (Button.ButtonEvent) event;
-            close();
-        });
+        buttonCancel = new Button("Cancel");
+        buttonCancel.setXY((getWidth() - buttonOk.getWidth()) / 2 + 50, getHeight() - PADDING_CONTROLS);
+        buttonCancel.addEventListener(Button.ButtonEvent.BUTTON_PRESSED, event -> cancel());
+        add(buttonCancel);
 
         addEventListener(this, ADD_TO_STAGE, this::add_to_stage);
     }
@@ -50,18 +56,27 @@ public class DialogWindow extends DisplayObjectContainer {
         removeEventListener(this, ADD_TO_STAGE);
         getRoot().addEventListener(this, InputEvent.KEY_DOWN, e1 -> {
             var e = (InputEvent) e1;
-            if (e.getKeyCode() == KeyCode.ENTER) {
-                close();
+            switch (e.getKeyCode()) {
+                case KeyCode.ENTER -> ok();
+                case KeyCode.ESCAPE -> cancel();
             }
         });
     }
 
-    public void setOnCloseFunction(Runnable onOkFunction) {
-        this.onCloseFunction = onOkFunction;
+    public void setOnOkFunction(Runnable onOkFunction) {
+        this.onOkFunction = onOkFunction;
     }
 
-    public Runnable getOnCloseFunction() {
-        return onCloseFunction;
+    public Runnable getOnOkFunction() {
+        return onOkFunction;
+    }
+
+    public void setOnCancelFunction(Runnable onCancelFunction) {
+        this.onCancelFunction = onCancelFunction;
+    }
+
+    public Runnable getOnCancelFunction() {
+        return onCancelFunction;
     }
 
     public void setText(Object text) {
@@ -95,11 +110,19 @@ public class DialogWindow extends DisplayObjectContainer {
         return bg.getHeight();
     }
 
-    public void close() {
-        getRoot().removeEventListener(this, InputEvent.KEY_DOWN);
+    public void ok() {
+        D2D2.getStage().getRoot().removeEventListener(this, InputEvent.KEY_DOWN);
         removeFromParent();
-        if (onCloseFunction != null) {
-            onCloseFunction.run();
+        if (onOkFunction != null) {
+            onOkFunction.run();
+        }
+    }
+
+    public void cancel() {
+        D2D2.getStage().getRoot().removeEventListener(this, InputEvent.KEY_DOWN);
+        removeFromParent();
+        if (onCancelFunction != null) {
+            onCancelFunction.run();
         }
     }
 
@@ -124,7 +147,7 @@ public class DialogWindow extends DisplayObjectContainer {
         root.setBackgroundColor(Color.GRAY);
 
         DialogWindow dialogWindow = new DialogWindow();
-        dialogWindow.setText("Server is localhost:3333 unavailable");
+        dialogWindow.setText("Screen resolution was set to 1920x1080. \nLeave this configuration? (5 sec)");
         root.add(dialogWindow);
         dialogWindow.center();
 

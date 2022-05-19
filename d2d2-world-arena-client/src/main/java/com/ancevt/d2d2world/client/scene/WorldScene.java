@@ -5,7 +5,7 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
+import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -21,7 +21,7 @@ import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.scene.charselect.CharSelectScene;
 import com.ancevt.d2d2world.client.settings.ClientConfig;
-import com.ancevt.d2d2world.client.settings.MonitorDevice;
+import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
@@ -218,7 +218,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 "//monitorlist",
                 "print list of avialable monitors",
                 args -> {
-                    LWJGLVideoModeUtils.getMonitors().values().forEach(
+                    GLFWUtils.getMonitors().values().forEach(
                             monitorName -> Chat.getInstance().addMessage(monitorName)
                     );
                     return null;
@@ -229,7 +229,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 "//videomodelist",
                 "print list of video modes",
                 args -> {
-                    LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getInstance().getMonitorDeviceId()).forEach(videoMode ->
+                    GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode ->
                             Chat.getInstance().addMessage(videoMode.getWidth() + "x" + videoMode.getHeight() + " " + videoMode.getRefreshRate())
                     );
                     return null;
@@ -242,12 +242,12 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 args -> {
                     String resolution = args.get(String.class, 1, "0x0");
                     Holder<Boolean> found = new Holder<>(false);
-                    LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
+                    GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
                         if (videoMode.getResolution().equals(resolution) && videoMode.getRefreshRate() == 60) {
                             found.setValue(true);
                             Chat.getInstance().addMessage(resolution + " " + videoMode.getRefreshRate());
-                            MonitorDevice.getInstance().setResolution(resolution);
-                            MonitorDevice.getInstance().setFullscreen(true);
+                            MonitorManager.getInstance().setResolution(resolution);
+                            MonitorManager.getInstance().setFullscreen(true);
                         }
                     });
 

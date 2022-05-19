@@ -5,7 +5,7 @@ import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
+import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObjectContainer;
@@ -15,7 +15,7 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2world.client.settings.MonitorDevice;
+import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
@@ -51,12 +51,12 @@ public class DevVideoModes {
 
         long windowId = D2D2.getBackend().getWindowId();
 
-        MonitorDevice.getInstance().setMonitorDeviceId(glfwGetPrimaryMonitor());
+        MonitorManager.getInstance().setMonitorDeviceId(glfwGetPrimaryMonitor());
 
-        VideoMode previousVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
+        VideoMode previousVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
 
-        LWJGLVideoModeUtils.setVideoMode(
-                MonitorDevice.getInstance().getMonitorDeviceId(),
+        GLFWUtils.setVideoMode(
+                MonitorManager.getInstance().getMonitorDeviceId(),
                 windowId,
                 previousVideoMode
         );
@@ -106,12 +106,12 @@ public class DevVideoModes {
         chat.openInput();
 
         commands.add(new Command("/monitors", a-> {
-            chat.addMessage(LWJGLVideoModeUtils.getMonitors().toString());
+            chat.addMessage(GLFWUtils.getMonitors().toString());
             return true;
         }));
 
         commands.add(new Command("/list", a -> {
-            GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(MonitorDevice.getInstance().getMonitorDeviceId());
+            GLFWVidMode.Buffer glfwVidModes = GLFW.glfwGetVideoModes(MonitorManager.getInstance().getMonitorDeviceId());
             List<GLFWVidMode> list = glfwVidModes.stream().toList();
             list.forEach(m -> chat.addMessage(m.width() + "x" + m.height() + " " + m.refreshRate()));
             return true;
@@ -124,7 +124,7 @@ public class DevVideoModes {
 
             Holder<Boolean> found = new Holder<>(false);
 
-            GLFW.glfwGetVideoModes(MonitorDevice.getInstance().getMonitorDeviceId()).stream().toList().forEach(glfwVidMode -> {
+            GLFW.glfwGetVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).stream().toList().forEach(glfwVidMode -> {
                 if (glfwVidMode.width() == width &&
                         glfwVidMode.height() == height &&
                         (glfwVidMode.refreshRate() == refreshRate || refreshRate == -1)) {
@@ -134,7 +134,7 @@ public class DevVideoModes {
                     chat.addMessage(width + "x" + height + " " + refreshRate);
                     chat.setHeight(height - 30);
 
-                    LWJGLVideoModeUtils.setVideoMode(
+                    GLFWUtils.setVideoMode(
                             glfwGetPrimaryMonitor(),
                             windowId,
                             width,
@@ -161,7 +161,7 @@ public class DevVideoModes {
 
         D2D2.loop();
         chat.saveHistory();
-        LWJGLVideoModeUtils.linuxCare(MonitorDevice.getInstance().getMonitorDeviceId(), previousVideoMode);
+        GLFWUtils.linuxCare(MonitorManager.getInstance().getMonitorDeviceId(), previousVideoMode);
     }
 
     private static boolean processCommand(String text) {

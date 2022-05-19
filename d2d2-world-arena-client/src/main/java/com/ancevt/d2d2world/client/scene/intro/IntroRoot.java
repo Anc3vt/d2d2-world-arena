@@ -6,7 +6,7 @@ import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.commons.regex.PatternMatcher;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
+import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
@@ -20,9 +20,9 @@ import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.net.ServerInfoRetriever;
 import com.ancevt.d2d2world.client.scene.GameRoot;
-import com.ancevt.d2d2world.client.settings.MonitorDevice;
+import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.Chooser;
-import com.ancevt.d2d2world.client.ui.DialogWindow;
+import com.ancevt.d2d2world.client.ui.dialog.AlertWindow;
 import com.ancevt.d2d2world.client.ui.Font;
 import com.ancevt.d2d2world.client.ui.MonitorChooser;
 import com.ancevt.d2d2world.client.ui.ResolutionChooser;
@@ -54,7 +54,9 @@ public class IntroRoot extends Root {
     private final DisplayObjectContainer panel;
     private final PlainRect panelRect;
     private final UiTextInput uiTextInputServer;
-    private final UiTextInput uiTextInputPlayerName;
+    private final UiTextInput uiTextInputPlayername;
+    private final MonitorChooser monitorChooser;
+    private final ResolutionChooser resolutionChooser;
     private UiText labelVersion;
     private EventListener addToStageEventListener;
 
@@ -77,20 +79,20 @@ public class IntroRoot extends Root {
             uiTextInputServer.setText(CONFIG.getString(SERVER));
         }
 
-        uiTextInputPlayerName = new UiTextInput();
-        uiTextInputPlayerName.requestFocus();
-        uiTextInputPlayerName.addEventListener(UiTextInputEvent.TEXT_ENTER, this::keyEnter);
-        uiTextInputPlayerName.addEventListener(UiTextInputEvent.TEXT_CHANGE, event -> {
+        uiTextInputPlayername = new UiTextInput();
+        uiTextInputPlayername.requestFocus();
+        uiTextInputPlayername.addEventListener(UiTextInputEvent.TEXT_ENTER, this::keyEnter);
+        uiTextInputPlayername.addEventListener(UiTextInputEvent.TEXT_CHANGE, event -> {
             var e = (UiTextInputEvent) event;
             boolean valid = PatternMatcher.check(e.getText(), NAME_PATTERN);
-            uiTextInputPlayerName.setColor(valid ? Color.WHITE : Color.RED);
+            uiTextInputPlayername.setColor(valid ? Color.WHITE : Color.RED);
         });
 
-        uiTextInputServer.addEventListener(UiTextInputEvent.TEXT_ENTER, event -> uiTextInputPlayerName.requestFocus());
+        uiTextInputServer.addEventListener(UiTextInputEvent.TEXT_ENTER, event -> uiTextInputPlayername.requestFocus());
 
         String playername = CONFIG.getString(PLAYERNAME);
         if (!playername.equals("")) {
-            uiTextInputPlayerName.setText(playername);
+            uiTextInputPlayername.setText(playername);
         }
 
         panel = new DisplayObjectContainer();
@@ -103,16 +105,19 @@ public class IntroRoot extends Root {
         panel.add(labelPlayerName, 20, 60);
 
         panel.add(uiTextInputServer, 130, 20 - 10);
-        panel.add(uiTextInputPlayerName, 130, 60 - 10);
+        panel.add(uiTextInputPlayername, 130, 60 - 10);
 
         Button button = new Button("Enter") {
             @Override
             public void onButtonPressed() {
-                enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+                enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
             }
         };
         button.setWidth(panelRect.getWidth());
         panel.add(button, 10, 100);
+
+        monitorChooser = new MonitorChooser();
+        resolutionChooser = new ResolutionChooser();
 
         addEventListener(Event.ADD_TO_STAGE, addToStageEventListener = event -> {
             removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
@@ -148,7 +153,7 @@ public class IntroRoot extends Root {
             add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
 
             if (CONFIG.getBoolean(AUTO_ENTER)) {
-                enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+                enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
             } else {
                 getStage().addEventListener(this, Event.RESIZE, resizeEvent -> {
                     float width = getStage().getWidth();
@@ -177,27 +182,24 @@ public class IntroRoot extends Root {
                 enter(CONFIG.getString(SERVER), CONFIG.getString(PLAYERNAME));
             }
 
-            MonitorChooser monitorChooser = new MonitorChooser();
-            ResolutionChooser resolutionChooser = new ResolutionChooser();
-
             add(monitorChooser, 270, 500);
             monitorChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_APPLY, e -> {
                 long monitorId = monitorChooser.getSelectedItemObject();
-                MonitorDevice.getInstance().setMonitorDeviceId(monitorId);
+                MonitorManager.getInstance().setMonitorDeviceId(monitorId);
                 CONFIG.setProperty(DISPLAY_MONITOR, monitorId);
                 CONFIG.save();
             });
 
-            monitorChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_SWITCH, e-> {
+            monitorChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_SWITCH, e -> {
                 resolutionChooser.fill();
             });
 
             long monitorId = CONFIG.getLong(DISPLAY_MONITOR);
             if (monitorId == 0L) {
-                MonitorDevice.getInstance().setToPrimaryMonitorDeviceId();
-                monitorChooser.setCurrentItemByValue(MonitorDevice.getInstance().getPrimaryMonitorId());
+                MonitorManager.getInstance().setToPrimaryMonitorDeviceId();
+                monitorChooser.setCurrentItemByValue(MonitorManager.getInstance().getPrimaryMonitorId());
             } else {
-                MonitorDevice.getInstance().setMonitorDeviceId(monitorId);
+                MonitorManager.getInstance().setMonitorDeviceId(monitorId);
                 monitorChooser.setCurrentItemByValue(monitorId);
             }
 
@@ -206,12 +208,12 @@ public class IntroRoot extends Root {
                 VideoMode videoMode = resolutionChooser.getSelectedItemObject();
 
                 if (videoMode == null) {
-                    MonitorDevice.getInstance().setFullscreen(false);
+                    MonitorManager.getInstance().setFullscreen(false);
                     CONFIG.setProperty(DISPLAY_RESOLUTION, ResolutionChooser.WINDOWED);
                     CONFIG.setProperty(DISPLAY_FULLSCREEN, "false");
                 } else {
-                    MonitorDevice.getInstance().setResolution(videoMode.getResolution());
-                    MonitorDevice.getInstance().setFullscreen(true);
+                    MonitorManager.getInstance().setResolution(videoMode.getResolution());
+                    MonitorManager.getInstance().setFullscreen(true);
                     CONFIG.setProperty(DISPLAY_RESOLUTION, videoMode.getResolution());
                     CONFIG.setProperty(DISPLAY_FULLSCREEN, "true");
                 }
@@ -223,8 +225,8 @@ public class IntroRoot extends Root {
             if (fullscreen) {
                 String resolution = CONFIG.getString(DISPLAY_RESOLUTION);
                 if (!resolution.isEmpty()) {
-                    MonitorDevice.getInstance().setResolution(resolution);
-                    MonitorDevice.getInstance().setFullscreen(true);
+                    MonitorManager.getInstance().setResolution(resolution);
+                    MonitorManager.getInstance().setFullscreen(true);
                 }
                 resolutionChooser.setCurrentItemByKey(resolution);
             } else {
@@ -232,9 +234,9 @@ public class IntroRoot extends Root {
             }
 
             if (CONFIG.getString(DISPLAY_RESOLUTION).isEmpty() && CONFIG.getBoolean(DISPLAY_FULLSCREEN)) {
-                VideoMode videoMode = LWJGLVideoModeUtils.getMaxVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
-                MonitorDevice.getInstance().setResolution(videoMode.getResolution());
-                MonitorDevice.getInstance().setFullscreen(true);
+                VideoMode videoMode = GLFWUtils.getMaxVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
+                MonitorManager.getInstance().setResolution(videoMode.getResolution());
+                MonitorManager.getInstance().setFullscreen(true);
                 CONFIG.setProperty(DISPLAY_RESOLUTION, videoMode.getResolution());
                 CONFIG.save();
             }
@@ -244,6 +246,25 @@ public class IntroRoot extends Root {
         addEventListener(InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             switch (e.getKeyCode()) {
+                case KeyCode.ENTER -> {
+                    if (e.isAlt()) {
+                        if (MonitorManager.getInstance().isFullscreen()) {
+                            MonitorManager.getInstance().setFullscreen(false);
+                            resolutionChooser.setCurrentItemByKey(ResolutionChooser.WINDOWED);
+                            CONFIG.setProperty(DISPLAY_RESOLUTION, ResolutionChooser.WINDOWED);
+                            CONFIG.setProperty(DISPLAY_FULLSCREEN, "false");
+                        } else {
+                            long monitorDeviceId = MonitorManager.getInstance().getMonitorIdByWindow();
+                            MonitorManager.getInstance().setMonitorDeviceId(monitorDeviceId);
+                            MonitorManager.getInstance().setFullscreen(true);
+                            monitorChooser.setCurrentItemByValue(monitorDeviceId);
+                            resolutionChooser.setCurrentItemByKey(MonitorManager.getInstance().getResolution());
+                            CONFIG.setProperty(DISPLAY_RESOLUTION, MonitorManager.getInstance().getResolution());
+                            CONFIG.setProperty(DISPLAY_FULLSCREEN, "true");
+                        }
+                        CONFIG.save();
+                    }
+                }
                 case KeyCode.F -> {
                     if (e.isAlt()) D2D2.setFullscreen(!D2D2.isFullscreen());
                 }
@@ -255,11 +276,11 @@ public class IntroRoot extends Root {
     }
 
     private void keyEnter(Event event) {
-        enter(uiTextInputServer.getText(), uiTextInputPlayerName.getText());
+        enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
     }
 
     public void enter(String server, String localPlayerName) {
-        if (!PatternMatcher.check(uiTextInputPlayerName.getText(), NAME_PATTERN)) return;
+        if (!PatternMatcher.check(uiTextInputPlayername.getText(), NAME_PATTERN)) return;
 
         log.info("Enter try, server: {}, player name: {}", server, localPlayerName);
 
@@ -293,12 +314,12 @@ public class IntroRoot extends Root {
 
     private void warningDialog(String text) {
         UiTextInputProcessor.INSTANCE.unfocus();
-        DialogWindow dialogWindow = DialogWindow.show(text, D2D2.getStage().getRoot());
-        dialogWindow.setXY(
-                (D2D2World.ORIGIN_WIDTH - dialogWindow.getWidth()) / 2,
-                (D2D2World.ORIGIN_HEIGHT - dialogWindow.getHeight()) / 2
+        AlertWindow alertWindow = AlertWindow.show(text, D2D2.getStage().getRoot());
+        alertWindow.setXY(
+                (D2D2World.ORIGIN_WIDTH - alertWindow.getWidth()) / 2,
+                (D2D2World.ORIGIN_HEIGHT - alertWindow.getHeight()) / 2
         );
-        dialogWindow.setOnCloseFunction(uiTextInputPlayerName::requestFocus);
+        alertWindow.setOnCloseFunction(uiTextInputPlayername::requestFocus);
     }
 
     private @Nullable ServerInfoDto retrieveServerInfo(@NotNull String server) {
@@ -317,6 +338,23 @@ public class IntroRoot extends Root {
         lock.lock(5, TimeUnit.SECONDS);
 
         return resultHolder.getValue();
+    }
+
+    public void updateResolutionControls() {
+        if (MonitorManager.getInstance().isFullscreen()) {
+            resolutionChooser.setCurrentItemByKey(MonitorManager.getInstance().getResolution());
+        } else {
+            resolutionChooser.setCurrentItemByKey(ResolutionChooser.WINDOWED);
+        }
+
+        monitorChooser.setCurrentItemByValue(MonitorManager.getInstance().getMonitorDeviceId());
+    }
+
+    public void setControlsEnabled(boolean b) {
+        uiTextInputPlayername.setEnabled(b);
+        uiTextInputServer.setEnabled(b);
+        resolutionChooser.setEnabled(b);
+        monitorChooser.setEnabled(b);
     }
 
     public static class UAFlag extends DisplayObjectContainer {

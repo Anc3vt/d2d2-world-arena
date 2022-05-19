@@ -4,10 +4,10 @@ package com.ancevt.d2d2world.client.ui;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLVideoModeUtils;
+import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
-import com.ancevt.d2d2world.client.settings.MonitorDevice;
+import com.ancevt.d2d2world.client.settings.MonitorManager;
 
 public class ResolutionChooser extends Chooser<VideoMode> {
 
@@ -23,7 +23,7 @@ public class ResolutionChooser extends Chooser<VideoMode> {
 
         addItem(WINDOWED, null);
 
-        LWJGLVideoModeUtils.getVideoModes(MonitorDevice.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
+        GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
             if (videoMode.getRefreshRate() != 60 || videoMode.getHeight() < 600) return;
 
             String key = videoMode.getWidth() + "x" + videoMode.getHeight();
@@ -35,8 +35,8 @@ public class ResolutionChooser extends Chooser<VideoMode> {
         Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         D2D2WorldArenaClientAssets.load();
 
-        var startVideoMode = LWJGLVideoModeUtils.getVideoMode(MonitorDevice.getInstance().getMonitorDeviceId());
-        MonitorDevice.getInstance().setStartResolution(startVideoMode.getResolution());
+        var startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
+        MonitorManager.getInstance().setStartResolution(startVideoMode.getResolution());
 
         ResolutionChooser resolutionChooser = new ResolutionChooser();
         root.add(resolutionChooser);
@@ -44,17 +44,17 @@ public class ResolutionChooser extends Chooser<VideoMode> {
             VideoMode videoMode = resolutionChooser.getSelectedItemObject();
 
             if (videoMode == null) {
-                MonitorDevice.getInstance().setFullscreen(false);
+                MonitorManager.getInstance().setFullscreen(false);
                 return;
             } else {
-                MonitorDevice.getInstance().setResolution(videoMode.getResolution());
-                MonitorDevice.getInstance().setFullscreen(true);
+                MonitorManager.getInstance().setResolution(videoMode.getResolution());
+                MonitorManager.getInstance().setFullscreen(true);
             }
 
             System.out.println(videoMode);
         });
         D2D2.loop();
 
-        LWJGLVideoModeUtils.linuxCare(MonitorDevice.getInstance().getMonitorDeviceId(), startVideoMode);
+        GLFWUtils.linuxCare(MonitorManager.getInstance().getMonitorDeviceId(), startVideoMode);
     }
 }

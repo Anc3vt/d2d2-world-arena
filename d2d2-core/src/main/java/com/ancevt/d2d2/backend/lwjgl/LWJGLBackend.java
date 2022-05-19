@@ -232,7 +232,7 @@ public class LWJGLBackend implements D2D2Backend {
 
         glfwSetWindowCloseCallback(windowId, window -> {
             if (isUnix()) {
-                LWJGLVideoModeUtils.linuxCare(monitor, previousVideoMode);
+                GLFWUtils.linuxCare(monitor, previousVideoMode);
             }
         });
 

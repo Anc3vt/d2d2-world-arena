@@ -14,7 +14,7 @@ import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.net.Player;
 import com.ancevt.d2d2world.client.settings.ClientConfig;
-import com.ancevt.d2d2world.client.settings.MonitorDevice;
+import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.TabWindow;
 import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
@@ -105,7 +105,13 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
                 }
                 case KeyCode.ENTER -> {
                     if (e.isAlt()) {
-                        MonitorDevice.getInstance().setFullscreen(!MonitorDevice.getInstance().isFullscreen());
+                        if (MonitorManager.getInstance().isFullscreen()) {
+                            MonitorManager.getInstance().setFullscreen(false);
+                        } else {
+                            long monitorDeviceId = MonitorManager.getInstance().getMonitorIdByWindow();
+                            MonitorManager.getInstance().setMonitorDeviceId(monitorDeviceId);
+                            MonitorManager.getInstance().setFullscreen(true);
+                        }
                     }
                 }
             }

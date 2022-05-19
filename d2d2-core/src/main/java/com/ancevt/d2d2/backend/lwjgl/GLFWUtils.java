@@ -2,10 +2,13 @@
 package com.ancevt.d2d2.backend.lwjgl;
 
 import com.ancevt.commons.Holder;
+import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +23,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoModes;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
 
-public class LWJGLVideoModeUtils {
+public class GLFWUtils {
 
     private static final Map<Long, String> monitorNameMap = new HashMap<>();
 
@@ -33,6 +36,33 @@ public class LWJGLVideoModeUtils {
             monitors.put(monitor, name);
         }
         return monitors;
+    }
+
+    @Contract(" -> new")
+    public static int @NotNull [] getWindowInfo() {
+        int x[] = new int[1];
+        int y[] = new int[1];
+        int w[] = new int[1];
+        int h[] = new int[1];
+
+        GLFW.glfwGetWindowPos(D2D2.getBackend().getWindowId(), x, y);
+        GLFW.glfwGetWindowSize(D2D2.getBackend().getWindowId(), w, h);
+
+        return new int[]{
+                x[0], y[0], w[0], h[0]
+        };
+    }
+
+    public static int @NotNull [] getMonitorInfo(long monitorId) {
+        int x[] = new int[1];
+        int y[] = new int[1];
+        int w[] = new int[1];
+        int h[] = new int[1];
+
+        GLFW.glfwGetMonitorWorkarea(monitorId, x, y, w, h);
+        return new int[]{
+                x[0], y[0], w[0], h[0]
+        };
     }
 
     public static long getMonitorByName(String monitorName) {
