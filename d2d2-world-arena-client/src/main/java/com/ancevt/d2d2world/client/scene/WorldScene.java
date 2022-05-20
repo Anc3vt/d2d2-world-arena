@@ -126,7 +126,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
             public void serverInfo(@NotNull ServerInfoDto result) {
                 result.getPlayers().forEach(player -> {
                     if (world.getGameObjectById(player.getPlayerActorGameObjectId()) instanceof PlayerActor playerActor) {
-                        playerActorUiText(playerActor, player.getId(), player.getName());
+                        playerActorUiText(playerActor, player.getId(), player.getName(), true);
                         playerIdPlayerActorMap.put(player.getId(), playerActor);
                         PLAYER_MANAGER.getPlayerById(player.getId()).ifPresent(
                                 playerManagerPlayer -> playerManagerPlayer.setPlayerActorGameObjectId(playerActor.getGameObjectId())
@@ -369,7 +369,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 playerArrowView.createPlayerArrow(playerActor, playerActor.getPlayerColor());
             }
 
-            playerActorUiText(playerActor, playerActor.getPlayerId(), playerActor.getPlayerName());
+            playerActorUiText(playerActor, playerActor.getPlayerId(), playerActor.getPlayerName(), false);
 
             if (localPlayerActor != null) {
                 if (localPlayerActor.getGameObjectId() == playerActor.getGameObjectId()) {
@@ -384,7 +384,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         if (e.getGameObject() instanceof PlayerActor playerActor) {
             hideChatBubble(playerActor);
             playerArrowView.removePlayerArrow(playerActor);
-            playerActorUiText(playerActor, playerActor.getPlayerId(), null);
+            playerActorUiText(playerActor, playerActor.getPlayerId(), null, false);
         }
     }
 
@@ -732,17 +732,23 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         }
     }
 
-    public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
-        if (playerName == null) {
-            UiText uiText = playerTextMap.remove(playerActor);
-            if (uiText != null) {
-                uiText.removeFromParent();
-            }
+    public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName, boolean updateOnly) {
+        if(updateOnly) {
+            UiText uiTextToUpdate = playerTextMap.get(playerActor);
+            uiTextToUpdate.setText(playerName + "(" + playerId + ")");
             return;
         }
 
+        UiText uiTextToRemove = playerTextMap.remove(playerActor);
+        if (uiTextToRemove != null) {
+            uiTextToRemove.removeFromParent();
+        }
+
+        if (playerName == null) return;
+
         playerActor.setPlayerName(playerName);
         playerActor.setPlayerId(playerId);
+
         UiText uiText = new UiText(playerName + "(" + playerId + ")") {
             @Override
             public void onEachFrame() {
@@ -754,7 +760,8 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         };
         uiText.setScale(1f, 1f);
         PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
-        //playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
+        uiText.setVisible(false);
+        Async.runLater(250, TimeUnit.MILLISECONDS, () -> uiText.setVisible(true));
         D2D2.getStage().getRoot().add(uiText);
         playerTextMap.put(playerActor, uiText);
     }
