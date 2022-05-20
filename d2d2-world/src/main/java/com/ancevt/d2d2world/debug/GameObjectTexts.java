@@ -56,6 +56,7 @@ public class GameObjectTexts extends DisplayObjectContainer {
                 bitmapText = new BitmapText();
                 bitmapText.setText(String.valueOf(gameObject.getGameObjectId()));
                 bitmapText.setScale(0.5f, 0.5f);
+                gameObject.removeEventListener(this, REMOVE_FROM_STAGE);
                 gameObject.addEventListener(this, REMOVE_FROM_STAGE, this::gameObject_removeFromStage);
                 bitmapTextMap.put(gameObject, bitmapText);
                 add(bitmapText);

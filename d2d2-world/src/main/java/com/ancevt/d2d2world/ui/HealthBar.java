@@ -5,7 +5,7 @@ import com.ancevt.d2d2.display.Color;
 
 public class HealthBar extends Bar {
 
-    private final float WIDTH = 26;
+    private final float WIDTH = 26f;
     private final float HEIGHT = 2f;
 
     public HealthBar() {
@@ -20,16 +20,16 @@ public class HealthBar extends Bar {
 
         if (perc > 75) {
             setForeColor(Color.GREEN);
-            setBackColor(Color.DARK_GREEN);
+            setBackColor(Color.of(0x002200));
         } else if (perc > 50) {
             setForeColor(Color.YELLOW);
-            setBackColor(Color.DARK_YELLOW);
+            setBackColor(Color.of(0x222200));
         } else if (perc > 25) {
             setForeColor(Color.of(0x964B00));
-            setBackColor(Color.of(0x402000));
+            setBackColor(Color.of(0x111100));
         } else {
             setForeColor(Color.RED);
-            setBackColor(Color.DARK_RED);
+            setBackColor(Color.of(0x220000));
         }
     }
 }

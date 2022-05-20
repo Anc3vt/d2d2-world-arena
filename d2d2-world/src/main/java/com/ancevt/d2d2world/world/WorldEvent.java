@@ -19,6 +19,7 @@ public class WorldEvent extends Event<World> {
     public static final String ACTOR_DEATH = "worldActorDeath";
     public static final String WORLD_PROCESS = "worldProcess";
     public static final String PLAYER_ACTOR_TAKE_BULLET = "playerActorTakeBullet";
+    public static final String ROOM_SWITCH_START = "roomSwitchStart";
     public static final String ROOM_SWITCH_COMPLETE = "roomSwitchComplete";
     public static final String ADD_GAME_OBJECT = "addGameObject";
     public static final String REMOVE_GAME_OBJECT = "removeGameObject";

@@ -89,6 +89,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private final Set<ChatBubble> chatBubbles;
 
     private final PlayerArrowView playerArrowView;
+    private final Map<PlayerActor, UiText> playerTextMap;
 
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
@@ -96,6 +97,8 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
         playerIdPlayerActorMap = new HashMap<>();
         playerActorGameObjectIdPlayerIdMap = new HashMap<>();
+
+        playerTextMap = new HashMap<>();
 
         chatBubbles = new HashSet<>();
 
@@ -275,6 +278,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private @NotNull World createWorld() {
         var world = new World();
         world.addEventListener(this, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
+        world.addEventListener(this, WorldEvent.ROOM_SWITCH_START, this::world_roomSwitchStart);
         world.addEventListener(this, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
         world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
         world.addEventListener(this, WorldEvent.REMOVE_GAME_OBJECT, this::world_removeGameObject);
@@ -286,6 +290,13 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         world.setAlpha(CONFIG.getFloat(DEBUG_WORLD_ALPHA, 1f));
 
         return world;
+    }
+
+    private void world_roomSwitchStart(Event event) {
+        playerTextMap.forEach((playerActor, uiText) -> {
+            uiText.removeFromParent();
+        });
+        playerTextMap.clear();
     }
 
     private void world_actorDeath(Event<World> event) {
@@ -373,6 +384,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         if (e.getGameObject() instanceof PlayerActor playerActor) {
             hideChatBubble(playerActor);
             playerArrowView.removePlayerArrow(playerActor);
+            playerActorUiText(playerActor, playerActor.getPlayerId(), null);
         }
     }
 
@@ -712,7 +724,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         localPlayerActor.setLocalPlayerActor(true);
         localPlayerActor.setLocalAim(true);
         world.getCamera().setAttachedTo(localPlayerActor);
-        playerActorUiText(localPlayerActor, CLIENT.getLocalPlayerId(), CLIENT.getLocalPlayerName());
+        //playerActorUiText(localPlayerActor, CLIENT.getLocalPlayerId(), CLIENT.getLocalPlayerName());
 
         if (roomChangePlayerActorWeapons != null) {
             localPlayerActor.setWeapons(roomChangePlayerActorWeapons);
@@ -721,12 +733,30 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     }
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName) {
+        if (playerName == null) {
+            UiText uiText = playerTextMap.remove(playerActor);
+            if (uiText != null) {
+                uiText.removeFromParent();
+            }
+            return;
+        }
+
         playerActor.setPlayerName(playerName);
         playerActor.setPlayerId(playerId);
-        UiText uiText = new UiText(playerName + "(" + playerId + ")");
-        uiText.setScale(0.5f, 0.5f);
+        UiText uiText = new UiText(playerName + "(" + playerId + ")") {
+            @Override
+            public void onEachFrame() {
+                this.setXY(
+                        playerActor.getAbsoluteX() - (this.getTextWidth() / 2f) + this.getCharWidth() / 2f,
+                        playerActor.getAbsoluteY() - 32 * playerActor.getAbsoluteScaleY()
+                );
+            }
+        };
+        uiText.setScale(1f, 1f);
         PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
-        playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
+        //playerActor.add(uiText, (-uiText.getTextWidth() / 2) * uiText.getScaleX(), -32);
+        D2D2.getStage().getRoot().add(uiText);
+        playerTextMap.put(playerActor, uiText);
     }
 
     private Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {

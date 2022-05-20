@@ -10,12 +10,13 @@ import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
 public class Bar extends DisplayObjectContainer {
 
-    public static final float DEFAULT_WIDTH = 250.0f;
-    public static final float DEFAULT_HEIGHT = 10.0f;
-    public static final int DEFAULT_MAX_VALUE = 100;
-    public static final int DEFAULT_VALUE = 100;
-    public static final Color DEFAULT_BACK_COLOR = Color.DARK_GREEN;
-    public static final Color DEFAULT_FORE_COLOR = Color.GREEN;
+    private static final float DEFAULT_WIDTH = 250.0f;
+    private static final float DEFAULT_HEIGHT = 10.0f;
+    private static final int DEFAULT_MAX_VALUE = 100;
+    private static final int DEFAULT_VALUE = 100;
+    private static final Color DEFAULT_BACK_COLOR = Color.DARK_GREEN;
+    private static final Color DEFAULT_FORE_COLOR = Color.GREEN;
+    private static final float LIGHT_SHADOW_LINES_HEIGHT = 0.2f;
 
     private final PlainRect rectBack;
     private final PlainRect rectFore;
@@ -29,9 +30,11 @@ public class Bar extends DisplayObjectContainer {
         rectBack = new PlainRect();
         rectFore = new PlainRect();
 
-        lightLine = new PlainRect(1, 1, Color.WHITE);
+        lightLine = new PlainRect(Color.WHITE);
+        shadowLine = new PlainRect(Color.BLACK);
+
         lightLine.setAlpha(0.5f);
-        shadowLine = new PlainRect(1, 1, Color.BLACK);
+        lightLine.setScaleY(0.5f);
 
         setBackColor(DEFAULT_BACK_COLOR);
         setForeColor(DEFAULT_FORE_COLOR);
@@ -71,9 +74,9 @@ public class Bar extends DisplayObjectContainer {
     public final void setSize(final float width, final float height) {
         rectBack.setSize(width, height);
         rectFore.setHeight(height);
-        lightLine.setSize(width, 1);
-        shadowLine.setSize(width, 1);
-        shadowLine.setY(height - 1);
+        lightLine.setSize(width, LIGHT_SHADOW_LINES_HEIGHT);
+        shadowLine.setSize(width, LIGHT_SHADOW_LINES_HEIGHT);
+        shadowLine.setY(height - LIGHT_SHADOW_LINES_HEIGHT);
         update();
     }
 
@@ -114,10 +117,13 @@ public class Bar extends DisplayObjectContainer {
         root.setBackgroundColor(Color.GRAY);
 
         Bar p = new Bar();
-        root.add(p, 100, 100);
+        p.setSize(26, 3);
 
+        p.setScale(15f, 15f);
+
+        root.add(p, 100, 100);
         p.setMaxValue(100);
-        p.setValue(50);
+        p.setValue(75f);
 
         D2D2.loop();
     }

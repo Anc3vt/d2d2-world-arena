@@ -323,6 +323,8 @@ public class World extends DisplayObjectContainer {
             }
         });
 
+        dispatchEvent(WorldEvent.builder().type(WorldEvent.ROOM_SWITCH_START).build());
+
         add(overlay);
         removeGameObject(actor, false);
         switchingRoomsNow = true;
