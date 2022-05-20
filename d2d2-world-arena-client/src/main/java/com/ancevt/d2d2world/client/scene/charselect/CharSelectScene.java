@@ -17,7 +17,6 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
-import com.ancevt.d2d2world.client.settings.ClientConfig;
 import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
@@ -31,6 +30,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_CHARACTER;
 
 public class CharSelectScene extends DisplayObjectContainer {
 
@@ -83,17 +85,16 @@ public class CharSelectScene extends DisplayObjectContainer {
             }
         }
 
-        String debugCharacterMapkitItem = ClientConfig.CONFIG.getString(ClientConfig.DEBUG_CHARACTER);
-
-        if (!debugCharacterMapkitItem.isEmpty()) {
-            MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItemById(debugCharacterMapkitItem);
+        CONFIG.ifContains(DEBUG_CHARACTER, value -> {
+            MapkitItem mapkitItem = BuiltInMapkit.getInstance().getItemById(value);
             dispatchEvent(CharSelectSceneEvent.builder()
                     .type(CharSelectSceneEvent.CHARACTER_SELECT)
                     .mapkitItem(mapkitItem).build()
             );
             dispose();
             removeFromParent();
-        }
+        });
+
     }
 
     @Data

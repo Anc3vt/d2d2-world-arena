@@ -22,7 +22,6 @@ import com.ancevt.d2d2world.client.net.ServerInfoRetriever;
 import com.ancevt.d2d2world.client.scene.GameRoot;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.Chooser;
-import com.ancevt.d2d2world.client.ui.dialog.AlertWindow;
 import com.ancevt.d2d2world.client.ui.Font;
 import com.ancevt.d2d2world.client.ui.MonitorChooser;
 import com.ancevt.d2d2world.client.ui.ResolutionChooser;
@@ -30,20 +29,22 @@ import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.client.ui.UiTextInput;
 import com.ancevt.d2d2world.client.ui.UiTextInputEvent;
 import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
+import com.ancevt.d2d2world.client.ui.dialog.AlertWindow;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.d2d2world.client.settings.ClientConfig.AUTO_ENTER;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.CONFIG;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.DISPLAY_FULLSCREEN;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.DISPLAY_MONITOR;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.DISPLAY_RESOLUTION;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.PLAYERNAME;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.SERVER;
+import static com.ancevt.d2d2world.client.config.ClientConfig.AUTO_ENTER;
+import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DISPLAY_FULLSCREEN;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DISPLAY_MONITOR;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DISPLAY_RESOLUTION;
+import static com.ancevt.d2d2world.client.config.ClientConfig.PLAYERNAME;
+import static com.ancevt.d2d2world.client.config.ClientConfig.SERVER;
 import static java.lang.Integer.parseInt;
 
 @Slf4j
@@ -73,11 +74,7 @@ public class IntroRoot extends Root {
 
         uiTextInputServer = new UiTextInput();
 
-        if (CONFIG.getString(SERVER).isEmpty()) {
-            uiTextInputServer.setText(defaultGameServer);
-        } else {
-            uiTextInputServer.setText(CONFIG.getString(SERVER));
-        }
+        CONFIG.ifContainsOrElse(SERVER, uiTextInputServer::setText, () -> uiTextInputServer.setText(defaultGameServer));
 
         uiTextInputPlayername = new UiTextInput();
         uiTextInputPlayername.requestFocus();
@@ -90,10 +87,7 @@ public class IntroRoot extends Root {
 
         uiTextInputServer.addEventListener(UiTextInputEvent.TEXT_ENTER, event -> uiTextInputPlayername.requestFocus());
 
-        String playername = CONFIG.getString(PLAYERNAME);
-        if (!playername.equals("")) {
-            uiTextInputPlayername.setText(playername);
-        }
+        CONFIG.ifContains(PLAYERNAME, uiTextInputPlayername::setText);
 
         panel = new DisplayObjectContainer();
 
@@ -152,7 +146,7 @@ public class IntroRoot extends Root {
 
             add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
 
-            if (CONFIG.getBoolean(AUTO_ENTER)) {
+            if (CONFIG.getBoolean(AUTO_ENTER, false)) {
                 enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
             } else {
                 getStage().addEventListener(this, Event.RESIZE, resizeEvent -> {
@@ -162,9 +156,6 @@ public class IntroRoot extends Root {
 
                     plainRect.setWidth(D2D2.getStage().getWidth() * 2);
                     plainRect.setX(-D2D2.getStage().getWidth());
-
-                    //root.setScaleY(height / D2D2World.ORIGIN_HEIGHT);
-                    //root.setScaleX(root.getScaleY());
 
                     float w = width;
                     float ow = D2D2World.ORIGIN_WIDTH;
@@ -178,8 +169,8 @@ public class IntroRoot extends Root {
 
             add(new FpsMeter(), D2D2.getStage().getStageWidth() - 50, 5);
 
-            if (!CONFIG.getString(PLAYERNAME).equals("") && !CONFIG.getString(SERVER).equals("")) {
-                enter(CONFIG.getString(SERVER), CONFIG.getString(PLAYERNAME));
+            if (CONFIG.getProperty(PLAYERNAME) != null && CONFIG.getProperty(SERVER) != null) {
+                enter(CONFIG.getProperty(SERVER), CONFIG.getProperty(PLAYERNAME));
             }
 
             add(monitorChooser, 270, 500);
@@ -187,14 +178,18 @@ public class IntroRoot extends Root {
                 long monitorId = monitorChooser.getSelectedItemObject();
                 MonitorManager.getInstance().setMonitorDeviceId(monitorId);
                 CONFIG.setProperty(DISPLAY_MONITOR, monitorId);
-                CONFIG.save();
+                try {
+                    CONFIG.store();
+                } catch (IOException ex) {
+                    log.error(ex.getMessage(), ex);
+                }
             });
 
             monitorChooser.addEventListener(Chooser.ChooserEvent.CHOOSER_SWITCH, e -> {
                 resolutionChooser.fill();
             });
 
-            long monitorId = CONFIG.getLong(DISPLAY_MONITOR);
+            long monitorId = CONFIG.getLong(DISPLAY_MONITOR, 0);
             if (monitorId == 0L) {
                 MonitorManager.getInstance().setToPrimaryMonitorDeviceId();
                 monitorChooser.setCurrentItemByValue(MonitorManager.getInstance().getPrimaryMonitorId());
@@ -210,20 +205,24 @@ public class IntroRoot extends Root {
                 if (videoMode == null) {
                     MonitorManager.getInstance().setFullscreen(false);
                     CONFIG.setProperty(DISPLAY_RESOLUTION, ResolutionChooser.WINDOWED);
-                    CONFIG.setProperty(DISPLAY_FULLSCREEN, "false");
+                    CONFIG.setProperty(DISPLAY_FULLSCREEN, false);
                 } else {
                     MonitorManager.getInstance().setResolution(videoMode.getResolution());
                     MonitorManager.getInstance().setFullscreen(true);
                     CONFIG.setProperty(DISPLAY_RESOLUTION, videoMode.getResolution());
-                    CONFIG.setProperty(DISPLAY_FULLSCREEN, "true");
+                    CONFIG.setProperty(DISPLAY_FULLSCREEN, true);
                 }
 
-                CONFIG.save();
+                try {
+                    CONFIG.store();
+                } catch (IOException ex) {
+                    log.error(ex.getMessage(), ex);
+                }
             });
 
-            boolean fullscreen = CONFIG.getBoolean(DISPLAY_FULLSCREEN);
+            boolean fullscreen = CONFIG.getBoolean(DISPLAY_FULLSCREEN, true);
             if (fullscreen) {
-                String resolution = CONFIG.getString(DISPLAY_RESOLUTION);
+                String resolution = CONFIG.getProperty(DISPLAY_RESOLUTION);
                 if (!resolution.isEmpty()) {
                     MonitorManager.getInstance().setResolution(resolution);
                     MonitorManager.getInstance().setFullscreen(true);
@@ -233,12 +232,16 @@ public class IntroRoot extends Root {
                 resolutionChooser.setCurrentItemByKey(ResolutionChooser.WINDOWED);
             }
 
-            if (CONFIG.getString(DISPLAY_RESOLUTION).isEmpty() && CONFIG.getBoolean(DISPLAY_FULLSCREEN)) {
+            if (CONFIG.getProperty(DISPLAY_RESOLUTION) != null && CONFIG.getBoolean(DISPLAY_FULLSCREEN, true)) {
                 VideoMode videoMode = GLFWUtils.getMaxVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
                 MonitorManager.getInstance().setResolution(videoMode.getResolution());
                 MonitorManager.getInstance().setFullscreen(true);
                 CONFIG.setProperty(DISPLAY_RESOLUTION, videoMode.getResolution());
-                CONFIG.save();
+                try {
+                    CONFIG.store();
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
 
         });
@@ -252,7 +255,7 @@ public class IntroRoot extends Root {
                             MonitorManager.getInstance().setFullscreen(false);
                             resolutionChooser.setCurrentItemByKey(ResolutionChooser.WINDOWED);
                             CONFIG.setProperty(DISPLAY_RESOLUTION, ResolutionChooser.WINDOWED);
-                            CONFIG.setProperty(DISPLAY_FULLSCREEN, "false");
+                            CONFIG.setProperty(DISPLAY_FULLSCREEN, false);
                         } else {
                             long monitorDeviceId = MonitorManager.getInstance().getMonitorIdByWindow();
                             MonitorManager.getInstance().setMonitorDeviceId(monitorDeviceId);
@@ -260,9 +263,13 @@ public class IntroRoot extends Root {
                             monitorChooser.setCurrentItemByValue(monitorDeviceId);
                             resolutionChooser.setCurrentItemByKey(MonitorManager.getInstance().getResolution());
                             CONFIG.setProperty(DISPLAY_RESOLUTION, MonitorManager.getInstance().getResolution());
-                            CONFIG.setProperty(DISPLAY_FULLSCREEN, "true");
+                            CONFIG.setProperty(DISPLAY_FULLSCREEN, true);
                         }
-                        CONFIG.save();
+                        try {
+                            CONFIG.store();
+                        } catch (IOException ex) {
+                            log.error(ex.getMessage(), ex);
+                        }
                     }
                 }
                 case KeyCode.F -> {

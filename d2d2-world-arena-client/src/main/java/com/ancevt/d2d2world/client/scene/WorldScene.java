@@ -15,18 +15,17 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.control.LocalPlayerController;
-import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.scene.charselect.CharSelectScene;
-import com.ancevt.d2d2world.client.settings.ClientConfig;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.client.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.client.ui.playerarrowview.PlayerArrowView;
+import com.ancevt.d2d2world.control.LocalPlayerController;
+import com.ancevt.d2d2world.debug.GameObjectTexts;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.DestroyableBox;
@@ -54,18 +53,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.client.ClientCommandProcessor.COMMAND_PROCESSOR;
+import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_GAME_OBJECT_IDS;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_WORLD_ALPHA;
 import static com.ancevt.d2d2world.client.net.Client.CLIENT;
 import static com.ancevt.d2d2world.client.net.PlayerManager.PLAYER_MANAGER;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.CONFIG;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.DEBUG_GAME_OBJECT_IDS;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.DEBUG_WORLD_ALPHA;
+import static com.ancevt.d2d2world.data.Properties.getProperties;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.CLOSE;
 import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
@@ -137,9 +135,12 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
         });
 
-        CONFIG.addConfigChangeListener(this::config_configChangeListener);
-
-        config_configChangeListener(DEBUG_GAME_OBJECT_IDS, CONFIG.getBoolean(DEBUG_GAME_OBJECT_IDS));
+        CONFIG.ifContains(DEBUG_GAME_OBJECT_IDS, value -> {
+            if ("true".equals(value)) {
+                gameObjectTexts.setEnabled(true);
+                world.add(gameObjectTexts);
+            }
+        });
 
         Chat.getInstance().addEventListener(ChatEvent.CHAT_INPUT_OPEN, event -> {
             CLIENT.sendDto(PlayerChatEventDto.builder()
@@ -201,14 +202,14 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                     String key = args.get(String.class, "-k");
                     String value = args.get(String.class, "-v");
                     if (key != null) {
-                        Chat.getInstance().addMessage(key + "=" + CONFIG.getString(key), Color.DARK_GRAY);
+                        Chat.getInstance().addMessage(key + "=" + CONFIG.getProperty(key), Color.DARK_GRAY);
                     }
                     if (key != null && value != null) {
                         CONFIG.setProperty(key, value);
-                        Chat.getInstance().addMessage(key + "=" + CONFIG.getString(key), Color.DARK_GREEN);
+                        Chat.getInstance().addMessage(key + "=" + CONFIG.getProperty(key), Color.DARK_GREEN);
                     }
                     if (key == null && value == null) {
-                        Chat.getInstance().addMessage(CONFIG.passwordSafeToString(), Color.YELLOW);
+                        Chat.getInstance().addMessage(CONFIG.toFormattedEffectiveString(false), Color.YELLOW);
                     }
                     return null;
                 }
@@ -282,7 +283,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         world.getPlayProcessor().setAsyncProcessingEnabled(false);
         world.getCamera().setBoundsLock(true);
         world.setVisible(false);
-        world.setAlpha(CONFIG.getFloat(DEBUG_WORLD_ALPHA));
+        world.setAlpha(CONFIG.getFloat(DEBUG_WORLD_ALPHA, 1f));
 
         return world;
     }
@@ -383,23 +384,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private void world_playerActorTakeBullet(Event<World> event) {
         var e = (WorldEvent) event;
         CLIENT.sendDamageReport(e.getBullet().getDamagingPower(), e.getBullet().getGameObjectId());
-    }
-
-    private void config_configChangeListener(@NotNull String key, Object value) {
-        if (Objects.equals(key, ClientConfig.DEBUG_GAME_OBJECT_IDS)) {
-            var v = Boolean.parseBoolean(value.toString());
-
-            if (v) {
-                if (!gameObjectTexts.hasParent()) {
-                    gameObjectTexts.setEnabled(true);
-                    world.add(gameObjectTexts);
-                }
-            } else {
-                gameObjectTexts.setEnabled(false);
-                gameObjectTexts.removeFromParent();
-            }
-
-        }
     }
 
     public void init() {

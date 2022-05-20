@@ -5,14 +5,13 @@ import com.ancevt.commons.properties.PropertyWrapper;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.scene.GameRoot;
 import com.ancevt.d2d2world.client.scene.intro.IntroRoot;
-import com.ancevt.d2d2world.client.settings.ClientConfig;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.util.args.Args;
@@ -25,8 +24,11 @@ import java.util.Properties;
 
 import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.CONFIG;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.SOUND_ENABLED;
+import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_WINDOW_SIZE;
+import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_WINDOW_XY;
+import static com.ancevt.d2d2world.client.config.ClientConfig.PLAYERNAME;
+import static com.ancevt.d2d2world.client.config.ClientConfig.SOUND_ENABLED;
 
 @Slf4j
 public class D2D2WorldArenaClientMain {
@@ -59,7 +61,7 @@ public class D2D2WorldArenaClientMain {
 
         PropertyWrapper.argsToProperties(args, System.getProperties());
 
-        SoundSystem.setEnabled(CONFIG.getBoolean(SOUND_ENABLED));
+        SoundSystem.setEnabled(CONFIG.getBoolean(SOUND_ENABLED, true));
 
         // Load project properties
         Properties properties = new Properties();
@@ -71,7 +73,7 @@ public class D2D2WorldArenaClientMain {
         log.info(projectName);
         log.info(version);
 
-        String autoEnterPlayerName = CONFIG.getString(ClientConfig.PLAYERNAME);
+        String autoEnterPlayerName = CONFIG.getProperty(PLAYERNAME);
 
         D2D2.init(new LWJGLBackend(
                 (int) D2D2World.ORIGIN_WIDTH,
@@ -85,21 +87,19 @@ public class D2D2WorldArenaClientMain {
         startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
         MonitorManager.getInstance().setStartResolution(startVideoMode.getResolution());
 
-        String debugWindowSize = CONFIG.getString(ClientConfig.DEBUG_WINDOW_SIZE);
-        if (!debugWindowSize.equals("")) {
-            var a = Args.of(debugWindowSize, 'x');
+        CONFIG.ifContains(DEBUG_WINDOW_SIZE, value -> {
+            var a = Args.of(value, 'x');
             int width = a.next(int.class);
             int height = a.next(int.class);
             D2D2.getBackend().setSize(width, height);
-        }
+        });
 
-        String debugWindowXY = CONFIG.getString(ClientConfig.DEBUG_WINDOW_XY);
-        if (!debugWindowXY.equals("")) {
-            var a = Args.of(debugWindowXY, ',');
+        CONFIG.ifContains(DEBUG_WINDOW_XY, value -> {
+            var a = Args.of(value, ',');
             int x = a.next(int.class);
             int y = a.next(int.class);
             D2D2.getBackend().setWindowXY(x, y);
-        }
+        });
 
         IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
 

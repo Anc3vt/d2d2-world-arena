@@ -13,7 +13,6 @@ import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.net.Player;
-import com.ancevt.d2d2world.client.settings.ClientConfig;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.TabWindow;
 import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
@@ -30,9 +29,10 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 
 import static com.ancevt.d2d2world.client.ClientCommandProcessor.COMMAND_PROCESSOR;
+import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
+import static com.ancevt.d2d2world.client.config.ClientConfig.RCON_PASSWORD;
 import static com.ancevt.d2d2world.client.net.Client.CLIENT;
 import static com.ancevt.d2d2world.client.net.PlayerManager.PLAYER_MANAGER;
-import static com.ancevt.d2d2world.client.settings.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_ENTER;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_EXIT;
 import static java.lang.String.format;
@@ -216,7 +216,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         D2D2WorldArenaClientAssets.getAim().setColor(Color.WHITE);
 
-        String rconPassword = CONFIG.getString(ClientConfig.RCON_PASSWORD);
+        String rconPassword = CONFIG.getProperty(RCON_PASSWORD);
         if (!rconPassword.isEmpty()) {
             CLIENT.sendRconLoginRequest(MD5.hash(rconPassword));
         }
