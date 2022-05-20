@@ -13,7 +13,7 @@ import com.ancevt.d2d2.input.KeyCode;
 
 import static java.lang.Float.parseFloat;
 
-public class D2D2Demo_Micropixel {
+public class Tests_Micropixel {
 
     private static final String PROPERTY_NAME = "micropixel.factor";
 

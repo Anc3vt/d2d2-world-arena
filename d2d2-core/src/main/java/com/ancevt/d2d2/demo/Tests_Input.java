@@ -14,21 +14,21 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.input.Mouse;
 
-public class D2D2Demo_Input {
+public class Tests_Input {
 
 
     private static IDisplayObject cursor;
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_Input.class.getName() + "(floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, Tests_Input.class.getName() + "(floating)"));
 
         Root root = D2D2.getStage().getRoot();
 
-        root.addEventListener(InputEvent.KEY_DOWN, D2D2Demo_Input::keyDown);
-        root.addEventListener(InputEvent.KEY_UP, D2D2Demo_Input::keyUp);
-        root.addEventListener(InputEvent.MOUSE_DOWN, D2D2Demo_Input::mouseDown);
-        root.addEventListener(InputEvent.MOUSE_MOVE, D2D2Demo_Input::mouseMove);
-        root.addEventListener(InputEvent.MOUSE_WHEEL, D2D2Demo_Input::mouseWheel);
+        root.addEventListener(InputEvent.KEY_DOWN, Tests_Input::keyDown);
+        root.addEventListener(InputEvent.KEY_UP, Tests_Input::keyUp);
+        root.addEventListener(InputEvent.MOUSE_DOWN, Tests_Input::mouseDown);
+        root.addEventListener(InputEvent.MOUSE_MOVE, Tests_Input::mouseMove);
+        root.addEventListener(InputEvent.MOUSE_WHEEL, Tests_Input::mouseWheel);
 
         DisplayObjectContainer container = new DisplayObjectContainer();
         Sprite sprite = new Sprite("satellite");

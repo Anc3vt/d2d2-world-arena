@@ -8,7 +8,7 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 
-public class D2D2Demo_empty {
+public class Tests_empty {
 
 
     public static void main(String[] args) {

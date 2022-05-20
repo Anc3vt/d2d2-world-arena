@@ -8,7 +8,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
-public class D2D2Demo_BitmapText_toSprite {
+public class Tests_BitmapText_toSprite {
     public static void main(String[] args) {
         D2D2.init(new LWJGLBackend(800, 600, "D2D2Demo2"));
         Root root = new Root();

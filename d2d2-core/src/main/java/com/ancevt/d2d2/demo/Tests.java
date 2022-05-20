@@ -14,7 +14,7 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
-public class D2D2Demo {
+public class Tests {
 
     public static void main(String[] args) {
         D2D2.init(new LWJGLBackend(800, 600, "Hello D2D2 (floating)"));

@@ -11,7 +11,7 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.TextureUrlLoaderEvent;
 import com.ancevt.d2d2.display.texture.TextureUrlLoader;
 
-public class D2D2Demo_TextureAtlasWebLoader {
+public class Tests_TextureAtlasWebLoader {
 
     public static void main(String[] args) {
         D2D2.init(new LWJGLBackend(800, 600, "(floating)"));

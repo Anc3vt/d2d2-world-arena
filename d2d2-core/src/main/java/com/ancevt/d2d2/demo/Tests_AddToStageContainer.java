@@ -8,7 +8,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 
-public class D2D2Demo_AddToStageContainer {
+public class Tests_AddToStageContainer {
     public static void main(String[] args) {
         D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         Root root = D2D2.getStage().getRoot();

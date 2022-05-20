@@ -15,7 +15,7 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
-public class D2D2Demo_TextureCombiner {
+public class Tests_TextureCombiner {
     private static Root root;
     private static Sprite sprite;
     private static Sprite sprite2;
@@ -26,7 +26,7 @@ public class D2D2Demo_TextureCombiner {
         D2D2.getStage().setScaleMode(ScaleMode.REAL);
 
         root = new Root();
-        root.addEventListener(InputEvent.KEY_DOWN, D2D2Demo_TextureCombiner::keyDown);
+        root.addEventListener(InputEvent.KEY_DOWN, Tests_TextureCombiner::keyDown);
 
         start();
 

@@ -14,21 +14,21 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.input.Mouse;
 
-public class D2D2Demo_Fullscreen {
+public class Tests_Fullscreen {
 
 
     private static IDisplayObject cursor;
     private static Root root;
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_Fullscreen.class.getName() + "(floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, Tests_Fullscreen.class.getName() + "(floating)"));
 
         root = D2D2.getStage().getRoot();
 
-        root.addEventListener(InputEvent.KEY_DOWN, D2D2Demo_Fullscreen::keyDown);
-        root.addEventListener(InputEvent.MOUSE_DOWN, D2D2Demo_Fullscreen::mouseDown);
-        root.addEventListener(InputEvent.MOUSE_MOVE, D2D2Demo_Fullscreen::mouseMove);
-        root.addEventListener(InputEvent.MOUSE_WHEEL, D2D2Demo_Fullscreen::mouseWheel);
+        root.addEventListener(InputEvent.KEY_DOWN, Tests_Fullscreen::keyDown);
+        root.addEventListener(InputEvent.MOUSE_DOWN, Tests_Fullscreen::mouseDown);
+        root.addEventListener(InputEvent.MOUSE_MOVE, Tests_Fullscreen::mouseMove);
+        root.addEventListener(InputEvent.MOUSE_WHEEL, Tests_Fullscreen::mouseWheel);
 
         DisplayObjectContainer container = new DisplayObjectContainer();
         Sprite sprite = new Sprite("satellite");

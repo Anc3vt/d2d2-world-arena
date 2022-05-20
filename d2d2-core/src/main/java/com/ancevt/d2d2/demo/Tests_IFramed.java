@@ -12,10 +12,10 @@ import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureManager;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 
-public class D2D2Demo_IFramed {
+public class Tests_IFramed {
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_IFramed.class.getName() + " (floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, Tests_IFramed.class.getName() + " (floating)"));
         Root root = D2D2.getStage().getRoot();
 
         ISprite[] frames = new ISprite[]{

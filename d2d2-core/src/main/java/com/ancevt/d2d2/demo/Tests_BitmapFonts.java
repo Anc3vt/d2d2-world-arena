@@ -8,10 +8,10 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.text.BitmapFont;
 import com.ancevt.d2d2.display.text.BitmapText;
 
-public class D2D2Demo_BitmapFonts {
+public class Tests_BitmapFonts {
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_BitmapFonts.class.getName()));
+        D2D2.init(new LWJGLBackend(800, 600, Tests_BitmapFonts.class.getName()));
         Root root = D2D2.getStage().getRoot();
 
         BitmapFont font2 = BitmapFont.loadBitmapFont("PressStart2P.bmf");

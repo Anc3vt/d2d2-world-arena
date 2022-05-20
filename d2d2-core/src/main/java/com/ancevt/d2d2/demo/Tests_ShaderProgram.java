@@ -13,7 +13,7 @@ import lombok.SneakyThrows;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class D2D2Demo_ShaderProgram {
+public class Tests_ShaderProgram {
 
 
     @SneakyThrows

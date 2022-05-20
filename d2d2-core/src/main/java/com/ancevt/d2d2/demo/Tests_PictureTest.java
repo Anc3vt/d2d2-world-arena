@@ -9,7 +9,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.input.Mouse;
 
-public class D2D2Demo_PictureTest {
+public class Tests_PictureTest {
 
     private static float _x;
     private static float _y;

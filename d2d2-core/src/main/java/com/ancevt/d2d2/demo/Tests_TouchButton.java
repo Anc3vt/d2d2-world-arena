@@ -15,10 +15,10 @@ import com.ancevt.d2d2.touch.TouchButton;
 
 import java.util.Objects;
 
-public class D2D2Demo_TouchButton {
+public class Tests_TouchButton {
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLBackend(800, 600, D2D2Demo_TouchButton.class.getName() + "(floating)"));
+        D2D2.init(new LWJGLBackend(800, 600, Tests_TouchButton.class.getName() + "(floating)"));
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {

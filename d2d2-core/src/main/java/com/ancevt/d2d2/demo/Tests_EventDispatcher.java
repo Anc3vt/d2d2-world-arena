@@ -9,7 +9,7 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventDispatcher;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 
-public class D2D2Demo_EventDispatcher {
+public class Tests_EventDispatcher {
 
 
     public static void main(String[] args) {
@@ -19,8 +19,8 @@ public class D2D2Demo_EventDispatcher {
 
         EventDispatcher dispatcher = new EventDispatcher();
 
-        dispatcher.addEventListener(dispatcher, "event1", D2D2Demo_EventDispatcher::dispatcher_event1);
-        dispatcher.addEventListener(dispatcher, "event2", D2D2Demo_EventDispatcher::dispatcher_event2);
+        dispatcher.addEventListener(dispatcher, "event1", Tests_EventDispatcher::dispatcher_event1);
+        dispatcher.addEventListener(dispatcher, "event2", Tests_EventDispatcher::dispatcher_event2);
 
         DebugPanel.show("dispatch_event1").ifPresent(debugPanel -> {
             debugPanel.setXY(100, 100);
