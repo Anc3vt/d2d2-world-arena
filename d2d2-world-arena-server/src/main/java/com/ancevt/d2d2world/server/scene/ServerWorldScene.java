@@ -49,8 +49,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
 import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessagePlayerAttack;
-import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
-import static com.ancevt.d2d2world.server.ServerConfig.DEBUG_FORCED_SPAWN_AREA;
+import static com.ancevt.d2d2world.server.config.ServerConfig.CONFIG;
+import static com.ancevt.d2d2world.server.config.ServerConfig.DEBUG_FORCED_SPAWN_AREA;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
@@ -122,7 +122,7 @@ public class ServerWorldScene {
             log.info("Map '{}' loaded {}ms", mapName, System.currentTimeMillis() - timeBefore);
 
 
-            CONFIG.ifKeyPresent(DEBUG_FORCED_SPAWN_AREA, value -> {
+            CONFIG.ifContains(DEBUG_FORCED_SPAWN_AREA, value -> {
                 gameMap.getAllGameObjectsFromAllRooms().stream()
                         .filter(gameObject -> gameObject instanceof AreaSpawn areaSpawn && areaSpawn.getName().equals(value))
                         .findAny().ifPresent(debugForcedSpawnArea -> {
@@ -134,7 +134,6 @@ public class ServerWorldScene {
                                     });
                         });
             });
-
 
             gameMap.getRooms().forEach(room -> {
                 World world = new World(new SyncDataAggregator());

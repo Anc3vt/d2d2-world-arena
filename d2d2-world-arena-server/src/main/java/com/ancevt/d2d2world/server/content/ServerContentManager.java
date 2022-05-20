@@ -20,9 +20,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.ancevt.d2d2world.data.DataKey.*;
-import static com.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
-import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
+import static com.ancevt.d2d2world.data.DataKey.MAP;
+import static com.ancevt.d2d2world.data.DataKey.MAPKIT;
+import static com.ancevt.d2d2world.data.DataKey.MAPKIT_NAMES;
+import static com.ancevt.d2d2world.data.DataKey.NAME;
+import static com.ancevt.d2d2world.server.config.ServerConfig.CONFIG;
+import static com.ancevt.d2d2world.server.config.ServerConfig.CONTENT_COMPRESSION;
 import static java.nio.file.Files.newBufferedReader;
 
 @Slf4j
@@ -33,9 +36,7 @@ public class ServerContentManager {
     }
 
     public void syncSendFileToPlayer(String path, int playerId) {
-        FileSender fileSender = new FileSender(
-                path, CONFIG.getString(CONTENT_COMPRESSION).equals("true"), true
-        );
+        FileSender fileSender = new FileSender(path, CONFIG.getBoolean(CONTENT_COMPRESSION, true), true);
         if (fileSender.isFileExists()) {
             GeneralService.MODULE_GENERAL.getConnection(playerId).ifPresent(fileSender::send);
         }

@@ -7,15 +7,33 @@ import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.net.dto.ChatMessageDto;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.PlayerDto;
-import com.ancevt.d2d2world.net.dto.client.*;
-import com.ancevt.d2d2world.net.dto.server.*;
+import com.ancevt.d2d2world.net.dto.client.PlayerActorRequestDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerEnterRequestDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerEnterRoomStartDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerExitRequestDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerPingReportDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
+import com.ancevt.d2d2world.net.dto.client.PlayerTextToChatDto;
+import com.ancevt.d2d2world.net.dto.client.RconCommandDto;
+import com.ancevt.d2d2world.net.dto.client.RconLoginRequestDto;
+import com.ancevt.d2d2world.net.dto.client.RoomSwitchCompleteDto;
+import com.ancevt.d2d2world.net.dto.client.ServerInfoRequestDto;
+import com.ancevt.d2d2world.net.dto.server.ChatDto;
+import com.ancevt.d2d2world.net.dto.server.MapContentInfoDto;
+import com.ancevt.d2d2world.net.dto.server.PlayerActorDto;
+import com.ancevt.d2d2world.net.dto.server.PlayerEnterResponseDto;
+import com.ancevt.d2d2world.net.dto.server.PlayerEnterServerDto;
+import com.ancevt.d2d2world.net.dto.server.PlayerExitDto;
+import com.ancevt.d2d2world.net.dto.server.RconResponseDto;
+import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
+import com.ancevt.d2d2world.net.dto.server.ServerTextDto;
 import com.ancevt.d2d2world.net.dto.service.LocalServerKillDto;
 import com.ancevt.d2d2world.net.protocol.ExitCause;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImpl;
 import com.ancevt.d2d2world.net.protocol.ServerProtocolImplListener;
 import com.ancevt.d2d2world.net.transfer.FileSender;
 import com.ancevt.d2d2world.net.transfer.Headers;
-import com.ancevt.d2d2world.server.ServerConfig;
 import com.ancevt.d2d2world.server.ServerState;
 import com.ancevt.d2d2world.server.chat.ChatMessage;
 import com.ancevt.d2d2world.server.chat.ServerChat;
@@ -30,17 +48,30 @@ import com.ancevt.net.server.IServer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
-import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.*;
-import static com.ancevt.d2d2world.net.transfer.Headers.*;
-import static com.ancevt.d2d2world.server.ServerConfig.CONTENT_COMPRESSION;
+import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.PROTOCOL_VERSION;
+import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessageFileData;
+import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.createMessagePing;
+import static com.ancevt.d2d2world.net.transfer.Headers.HASH;
+import static com.ancevt.d2d2world.net.transfer.Headers.PATH;
+import static com.ancevt.d2d2world.net.transfer.Headers.UP_TO_DATE;
+import static com.ancevt.d2d2world.net.transfer.Headers.newHeaders;
 import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
+import static com.ancevt.d2d2world.server.config.ServerConfig.CONFIG;
+import static com.ancevt.d2d2world.server.config.ServerConfig.CONTENT_COMPRESSION;
+import static com.ancevt.d2d2world.server.config.ServerConfig.RCON_PASSWORD;
 import static com.ancevt.d2d2world.server.content.ServerContentManager.MODULE_CONTENT_MANAGER;
 import static com.ancevt.d2d2world.server.player.BanList.BANLIST;
 import static com.ancevt.d2d2world.server.player.ServerPlayerManager.PLAYER_MANAGER;
-import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
 import static com.ancevt.d2d2world.server.scene.ServerWorldScene.SERVER_WORLD_SCENE;
+import static com.ancevt.d2d2world.server.service.ServerSender.SENDER;
 
 @Slf4j
 public class GeneralService implements ServerProtocolImplListener, ServerChatListener {
@@ -49,7 +80,6 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
 
     public static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
-    private final ServerConfig serverConfig = ServerConfig.CONFIG;
     private final IServer serverUnit = ServerUnit.MODULE_SERVER_UNIT.server;
     private final ServerChat serverChat = ServerChat.MODULE_CHAT;
     private final ServerSender serverSender = SENDER;
@@ -81,7 +111,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
                             .put(PATH, path)
                             .toString(), new byte[0]));
         } else {
-            FileSender fileSender = new FileSender(path, serverConfig.getBoolean(CONTENT_COMPRESSION), true);
+            FileSender fileSender = new FileSender(path, CONFIG.getBoolean(CONTENT_COMPRESSION, true), true);
             getConnection(connectionId).ifPresent(fileSender::send);
         }
     }
@@ -272,7 +302,7 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
             serverSender.sendToPlayer(playerId, getServerInfoDto());
 
         } else if (dto instanceof RconLoginRequestDto d) {
-            String serverRconPasswordHash = MD5.hash(serverConfig.getString(ServerConfig.RCON_PASSWORD));
+            String serverRconPasswordHash = MD5.hash(CONFIG.getProperty(RCON_PASSWORD));
             if (serverRconPasswordHash.equals(d.getPasswordHash())) {
                 serverPlayerManager.getPlayerById(playerId).ifPresent(p -> {
                     if (!p.isRconLoggedIn()) {

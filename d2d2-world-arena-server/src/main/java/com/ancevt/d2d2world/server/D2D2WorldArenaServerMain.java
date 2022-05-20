@@ -24,13 +24,13 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static com.ancevt.d2d2world.net.protocol.ServerProtocolImpl.MODULE_SERVER_PROTOCOL;
-import static com.ancevt.d2d2world.server.ServerConfig.CONFIG;
-import static com.ancevt.d2d2world.server.ServerConfig.SERVER_HOST;
-import static com.ancevt.d2d2world.server.ServerConfig.SERVER_MAX_PLAYERS;
-import static com.ancevt.d2d2world.server.ServerConfig.SERVER_NAME;
-import static com.ancevt.d2d2world.server.ServerConfig.SERVER_PORT;
-import static com.ancevt.d2d2world.server.ServerConfig.WORLD_DEFAULT_MAP;
 import static com.ancevt.d2d2world.server.ServerState.MODULE_SERVER_STATE;
+import static com.ancevt.d2d2world.server.config.ServerConfig.CONFIG;
+import static com.ancevt.d2d2world.server.config.ServerConfig.SERVER_HOST;
+import static com.ancevt.d2d2world.server.config.ServerConfig.SERVER_MAX_PLAYERS;
+import static com.ancevt.d2d2world.server.config.ServerConfig.SERVER_NAME;
+import static com.ancevt.d2d2world.server.config.ServerConfig.SERVER_PORT;
+import static com.ancevt.d2d2world.server.config.ServerConfig.WORLD_DEFAULT_MAP;
 import static com.ancevt.d2d2world.server.repl.ServerCommandProcessor.MODULE_COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.server.scene.ServerWorldScene.SERVER_WORLD_SCENE;
 import static com.ancevt.d2d2world.server.service.GeneralService.MODULE_GENERAL;
@@ -73,10 +73,10 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     public D2D2WorldArenaServerMain() {
         MODULE_SERVER_PROTOCOL.addServerProtocolImplListener(MODULE_GENERAL);
 
-        MODULE_SERVER_STATE.setName(CONFIG.getString(SERVER_NAME));
+        MODULE_SERVER_STATE.setName(CONFIG.getProperty(SERVER_NAME));
         MODULE_SERVER_STATE.setVersion(getServerVersion());
-        MODULE_SERVER_STATE.setMaxPlayers(CONFIG.getInt(SERVER_MAX_PLAYERS));
-        MODULE_SERVER_STATE.setMap(CONFIG.getString(WORLD_DEFAULT_MAP));
+        MODULE_SERVER_STATE.setMaxPlayers(CONFIG.getInt(SERVER_MAX_PLAYERS, 100));
+        MODULE_SERVER_STATE.setMap(CONFIG.getProperty(WORLD_DEFAULT_MAP, "map0.wam"));
 
         MODULE_SERVER_UNIT.server.addServerListener(this);
 
@@ -87,8 +87,8 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
 
     public void start() {
         MODULE_SERVER_UNIT.server.asyncListenAndAwait(
-                CONFIG.getString(SERVER_HOST),
-                CONFIG.getInt(SERVER_PORT),
+                CONFIG.getProperty(SERVER_HOST),
+                CONFIG.getInt(SERVER_PORT, 3333),
                 2,
                 SECONDS
         );
@@ -111,11 +111,11 @@ public class D2D2WorldArenaServerMain implements ServerListener, Thread.Uncaught
     @Override
     public void serverStarted() {
         log.info("<y>Version: <g>{}<>", getServerVersion());
-        log.info("Server started at {}:{}", CONFIG.getString(SERVER_HOST), CONFIG.getInt(SERVER_PORT));
+        log.info("Server started at {}:{}", CONFIG.getProperty(SERVER_HOST), CONFIG.getInt(SERVER_PORT, 3333));
 
         SERVER_WORLD_SCENE.start();
         D2D2World.init(true, false);
-        MODULE_GENERAL.setMap(CONFIG.getString(WORLD_DEFAULT_MAP));
+        MODULE_GENERAL.setMap(CONFIG.getProperty(WORLD_DEFAULT_MAP, "map0.wam"));
     }
 
     /**
