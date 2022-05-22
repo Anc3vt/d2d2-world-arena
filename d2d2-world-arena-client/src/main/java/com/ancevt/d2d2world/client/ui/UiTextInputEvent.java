@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class UiTextInputEvent extends Event<UiTextInput> {
+public class UiTextInputEvent extends Event {
 
     public static final String TEXT_CHANGE = "textChange";
     public static final String TEXT_ENTER = "textEnter";

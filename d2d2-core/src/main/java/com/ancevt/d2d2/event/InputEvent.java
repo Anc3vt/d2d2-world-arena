@@ -1,7 +1,6 @@
 
 package com.ancevt.d2d2.event;
 
-import com.ancevt.d2d2.display.Root;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -9,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class InputEvent extends Event<Root> {
+public class InputEvent extends Event {
 
     public static final String BACK_PRESS = "backPress";
     public static final String MOUSE_MOVE = "mouseMove";

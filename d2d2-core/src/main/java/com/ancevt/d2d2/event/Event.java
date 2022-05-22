@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @SuperBuilder
-public class Event<E extends IEventDispatcher> {
+public class Event {
 
     public static final String EACH_FRAME = "eachFrame";
     public static final String ADD = "add";
@@ -19,7 +19,7 @@ public class Event<E extends IEventDispatcher> {
     public static final String CHANGE = "change";
 
     String type;
-    E source;
+    Object source;
     private IDisplayObjectContainer parent;
 
     public void setType(String type) {
@@ -30,11 +30,11 @@ public class Event<E extends IEventDispatcher> {
         return type;
     }
 
-    public void setSource(E source) {
+    public void setSource(Object source) {
         this.source = source;
     }
 
-    public E getSource() {
+    public Object getSource() {
         return source;
     }
 

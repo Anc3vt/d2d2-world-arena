@@ -54,7 +54,7 @@ public class Button extends DisplayObjectContainer {
         setText(text);
     }
 
-    private void touchButton_touchDown(Event<TouchButton> event) {
+    private void touchButton_touchDown(Event event) {
         dispatchEvent(ButtonEvent.builder().type(ButtonEvent.BUTTON_PRESSED).build());
     }
 
@@ -100,7 +100,7 @@ public class Button extends DisplayObjectContainer {
     @Data
     @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
-    public static class ButtonEvent extends Event<Button> {
+    public static class ButtonEvent extends Event {
         public static final String BUTTON_PRESSED = "buttonPressed";
     }
 

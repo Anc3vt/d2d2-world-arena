@@ -100,7 +100,7 @@ public class CharSelectScene extends DisplayObjectContainer {
     @Data
     @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
-    public static class CharSelectSceneEvent extends Event<CharSelectScene> {
+    public static class CharSelectSceneEvent extends Event {
 
         public static final String CHARACTER_SELECT = "characterSelect";
 

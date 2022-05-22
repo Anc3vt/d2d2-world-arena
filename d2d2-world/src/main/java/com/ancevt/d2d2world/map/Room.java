@@ -7,12 +7,11 @@ import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.world.Layer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Room {
 
-    private final List<IGameObject>[] gameObjects;
+    private final List<List<IGameObject>> gameObjects;
 
     private String id;
     private final GameMap map;
@@ -25,10 +24,9 @@ public class Room {
         this.id = name;
         this.map = map;
 
-        gameObjects = new List[Layer.LAYER_COUNT];
-
-        for (int i = 0; i < gameObjects.length; i++) {
-            gameObjects[i] = new ArrayList<>();
+        gameObjects = new ArrayList<>();
+        for (int i = 0; i < Layer.LAYER_COUNT; i++) {
+            gameObjects.add(new ArrayList<>());
         }
     }
 
@@ -98,26 +96,25 @@ public class Room {
     }
 
     public final void addGameObject(int layer, IGameObject gameObject) {
-        gameObjects[layer].add(gameObject);
+        gameObjects.get(layer).add(gameObject);
     }
 
     public final void removeGameObject(int layer, IGameObject gameObject) {
-        gameObjects[layer].remove(gameObject);
+        gameObjects.get(layer).remove(gameObject);
     }
 
     public final int getGameObjectsCount(int layer) {
-        return gameObjects[layer].size();
+        return gameObjects.get(layer).size();
     }
 
     public final IGameObject getGameObject(int layer, int index) {
-        return gameObjects[layer].get(index);
+        return gameObjects.get(layer).get(index);
     }
 
     @Override
     public String toString() {
         return "Room{" +
                 "id='" + id + '\'' +
-                ", gameObjects=" + Arrays.toString(gameObjects) +
                 ", width=" + width +
                 ", height=" + height +
                 ", backgroundColor=" + backgroundColor +
@@ -125,9 +122,8 @@ public class Room {
     }
 
     public int getLayerIndexOfGameObject(IGameObject gameObject) {
-        for(int i = 0; i < gameObjects.length; i ++) {
-            List<IGameObject> list = gameObjects[i];
-            if(list.contains(gameObject)) return i;
+        for (int i = 0; i < Layer.LAYER_COUNT; i++) {
+            if (gameObjects.get(i).contains(gameObject)) return i;
         }
 
         throw new IllegalStateException("Game object " + gameObject.getName() + " has no layer");

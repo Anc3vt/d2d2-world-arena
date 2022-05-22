@@ -69,7 +69,7 @@ public class ArrowButton extends DisplayObjectContainer {
         return direction;
     }
 
-    private void touchButton_touchDown(Event<TouchButton> event) {
+    private void touchButton_touchDown(Event event) {
         dispatchEvent(
                 ArrowButtonEvent.builder()
                         .type(ArrowButtonEvent.ARROW_BUTTON_PRESS)
@@ -84,7 +84,7 @@ public class ArrowButton extends DisplayObjectContainer {
     @Data
     @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
-    public static class ArrowButtonEvent extends Event<ArrowButton> {
+    public static class ArrowButtonEvent extends Event {
         public static final String ARROW_BUTTON_PRESS = "arrowButtonPress";
     }
 }

@@ -21,7 +21,7 @@ public interface IEventDispatcher {
 
     void removeEventListener(Object owner, String type);
 
-    void dispatchEvent(Event<?> event);
+    void dispatchEvent(Event event);
 
     void removeAllEventListeners(String type);
 

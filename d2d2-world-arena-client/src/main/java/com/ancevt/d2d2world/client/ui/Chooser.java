@@ -55,7 +55,7 @@ public class Chooser<T> extends DisplayObjectContainer {
         setWidth(DEFAULT_WIDTH);
     }
 
-    private void applyButton_buttonPressed(Event<Button> event) {
+    private void applyButton_buttonPressed(Event event) {
         setCurrentItemAsSelected();
     }
 
@@ -77,7 +77,7 @@ public class Chooser<T> extends DisplayObjectContainer {
         return width;
     }
 
-    private void buttonLeft_arrowButtonPress(Event<ArrowButton> event) {
+    private void buttonLeft_arrowButtonPress(Event event) {
         prev();
     }
 
@@ -202,7 +202,7 @@ public class Chooser<T> extends DisplayObjectContainer {
     @Data
     @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
-    public static class ChooserEvent extends Event<Chooser<?>> {
+    public static class ChooserEvent extends Event {
         public static final String CHOOSER_APPLY = "chooserApply";
         public static final String CHOOSER_SWITCH = "chooserSwitch";
     }

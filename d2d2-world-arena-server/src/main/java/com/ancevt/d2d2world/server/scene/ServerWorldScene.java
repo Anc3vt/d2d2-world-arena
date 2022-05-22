@@ -155,7 +155,7 @@ public class ServerWorldScene {
         }
     }
 
-    private void world_actorAttack(Event<World> event) {
+    private void world_actorAttack(Event event) {
         var e = (WorldEvent) event;
         if (e.getActor() instanceof PlayerActor playerActor) {
             int playerId = playerActor.getPlayerId();
@@ -163,20 +163,21 @@ public class ServerWorldScene {
         }
     }
 
-    private void world_destroyableDestroy(Event<World> event) {
+    private void world_destroyableDestroy(Event event) {
         var e = (WorldEvent) event;
+        World world = (World) e.getSource();
         SENDER.sendToAllOfRoom(DestroyableBoxDestroyDto.builder()
                 .destroyableGameObjectId(e.getGameObject().getGameObjectId())
-                .build(), e.getSource().getRoom().getId()
+                .build(), world.getRoom().getId()
         );
     }
 
-    private void world_bulletDoorTeleport(@NotNull Event<World> event) {
+    private void world_bulletDoorTeleport(@NotNull Event event) {
         var e = (WorldEvent) event;
 
         Weapon.Bullet b = e.getBullet();
 
-        World oldWorld = event.getSource();
+        World oldWorld = (World) event.getSource();
         oldWorld.removeGameObject(b, false);
 
         World world = worlds.get(e.getRoomId());
@@ -185,29 +186,34 @@ public class ServerWorldScene {
 
     }
 
-    private void world_addGameObject(Event<World> event) {
+    private void world_addGameObject(Event event) {
         var e = (WorldEvent) event;
         if (e.getGameObject() instanceof PlayerActor playerActor) {
+
+            World world = (World) e.getSource();
+
             SENDER.sendToAllOfRoom(
                     SpawnEffectDto.builder()
                             .x(playerActor.getX())
                             .y(playerActor.getY())
                             .build(),
-                    e.getSource().getRoom().getId()
+                    world.getRoom().getId()
             );
         }
     }
 
-    private void world_removeGameObject(Event<World> event) {
+    private void world_removeGameObject(Event event) {
         var e = (WorldEvent) event;
         if (e.getGameObject() instanceof PlayerActor playerActor) {
-            if (e.getSource().getRoom() != null) {
+            World world = (World) e.getSource();
+
+            if (world.getRoom() != null) {
                 SENDER.sendToAllOfRoom(
                         SpawnEffectDto.builder()
                                 .x(playerActor.getX())
                                 .y(playerActor.getY())
                                 .build(),
-                        e.getSource().getRoom().getId()
+                        world.getRoom().getId()
                 );
             }
         }
@@ -407,10 +413,10 @@ public class ServerWorldScene {
         return gameObjectId.getValue();
     }
 
-    private void world_actorDeath(Event<World> event) {
+    private void world_actorDeath(Event event) {
         var e = (WorldEvent) event;
 
-        World world = e.getSource();
+        World world = (World) e.getSource();
 
         final Holder<Integer> deadPlayerId = new Holder<>(0);
         final Holder<Integer> killerPlayerId = new Holder<>(0);

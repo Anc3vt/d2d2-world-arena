@@ -26,6 +26,7 @@ import com.ancevt.d2d2world.client.ui.hud.AmmunitionHud;
 import com.ancevt.d2d2world.client.ui.playerarrowview.PlayerArrowView;
 import com.ancevt.d2d2world.control.LocalPlayerController;
 import com.ancevt.d2d2world.debug.GameObjectTexts;
+import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.DestroyableBox;
@@ -267,7 +268,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         playerTextMap.clear();
     }
 
-    private void world_actorDeath(Event<World> event) {
+    private void world_actorDeath(Event event) {
         var e = (WorldEvent) event;
         if (world.getGameObjectById(e.getDeadActorGameObjectId()) instanceof PlayerActor playerActor) {
             playerArrowView.removePlayerArrow(playerActor);
@@ -326,7 +327,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         setScaleX(getScaleY());
     }
 
-    private void world_addGameObject(Event<World> event) {
+    private void world_addGameObject(Event event) {
         var e = (WorldEvent) event;
         if (e.getGameObject() instanceof PlayerActor playerActor) {
             PLAYER_MANAGER.getPlayerByPlayerActorGameObjectId(playerActor.getGameObjectId()).ifPresent(player -> {
@@ -347,7 +348,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         }
     }
 
-    private void world_removeGameObject(Event<World> event) {
+    private void world_removeGameObject(Event event) {
         var e = (WorldEvent) event;
         if (e.getGameObject() instanceof PlayerActor playerActor) {
             hideChatBubble(playerActor);
@@ -356,12 +357,12 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         }
     }
 
-    private void world_roomSwitchComplete(Event<World> event) {
+    private void world_roomSwitchComplete(Event event) {
         clearChatBubbles();
         CLIENT.sendDto(RoomSwitchCompleteDto.builder().build());
     }
 
-    private void world_playerActorTakeBullet(Event<World> event) {
+    private void world_playerActorTakeBullet(Event event) {
         var e = (WorldEvent) event;
         CLIENT.sendDamageReport(e.getBullet().getDamagingPower(), e.getBullet().getGameObjectId());
     }
@@ -642,8 +643,9 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
         localPlayerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
             var e = (ActorEvent) event;
-            roomChangePlayerActorWeapons = e.getSource().getWeapons();
-            roomChangePlayerActorCurrentWeapon = e.getSource().getCurrentWeapon();
+            Actor actor = (Actor) e.getSource();
+            roomChangePlayerActorWeapons = actor.getWeapons();
+            roomChangePlayerActorCurrentWeapon = actor.getCurrentWeapon();
             CLIENT.sendPlayerEnterRoom(e.getRoomId(), e.getX(), e.getY());
         });
 

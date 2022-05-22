@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class ActorEvent extends Event<Actor> {
+public class ActorEvent extends Event {
 
     public static final String SET_WEAPON = "setWeapon";
     public static final String AMMUNITION_CHANGE = "ammunitionChange";

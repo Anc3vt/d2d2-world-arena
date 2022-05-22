@@ -1,7 +1,6 @@
 
 package com.ancevt.d2d2.event;
 
-import com.ancevt.d2d2.touch.TouchButton;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -10,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class TouchButtonEvent extends Event<TouchButton> {
+public class TouchButtonEvent extends Event {
 
     public static final String TOUCH_DOWN = "touchDown";
     public static final String TOUCH_UP = "touchUp";

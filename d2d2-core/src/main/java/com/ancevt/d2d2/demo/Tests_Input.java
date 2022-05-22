@@ -57,7 +57,7 @@ public class Tests_Input {
     private static void mouseWheel(Event event) {
         InputEvent e = (InputEvent) event;
 
-        if(e.getDelta() > 0) {
+        if (e.getDelta() > 0) {
             cursor.toScale(1.1f, 1.1f);
         } else {
             cursor.toScale(0.9f, 0.9f);
@@ -69,7 +69,7 @@ public class Tests_Input {
     private static void mouseMove(Event event) {
         InputEvent e = (InputEvent) event;
 
-        if(e.isDrag()) {
+        if (e.isDrag()) {
             cursor.setXY(e.getX(), e.getY());
             System.out.println("move: " + e.getX() + ", " + e.getY() + " " + e.isDrag());
         }
@@ -83,9 +83,9 @@ public class Tests_Input {
     private static void keyDown(Event event) {
         InputEvent e = (InputEvent) event;
 
-        if(e.getKeyCode() == 259) {
+        if (e.getKeyCode() == 259) {
             System.out.println("Removed");
-            e.getSource().removeAllEventListeners(InputEvent.KEY_DOWN);
+            ((Root) e.getSource()).removeAllEventListeners(InputEvent.KEY_DOWN);
         }
 
         System.out.println(e);
@@ -94,7 +94,7 @@ public class Tests_Input {
     private static void keyUp(Event event) {
         InputEvent e = (InputEvent) event;
 
-        if(e.getKeyCode() == KeyCode.UP) {
+        if (e.getKeyCode() == KeyCode.UP) {
             System.out.println("up");
         }
     }

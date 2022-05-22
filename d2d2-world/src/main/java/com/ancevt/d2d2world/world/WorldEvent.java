@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class WorldEvent extends Event<World> {
+public class WorldEvent extends Event {
 
     public static final String CHANGE_ROOM = "changeRoom";
     public static final String ACTOR_DEATH = "worldActorDeath";
