@@ -159,118 +159,86 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                     .build());
         });
 
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//tostring",
-                "print game object info by game object id",
-                args -> {
-                    IGameObject gameObject = world.getGameObjectById(args.get(int.class, 1));
-                    if (gameObject == null) {
-                        Chat.getInstance().addMessage("no such game object", Color.YELLOW);
-                        return null;
-                    }
-                    Chat.getInstance().addMessage(gameObject.toString() + "\n"
-                            + getProperties(gameObject) + "\n"
-                            + gameObject.getMapkitItem().getDataEntry().toString(), Color.YELLOW
-                    );
-                    return null;
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/tostring", "print game object info by game object id", args -> {
+            IGameObject gameObject = world.getGameObjectById(args.get(int.class, 1));
+            if (gameObject == null) {
+                Chat.getInstance().addMessage("no such game object", Color.YELLOW);
+                return null;
+            }
+            Chat.getInstance().addMessage(gameObject.toString() + "\n"
+                    + getProperties(gameObject) + "\n"
+                    + gameObject.getMapkitItem().getDataEntry().toString(), Color.YELLOW
+            );
+            return null;
+        });
+
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/gameobjectids", "print list of game object ids", args -> {
+            StringBuilder sb = new StringBuilder();
+            world.getGameObjects().forEach(o -> sb.append(o.getGameObjectId()).append(','));
+            Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
+            return null;
+        });
+
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/gameobjectnames", "print list of game object names", args -> {
+            StringBuilder sb = new StringBuilder();
+            world.getGameObjects().forEach(o -> sb.append(o.getName()).append(','));
+            Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
+            return null;
+        });
+
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/config", "print client config [[-k [-v]]]", args -> {
+            String key = args.get(String.class, "-k");
+            String value = args.get(String.class, "-v");
+            if (key != null) {
+                Chat.getInstance().addMessage(key + "=" + CONFIG.getProperty(key), Color.DARK_GRAY);
+            }
+            if (key != null && value != null) {
+                CONFIG.setProperty(key, value);
+                Chat.getInstance().addMessage(key + "=" + CONFIG.getProperty(key), Color.DARK_GREEN);
+            }
+            if (key == null && value == null) {
+                Chat.getInstance().addMessage(CONFIG.toFormattedEffectiveString(false), Color.YELLOW);
+            }
+            return null;
+        });
+
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/monitorlist", "print list of avialable monitors", args -> {
+            GLFWUtils.getMonitors().values().forEach(
+                    monitorName -> Chat.getInstance().addMessage(monitorName)
+            );
+            return null;
+        });
+
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/videomodelist", "print list of video modes", args -> {
+            GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode ->
+                    Chat.getInstance().addMessage(videoMode.getWidth() + "x" + videoMode.getHeight() + " " + videoMode.getRefreshRate())
+            );
+            return null;
+        });
+
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/resolution", "set video mode [<width>x<height>]", args -> {
+            String resolution = args.get(String.class, 1, "0x0");
+            Holder<Boolean> found = new Holder<>(false);
+            GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
+                if (videoMode.getResolution().equals(resolution) && videoMode.getRefreshRate() == 60) {
+                    found.setValue(true);
+                    Chat.getInstance().addMessage(resolution + " " + videoMode.getRefreshRate());
+                    MonitorManager.getInstance().setResolution(resolution);
+                    MonitorManager.getInstance().setFullscreen(true);
                 }
-        );
+            });
 
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//gameobjectids",
-                "print list of game object ids",
-                args -> {
-                    StringBuilder sb = new StringBuilder();
-                    world.getGameObjects().forEach(o -> sb.append(o.getGameObjectId()).append(','));
-                    Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
-                    return null;
-                }
-        );
+            if (!found.getValue()) {
+                Chat.getInstance().addMessage("vid mode not found");
+            }
 
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//gameobjectnames",
-                "print list of game object names",
-                args -> {
-                    StringBuilder sb = new StringBuilder();
-                    world.getGameObjects().forEach(o -> sb.append(o.getName()).append(','));
-                    Chat.getInstance().addMessage(sb.toString(), Color.YELLOW);
-                    return null;
-                }
-        );
+            return null;
+        });
 
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//config",
-                "print client config [[-k [-v]]]",
-                args -> {
-                    String key = args.get(String.class, "-k");
-                    String value = args.get(String.class, "-v");
-                    if (key != null) {
-                        Chat.getInstance().addMessage(key + "=" + CONFIG.getProperty(key), Color.DARK_GRAY);
-                    }
-                    if (key != null && value != null) {
-                        CONFIG.setProperty(key, value);
-                        Chat.getInstance().addMessage(key + "=" + CONFIG.getProperty(key), Color.DARK_GREEN);
-                    }
-                    if (key == null && value == null) {
-                        Chat.getInstance().addMessage(CONFIG.toFormattedEffectiveString(false), Color.YELLOW);
-                    }
-                    return null;
-                }
-        );
-
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//monitorlist",
-                "print list of avialable monitors",
-                args -> {
-                    GLFWUtils.getMonitors().values().forEach(
-                            monitorName -> Chat.getInstance().addMessage(monitorName)
-                    );
-                    return null;
-                }
-        );
-
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//videomodelist",
-                "print list of video modes",
-                args -> {
-                    GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode ->
-                            Chat.getInstance().addMessage(videoMode.getWidth() + "x" + videoMode.getHeight() + " " + videoMode.getRefreshRate())
-                    );
-                    return null;
-                }
-        );
-
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//resolution",
-                "set video mode [<width>x<height>]",
-                args -> {
-                    String resolution = args.get(String.class, 1, "0x0");
-                    Holder<Boolean> found = new Holder<>(false);
-                    GLFWUtils.getVideoModes(MonitorManager.getInstance().getMonitorDeviceId()).forEach(videoMode -> {
-                        if (videoMode.getResolution().equals(resolution) && videoMode.getRefreshRate() == 60) {
-                            found.setValue(true);
-                            Chat.getInstance().addMessage(resolution + " " + videoMode.getRefreshRate());
-                            MonitorManager.getInstance().setResolution(resolution);
-                            MonitorManager.getInstance().setFullscreen(true);
-                        }
-                    });
-
-                    if (!found.getValue()) {
-                        Chat.getInstance().addMessage("vid mode not found");
-                    }
-
-                    return null;
-                }
-        );
-
-        COMMAND_PROCESSOR.getCommandSet().registerCommand(
-                "//cls",
-                "clear chat",
-                args -> {
-                    Chat.getInstance().clear();
-                    return null;
-                }
-        );
+        COMMAND_PROCESSOR.getCommandSet().registerCommand("/cls", "clear chat", args -> {
+            Chat.getInstance().clear();
+            return null;
+        });
 
         ammunitionHud = new AmmunitionHud();
     }
@@ -733,7 +701,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     }
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName, boolean updateOnly) {
-        if(updateOnly) {
+        if (updateOnly) {
             UiText uiTextToUpdate = playerTextMap.get(playerActor);
             uiTextToUpdate.setText(playerName + "(" + playerId + ")");
             return;

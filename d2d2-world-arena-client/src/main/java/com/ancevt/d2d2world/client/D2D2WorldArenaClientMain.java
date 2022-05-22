@@ -13,6 +13,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.scene.GameRoot;
 import com.ancevt.d2d2world.client.scene.intro.IntroRoot;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
+import com.ancevt.d2d2world.client.storage.LocalStorageManager;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.util.args.Args;
 import lombok.SneakyThrows;
@@ -62,6 +63,8 @@ public class D2D2WorldArenaClientMain {
         PropertyWrapper.argsToProperties(args, System.getProperties());
 
         SoundSystem.setEnabled(CONFIG.getBoolean(SOUND_ENABLED, true));
+
+        LocalStorageManager.init();
 
         // Load project properties
         Properties properties = new Properties();

@@ -112,7 +112,7 @@
             <dependency>
                 <groupId>com.ancevt.util</groupId>
                 <artifactId>args</artifactId>
-                <version>2.0.4</version>
+                <version>2.0.5</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.util</groupId>
@@ -122,7 +122,7 @@
             <dependency>
                 <groupId>com.ancevt.commons</groupId>
                 <artifactId>ancevt-commons</artifactId>
-                <version>1.0.0.3</version>
+                <version>1.0.0.4</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.util</groupId>
@@ -132,7 +132,7 @@
             <dependency>
                 <groupId>com.ancevt.util</groupId>
                 <artifactId>commands</artifactId>
-                <version>1.0.1</version>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.d2d2</groupId>

@@ -202,12 +202,22 @@ public class Chat extends DisplayObjectContainer {
 
     public void print(@NotNull String messageText) {
         log.info(messageText);
-        addMessage(messageText);
+
+        if (messageText.contains("\n")) {
+            messageText.lines().forEach(this::print);
+        } else {
+            addMessage(messageText);
+        }
     }
 
     public void print(@NotNull String messageText, @NotNull Color color) {
         log.info(messageText);
-        addMessage(messageText, color);
+
+        if (messageText.contains("\n")) {
+            messageText.lines().forEach(line -> print(line, color));
+        } else {
+            addMessage(messageText, color);
+        }
     }
 
     public void addMessage(@NotNull String messageText) {
