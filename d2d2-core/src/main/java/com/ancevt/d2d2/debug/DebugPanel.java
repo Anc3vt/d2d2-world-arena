@@ -2,6 +2,7 @@
 package com.ancevt.d2d2.debug;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -10,7 +11,7 @@ import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.event.TouchButtonEvent;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.input.MouseButton;
 import com.ancevt.d2d2.touch.TouchButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +24,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.ancevt.d2d2.input.KeyCode.isShift;
-import static java.nio.file.StandardOpenOption.*;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.nio.file.StandardOpenOption.WRITE;
 
 public class DebugPanel extends DisplayObjectContainer {
 
@@ -38,6 +41,7 @@ public class DebugPanel extends DisplayObjectContainer {
     private int oldX;
     private int oldY;
     private boolean shiftDown;
+    private int mouseButton;
 
     private DebugPanel(String systemPropertyName) {
         debugPanels.put(systemPropertyName, this);
@@ -112,6 +116,9 @@ public class DebugPanel extends DisplayObjectContainer {
 
     private void touchButton_touchDown(Event event) {
         var e = (TouchButtonEvent) event;
+
+        mouseButton = e.getMouseButton();
+
         oldX = (int) (e.getX() + getX());
         oldY = (int) (e.getY() + getY());
         dispatchEvent(event);
@@ -120,7 +127,7 @@ public class DebugPanel extends DisplayObjectContainer {
     private void touchButton_touchDrag(Event event) {
         var e = (TouchButtonEvent) event;
 
-        if (shiftDown) {
+        if (mouseButton == MouseButton.RIGHT) {
             bg.setSize(e.getX() + 1, e.getY() + 1);
             if (bg.getWidth() < 5f) {
                 bg.setWidth(5f);
@@ -223,11 +230,14 @@ public class DebugPanel extends DisplayObjectContainer {
 
         DebugPanel.setEnabled(true);
 
-        root.addEventListener(Event.EACH_FRAME, event -> {
-            DebugPanel.show("debug-panel").ifPresent(debugPanel -> {
+        for(int i = 0; i < 1000; i ++) {
+            DebugPanel.show("debug-panel-" + i).ifPresent(debugPanel -> {
                 debugPanel.setText(debugPanel.getX());
+                debugPanel.addEventListener(Event.EACH_FRAME, event -> {
+                    debugPanel.setText(debugPanel.getX());
+                });
             });
-        });
+        }
 
         D2D2.loop();
         DebugPanel.saveAll();

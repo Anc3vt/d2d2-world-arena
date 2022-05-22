@@ -14,6 +14,8 @@ import com.ancevt.util.command.NoSuchCommandException;
 import com.ancevt.util.texttable.TextTable;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.file.Path;
+
 import static com.ancevt.d2d2world.client.net.Client.CLIENT;
 
 @Slf4j
@@ -118,6 +120,48 @@ public class ClientCommandProcessor {
             return null;
         });
 
+        commandSet.registerCommand("/lsexport", "export data from local storage to file [file [group]]", args -> {
+            String file = args.next();
+            String group = args.hasNext() ? args.next() : null;
+            if (group != null) {
+                ls.exportGroupTo(Path.of(file), group);
+            } else {
+                ls.exportTo(Path.of(file));
+            }
+            return null;
+        });
+
+        commandSet.registerCommand("/lssave", "save local storage data", args -> {
+            ls.save();
+            return null;
+        });
+
+        commandSet.registerCommand("/lsload", "load local storage data", args -> {
+            ls.load();
+            return null;
+        });
+
+        commandSet.registerCommand("/lsclear", "clear local storage", args -> {
+            ls.clear();
+            return null;
+        });
+
+        commandSet.registerCommand("/lsdelete", "delete local storage resources on disk", args -> {
+            ls.deleteResources();
+            return null;
+        });
+
+        commandSet.registerCommand("/lsimport", "import data from file to local storage [file [[group]]", args -> {
+            String file = args.next();
+            String group = args.hasNext() ? args.next() : null;
+            if (group != null) {
+                ls.importGroupFrom(Path.of(file), group);
+            } else {
+                ls.importFrom(Path.of(file));
+            }
+            return null;
+        });
+
         // End LocalStorage section
     }
 
@@ -130,7 +174,10 @@ public class ClientCommandProcessor {
             chat.print(text, Color.YELLOW);
             commandSet.execute(text);
         } catch (NoSuchCommandException e) {
-            Chat.getInstance().addMessage(e.getMessage(), Color.RED);
+            chat.print(e.getMessage(), Color.RED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            chat.print(e.toString(), Color.RED);
         }
         return true;
     }
