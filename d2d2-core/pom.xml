@@ -46,6 +46,14 @@
             </snapshots>
         </repository>
         <repository>
+            <id>local-storage-mvn-repo</id>
+            <url>https://raw.github.com/Anc3vt/local-storage/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
             <id>args2-mvn-repo</id>
             <url>https://raw.github.com/Anc3vt/args2/mvn-repo/</url>
             <snapshots>
@@ -77,7 +85,9 @@
         <platform>linux</platform>
 
         <!-- Ancevt -->
-        <ancevt-commons.version>1.0.0.3</ancevt-commons.version>
+        <args.version>2.0.5</args.version>
+        <local-storage.version>1.1.2</local-storage.version>
+        <ancevt-commons.version>1.0.0.4</ancevt-commons.version>
         <texttable.version>0.0.1</texttable.version>
 
         <!-- Log -->
@@ -113,7 +123,6 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     </properties>
 
-
     <dependencies>
 
         <!-- NOTE: run ./before-all.sh to install these jars to your .m2 directory  -->
@@ -139,7 +148,13 @@
         <dependency>
             <groupId>com.ancevt.util</groupId>
             <artifactId>args</artifactId>
-            <version>2.0.4</version>
+            <version>${args.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ancevt.util</groupId>
+            <artifactId>local-storage</artifactId>
+            <version>${local-storage.version}</version>
         </dependency>
 
         <!-- Sound -->
