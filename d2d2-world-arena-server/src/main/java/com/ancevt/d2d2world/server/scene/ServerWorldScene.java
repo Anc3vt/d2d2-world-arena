@@ -32,6 +32,7 @@ import com.ancevt.d2d2world.net.protocol.SyncDataAggregator;
 import com.ancevt.d2d2world.server.content.ServerContentManager;
 import com.ancevt.d2d2world.server.player.Player;
 import com.ancevt.d2d2world.server.service.GeneralService;
+import com.ancevt.d2d2world.sync.StubSyncClientDataSender;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
 import lombok.SneakyThrows;
@@ -136,7 +137,7 @@ public class ServerWorldScene {
             });
 
             gameMap.getRooms().forEach(room -> {
-                World world = new World(new SyncDataAggregator());
+                World world = new World(new SyncDataAggregator(), new StubSyncClientDataSender());
                 world.addEventListener(this, WorldEvent.ACTOR_ATTACK, this::world_actorAttack);
                 world.addEventListener(this, WorldEvent.ACTOR_DEATH, this::world_actorDeath);
                 world.addEventListener(this, WorldEvent.ADD_GAME_OBJECT, this::world_addGameObject);
@@ -486,14 +487,14 @@ public class ServerWorldScene {
         throw new IllegalStateException("No room for world: " + world);
     }
 
-    public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
+    public void playerHealthReport(int connectionId, int healthValue, int damagingGameObjectId) {
         World world = getPlayerActorByPlayerId(connectionId).orElseThrow().getWorld();
 
         IDamaging damagingGameObject = (IDamaging) world.getGameObjectById(damagingGameObjectId);
 
         if (damagingGameObject != null) {
             getPlayerActorByPlayerId(connectionId).ifPresent(
-                    playerActor -> playerActor.damage(damageValue, damagingGameObject)
+                    playerActor -> playerActor.damage(healthValue, damagingGameObject)
             );
         }
 

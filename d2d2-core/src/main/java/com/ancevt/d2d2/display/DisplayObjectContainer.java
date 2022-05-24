@@ -153,6 +153,13 @@ public class DisplayObjectContainer extends DisplayObject implements IDisplayObj
 
         return max - min;
     }
+
+    @Override
+    public String toString() {
+        return "DisplayObjectContainer{" +
+                getName() +
+                '}';
+    }
 }
 
 

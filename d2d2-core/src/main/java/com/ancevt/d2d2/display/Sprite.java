@@ -15,7 +15,7 @@ public class Sprite extends DisplayObject implements ISprite {
     private Texture texture;
     private double textureBleedingFix = 0.0005f;
     private ShaderProgram shaderProgram;
-    private double vertexBleedingFix;
+    private double vertexBleedingFix; // = 0.04f;
 
     public Sprite() {
         setColor(DEFAULT_COLOR);

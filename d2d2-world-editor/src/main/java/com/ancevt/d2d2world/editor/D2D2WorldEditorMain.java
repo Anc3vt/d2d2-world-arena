@@ -1,11 +1,11 @@
 
 package com.ancevt.d2d2world.editor;
 
-import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.properties.PropertyWrapper;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
@@ -15,10 +15,8 @@ import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.editor.util.ScreenUtils;
-import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
-import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
+import com.ancevt.d2d2world.editor.util.ScreenUtils;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -26,19 +24,20 @@ import com.ancevt.d2d2world.world.World;
 import com.ancevt.util.args.Args;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         //Hack to avoid BadAccess bug with JPropertiesEditor under i3wm
         // <hack>
-        var hack = JPropertiesEditor.create("(floating)", "null", null);
-        Async.runLater(1000, TimeUnit.MILLISECONDS, hack::dispose);
+        //var hack = JPropertiesEditor.create("(floating)", "null", null);
+        //Async.runLater(1000, TimeUnit.MILLISECONDS, hack::dispose);
         // </hack>
 
         PropertyWrapper.argsToProperties(args, System.getProperties());
 
         Args a = Args.of(args);
+
+        DebugPanel.setEnabled(a.contains("--debug"));
 
         SoundSystem.setEnabled(!a.contains("--disable-sound"));
         UnixDisplay.setEnabled(a.contains("--colorize-logs"));
@@ -57,6 +56,7 @@ public class D2D2WorldEditorMain {
         D2D2.setSmoothMode(false);
 
         DisplayObjectContainer cameraLayer = new DisplayObjectContainer();
+        cameraLayer.setName("Camera layer, plain DisplayObjectContainer");
 
         GameMap map = MapIO.load(MapIO.getMapFileName());
 
@@ -84,7 +84,10 @@ public class D2D2WorldEditorMain {
             world.getCamera().setViewportSize(D2D2.getStage().getWidth(), D2D2.getStage().getHeight());
         });
 
-        cameraLayer.setScale(2f, 2f);
+
+        // TODO: uncomment
+        // cameraLayer.setScale(2f, 2f);
+
 
         root.addEventListener(InputEvent.MOUSE_WHEEL, e -> {
             if (editorContainer.isMouseAtPanels(Mouse.getX(), Mouse.getY())) return;

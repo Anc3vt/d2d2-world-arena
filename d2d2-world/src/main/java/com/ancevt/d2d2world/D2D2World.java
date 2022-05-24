@@ -24,6 +24,10 @@ public class D2D2World {
         return server;
     }
 
+    public static boolean isClient() {
+        return !isServer();
+    }
+
     public static boolean isEditor() {
         return editor;
     }

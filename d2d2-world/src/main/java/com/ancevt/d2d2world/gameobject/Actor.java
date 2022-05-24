@@ -31,6 +31,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ancevt.d2d2world.D2D2World.isClient;
 import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.constant.AnimationKey.ATTACK;
 import static com.ancevt.d2d2world.constant.AnimationKey.DAMAGE;
@@ -488,17 +489,10 @@ abstract public class Actor extends Animated implements
         return maxHealth;
     }
 
+
     @Override
     public void setHealth(int health) {
-        if (health < 0) health = 0;
-        else if (health > maxHealth) health = maxHealth;
-
-        this.health = health;
-        healthBar.setValue(health);
-
-        if (health <= 0 && isAlive()) death(null);
-
-        if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, null);
+        setHealthBy(health, null, true);
     }
 
     @Override
@@ -512,26 +506,29 @@ abstract public class Actor extends Animated implements
             playSound("character-damage.ogg");
         }
 
-        if (fromServer || isServer()) {
-            this.health = health;
-            if (health <= 0 && isAlive()) death(damaging);
-            healthBar.setValue(health);
+        this.health = health;
+        if (health <= 0 && isAlive()) death(damaging);
+        healthBar.setValue(health);
+
+        if (isClient() && !fromServer) {
+
         }
 
-        if (isOnWorld()) {
-            getWorld().getSyncDataAggregator().health(this, damaging);
-        }
+        if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, damaging);
+    }
+
+    private void test(int someSomeSome) {
+
     }
 
     @Override
     public void damage(int toHealth, IDamaging damaging) {
         if (toHealth > 0) {
             if (damagingTime > 0) return;
-
             if (attackTime == 0) setAnimation(AnimationKey.DAMAGE);
         }
 
-        setHealthBy(getHealth() - toHealth, damaging, false);
+        setHealthBy(getHealth() - toHealth, damaging, true);
     }
 
     private void damageBlink() {

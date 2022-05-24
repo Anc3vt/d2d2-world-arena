@@ -2,11 +2,11 @@
 package com.ancevt.d2d2world.world;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.norender.NoRenderBackend;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.backend.norender.NoRenderBackend;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.IGameObject;
@@ -21,7 +21,9 @@ import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.Room;
 import com.ancevt.d2d2world.process.PlayProcessor;
+import com.ancevt.d2d2world.sync.ISyncClientDataSender;
 import com.ancevt.d2d2world.sync.ISyncDataAggregator;
+import com.ancevt.d2d2world.sync.StubSyncClientDataSender;
 import com.ancevt.d2d2world.sync.StubSyncDataAggregator;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,10 +58,12 @@ public class World extends DisplayObjectContainer {
     private boolean playing;
     private boolean switchingRoomsNow;
     private ISyncDataAggregator syncDataAggregator;
+    private ISyncClientDataSender syncClientDataSender;
     private Overlay overlay;
 
-    public World(@NotNull ISyncDataAggregator syncManager) {
-        this.syncDataAggregator = syncManager;
+    public World(@NotNull ISyncDataAggregator syncDataAggregator, @NotNull ISyncClientDataSender syncClientDataSender) {
+        this.syncDataAggregator = syncDataAggregator;
+        this.syncClientDataSender = syncClientDataSender;
 
         gameObjectMap = new HashMap<>();
         gameObjects = new CopyOnWriteArrayList<>();
@@ -75,7 +79,7 @@ public class World extends DisplayObjectContainer {
     }
 
     public World() {
-        this(new StubSyncDataAggregator());
+        this(new StubSyncDataAggregator(), new StubSyncClientDataSender());
     }
 
     public void setSyncDataAggregator(ISyncDataAggregator syncDataAggregator) {
@@ -84,6 +88,14 @@ public class World extends DisplayObjectContainer {
 
     public @NotNull ISyncDataAggregator getSyncDataAggregator() {
         return syncDataAggregator;
+    }
+
+    public void setSyncClientDataSender(ISyncClientDataSender syncClientDataSender) {
+        this.syncClientDataSender = syncClientDataSender;
+    }
+
+    public ISyncClientDataSender getSyncClientDataSender() {
+        return syncClientDataSender;
     }
 
     public PlayProcessor getPlayProcessor() {

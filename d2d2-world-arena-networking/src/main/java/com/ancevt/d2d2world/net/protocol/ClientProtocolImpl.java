@@ -102,10 +102,10 @@ public final class ClientProtocolImpl extends ProtocolImpl {
                 .toByteArray();
     }
 
-    public static byte[] createMessageDamageReport(int damage, int damagingGameObjectId) {
+    public static byte[] createMessageHealthReport(int healthValue, int damagingGameObjectId) {
         return ByteOutputWriter.newInstance()
-                .writeByte(MessageType.CLIENT_DAMAGE_REPORT)
-                .writeShort(damage)
+                .writeByte(MessageType.CLIENT_HEALTH_REPORT)
+                .writeShort(healthValue)
                 .writeInt(damagingGameObjectId)
                 .toByteArray();
     }

@@ -160,8 +160,8 @@ public class GeneralService implements ServerProtocolImplListener, ServerChatLis
      * {@link ServerProtocolImplListener} method
      */
     @Override
-    public void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId) {
-        SERVER_WORLD_SCENE.playerDamageReport(connectionId, damageValue, damagingGameObjectId);
+    public void playerHealthReport(int connectionId, int healthValue, int damagingGameObjectId) {
+        SERVER_WORLD_SCENE.playerHealthReport(connectionId, healthValue, damagingGameObjectId);
     }
 
     /**

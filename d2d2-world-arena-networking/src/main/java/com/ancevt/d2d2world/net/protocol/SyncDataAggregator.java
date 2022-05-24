@@ -52,7 +52,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public void sound(ISonicSynchronized gameObject, String soundFilenameFromMapkit) {
+    public void sound(@NotNull ISonicSynchronized gameObject, String soundFilenameFromMapkit) {
         buffer.writeByte(SyncDataType.SOUND)
                 .writeInt(gameObject.getGameObjectId())
                 .writeUtf(byte.class, soundFilenameFromMapkit);
@@ -60,8 +60,8 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public void pickupDisappear(Pickup pickup) {
-        buffer.writeByte(SyncDataType.PICKUP_DISAPPEAR)
+    public void pickupDisappear(@NotNull Pickup pickup) {
+        buffer.writeByte(SyncDataType.PICKUP_DISAPPEAR)J
                 .writeInt(pickup.getGameObjectId());
     }
 
@@ -88,7 +88,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public void switchWeapon(Actor actor) {
+    public void switchWeapon(@NotNull Actor actor) {
         buffer.writeByte(SyncDataType.SWITCH_WEAPON)
                 .writeInt(actor.getGameObjectId())
                 .writeUtf(byte.class, actor.getCurrentWeapon().getClass().getName());

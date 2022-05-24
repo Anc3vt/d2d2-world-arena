@@ -176,7 +176,7 @@ public class PlayProcessor {
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
 
-        if(isServer()) o.damage(damagingPower, damaging);
+        o.damage(damagingPower, damaging);
     }
 
     private void processHook(@NotNull IHookable o, @NotNull AreaHook hook) {
@@ -273,8 +273,7 @@ public class PlayProcessor {
     }
 
     private void processGravity(@NotNull IGravitational o) {
-        //if (!isServer() || !o.isGravityEnabled()) return;
-        if(!isServer() && o instanceof DestroyableBox) return;
+        if (!isServer() && o instanceof DestroyableBox) return;
 
         if (!o.isGravityEnabled()) return;
 
@@ -295,6 +294,12 @@ public class PlayProcessor {
         } else {
             o.setVelocityX(Math.abs(velX) < 0.1f ? 0 : velX * 0.95f);
         }
+
+        if (isServer() && !isEditor() && o instanceof PlayerActor playerActor) {
+
+            return;
+        }
+
         o.move(o.getVelocityX(), o.getVelocityY());
     }
 

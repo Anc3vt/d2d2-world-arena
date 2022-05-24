@@ -53,7 +53,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.ancevt.d2d2world.client.net.PlayerManager.PLAYER_MANAGER;
 import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.MODULE_CLIENT_PROTOCOL;
-import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageDamageReport;
+import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageHealthReport;
 import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessageFileRequest;
 import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePing;
 import static com.ancevt.d2d2world.net.protocol.ClientProtocolImpl.createMessagePlayerAimXY;
@@ -315,8 +315,8 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
         sender.send(ClientProtocolImpl.createMessageHook(hookGameObjectId));
     }
 
-    public void sendDamageReport(int damageValue, int damagingGameObjectId) {
-        sender.send(createMessageDamageReport(damageValue, damagingGameObjectId));
+    public void sendHealthReport(int healthValue, int damagingGameObjectId) {
+        sender.send(createMessageHealthReport(healthValue, damagingGameObjectId));
     }
 
     public void sendAimXY(float aimX, float aimY) {

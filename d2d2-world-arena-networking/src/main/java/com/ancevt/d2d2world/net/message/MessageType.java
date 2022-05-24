@@ -34,7 +34,7 @@ public class MessageType {
     /**
      * b)t s)damageValue
      */
-    public static final int CLIENT_DAMAGE_REPORT = 8;
+    public static final int CLIENT_HEALTH_REPORT = 8;
 
 
     /**

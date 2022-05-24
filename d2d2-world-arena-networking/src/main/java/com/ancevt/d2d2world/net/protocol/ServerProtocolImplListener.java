@@ -18,7 +18,7 @@ public non-sealed interface ServerProtocolImplListener extends ProtocolImplListe
 
     default void playerWeaponSwitch(int connectionId, int delta){}
 
-    default void playerDamageReport(int connectionId, int damageValue, int damagingGameObjectId){}
+    default void playerHealthReport(int connectionId, int damageValue, int damagingGameObjectId){}
 
     default void playerXY(int connectionId, float x, float y){}
 

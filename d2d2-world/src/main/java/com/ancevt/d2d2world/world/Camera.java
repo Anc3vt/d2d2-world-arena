@@ -1,7 +1,9 @@
 
 package com.ancevt.d2d2world.world;
 
+import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.gameobject.IDirectioned;
 import com.ancevt.d2d2world.gameobject.IGameObject;
@@ -11,8 +13,8 @@ import static java.lang.Math.abs;
 
 public class Camera {
 
-    public static final int DEFAULT_VIEWPORT_WIDTH = 420;
-    public static final int DEFAULT_VIEWPORT_HEIGHT = 240;
+    public static final float DEFAULT_VIEWPORT_WIDTH = D2D2World.ORIGIN_WIDTH;
+    public static final float DEFAULT_VIEWPORT_HEIGHT = D2D2World.ORIGIN_HEIGHT;
     public static float DEFAULT_ZOOM = 1.0f;
 
     private static final float MIN_ZOOM = 0.2f;
@@ -24,11 +26,10 @@ public class Camera {
     private float viewportWidth;
     private float viewportHeight;
 
-    private int boundWidth;
-    private int boundHeight;
+    private float boundWidth;
+    private float boundHeight;
     private IGameObject attachedTo;
     private int direction;
-    private boolean autoZoom;
 
     public Camera(World world) {
         this.world = world;
@@ -57,7 +58,7 @@ public class Camera {
     }
 
     public float getZoom() {
-        return cameraLayer().getScaleX();
+        return worldParent().getScaleX();
     }
 
     public void zoom(float delta) {
@@ -67,11 +68,11 @@ public class Camera {
     public void setZoom(float zoom) {
         if (zoom < 1.1f) zoom = 1.0f;
 
-        cameraLayer().setScale(zoom, zoom);
-        if (cameraLayer().getScaleX() < MIN_ZOOM)
-            cameraLayer().setScale(MIN_ZOOM, MIN_ZOOM);
-        else if (cameraLayer().getScaleX() > MAX_ZOOM)
-            cameraLayer().setScale(MAX_ZOOM, MAX_ZOOM);
+        worldParent().setScale(zoom, zoom);
+        if (worldParent().getScaleX() < MIN_ZOOM)
+            worldParent().setScale(MIN_ZOOM, MIN_ZOOM);
+        else if (worldParent().getScaleX() > MAX_ZOOM)
+            worldParent().setScale(MAX_ZOOM, MAX_ZOOM);
 
         if (isBoundsLock()) fixBounds();
     }
@@ -111,7 +112,7 @@ public class Camera {
         if (isBoundsLock()) fixBounds();
     }
 
-    public final DisplayObjectContainer cameraLayer() {
+    public final DisplayObjectContainer worldParent() {
         return world.getParent();
     }
 
@@ -134,39 +135,63 @@ public class Camera {
 
         float minLimitX = halfViewportWidth / z;
         float minLimitY = halfViewportHeight / z;
-        float maxLimitX = (boundWidth - halfViewportWidth / z);
-        float maxLimitY = (boundHeight - halfViewportHeight / z);
+        float maxLimitX = boundWidth - halfViewportWidth / z;
+        float maxLimitY = boundHeight - halfViewportHeight / z;
 
-        try {
-            if (getX() < minLimitX) setX(minLimitX);
-            else if (getX() > maxLimitX) setX(maxLimitX);
+        if (getX() < minLimitX) setX(minLimitX);
+        else if (getX() > maxLimitX) setX(maxLimitX);
+        if (getY() < minLimitY) setY(minLimitY);
+        else if (getY() > maxLimitY) setY(maxLimitY);
 
-            if (getY() < minLimitY) setY(minLimitY);
-            else if (getY() > maxLimitY) setY(maxLimitY);
-        } catch (StackOverflowError e) {
-            setZoom(getZoom() + 0.05f);
+        if (boundWidth < viewportWidth) {
+            //debug("Camera:152: <A>minLX: " + minLimitX + ", minLY: " + minLimitY + " maxLX: " + maxLimitX + ", maxLY: " + maxLimitY);
+            //setX(viewportWidth / 2f - boundWidth / 2f);
         }
+
+        if (boundWidth < viewportWidth / z) setX(boundWidth / 2);
+        if (boundHeight < viewportHeight / z) setY(boundHeight / 2);
+
+        DebugPanel.show("debug.d2d2world.editor.camera", """
+                cameraLayer: \s""" + worldParent().toString() + """
+                                
+                zoom:        \s""" + z + """
+                                
+                bound:       \s""" + boundWidth + """
+
+                viewport:    \s""" + viewportWidth + """
+                                
+                halfvw:      \s""" + halfViewportWidth + """
+                                
+                minLimitX:   \s""" + minLimitX + """
+                                
+                maxLimitX:   \s""" + maxLimitX + """
+                                
+                x:           \s""" + getX() + """
+                                
+                                                
+                worldParent.x: \s""" + worldParent().getX() + """
+                                
+                world.x:       \s""" + world.getX() + """
+                                
+                vw-halfvw:     \s""" + (viewportWidth - halfViewportWidth) + """
+                                
+                abs world.x:   \s""" + world.getAbsoluteX() + """
+                                
+                """
+        );
     }
 
-    public int getBoundHeight() {
-        return boundHeight;
-    }
-
-    public void setBoundHeight(int boundHeight) {
-        this.boundHeight = boundHeight;
-    }
-
-    public int getBoundWidth() {
+    public float getBoundWidth() {
         return boundWidth;
     }
 
-    public void setBoundWidth(int boundWidth) {
-        this.boundWidth = boundWidth;
+    public float getBoundHeight() {
+        return boundHeight;
     }
 
-    public void setBounds(int w, int h) {
-        setBoundWidth(w);
-        setBoundHeight(h);
+    public void setBounds(float w, float h) {
+        boundWidth = w;
+        boundHeight = h;
         if (isBoundsLock()) fixBounds();
     }
 
@@ -180,23 +205,6 @@ public class Camera {
 
     public final void process() {
         processAttached();
-        processAutoZoom();
-    }
-
-    private void processAutoZoom() {
-        if (!autoZoom) return;
-
-        float speed = 0.005f;
-
-        float zoom = getZoom();
-
-        if (abs(zoom - 1.0f) < 0.005f) {
-            setZoom(DEFAULT_ZOOM);
-            return;
-        }
-
-        if (zoom > 1.0f) setZoom(zoom - speed);
-        else if (zoom < 1.0f) setZoom(zoom + speed);
     }
 
     private void processAttached() {
@@ -244,11 +252,4 @@ public class Camera {
         return direction;
     }
 
-    public boolean isAutoZoom() {
-        return autoZoom;
-    }
-
-    public void setAutoZoom(boolean autoZoom) {
-        this.autoZoom = autoZoom;
-    }
 }

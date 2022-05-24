@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class MapkitToolsPanelEvent extends Event<MapkitToolsPanel> {
+public class MapkitToolsPanelEvent extends Event {
 
     public static final String MAPKIT_ITEM_SELECT = "mapkitItemSelect";
 
