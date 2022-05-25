@@ -163,7 +163,7 @@ public class LWJGLBackend implements D2D2Backend {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setWindowSize(int width, int height) {
         this.width = width;
         this.height = height;
 

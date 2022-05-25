@@ -90,11 +90,15 @@ public class D2D2WorldArenaClientMain {
         startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
         MonitorManager.getInstance().setStartResolution(startVideoMode.getResolution());
 
+        IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
+
+        getStage().setRoot(introRoot);
+
         CONFIG.ifContains(DEBUG_WINDOW_SIZE, value -> {
             var a = Args.of(value, 'x');
             int width = a.next(int.class);
             int height = a.next(int.class);
-            D2D2.getBackend().setSize(width, height);
+            D2D2.getBackend().setWindowSize(width, height);
         });
 
         CONFIG.ifContains(DEBUG_WINDOW_XY, value -> {
@@ -103,10 +107,6 @@ public class D2D2WorldArenaClientMain {
             int y = a.next(int.class);
             D2D2.getBackend().setWindowXY(x, y);
         });
-
-        IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
-
-        getStage().setRoot(introRoot);
 
         D2D2.loop();
         exit();

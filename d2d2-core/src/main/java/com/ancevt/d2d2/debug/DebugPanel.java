@@ -278,10 +278,9 @@ public class DebugPanel extends DisplayObjectContainer {
 
     public static class Button extends BorderedRect {
 
-        private static final float DEFAULT_WIDTH = 30f;
+        private static final float DEFAULT_WIDTH = 35f;
         private static final float DEFAULT_HEIGHT = 12f;
 
-        private final BitmapText bitmapText;
         private final TouchButton touchButton;
 
         private Runnable pressFunction;
@@ -290,7 +289,7 @@ public class DebugPanel extends DisplayObjectContainer {
             super(DEFAULT_WIDTH, DEFAULT_HEIGHT, Color.BLACK, Color.WHITE);
             setBorderWidth(0.2f);
             touchButton = new TouchButton((int) DEFAULT_WIDTH, (int) DEFAULT_HEIGHT, true);
-            bitmapText = new BitmapText(String.valueOf(text));
+            BitmapText bitmapText = new BitmapText(String.valueOf(text));
 
             add(touchButton);
             add(bitmapText, 2, -2);

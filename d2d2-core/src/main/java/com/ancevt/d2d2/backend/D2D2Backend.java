@@ -13,7 +13,7 @@ public interface D2D2Backend {
 
     void start();
 
-    void setSize(int width, int height);
+    void setWindowSize(int width, int height);
 
     int getWidth();
 

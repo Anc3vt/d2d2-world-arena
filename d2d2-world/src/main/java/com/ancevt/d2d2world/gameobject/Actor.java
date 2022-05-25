@@ -511,14 +511,10 @@ abstract public class Actor extends Animated implements
         healthBar.setValue(health);
 
         if (isClient() && !fromServer) {
-
+            if(isOnWorld()) getWorld().getSyncClientDataSender().health(this, damaging);
         }
 
         if (isOnWorld()) getWorld().getSyncDataAggregator().health(this, damaging);
-    }
-
-    private void test(int someSomeSome) {
-
     }
 
     @Override

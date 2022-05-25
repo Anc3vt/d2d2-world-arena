@@ -276,10 +276,9 @@ public class World extends DisplayObjectContainer {
             removePackedScenery(packedSceneryBack);
             removePackedScenery(packedSceneryFore);
 
-            gameObjects.addAll(sceneriesBuffer);
-            sceneriesBuffer.clear();
-
+            //gameObjects.addAll(sceneriesBuffer);
             addSceneries();
+            sceneriesBuffer.clear();
         }
     }
 
@@ -358,10 +357,10 @@ public class World extends DisplayObjectContainer {
     }
 
     public void addGameObject(@NotNull IGameObject gameObject, int layerIndex, boolean updateRoom) {
-        gameObjects.forEach(o -> {
+        for (var o : gameObjects) {
             if (o.getGameObjectId() == gameObject.getGameObjectId())
                 throw new IllegalStateException("duplicate game object id: " + gameObject.getGameObjectId() + " " + gameObject + " and  " + o);
-        });
+        }
 
         IdGenerator.getInstance().addId(gameObject.getGameObjectId());
 

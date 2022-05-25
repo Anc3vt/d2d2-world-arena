@@ -28,7 +28,7 @@ import com.ancevt.d2d2world.net.dto.server.DestroyableBoxDestroyDto;
 import com.ancevt.d2d2world.net.dto.server.PlayerEnterRoomStartResponseDto;
 import com.ancevt.d2d2world.net.dto.server.SetRoomDto;
 import com.ancevt.d2d2world.net.dto.server.SpawnEffectDto;
-import com.ancevt.d2d2world.net.protocol.SyncDataAggregator;
+import com.ancevt.d2d2world.net.sync.SyncDataAggregator;
 import com.ancevt.d2d2world.server.content.ServerContentManager;
 import com.ancevt.d2d2world.server.player.Player;
 import com.ancevt.d2d2world.server.service.GeneralService;

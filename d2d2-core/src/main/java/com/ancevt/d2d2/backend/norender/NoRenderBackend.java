@@ -21,7 +21,7 @@ public class NoRenderBackend implements D2D2Backend {
 
     public NoRenderBackend(int width, int height) {
         D2D2.getTextureManager().setTextureEngine(new LWJGLTextureEngine());
-        setSize(width, height);
+        setWindowSize(width, height);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class NoRenderBackend implements D2D2Backend {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setWindowSize(int width, int height) {
         this.width = width;
         this.height = height;
     }

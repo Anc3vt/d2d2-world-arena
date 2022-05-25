@@ -1,5 +1,5 @@
 
-package com.ancevt.d2d2world.client.net;
+package com.ancevt.d2d2world.net;
 
 import com.ancevt.d2d2world.net.dto.client.PlayerPingReportDto;
 import lombok.extern.slf4j.Slf4j;

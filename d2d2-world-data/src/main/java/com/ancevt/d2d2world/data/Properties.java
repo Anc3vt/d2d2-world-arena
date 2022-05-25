@@ -1,6 +1,9 @@
 
 package com.ancevt.d2d2world.data;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -9,7 +12,7 @@ import java.util.List;
 
 public class Properties {
 
-    public static Object setProperties(Object object, DataEntry dataEntry) {
+    public static Object setProperties(Object object, @NotNull DataEntry dataEntry) {
         try {
             for (int i = 0; i < dataEntry.size(); i++) {
                 String key = dataEntry.getString(i);
@@ -26,6 +29,8 @@ public class Properties {
                 } else if (type == int.class) {
                     method.invoke(object, dataEntry.getInt(key));
                 } else if (type == float.class) {
+                    method.invoke(object, dataEntry.getFloat(key));
+                }else if (type == double.class) {
                     method.invoke(object, dataEntry.getFloat(key));
                 } else if (type == boolean.class) {
                     method.invoke(object, dataEntry.getBoolean(key));
@@ -90,7 +95,7 @@ public class Properties {
         }
     }
 
-    private static Method getSetter(Object object, String property) {
+    private static @Nullable Method getSetter(Object object, String property) {
         List<Class<?>> ifaces = getAllInterfaces(object);
         for (Class<?> iface : ifaces) {
             for (Method method : iface.getDeclaredMethods()) {
@@ -113,13 +118,13 @@ public class Properties {
         return null;
     }
 
-    private static List<Class<?>> getAllInterfaces(Object object) {
+    private static @NotNull List<Class<?>> getAllInterfaces(@NotNull Object object) {
         List<Class<?>> ifaces = new ArrayList<>();
         collectAllInterfaces(ifaces, object.getClass());
         return ifaces;
     }
 
-    private static void collectAllInterfaces(List<Class<?>> ifaces, Class<?> clazz) {
+    private static void collectAllInterfaces(@NotNull List<Class<?>> ifaces, @NotNull Class<?> clazz) {
         List<Class<?>> currentInterfaces = Arrays.stream(clazz.getInterfaces()).toList();
         ifaces.addAll(currentInterfaces);
         currentInterfaces.forEach(c -> collectAllInterfaces(ifaces, c));
@@ -127,13 +132,13 @@ public class Properties {
             collectAllInterfaces(ifaces, clazz.getSuperclass());
     }
 
-    private static List<Method> getAllObjectMethods(Object object) {
+    private static @NotNull List<Method> getAllObjectMethods(@NotNull Object object) {
         List<Method> methods = new ArrayList<>();
         collectAllObjectMethods(methods, object.getClass());
         return methods;
     }
 
-    private static void collectAllObjectMethods(List<Method> methods, Class<?> clazz) {
+    private static void collectAllObjectMethods(@NotNull List<Method> methods, @NotNull Class<?> clazz) {
         List<Method> currentMethods = Arrays.stream(clazz.getMethods()).toList();
         methods.addAll(currentMethods);
         if (clazz.getSuperclass() != Object.class) collectAllObjectMethods(methods, clazz.getSuperclass());
@@ -143,7 +148,7 @@ public class Properties {
         return firstCharLowerCase(removeMethodAccessor(methodName));
     }
 
-    private static String propertyToSetterMethodName(String propertyName) {
+    private static @NotNull String propertyToSetterMethodName(String propertyName) {
         return addSetterMethodAccessor(propertyName);
     }
 
@@ -160,7 +165,7 @@ public class Properties {
         return methodName;
     }
 
-    private static String addSetterMethodAccessor(String methodName) {
+    private static @NotNull String addSetterMethodAccessor(String methodName) {
         return "set" + firstCharUpperCase(methodName);
     }
 

@@ -1,7 +1,6 @@
 
 package com.ancevt.d2d2world.world;
 
-import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.Direction;
@@ -143,14 +142,10 @@ public class Camera {
         if (getY() < minLimitY) setY(minLimitY);
         else if (getY() > maxLimitY) setY(maxLimitY);
 
-        if (boundWidth < viewportWidth) {
-            //debug("Camera:152: <A>minLX: " + minLimitX + ", minLY: " + minLimitY + " maxLX: " + maxLimitX + ", maxLY: " + maxLimitY);
-            //setX(viewportWidth / 2f - boundWidth / 2f);
-        }
-
         if (boundWidth < viewportWidth / z) setX(boundWidth / 2);
         if (boundHeight < viewportHeight / z) setY(boundHeight / 2);
 
+        /*
         DebugPanel.show("debug.d2d2world.editor.camera", """
                 cameraLayer: \s""" + worldParent().toString() + """
                                 
@@ -179,6 +174,7 @@ public class Camera {
                                 
                 """
         );
+        */
     }
 
     public float getBoundWidth() {

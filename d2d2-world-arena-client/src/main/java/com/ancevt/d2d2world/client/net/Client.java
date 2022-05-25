@@ -3,6 +3,7 @@ package com.ancevt.d2d2world.client.net;
 
 import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2world.data.file.FileSystemUtils;
+import com.ancevt.d2d2world.net.ClientSender;
 import com.ancevt.d2d2world.net.dto.Dto;
 import com.ancevt.d2d2world.net.dto.PlayerDto;
 import com.ancevt.d2d2world.net.dto.client.PlayerActorRequestDto;
@@ -389,6 +390,11 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
     }
 
     ///
+
+
+    public ClientSender getSender() {
+        return sender;
+    }
 
     public boolean isEnteredServer() {
         return localPlayerName != null;

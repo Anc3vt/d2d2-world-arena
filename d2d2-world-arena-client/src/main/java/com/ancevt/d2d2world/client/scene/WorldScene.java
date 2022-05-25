@@ -40,7 +40,7 @@ import com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto;
 import com.ancevt.d2d2world.net.dto.client.PlayerReadyToSpawnDto;
 import com.ancevt.d2d2world.net.dto.client.RoomSwitchCompleteDto;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
-import com.ancevt.d2d2world.net.protocol.SyncClientDataSender;
+import com.ancevt.d2d2world.net.sync.SyncClientDataSender;
 import com.ancevt.d2d2world.sound.D2D2WorldSound;
 import com.ancevt.d2d2world.sync.StubSyncDataAggregator;
 import com.ancevt.d2d2world.sync.SyncDataReceiver;
@@ -247,7 +247,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     }
 
     private @NotNull World createWorld() {
-        var world = new World(new StubSyncDataAggregator(), new SyncClientDataSender());
+        var world = new World(new StubSyncDataAggregator(), new SyncClientDataSender(CLIENT.getSender()));
         world.addEventListener(this, WorldEvent.PLAYER_ACTOR_TAKE_BULLET, this::world_playerActorTakeBullet);
         world.addEventListener(this, WorldEvent.ROOM_SWITCH_START, this::world_roomSwitchStart);
         world.addEventListener(this, WorldEvent.ROOM_SWITCH_COMPLETE, this::world_roomSwitchComplete);
@@ -366,7 +366,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
     private void world_playerActorTakeBullet(Event event) {
         var e = (WorldEvent) event;
-        CLIENT.sendHealthReport(e.getBullet().getDamagingPower(), e.getBullet().getGameObjectId());
+        //CLIENT.sendHealthReport(e.getBullet().getDamagingPower(), e.getBullet().getGameObjectId());
     }
 
     public void init() {

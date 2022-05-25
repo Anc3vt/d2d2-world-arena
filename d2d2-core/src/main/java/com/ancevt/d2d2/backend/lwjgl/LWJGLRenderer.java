@@ -201,20 +201,31 @@ public class LWJGLRenderer implements IRenderer {
         double vertexBleedingFix = sprite.getVertexBleedingFix();
         double textureBleedingFix = sprite.getTextureBleedingFix();
 
-        // double vertexBleedingFix = 0d;
-        // double bleedingFix = 0d;
 
-        if(sprite.getName().equals("_renderer_test_")) {
+        if (sprite.getName().equals("_renderer_test_1")) {
 
             DebugPanel.show("debug.d2d2.renderer.bleedingFix",
 
                     """
-                    textureBleedingFix: \s""" + textureBleedingFix + """
-                    
-                    vertexBleedingFix:  \s""" + vertexBleedingFix + """
-                                    
-                    """
-            );
+                            textureBleedingFix: \s""" + textureBleedingFix + """
+                                                
+                            vertexBleedingFix:  \s""" + vertexBleedingFix + """
+                                            
+                            """
+            ).ifPresent(debugPanel -> {
+                debugPanel.addButton("tbf-", () -> {
+                            sprite.setTextureBleedingFix(sprite.getTextureBleedingFix() - 0.005d);
+                        })
+                        .addButton("tbf+", () -> {
+                            sprite.setTextureBleedingFix(sprite.getTextureBleedingFix() + 0.005d);
+                        })
+                        .addButton("vbf-", () -> {
+                            sprite.setVertexBleedingFix(sprite.getVertexBleedingFix() - 0.5d);
+                        })
+                        .addButton("vbf+", () -> {
+                            sprite.setVertexBleedingFix(sprite.getVertexBleedingFix() + 0.5d);
+                        });
+            });
         }
 
         for (int rY = 0; rY < repeatY; rY++) {

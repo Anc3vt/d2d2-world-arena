@@ -1,5 +1,5 @@
 
-package com.ancevt.d2d2world.net.protocol;
+package com.ancevt.d2d2world.net.sync;
 
 import com.ancevt.commons.io.ByteOutputWriter;
 import com.ancevt.d2d2world.gameobject.*;
