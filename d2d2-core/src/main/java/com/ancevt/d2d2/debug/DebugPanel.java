@@ -4,6 +4,7 @@ package com.ancevt.d2d2.debug;
 import com.ancevt.commons.util.ApplicationMainClassNameExtractor;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -19,7 +20,9 @@ import com.ancevt.localstorage.LocalStorage;
 import com.ancevt.localstorage.LocalStorageBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -42,6 +45,9 @@ public class DebugPanel extends DisplayObjectContainer {
     private boolean shiftDown;
     private int mouseButton;
 
+    private final List<Button> buttonList;
+    private final Map<String, Button> buttonMap;
+
     private DebugPanel(String systemPropertyName) {
         debugPanels.put(systemPropertyName, this);
 
@@ -50,6 +56,9 @@ public class DebugPanel extends DisplayObjectContainer {
 
         this.systemPropertyName = systemPropertyName;
         addEventListener(Event.EACH_FRAME, this::this_eachFrame);
+
+        buttonList = new ArrayList<>();
+        buttonMap = new HashMap<>();
 
         bg = new PlainRect(width, height, Color.BLACK);
         bg.setAlpha(0.75f);
@@ -197,6 +206,18 @@ public class DebugPanel extends DisplayObjectContainer {
         }
     }
 
+    public DebugPanel addButton(String text, Runnable onPress) {
+        if (!buttonMap.containsKey(text)) {
+            Button button = new Button(text);
+            button.pressFunction = onPress;
+            add(button, buttonList.size() * (Button.DEFAULT_WIDTH + 1), -Button.DEFAULT_HEIGHT);
+            buttonList.add(button);
+            buttonMap.put(text, button);
+        }
+
+        return this;
+    }
+
     public static void saveAll() {
         debugPanels.values().forEach(DebugPanel::save);
     }
@@ -235,11 +256,15 @@ public class DebugPanel extends DisplayObjectContainer {
 
         DebugPanel.setEnabled(true);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1; i++) {
             DebugPanel.show("debug-panel-" + i).ifPresent(debugPanel -> {
                 debugPanel.setText(debugPanel.getX());
                 debugPanel.addEventListener(Event.EACH_FRAME, event -> {
                     debugPanel.setText(debugPanel.getX());
+
+                    debugPanel
+                            .addButton("Move<", () -> debugPanel.moveX(-1))
+                            .addButton("Move>", () -> debugPanel.moveX(1));
                 });
             });
         }
@@ -251,8 +276,68 @@ public class DebugPanel extends DisplayObjectContainer {
         DebugPanel.saveAll();
     }
 
+    public static class Button extends BorderedRect {
+
+        private static final float DEFAULT_WIDTH = 30f;
+        private static final float DEFAULT_HEIGHT = 12f;
+
+        private final BitmapText bitmapText;
+        private final TouchButton touchButton;
+
+        private Runnable pressFunction;
+
+        public Button(Object text) {
+            super(DEFAULT_WIDTH, DEFAULT_HEIGHT, Color.BLACK, Color.WHITE);
+            setBorderWidth(0.2f);
+            touchButton = new TouchButton((int) DEFAULT_WIDTH, (int) DEFAULT_HEIGHT, true);
+            bitmapText = new BitmapText(String.valueOf(text));
+
+            add(touchButton);
+            add(bitmapText, 2, -2);
+
+            touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, this::touchButton_touchDown);
+
+            addEventListener(this, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
+        }
+
+        private void touchButton_touchDown(Event event) {
+            if (pressFunction != null) {
+                pressFunction.run();
+            }
+        }
+
+        private void this_removeFromStage(Event event) {
+            removeEventListener(this, Event.REMOVE_FROM_STAGE);
+            touchButton.setEnabled(false);
+        }
+
+    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
