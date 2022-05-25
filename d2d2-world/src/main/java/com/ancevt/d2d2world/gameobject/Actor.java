@@ -492,7 +492,7 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void setHealth(int health) {
-        setHealthBy(health, null, true);
+        setHealthBy(health, null, false);
     }
 
     @Override
@@ -518,13 +518,13 @@ abstract public class Actor extends Animated implements
     }
 
     @Override
-    public void damage(int toHealth, IDamaging damaging) {
-        if (toHealth > 0) {
+    public void damage(int fromHealth, IDamaging damaging) {
+        if (fromHealth > 0) {
             if (damagingTime > 0) return;
             if (attackTime == 0) setAnimation(AnimationKey.DAMAGE);
         }
 
-        setHealthBy(getHealth() - toHealth, damaging, true);
+        setHealthBy(getHealth() - fromHealth, damaging, false);
     }
 
     private void damageBlink() {

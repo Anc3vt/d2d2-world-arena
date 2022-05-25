@@ -44,8 +44,8 @@ public class D2D2WorldEditorMain {
         SoundSystem.setEnabled(!a.contains("--disable-sound"));
         UnixDisplay.setEnabled(a.contains("--colorize-logs"));
 
-        MapIO.setMapkitsDirectory(a.get("--mapkits-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/"));
-        MapIO.setMapsDirectory(a.get("--maps-directory", "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/maps/"));
+        MapIO.setMapkitsDirectory(a.get("--mapkits-directory", "/home/ancevt/workspace/ancevt/d2d2-world-arena//d2d2-world-arena-server/data/mapkits/"));
+        MapIO.setMapsDirectory(a.get("--maps-directory", "/home/ancevt/workspace/ancevt/d2d2-world-arena/d2d2-world-arena-server/data/maps/"));
         MapIO.setMapFileName(a.get("--map-filename", "map0.wam"));
 
         var screenDimension = ScreenUtils.getDimension();

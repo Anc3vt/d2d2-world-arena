@@ -494,7 +494,7 @@ public class ServerWorldScene {
 
         if (damagingGameObject != null) {
             getPlayerActorByPlayerId(connectionId).ifPresent(
-                    playerActor -> playerActor.damage(healthValue, damagingGameObject)
+                    playerActor -> playerActor.setHealthBy(healthValue, damagingGameObject, false)
             );
         }
 

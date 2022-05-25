@@ -73,7 +73,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     private IConnection connection;
     private final List<ClientListener> clientListeners;
-    private ClientSender sender;
+    private final ClientSender sender;
     private String serverProtocolVersion;
     private long pingRequestTime;
     private int localPlayerId;
@@ -85,6 +85,9 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
     private Client() {
         this.syncDataReceiver = new SyncDataReceiver();
+
+        sender = new ClientSender();
+
         clientListeners = new CopyOnWriteArrayList<>();
         pingValues = new LinkedList<>();
 
@@ -408,7 +411,7 @@ public class Client implements ConnectionListener, ClientProtocolImplListener {
 
         connection = TcpFactory.createConnection(0);
         log.info("connecting... Connection object: {}", connection);
-        sender = new ClientSender(connection);
+        sender.setConnection(connection);
         connection.addConnectionListener(this);
         connection.asyncConnect(host, port);
     }

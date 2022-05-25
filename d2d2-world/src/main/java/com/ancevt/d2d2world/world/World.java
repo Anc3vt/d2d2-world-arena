@@ -252,8 +252,6 @@ public class World extends DisplayObjectContainer {
     public final void setSceneryPacked(boolean sceneryPacked) {
         if (this.sceneryPacked == sceneryPacked) return;
 
-        System.out.println("SP: " + sceneryPacked);
-
         this.sceneryPacked = sceneryPacked;
 
         final int TARGET_LAYER_INDEX_BG = 0;

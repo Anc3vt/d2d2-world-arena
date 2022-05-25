@@ -12,10 +12,17 @@ import static com.ancevt.d2d2world.net.serialization.JsonEngine.gson;
 
 @Slf4j
 public class ClientSender {
-    private final IConnection connection;
+    private IConnection connection;
 
-    public ClientSender(IConnection connection) {
+    public ClientSender() {
+    }
+
+    public void setConnection(IConnection connection) {
         this.connection = connection;
+    }
+
+    public IConnection getConnection() {
+        return connection;
     }
 
     public void send(byte[] bytes) {

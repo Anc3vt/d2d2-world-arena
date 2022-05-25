@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ancevt.d2d2world.D2D2World.isClient;
 import static com.ancevt.d2d2world.D2D2World.isEditor;
 import static com.ancevt.d2d2world.D2D2World.isServer;
 
@@ -176,7 +177,11 @@ public class PlayProcessor {
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
 
-        o.damage(damagingPower, damaging);
+        if(o instanceof PlayerActor playerActor) {
+            if(isClient()) o.damage(damagingPower, damaging);
+        } else {
+            o.damage(damagingPower, damaging);
+        }
     }
 
     private void processHook(@NotNull IHookable o, @NotNull AreaHook hook) {
