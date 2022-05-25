@@ -18,6 +18,7 @@ import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.area.AreaTarget;
+import com.ancevt.d2d2world.gameobject.area.AreaWater;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
@@ -177,8 +178,10 @@ public class PlayProcessor {
         if (damaging.getDamagingOwnerActor() == o) return;
         int damagingPower = damaging.getDamagingPower();
 
-        if(o instanceof PlayerActor playerActor) {
-            if(isClient()) o.damage(damagingPower, damaging);
+        if (damaging instanceof AreaWater) return;
+
+        if (o instanceof PlayerActor playerActor) {
+            if (isClient()) o.damage(damagingPower, damaging);
         } else {
             o.damage(damagingPower, damaging);
         }
