@@ -145,36 +145,6 @@ public class Camera {
         if (boundWidth < viewportWidth / z) setX(boundWidth / 2);
         if (boundHeight < viewportHeight / z) setY(boundHeight / 2);
 
-        /*
-        DebugPanel.show("debug.d2d2world.editor.camera", """
-                cameraLayer: \s""" + worldParent().toString() + """
-                                
-                zoom:        \s""" + z + """
-                                
-                bound:       \s""" + boundWidth + """
-
-                viewport:    \s""" + viewportWidth + """
-                                
-                halfvw:      \s""" + halfViewportWidth + """
-                                
-                minLimitX:   \s""" + minLimitX + """
-                                
-                maxLimitX:   \s""" + maxLimitX + """
-                                
-                x:           \s""" + getX() + """
-                                
-                                                
-                worldParent.x: \s""" + worldParent().getX() + """
-                                
-                world.x:       \s""" + world.getX() + """
-                                
-                vw-halfvw:     \s""" + (viewportWidth - halfViewportWidth) + """
-                                
-                abs world.x:   \s""" + world.getAbsoluteX() + """
-                                
-                """
-        );
-        */
     }
 
     public float getBoundWidth() {

@@ -10,7 +10,6 @@ import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
@@ -122,7 +121,6 @@ public class D2D2WorldEditorMain {
         }
 
         root.add(new FpsMeter(), 5, 0);
-        D2D2.getStage().setScaleMode(ScaleMode.REAL);
         D2D2.loop();
         DebugPanel.saveAll();
         System.exit(0);

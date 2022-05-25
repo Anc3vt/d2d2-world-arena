@@ -6,7 +6,6 @@ import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
@@ -76,7 +75,6 @@ public class HealthPickup extends Pickup {
         root.add(pickup, 100, 100);
 
         root.add(new FpsMeter());
-        D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
     }
 }

@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-core</artifactId>
-            <version>1.0.0.5-alpha</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

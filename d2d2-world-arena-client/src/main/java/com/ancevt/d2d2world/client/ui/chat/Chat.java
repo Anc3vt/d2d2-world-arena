@@ -405,7 +405,6 @@ public class Chat extends DisplayObjectContainer {
                 }
             }
         });
-        D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
     }
 

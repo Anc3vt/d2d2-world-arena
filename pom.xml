@@ -37,6 +37,14 @@
 
     <repositories>
         <repository>
+            <id>d2d2-mvn-repo</id>
+            <url>https://raw.github.com/Anc3vt/d2d2/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
             <id>ancevt-commons-mvn-repo</id>
             <url>https://raw.github.com/Anc3vt/ancevt-commons/mvn-repo/</url>
             <snapshots>
@@ -79,7 +87,6 @@
     </repositories>
 
     <modules>
-        <module>d2d2-core</module>
         <module>d2d2-panels</module>
         <module>d2d2-world</module>
         <module>d2d2-world-data</module>
@@ -137,7 +144,7 @@
             <dependency>
                 <groupId>com.ancevt.d2d2</groupId>
                 <artifactId>d2d2-core</artifactId>
-                <version>1.0.0.5-alpha</version>
+                <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.d2d2</groupId>

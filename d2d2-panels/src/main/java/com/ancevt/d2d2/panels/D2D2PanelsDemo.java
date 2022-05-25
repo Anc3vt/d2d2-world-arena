@@ -5,7 +5,6 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
 
@@ -15,7 +14,6 @@ public class D2D2PanelsDemo {
 
         Stage stage = D2D2.getStage();
 
-        stage.setScaleMode(ScaleMode.REAL);
         stage.setStageSize(800, 600);
 
         final Root root = new Root();

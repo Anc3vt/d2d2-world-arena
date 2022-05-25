@@ -6,7 +6,6 @@ import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Root;
-import com.ancevt.d2d2.display.ScaleMode;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.TouchButtonEvent;
@@ -34,7 +33,6 @@ public class UiTextInput extends DisplayObjectContainer implements EventListener
         uiTextInput1.setText("AAAAAAAAAAAAAAAAAAA");
 
         UiTextInputProcessor.enableRoot(root);
-        D2D2.getStage().setScaleMode(ScaleMode.EXTENDED);
         D2D2.loop();
     }
 
