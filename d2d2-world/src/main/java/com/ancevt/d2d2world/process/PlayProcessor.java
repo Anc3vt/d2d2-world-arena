@@ -296,7 +296,6 @@ public class PlayProcessor {
         }
 
         if (isServer() && !isEditor() && o instanceof PlayerActor playerActor) {
-
             return;
         }
 

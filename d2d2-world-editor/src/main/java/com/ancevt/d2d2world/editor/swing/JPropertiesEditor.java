@@ -25,7 +25,7 @@ public class JPropertiesEditor extends JFrame {
 
     private final JScrollPane scrollPane;
 
-    private static final JPropertiesEditor instance = new JPropertiesEditor();
+    //private static final JPropertiesEditor instance = new JPropertiesEditor();
 
     public static void main(String[] args) {
         create("Test", "some default text", null);
@@ -106,7 +106,9 @@ public class JPropertiesEditor extends JFrame {
 
     @Override
     public void dispose() {
+        //super.dispose();
         setVisible(false);
+
     }
 
     private void ok() {
@@ -115,13 +117,13 @@ public class JPropertiesEditor extends JFrame {
     }
 
     private void resize() {
-        scrollPane.setSize(getWidth(), getHeight() - 40);
+        scrollPane.setSize(getWidth(), getHeight() - 80);
 
         buttonOk.setSize(100, 20);
         buttonCancel.setSize(100, 20);
 
-        buttonOk.setLocation(10, getHeight() - 40);
-        buttonCancel.setLocation(getWidth() - buttonCancel.getWidth() - 10, getHeight() - 40);
+        buttonOk.setLocation(10, getHeight() - 50);
+        buttonCancel.setLocation(getWidth() - buttonCancel.getWidth() - 10, getHeight() - 50);
     }
 
 
@@ -176,7 +178,7 @@ public class JPropertiesEditor extends JFrame {
     }
 
     public static @NotNull JPropertiesEditor create(String title, String text, OkFunction okFunction) {
-        JPropertiesEditor editor = instance;
+        JPropertiesEditor editor = new JPropertiesEditor();
 
         SwingUtilities.invokeLater(() -> {
             editor.setText(text);

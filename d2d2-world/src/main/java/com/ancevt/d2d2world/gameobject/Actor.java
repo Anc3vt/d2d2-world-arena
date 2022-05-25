@@ -666,7 +666,7 @@ abstract public class Actor extends Animated implements
 
         if (isGravityEnabled()) {
             if (floor != null) {
-                setVelocityX(direction == Direction.RIGHT ? velocityX + speed : velocityX - speed);
+                setVelocityX(direction == Direction.RIGHT ? velocityX + speed : velocityX - speed );
             } else {
                 setVelocityX(direction == Direction.RIGHT ? velocityX + speed / 5f : velocityX - speed / 5f);
             }

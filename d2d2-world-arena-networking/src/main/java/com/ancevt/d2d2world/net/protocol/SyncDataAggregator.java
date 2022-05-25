@@ -61,7 +61,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
 
     @Override
     public void pickupDisappear(@NotNull Pickup pickup) {
-        buffer.writeByte(SyncDataType.PICKUP_DISAPPEAR)J
+        buffer.writeByte(SyncDataType.PICKUP_DISAPPEAR)
                 .writeInt(pickup.getGameObjectId());
     }
 

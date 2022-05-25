@@ -13,9 +13,9 @@ public class Sprite extends DisplayObject implements ISprite {
     private int repeatY;
     private Color color;
     private Texture texture;
-    private double textureBleedingFix = 0.0005f;
+    private double textureBleedingFix = 0.00005d;
     private ShaderProgram shaderProgram;
-    private double vertexBleedingFix; // = 0.04f;
+    private double vertexBleedingFix = 0.5;
 
     public Sprite() {
         setColor(DEFAULT_COLOR);
@@ -124,6 +124,17 @@ public class Sprite extends DisplayObject implements ISprite {
     @Override
     public void setTextureBleedingFix(double v) {
         this.textureBleedingFix = v;
+
+        if (getName().equals("_renderer_test_")) {
+
+            System.out.println(v);
+
+            try {
+                throw new Exception();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

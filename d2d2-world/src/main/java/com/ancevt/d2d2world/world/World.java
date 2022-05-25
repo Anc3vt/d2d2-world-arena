@@ -25,6 +25,7 @@ import com.ancevt.d2d2world.sync.ISyncClientDataSender;
 import com.ancevt.d2d2world.sync.ISyncDataAggregator;
 import com.ancevt.d2d2world.sync.StubSyncClientDataSender;
 import com.ancevt.d2d2world.sync.StubSyncDataAggregator;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 import static com.ancevt.d2d2world.D2D2World.isServer;
 import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
 
+@Slf4j
 public class World extends DisplayObjectContainer {
 
     private final List<IGameObject> gameObjects;
@@ -250,6 +252,8 @@ public class World extends DisplayObjectContainer {
     public final void setSceneryPacked(boolean sceneryPacked) {
         if (this.sceneryPacked == sceneryPacked) return;
 
+        System.out.println("SP: " + sceneryPacked);
+
         this.sceneryPacked = sceneryPacked;
 
         final int TARGET_LAYER_INDEX_BG = 0;
@@ -262,12 +266,12 @@ public class World extends DisplayObjectContainer {
             sceneriesBuffer = gameObjects.stream()
                     .filter(gameObject -> gameObject instanceof Scenery scenery && scenery.isStatic())
                     .collect(Collectors.toSet());
-            gameObjects.removeAll(sceneriesBuffer);
 
             packedSceneryFore = SceneryPacker.pack(currentRoom, 7, 8);
             getLayer(TARGET_LAYER_INDEX_FG).add(packedSceneryFore);
 
             removeSceneries();
+            gameObjects.removeAll(sceneriesBuffer);
         } else {
             removePackedScenery(packedSceneryBack);
             removePackedScenery(packedSceneryFore);
@@ -301,7 +305,11 @@ public class World extends DisplayObjectContainer {
     private void addSceneries() {
         for (IGameObject gameObject : getRoom().getGameObjects()) {
             if (!gameObject.hasParent() && gameObject instanceof Scenery scenery && scenery.isStatic()) {
-                addGameObject(scenery, getRoom().getLayerIndexOfGameObject(gameObject), false);
+                try {
+                    addGameObject(scenery, getRoom().getLayerIndexOfGameObject(gameObject), false);
+                } catch (IllegalStateException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
         }
     }

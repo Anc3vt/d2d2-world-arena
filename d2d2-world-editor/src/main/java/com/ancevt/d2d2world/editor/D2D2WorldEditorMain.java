@@ -1,6 +1,7 @@
 
 package com.ancevt.d2d2world.editor;
 
+import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.properties.PropertyWrapper;
 import com.ancevt.commons.unix.UnixDisplay;
 import com.ancevt.d2d2.D2D2;
@@ -16,6 +17,7 @@ import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.editor.panels.MapkitToolsPanel;
+import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
 import com.ancevt.d2d2world.editor.util.ScreenUtils;
 import com.ancevt.d2d2world.map.GameMap;
 import com.ancevt.d2d2world.map.MapIO;
@@ -24,13 +26,14 @@ import com.ancevt.d2d2world.world.World;
 import com.ancevt.util.args.Args;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class D2D2WorldEditorMain {
     public static void main(String[] args) throws IOException {
         //Hack to avoid BadAccess bug with JPropertiesEditor under i3wm
         // <hack>
-        //var hack = JPropertiesEditor.create("(floating)", "null", null);
-        //Async.runLater(1000, TimeUnit.MILLISECONDS, hack::dispose);
+        var hack = JPropertiesEditor.create("(floating)", "", null);
+        Async.runLater(1000, TimeUnit.MILLISECONDS, hack::dispose);
         // </hack>
 
         PropertyWrapper.argsToProperties(args, System.getProperties());

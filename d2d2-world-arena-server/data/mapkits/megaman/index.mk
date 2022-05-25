@@ -7,6 +7,7 @@ id = _sign_room_2 | class = Scenery | atlas = megaman-tileset.png | idle=224,8,3
 id = _sign_room_3 | class = Scenery | atlas = megaman-tileset.png | idle=224,16,32,8
 id = _sign_room_4 | class = Scenery | atlas = megaman-tileset.png | idle=224,24,32,8
 
+id = _test_ | class = Scenery | atlas = megaman-tileset.png | idle=1008,0,16,16
 
 id = _stair_0 | class = Scenery | atlas = megaman-tileset.png | idle=128,0,16,16
 id = _bgg_0 | class = Scenery | atlas = megaman-tileset.png | idle=128,64,32,32
