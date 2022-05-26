@@ -440,8 +440,8 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
             ControlsHelp controlsHelp = new ControlsHelp();
             getRoot().add(controlsHelp,
-                    (D2D2.getStage().getStageWidth() - controlsHelp.getWidth()) / 2,
-                    (D2D2.getStage().getStageHeight() - controlsHelp.getHeight()) / 5
+                    (D2D2.getStage().getWidth() - controlsHelp.getWidth()) / 2,
+                    (D2D2.getStage().getHeight() - controlsHelp.getHeight()) / 5
             );
         });
         getRoot().add(charSelectScene);

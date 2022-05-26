@@ -66,7 +66,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
         }
 
         float totalWidth = map.size() * ThanksTo.IMAGE_WIDTH + 70;
-        setX((D2D2.getStage().getStageWidth() - totalWidth) / 2);
+        setX((D2D2.getStage().getWidth() - totalWidth) / 2);
 
         Holder<Integer> xHolder = new Holder<>(30);
         map.forEach((name, line) -> {
@@ -81,7 +81,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
             add(thanksTo);
             thanksToList.add(thanksTo);
             xHolder.setValue(
-                    (int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (D2D2.getStage().getStageWidth() / ThanksTo.IMAGE_WIDTH))
+                    (int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (D2D2.getStage().getWidth() / ThanksTo.IMAGE_WIDTH))
             );
         });
     }

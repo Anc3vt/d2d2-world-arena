@@ -128,7 +128,7 @@ public class IntroRoot extends Root {
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
             labelThanksTo.setText("Special thanks to");
-            add(labelThanksTo, D2D2.getStage().getStageWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
+            add(labelThanksTo, D2D2.getStage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
 
             ThanksToContainer thanksToContainer = new ThanksToContainer();
             add(thanksToContainer, 0, 300);
@@ -139,12 +139,12 @@ public class IntroRoot extends Root {
             labelVersion.setText(version);
             labelVersion.setWidth(1000);
 
-            add(panel, (getStage().getStageWidth() - panelRect.getWidth()) / 2, (getStage().getStageHeight() - panelRect.getHeight()) / 4);
+            add(panel, (getStage().getWidth() - panelRect.getWidth()) / 2, (getStage().getHeight() - panelRect.getHeight()) / 4);
             UiTextInputProcessor.enableRoot(this);
 
             int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
 
-            add(labelVersion, (getStage().getStageWidth() - labelVersionWidth) / 2, 20);
+            add(labelVersion, (getStage().getWidth() - labelVersionWidth) / 2, 20);
 
             if (CONFIG.getBoolean(AUTO_ENTER, false)) {
                 enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
@@ -167,7 +167,7 @@ public class IntroRoot extends Root {
 
             add(new UAFlag());
 
-            add(new FpsMeter(), D2D2.getStage().getStageWidth() - 50, 5);
+            add(new FpsMeter(), D2D2.getStage().getWidth() - 50, 5);
 
             if (CONFIG.getProperty(PLAYERNAME) != null && CONFIG.getProperty(SERVER) != null) {
                 enter(CONFIG.getProperty(SERVER), CONFIG.getProperty(PLAYERNAME));

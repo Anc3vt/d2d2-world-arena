@@ -60,8 +60,8 @@ public class CharSelectScene extends DisplayObjectContainer {
     private void this_addToStage(Event event) {
         removeEventListener(this, Event.ADD_TO_STAGE);
 
-        final float sw = getStage().getStageWidth();
-        final float sh = getStage().getStageHeight();
+        final float sw = getStage().getWidth();
+        final float sh = getStage().getHeight();
 
         bg.setSize(sw, sh);
 

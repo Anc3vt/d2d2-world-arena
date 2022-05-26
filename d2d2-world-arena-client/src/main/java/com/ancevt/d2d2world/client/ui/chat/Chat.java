@@ -59,8 +59,8 @@ public class Chat extends DisplayObjectContainer {
         history = new ArrayList<>();
         shadowEnabled = true;
 
-        width = D2D2.getStage().getStageWidth() / 2.0f;
-        height = D2D2.getStage().getStageHeight() / 3.0f;
+        width = D2D2.getStage().getWidth() / 2.0f;
+        height = D2D2.getStage().getHeight() / 3.0f;
 
         input.setWidth(20);
         input.addEventListener(UiTextInputEvent.TEXT_ENTER, this::textInputEvent);

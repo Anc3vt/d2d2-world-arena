@@ -14,8 +14,6 @@ public class D2D2PanelsDemo {
 
         Stage stage = D2D2.getStage();
 
-        stage.setStageSize(800, 600);
-
         final Root root = new Root();
 
         // Entry point
@@ -31,7 +29,6 @@ public class D2D2PanelsDemo {
             @Override
             public void onButtonPressed() {
                 System.out.println("size: " + stage.getWidth() + "x" + stage.getHeight());
-                System.out.println("stage size: " + stage.getStageWidth() + "x" + stage.getStageHeight());
                 super.onButtonPressed();
             }
         };
