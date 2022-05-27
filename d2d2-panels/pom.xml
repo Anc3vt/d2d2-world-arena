@@ -29,7 +29,14 @@
     </distributionManagement>
 
     <repositories>
-
+        <repository>
+            <id>d2d2-mvn-repo</id>
+            <url>https://raw.github.com/Anc3vt/d2d2/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
 
     <properties>
