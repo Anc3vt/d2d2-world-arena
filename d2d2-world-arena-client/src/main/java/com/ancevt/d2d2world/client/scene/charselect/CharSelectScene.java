@@ -12,7 +12,7 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Mouse;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.touch.TouchButton;
+import com.ancevt.d2d2.interactive.TouchButton;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.data.DataKey;
@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_CHARACTER;
 

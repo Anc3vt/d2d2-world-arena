@@ -9,7 +9,7 @@ import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TouchButtonEvent;
-import com.ancevt.d2d2.touch.TouchButton;
+import com.ancevt.d2d2.interactive.TouchButton;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

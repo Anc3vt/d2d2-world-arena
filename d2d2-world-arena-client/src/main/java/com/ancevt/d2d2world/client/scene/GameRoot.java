@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
+import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2world.client.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.RCON_PASSWORD;

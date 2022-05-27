@@ -14,6 +14,7 @@ import com.ancevt.d2d2world.client.ui.Button;
 import com.ancevt.d2d2world.client.ui.UiText;
 import org.jetbrains.annotations.NotNull;
 
+import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2.event.Event.ADD_TO_STAGE;
 
 public class DialogWindow extends DisplayObjectContainer {
@@ -111,7 +112,7 @@ public class DialogWindow extends DisplayObjectContainer {
     }
 
     public void ok() {
-        D2D2.getStage().getRoot().removeEventListener(this, InputEvent.KEY_DOWN);
+        getStage().getRoot().removeEventListener(this, InputEvent.KEY_DOWN);
         removeFromParent();
         if (onOkFunction != null) {
             onOkFunction.run();
@@ -119,7 +120,7 @@ public class DialogWindow extends DisplayObjectContainer {
     }
 
     public void cancel() {
-        D2D2.getStage().getRoot().removeEventListener(this, InputEvent.KEY_DOWN);
+        getStage().getRoot().removeEventListener(this, InputEvent.KEY_DOWN);
         removeFromParent();
         if (onCancelFunction != null) {
             onCancelFunction.run();

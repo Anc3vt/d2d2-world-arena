@@ -8,7 +8,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.event.TouchButtonEvent;
-import com.ancevt.d2d2.touch.TouchButton;
+import com.ancevt.d2d2.interactive.TouchButton;
 
 import java.util.ArrayList;
 import java.util.List;

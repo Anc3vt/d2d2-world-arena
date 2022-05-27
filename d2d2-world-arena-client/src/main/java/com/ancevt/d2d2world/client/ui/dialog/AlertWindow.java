@@ -107,8 +107,8 @@ public class AlertWindow extends DisplayObjectContainer {
 
     public void center() {
         setXY(
-                (getStage().getWidth() - getWidth()) / 2f,
-                (getStage().getHeight() - getHeight()) / 2f
+                (D2D2.getStage().getWidth() - getWidth()) / 2f,
+                (D2D2.getStage().getHeight() - getHeight()) / 2f
         );
     }
 

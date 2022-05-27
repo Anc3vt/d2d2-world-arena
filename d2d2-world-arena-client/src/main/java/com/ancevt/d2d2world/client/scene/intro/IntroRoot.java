@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.d2d2.D2D2.getStage;
 import static com.ancevt.d2d2world.client.config.ClientConfig.AUTO_ENTER;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DISPLAY_FULLSCREEN;
@@ -128,7 +129,7 @@ public class IntroRoot extends Root {
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
             labelThanksTo.setText("Special thanks to");
-            add(labelThanksTo, D2D2.getStage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
+            add(labelThanksTo, getStage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
 
             ThanksToContainer thanksToContainer = new ThanksToContainer();
             add(thanksToContainer, 0, 300);
@@ -154,8 +155,8 @@ public class IntroRoot extends Root {
                     float height = getStage().getHeight();
                     var root = getStage().getRoot();
 
-                    plainRect.setWidth(D2D2.getStage().getWidth() * 2);
-                    plainRect.setX(-D2D2.getStage().getWidth());
+                    plainRect.setWidth(getStage().getWidth() * 2);
+                    plainRect.setX(-getStage().getWidth());
 
                     float w = width;
                     float ow = D2D2World.ORIGIN_WIDTH;
@@ -167,7 +168,7 @@ public class IntroRoot extends Root {
 
             add(new UAFlag());
 
-            add(new FpsMeter(), D2D2.getStage().getWidth() - 50, 5);
+            add(new FpsMeter(), getStage().getWidth() - 50, 5);
 
             if (CONFIG.getProperty(PLAYERNAME) != null && CONFIG.getProperty(SERVER) != null) {
                 enter(CONFIG.getProperty(SERVER), CONFIG.getProperty(PLAYERNAME));
@@ -310,8 +311,8 @@ public class IntroRoot extends Root {
                     }, () -> {
                         GameRoot gameRoot = new GameRoot();
                         gameRoot.setServerName(result.getName());
-                        D2D2.getStage().removeEventListener(this, Event.RESIZE);
-                        D2D2.getStage().setRoot(gameRoot);
+                        getStage().removeEventListener(this, Event.RESIZE);
+                        getStage().setRoot(gameRoot);
                         gameRoot.start(uiTextInputServer.getText(), localPlayerName);
                     });
         } else {
@@ -321,7 +322,7 @@ public class IntroRoot extends Root {
 
     private void warningDialog(String text) {
         UiTextInputProcessor.INSTANCE.unfocus();
-        AlertWindow alertWindow = AlertWindow.show(text, D2D2.getStage().getRoot());
+        AlertWindow alertWindow = AlertWindow.show(text, getStage().getRoot());
         alertWindow.setXY(
                 (D2D2World.ORIGIN_WIDTH - alertWindow.getWidth()) / 2,
                 (D2D2World.ORIGIN_HEIGHT - alertWindow.getHeight()) / 2

@@ -6,7 +6,7 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.TouchButtonEvent;
-import com.ancevt.d2d2.touch.TouchButton;
+import com.ancevt.d2d2.interactive.TouchButton;
 
 public class Title extends Component {
 

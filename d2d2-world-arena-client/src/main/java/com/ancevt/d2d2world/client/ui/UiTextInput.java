@@ -12,7 +12,7 @@ import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Clipboard;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.touch.TouchButton;
+import com.ancevt.d2d2.interactive.TouchButton;
 import org.jetbrains.annotations.NotNull;
 
 public class UiTextInput extends DisplayObjectContainer implements EventListener {

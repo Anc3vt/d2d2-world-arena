@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.ancevt.d2d2</groupId>
-        <artifactId>d2d2</artifactId>
+        <groupId>com.ancevt.d2d2world</groupId>
+        <artifactId>d2d2-world-arena</artifactId>
         <version>1.0.0.6-alpha</version>
     </parent>
 
@@ -15,13 +15,6 @@
 
     <name>D2D2 World</name>
     <url>https://github.com/Anc3vt/d2d2</url>
-
-    <licenses>
-        <license>
-            <name>GNU General Public License v3 (GPLv3)</name>
-            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
 
     <developers>
         <developer>

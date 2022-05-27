@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.ancevt.d2d2.D2D2.getStage;
 import static java.lang.String.format;
 
 public class TabWindow extends DisplayObjectContainer {
@@ -65,7 +66,7 @@ public class TabWindow extends DisplayObjectContainer {
 
     private void redraw() {
         int y = 70;
-        plainRect.setSize(D2D2.getStage().getWidth() - STAGE_PADDING * 2, D2D2.getStage().getHeight() - STAGE_PADDING * 2);
+        plainRect.setSize(getStage().getWidth() - STAGE_PADDING * 2, getStage().getHeight() - STAGE_PADDING * 2);
         for (Player player : remotePlayers) {
             Color color = Color.of(player.getColor());
             addPlayerTexts(y, player.getId(), player.getName(), player.getFrags(), player.getPing(), color);

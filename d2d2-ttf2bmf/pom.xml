@@ -13,14 +13,6 @@
 
     <url>https://github.com/Anc3vt/d2d2</url>
 
-
-    <licenses>
-        <license>
-            <name>GNU General Public License v3 (GPLv3)</name>
-            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
-
     <developers>
         <developer>
             <id>ancevt</id>
