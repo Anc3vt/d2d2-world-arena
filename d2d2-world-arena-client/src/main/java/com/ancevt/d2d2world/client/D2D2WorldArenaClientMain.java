@@ -93,9 +93,9 @@ public class D2D2WorldArenaClientMain {
         startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
         MonitorManager.getInstance().setStartResolution(startVideoMode.getResolution());
 
-        IntroScene introRoot = new IntroScene(projectName + " " + version, defaultGameServer);
+        IntroScene introScene = new IntroScene(projectName + " " + version, defaultGameServer);
 
-        stage().add(introRoot);
+        stage().add(introScene);
 
         CONFIG.ifContains(DEBUG_WINDOW_SIZE, value -> {
             var a = Args.of(value, 'x');
