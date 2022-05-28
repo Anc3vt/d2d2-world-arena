@@ -22,16 +22,29 @@
 
     <distributionManagement>
         <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
+            <id>private-ancevt</id>
+            <name>Private Ancevt packages repository</name>
+            <url>https://packages.ancevt.com/private</url>
         </repository>
+        <snapshotRepository>
+            <id>private-ancevt-snapshots</id>
+            <name>Private Ancevt packages repository (snapshots)</name>
+            <url>https://packages.ancevt.com/private-snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
         <repository>
-            <id>d2d2-mvn-repo</id>
-            <url>https://raw.github.com/Anc3vt/d2d2/mvn-repo/</url>
+            <id>ancevt</id>
+            <url>https://packages.ancevt.com/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>ancevt-snapshot</id>
+            <url>https://packages.ancevt.com/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -56,7 +69,7 @@
         <dependency>
             <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 
