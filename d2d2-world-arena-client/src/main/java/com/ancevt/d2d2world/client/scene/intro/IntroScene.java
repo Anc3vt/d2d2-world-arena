@@ -8,10 +8,16 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.common.PlainRect;
+import com.ancevt.d2d2.components.Chooser;
+import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.UiTextInput;
+import com.ancevt.d2d2.components.UiTextInputEvent;
+import com.ancevt.d2d2.components.UiTextInputProcessor;
+import com.ancevt.d2d2.components.dialog.AlertWindow;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
@@ -19,17 +25,10 @@ import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.panels.Button;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.net.ServerInfoRetriever;
-import com.ancevt.d2d2world.client.scene.GameRoot;
+import com.ancevt.d2d2world.client.scene.GameScene;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
-import com.ancevt.d2d2world.client.ui.Chooser;
-import com.ancevt.d2d2world.client.ui.Font;
 import com.ancevt.d2d2world.client.ui.MonitorChooser;
 import com.ancevt.d2d2world.client.ui.ResolutionChooser;
-import com.ancevt.d2d2world.client.ui.UiText;
-import com.ancevt.d2d2world.client.ui.UiTextInput;
-import com.ancevt.d2d2world.client.ui.UiTextInputEvent;
-import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
-import com.ancevt.d2d2world.client.ui.dialog.AlertWindow;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static com.ancevt.d2d2.D2D2.getStage;
+import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2world.client.config.ClientConfig.AUTO_ENTER;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DISPLAY_FULLSCREEN;
@@ -49,9 +48,11 @@ import static com.ancevt.d2d2world.client.config.ClientConfig.SERVER;
 import static java.lang.Integer.parseInt;
 
 @Slf4j
-public class IntroRoot extends Root {
+public class IntroScene extends DisplayObjectContainer {
 
     private static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
+
+    public static IntroScene instance;
 
     private final DisplayObjectContainer panel;
     private final PlainRect panelRect;
@@ -62,10 +63,10 @@ public class IntroRoot extends Root {
     private UiText labelVersion;
     private EventListener addToStageEventListener;
 
-    public IntroRoot(@NotNull String version, String defaultGameServer) {
-        textureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
+    public IntroScene(@NotNull String version, String defaultGameServer) {
+        instance = this;
 
-        setBackgroundColor(Color.BLACK);
+        textureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
 
         UiText labelServer = new UiText();
         labelServer.setText("Server:");
@@ -118,8 +119,8 @@ public class IntroRoot extends Root {
             removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
 
             PlainRect plainRect = new PlainRect(
-                    getStage().getWidth() * 2,
-                    getStage().getHeight() - 300,
+                    stage().getWidth() * 2,
+                    stage().getHeight() - 300,
                     Color.of(0x4d0072)
             );
             add(plainRect);
@@ -129,7 +130,7 @@ public class IntroRoot extends Root {
             UiText labelThanksTo = new UiText();
             labelThanksTo.setVisible(false);
             labelThanksTo.setText("Special thanks to");
-            add(labelThanksTo, getStage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
+            add(labelThanksTo, stage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
 
             ThanksToContainer thanksToContainer = new ThanksToContainer();
             add(thanksToContainer, 0, 300);
@@ -140,35 +141,34 @@ public class IntroRoot extends Root {
             labelVersion.setText(version);
             labelVersion.setWidth(1000);
 
-            add(panel, (getStage().getWidth() - panelRect.getWidth()) / 2, (getStage().getHeight() - panelRect.getHeight()) / 4);
-            UiTextInputProcessor.enableRoot(this);
+            add(panel, (stage().getWidth() - panelRect.getWidth()) / 2, (stage().getHeight() - panelRect.getHeight()) / 4);
+            UiTextInputProcessor.setEnabled(true);
 
             int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
 
-            add(labelVersion, (getStage().getWidth() - labelVersionWidth) / 2, 20);
+            add(labelVersion, (stage().getWidth() - labelVersionWidth) / 2, 20);
 
             if (CONFIG.getBoolean(AUTO_ENTER, false)) {
                 enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
             } else {
-                getStage().addEventListener(this, Event.RESIZE, resizeEvent -> {
-                    float width = getStage().getWidth();
-                    float height = getStage().getHeight();
-                    var root = getStage().getRoot();
+                stage().addEventListener(this, Event.RESIZE, resizeEvent -> {
+                    float width = stage().getWidth();
+                    float height = stage().getHeight();
 
-                    plainRect.setWidth(getStage().getWidth() * 2);
-                    plainRect.setX(-getStage().getWidth());
+                    plainRect.setWidth(stage().getWidth() * 2);
+                    plainRect.setX(-stage().getWidth());
 
                     float w = width;
                     float ow = D2D2World.ORIGIN_WIDTH;
-                    float s = root.getScaleX();
+                    float s = stage().getScaleX();
 
-                    root.setX((w - ow * s) / 2);
+                    stage().setX((w - ow * s) / 2);
                 });
             }
 
             add(new UAFlag());
 
-            add(new FpsMeter(), getStage().getWidth() - 50, 5);
+            add(new FpsMeter(), stage().getWidth() - 50, 5);
 
             if (CONFIG.getProperty(PLAYERNAME) != null && CONFIG.getProperty(SERVER) != null) {
                 enter(CONFIG.getProperty(SERVER), CONFIG.getProperty(PLAYERNAME));
@@ -247,7 +247,7 @@ public class IntroRoot extends Root {
 
         });
 
-        addEventListener(InputEvent.KEY_DOWN, event -> {
+        stage().addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             switch (e.getKeyCode()) {
                 case KeyCode.ENTER -> {
@@ -309,11 +309,13 @@ public class IntroRoot extends Root {
                     .ifPresentOrElse(p -> {
                         warningDialog("The name \"" + localPlayerName + "\" is already taken");
                     }, () -> {
-                        GameRoot gameRoot = new GameRoot();
-                        gameRoot.setServerName(result.getName());
-                        getStage().removeEventListener(this, Event.RESIZE);
-                        getStage().setRoot(gameRoot);
-                        gameRoot.start(uiTextInputServer.getText(), localPlayerName);
+                        GameScene gameScene = new GameScene();
+                        gameScene.setServerName(result.getName());
+                        stage().removeEventListener(this, Event.RESIZE);
+                        stage().removeEventListener(this, InputEvent.KEY_DOWN);
+                        stage().remove(this);
+                        stage().add(gameScene);
+                        gameScene.start(uiTextInputServer.getText(), localPlayerName);
                     });
         } else {
             warningDialog("Server \"" + server + "\"\n is unavailable");
@@ -322,7 +324,7 @@ public class IntroRoot extends Root {
 
     private void warningDialog(String text) {
         UiTextInputProcessor.INSTANCE.unfocus();
-        AlertWindow alertWindow = AlertWindow.show(text, getStage().getRoot());
+        AlertWindow alertWindow = AlertWindow.show(text, stage());
         alertWindow.setXY(
                 (D2D2World.ORIGIN_WIDTH - alertWindow.getWidth()) / 2,
                 (D2D2World.ORIGIN_HEIGHT - alertWindow.getHeight()) / 2

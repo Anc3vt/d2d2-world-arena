@@ -4,8 +4,8 @@ package com.ancevt.d2d2world.sync;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
@@ -82,19 +82,19 @@ public class SyncMotion {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
 
         Sprite sprite = new Sprite("satellite");
 
-        root.add(sprite);
+        stage.add(sprite);
 
-        root.addEventListener(InputEvent.MOUSE_DOWN, event -> {
+        stage.addEventListener(InputEvent.MOUSE_DOWN, event -> {
             if (event instanceof InputEvent e) {
                 SyncMotion.moveMotion(sprite, e.getX(), e.getY());
             }
         });
 
-        root.addEventListener(Event.EACH_FRAME, event -> SyncMotion.process());
+        stage.addEventListener(Event.EACH_FRAME, event -> SyncMotion.process());
 
         D2D2.loop();
     }

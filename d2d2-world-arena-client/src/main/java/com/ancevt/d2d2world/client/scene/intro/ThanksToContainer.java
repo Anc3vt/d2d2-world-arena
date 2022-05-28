@@ -6,7 +6,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.client.net.HttpUtfLoader;
-import com.ancevt.d2d2world.client.ui.component.Preloader;
+import com.ancevt.d2d2world.client.ui.Preloader;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +26,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
         thanksToList = new ArrayList<>();
         addEventListener(this, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
 
-        add(preloader, D2D2.getStage().getWidth() / 2, 50);
+        add(preloader, D2D2.stage().getWidth() / 2, 50);
     }
 
     private void this_removeFromStage(Event event) {
@@ -66,7 +66,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
         }
 
         float totalWidth = map.size() * ThanksTo.IMAGE_WIDTH + 70;
-        setX((D2D2.getStage().getWidth() - totalWidth) / 2);
+        setX((D2D2.stage().getWidth() - totalWidth) / 2);
 
         Holder<Integer> xHolder = new Holder<>(30);
         map.forEach((name, line) -> {
@@ -81,7 +81,7 @@ public class ThanksToContainer extends DisplayObjectContainer {
             add(thanksTo);
             thanksToList.add(thanksTo);
             xHolder.setValue(
-                    (int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (D2D2.getStage().getWidth() / ThanksTo.IMAGE_WIDTH))
+                    (int) (xHolder.getValue() + ThanksTo.IMAGE_WIDTH + (D2D2.stage().getWidth() / ThanksTo.IMAGE_WIDTH))
             );
         });
     }

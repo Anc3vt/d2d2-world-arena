@@ -5,7 +5,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.Property;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
@@ -66,15 +66,14 @@ public class HealthPickup extends Pickup {
     public static void main(String[] args) {
         MapIO.setMapkitsDirectory("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
 
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
         D2D2World.init(true, false);
 
         Pickup pickup = new HealthPickup(BuiltInMapkit.getInstance().getItemById("pickup_" + HealthPickup.class.getSimpleName()), 0);
         pickup.setScale(1.5f, 1.5f);
 
-        root.add(pickup, 100, 100);
-
-        root.add(new FpsMeter());
+        stage.add(pickup, 100, 100);
+        stage.add(new FpsMeter());
         D2D2.loop();
     }
 }

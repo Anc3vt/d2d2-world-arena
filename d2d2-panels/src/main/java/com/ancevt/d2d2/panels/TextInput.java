@@ -4,13 +4,14 @@ package com.ancevt.d2d2.panels;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.interactive.TouchButton;
+
+import static com.ancevt.d2d2.D2D2.stage;
 
 public class TextInput extends Component implements EventListener {
 
@@ -36,7 +37,6 @@ public class TextInput extends Component implements EventListener {
     private final BitmapText bitmapText;
     private final PlainRect cursor;
     private final TouchButton touchButton;
-    private Root root;
 
     public TextInput() {
         rect = new BorderedRect(BACKGROUND_COLOR, BORDER_COLOR);
@@ -47,7 +47,7 @@ public class TextInput extends Component implements EventListener {
         bitmapText.setX(PADDING);
 
         touchButton = new TouchButton();
-        touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e -> {
+        touchButton.addEventListener(TouchButtonEvent.DOWN, e -> {
             onTouch();
         });
 
@@ -73,7 +73,7 @@ public class TextInput extends Component implements EventListener {
     @Override
     public void onFocus() {
         rect.setBorderColor(FOCUSED_BORDER_COLOR);
-        root.addEventListener(InputEvent.KEY_DOWN, this, true);
+        stage().addEventListener(this, InputEvent.KEY_DOWN, this, true);
         relocateCursor();
         add(cursor);
         super.onFocus();
@@ -83,7 +83,7 @@ public class TextInput extends Component implements EventListener {
     public void onFocusLost() {
         rect.setBorderColor(BORDER_COLOR);
         remove(cursor);
-        root.removeEventListener(InputEvent.KEY_DOWN, this);
+        stage().removeEventListener(this, InputEvent.KEY_DOWN);
         super.onFocusLost();
     }
 
@@ -149,7 +149,7 @@ public class TextInput extends Component implements EventListener {
     @Override
     public void dispose() {
         super.dispose();
-        root.removeEventListener(InputEvent.KEY_DOWN, this);
+        stage().removeEventListener(this, InputEvent.KEY_DOWN);
     }
 
     private static boolean isNonChar(int keyCode) {
@@ -185,7 +185,6 @@ public class TextInput extends Component implements EventListener {
                 onTextChange();
             }
             case Event.ADD_TO_STAGE -> {
-                root = getRoot();
                 removeEventListener(Event.ADD_TO_STAGE, this);
             }
         }

@@ -3,9 +3,9 @@ package com.ancevt.d2d2world.client.scene;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 
@@ -49,12 +49,12 @@ public class ControlsHelp extends Sprite {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
         D2D2World.init(false, false);
-        root.setBackgroundColor(Color.DARK_GRAY);
+        stage.setBackgroundColor(Color.DARK_GRAY);
 
-        root.add(new ControlsHelp(), 0, 0);
-        root.setScale(3f, 3f);
+        stage.add(new ControlsHelp(), 0, 0);
+        stage.setScale(3f, 3f);
 
         D2D2.loop();
     }

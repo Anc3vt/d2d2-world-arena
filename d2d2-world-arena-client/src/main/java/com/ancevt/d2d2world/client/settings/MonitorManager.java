@@ -7,10 +7,9 @@ import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
-import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.components.dialog.DialogWindow;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.client.scene.intro.IntroRoot;
-import com.ancevt.d2d2world.client.ui.dialog.DialogWindow;
+import com.ancevt.d2d2world.client.scene.intro.IntroScene;
 import com.ancevt.util.args.Args;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -18,6 +17,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
 import static org.lwjgl.glfw.GLFW.GLFW_DONT_CARE;
 
@@ -113,7 +113,7 @@ public class MonitorManager {
     }
 
     public void setResolution(@NotNull String resolution) {
-        if(resolution.equals(this.resolution)) return;
+        if (resolution.equals(this.resolution)) return;
         safeStoredResolution = getResolution();
         this.resolution = resolution;
     }
@@ -193,56 +193,53 @@ public class MonitorManager {
         }
 
         if (fullscreen && !canceling && !safeStoredResolution.equals(getResolution())) {
-            Root root = D2D2.getStage().getRoot();
-            if (root != null) {
-                String message = """
-                        Screen video mode changed to %s.
-                        Keep this configuration? (%d sec.)""";
+            String message = """
+                    Screen video mode changed to %s.
+                    Keep this configuration? (%d sec.)""";
 
-                dialogWindow = new DialogWindow();
-                dialogWindow.setOnCancelFunction(() -> {
-                    canceling = true;
-                    dialogWindow = null;
-                    MonitorManager.getInstance().setResolution(safeStoredResolution);
-                    MonitorManager.getInstance().setFullscreen(safeStoredFullscreen);
+            dialogWindow = new DialogWindow();
+            dialogWindow.setOnCancelFunction(() -> {
+                canceling = true;
+                dialogWindow = null;
+                MonitorManager.getInstance().setResolution(safeStoredResolution);
+                MonitorManager.getInstance().setFullscreen(safeStoredFullscreen);
 
-                    if (root instanceof IntroRoot introRoot) {
-                        introRoot.updateResolutionControls();
-                        introRoot.setControlsEnabled(true);
-                    }
-                    canceling = false;
-                });
-
-                dialogWindow.setOnOkFunction(() -> {
-                    dialogWindow = null;
-                    if (root instanceof IntroRoot introRoot) {
-                        introRoot.setControlsEnabled(true);
-                    }
-                });
-
-                root.add(dialogWindow);
-                dialogWindow.center();
-
-                if (root instanceof IntroRoot introRoot) {
-                    dialogWindow.setXY(
-                            (D2D2World.ORIGIN_WIDTH - dialogWindow.getWidth()) / 2,
-                            (D2D2World.ORIGIN_HEIGHT - dialogWindow.getHeight()) / 2
-                    );
-
-                    introRoot.setControlsEnabled(false);
+                if (IntroScene.instance != null) {
+                    IntroScene.instance.updateResolutionControls();
+                    IntroScene.instance.setControlsEnabled(true);
                 }
+                canceling = false;
+            });
 
-                Async.run(() -> {
-                    int sec = 10;
+            dialogWindow.setOnOkFunction(() -> {
+                dialogWindow = null;
+                if (IntroScene.instance != null) {
+                    IntroScene.instance.setControlsEnabled(true);
+                }
+            });
 
-                    while (sec > 0) {
-                        if(dialogWindow == null) break;
-                        dialogWindow.setText(message.formatted(getResolution(), sec));
-                        sec--;
-                        new Lock().lock(1, TimeUnit.SECONDS);
-                    }
-                });
+            stage().add(dialogWindow);
+            dialogWindow.center();
+
+            if (IntroScene.instance != null) {
+                dialogWindow.setXY(
+                        (D2D2World.ORIGIN_WIDTH - dialogWindow.getWidth()) / 2,
+                        (D2D2World.ORIGIN_HEIGHT - dialogWindow.getHeight()) / 2
+                );
+
+                IntroScene.instance.setControlsEnabled(false);
             }
+
+            Async.run(() -> {
+                int sec = 10;
+
+                while (sec > 0) {
+                    if (dialogWindow == null) break;
+                    dialogWindow.setText(message.formatted(getResolution(), sec));
+                    sec--;
+                    new Lock().lock(1, TimeUnit.SECONDS);
+                }
+            });
         }
     }
 

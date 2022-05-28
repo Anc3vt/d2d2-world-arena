@@ -31,7 +31,7 @@ public class Button extends Panel {
 
         touchButton = new TouchButton();
 
-        touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e -> {
+        touchButton.addEventListener(TouchButtonEvent.DOWN, e -> {
             Focus.setFocusedComponent(this);
 
             borderLeft.setColor(BORDER_COLOR_2);
@@ -42,7 +42,7 @@ public class Button extends Panel {
             pressed = true;
         });
 
-        touchButton.addEventListener(TouchButtonEvent.TOUCH_UP, event -> {
+        touchButton.addEventListener(TouchButtonEvent.UP, event -> {
             var e = (TouchButtonEvent) event;
 
             borderLeft.setColor(BORDER_COLOR_1);

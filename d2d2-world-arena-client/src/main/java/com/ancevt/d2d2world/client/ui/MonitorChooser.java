@@ -1,5 +1,6 @@
 package com.ancevt.d2d2world.client.ui;
 
+import com.ancevt.d2d2.components.Chooser;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
 
 public class MonitorChooser extends Chooser<Long> {

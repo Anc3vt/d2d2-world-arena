@@ -5,7 +5,6 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.input.MouseButton;
@@ -836,7 +835,7 @@ public class GameObjectEditor {
 
         getWorld().getCamera().setAttachedTo(playerActor);
 
-        Root root = D2D2.getStage().getRoot();
+        Root root = D2D2.stage().getRoot();
 
         root.removeEventListener(this, InputEvent.KEY_DOWN);
         root.addEventListener(this, InputEvent.KEY_DOWN, event -> {

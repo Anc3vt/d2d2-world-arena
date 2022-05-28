@@ -3,11 +3,11 @@ package com.ancevt.d2d2world.client.ui.hud;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.components.UiText;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
-import com.ancevt.d2d2world.client.ui.UiText;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import org.jetbrains.annotations.NotNull;
@@ -43,12 +43,9 @@ public class AmmunitionHud extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
-
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         var a = new AmmunitionHud();
-
-        root.add(a);
-
+        stage.add(a);
         D2D2.loop();
     }
 }

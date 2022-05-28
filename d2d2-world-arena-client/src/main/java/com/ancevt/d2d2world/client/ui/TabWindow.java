@@ -4,10 +4,11 @@ package com.ancevt.d2d2world.client.ui;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.PlainRect;
+import com.ancevt.d2d2.components.UiText;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.client.net.Player;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.ancevt.d2d2.D2D2.getStage;
+import static com.ancevt.d2d2.D2D2.stage;
 import static java.lang.String.format;
 
 public class TabWindow extends DisplayObjectContainer {
@@ -46,8 +47,8 @@ public class TabWindow extends DisplayObjectContainer {
     }
 
     private void addToStage(Event event) {
-        float sw = getStage().getWidth();
-        float sh = getStage().getHeight();
+        float sw = stage().getWidth();
+        float sh = stage().getHeight();
 
         setXY(STAGE_PADDING, STAGE_PADDING);
         plainRect.setAlpha(BACKGROUND_ALPHA);
@@ -66,7 +67,7 @@ public class TabWindow extends DisplayObjectContainer {
 
     private void redraw() {
         int y = 70;
-        plainRect.setSize(getStage().getWidth() - STAGE_PADDING * 2, getStage().getHeight() - STAGE_PADDING * 2);
+        plainRect.setSize(stage().getWidth() - STAGE_PADDING * 2, stage().getHeight() - STAGE_PADDING * 2);
         for (Player player : remotePlayers) {
             Color color = Color.of(player.getColor());
             addPlayerTexts(y, player.getId(), player.getName(), player.getFrags(), player.getPing(), color);
@@ -126,7 +127,7 @@ public class TabWindow extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
 
         TabWindow tabWindow = new TabWindow();
 
@@ -142,7 +143,7 @@ public class TabWindow extends DisplayObjectContainer {
 
         tabWindow.setPlayers(players);
 
-        root.add(tabWindow);
+        stage.add(tabWindow);
 
         D2D2.loop();
     }

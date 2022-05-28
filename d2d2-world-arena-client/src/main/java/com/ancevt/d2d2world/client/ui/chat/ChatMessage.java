@@ -1,11 +1,11 @@
 
 package com.ancevt.d2d2world.client.ui.chat;
 
-import org.jetbrains.annotations.NotNull;
+import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.UiText;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2world.client.ui.Font;
-import com.ancevt.d2d2world.client.ui.UiText;
+import org.jetbrains.annotations.NotNull;
 
 import static java.lang.String.format;
 

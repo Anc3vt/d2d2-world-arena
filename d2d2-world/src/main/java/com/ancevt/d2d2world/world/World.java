@@ -177,7 +177,7 @@ public class World extends DisplayObjectContainer {
     }
 
     public void update() {
-        D2D2.getStage().getRoot().setBackgroundColor(currentRoom.getBackgroundColor());
+        D2D2.stage().setBackgroundColor(currentRoom.getBackgroundColor());
         playProcessor.setGravity(currentMap.getGravity());
         camera.setBounds(currentRoom.getWidth(), currentRoom.getHeight());
     }

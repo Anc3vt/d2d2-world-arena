@@ -4,23 +4,18 @@ package com.ancevt.d2d2.panels;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
 
 public class D2D2PanelsDemo {
     public static void main(String[] args) {
-        D2D2.init(new LWJGLBackend(800, 600, D2D2PanelsDemo.class.getName() + "(floating)"));
-
-        Stage stage = D2D2.getStage();
-
-        final Root root = new Root();
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, D2D2PanelsDemo.class.getName() + "(floating)"));
 
         // Entry point
 
         final TitledPanel panel = new TitledPanel("My title");
 
-        root.add(panel);
+        stage.add(panel);
 
         panel.setHeight(500);
         panel.setXY(50, 50);
@@ -100,9 +95,7 @@ public class D2D2PanelsDemo {
 
         final FpsMeter fpsMeter = new FpsMeter();
         fpsMeter.setXY(0, 0);
-        root.add(fpsMeter);
-        stage.setRoot(root);
-
+        stage.add(fpsMeter);
 
         D2D2.loop();
     }
