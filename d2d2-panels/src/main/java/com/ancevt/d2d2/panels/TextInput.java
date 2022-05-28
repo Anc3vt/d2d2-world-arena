@@ -8,8 +8,8 @@ import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
-import com.ancevt.d2d2.event.TouchButtonEvent;
-import com.ancevt.d2d2.interactive.TouchButton;
+import com.ancevt.d2d2.event.InteractiveButtonEvent;
+import com.ancevt.d2d2.interactive.InteractiveButton;
 
 import static com.ancevt.d2d2.D2D2.stage;
 
@@ -36,7 +36,7 @@ public class TextInput extends Component implements EventListener {
     private final BorderedRect rect;
     private final BitmapText bitmapText;
     private final PlainRect cursor;
-    private final TouchButton touchButton;
+    private final InteractiveButton touchButton;
 
     public TextInput() {
         rect = new BorderedRect(BACKGROUND_COLOR, BORDER_COLOR);
@@ -46,8 +46,8 @@ public class TextInput extends Component implements EventListener {
         bitmapText.setColor(FOREGROUND_COLOR);
         bitmapText.setX(PADDING);
 
-        touchButton = new TouchButton();
-        touchButton.addEventListener(TouchButtonEvent.DOWN, e -> {
+        touchButton = new InteractiveButton();
+        touchButton.addEventListener(InteractiveButtonEvent.DOWN, e -> {
             onTouch();
         });
 

@@ -11,9 +11,9 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.TouchButtonEvent;
+import com.ancevt.d2d2.event.InteractiveButtonEvent;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2.interactive.TouchButton;
+import com.ancevt.d2d2.interactive.InteractiveButton;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.constant.AnimationKey;
@@ -113,7 +113,7 @@ public class CharSelectScene extends DisplayObjectContainer {
         private final MapkitItem mapkitItem;
         private final CharSelectScene charSelectScene;
         private final BorderedRect borderedRect;
-        private final TouchButton touchButton;
+        private final InteractiveButton touchButton;
         private final PlayerActor playerActor;
         private final Sprite decorDoor;
 
@@ -131,7 +131,7 @@ public class CharSelectScene extends DisplayObjectContainer {
 
             addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
 
-            touchButton = new TouchButton(true);
+            touchButton = new InteractiveButton(true);
         }
 
         private void this_addToStage(Event event) {
@@ -153,16 +153,16 @@ public class CharSelectScene extends DisplayObjectContainer {
             add(uiText, -uiText.getTextWidth() / 2 + uiText.getCharWidth() / 2, h - 16);
 
             touchButton.setSize(w, h + 20);
-            touchButton.addEventListener(this, TouchButtonEvent.HOVER, this::touchButton_touchHover);
-            touchButton.addEventListener(this, TouchButtonEvent.OUT, this::touchButton_touchHoverOut);
-            touchButton.addEventListener(this, TouchButtonEvent.UP, this::touchButton_touchUp);
+            touchButton.addEventListener(this, InteractiveButtonEvent.HOVER, this::touchButton_touchHover);
+            touchButton.addEventListener(this, InteractiveButtonEvent.OUT, this::touchButton_touchHoverOut);
+            touchButton.addEventListener(this, InteractiveButtonEvent.UP, this::touchButton_touchUp);
             add(touchButton, borderedRect.getX(), borderedRect.getY());
 
             Mouse.setVisible(true);
         }
 
         private void touchButton_touchUp(Event event) {
-            var e = (TouchButtonEvent) event;
+            var e = (InteractiveButtonEvent) event;
             if (e.isOnArea()) {
                 charSelectScene.dispatchEvent(CharSelectSceneEvent.builder()
                         .type(CharSelectSceneEvent.CHARACTER_SELECT)
