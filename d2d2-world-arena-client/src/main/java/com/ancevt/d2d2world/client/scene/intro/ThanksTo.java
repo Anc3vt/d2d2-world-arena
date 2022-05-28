@@ -3,6 +3,7 @@ package com.ancevt.d2d2world.client.scene.intro;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
+import com.ancevt.d2d2.components.UiText;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.FramedSprite;
@@ -12,8 +13,7 @@ import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.display.texture.TextureUrlLoader;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TextureUrlLoaderEvent;
-import com.ancevt.d2d2world.client.ui.UiText;
-import com.ancevt.d2d2world.client.ui.component.Preloader;
+import com.ancevt.d2d2world.client.ui.Preloader;
 
 public class ThanksTo extends DisplayObjectContainer {
 

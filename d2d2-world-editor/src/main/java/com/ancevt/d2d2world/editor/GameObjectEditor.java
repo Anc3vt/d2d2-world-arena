@@ -5,7 +5,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.IDisplayObject;
-import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2.input.MouseButton;
@@ -836,23 +836,23 @@ public class GameObjectEditor {
 
         getWorld().getCamera().setAttachedTo(playerActor);
 
-        Root root = D2D2.getStage().getRoot();
+        Stage stage = D2D2.stage();
 
-        root.removeEventListener(this, InputEvent.KEY_DOWN);
-        root.addEventListener(this, InputEvent.KEY_DOWN, event -> {
+        stage.removeEventListener(this, InputEvent.KEY_DOWN);
+        stage.addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
             if (e.getKeyCode() == KeyCode.F) playerActor.nextWeapon();
         });
 
-        root.removeEventListener(this, InputEvent.KEY_UP);
-        root.addEventListener(this, InputEvent.KEY_UP, event -> {
+        stage.removeEventListener(this, InputEvent.KEY_UP);
+        stage.addEventListener(this, InputEvent.KEY_UP, event -> {
             var e = (InputEvent) event;
             localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
         });
 
-        root.removeEventListener(this, InputEvent.MOUSE_WHEEL);
-        root.addEventListener(this, InputEvent.MOUSE_WHEEL, event -> {
+        stage.removeEventListener(this, InputEvent.MOUSE_WHEEL);
+        stage.addEventListener(this, InputEvent.MOUSE_WHEEL, event -> {
             var e = (InputEvent) event;
             if (e.getDelta() > 0) {
                 playerActor.nextWeapon();

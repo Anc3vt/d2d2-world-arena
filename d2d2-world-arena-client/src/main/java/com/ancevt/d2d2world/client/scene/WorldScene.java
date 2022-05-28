@@ -4,8 +4,8 @@ package com.ancevt.d2d2world.client.scene;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
-import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
+import com.ancevt.d2d2.components.UiText;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -19,7 +19,6 @@ import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.scene.charselect.CharSelectScene;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
-import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.client.ui.hud.AmmunitionHud;
@@ -60,6 +59,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2world.client.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_GAME_OBJECT_IDS;
@@ -84,7 +84,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private PlayerActor localPlayerActor;
     private final GameObjectTexts gameObjectTexts;
     private final Map<Integer, PlayerActor> playerIdPlayerActorMap;
-    private final Map<Integer, Integer> playerActorGameObjectIdPlayerIdMap;
 
     private List<Weapon> roomChangePlayerActorWeapons;
     private Weapon roomChangePlayerActorCurrentWeapon;
@@ -99,7 +98,6 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         MapIO.setMapkitsDirectory("data/mapkits/");
 
         playerIdPlayerActorMap = new HashMap<>();
-        playerActorGameObjectIdPlayerIdMap = new HashMap<>();
 
         playerTextMap = new HashMap<>();
 
@@ -304,8 +302,8 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private void this_addToStage(Event event) {
         removeEventListener(this, Event.ADD_TO_STAGE);
 
-        float w = D2D2.getStage().getWidth();
-        float h = D2D2.getStage().getHeight();
+        float w = stage().getWidth();
+        float h = stage().getHeight();
 
         overlay = new Overlay(w, h);
         setXY(w / 2, h / 2);
@@ -439,18 +437,18 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
             Mouse.setVisible(false);
 
             ControlsHelp controlsHelp = new ControlsHelp();
-            getRoot().add(controlsHelp,
-                    (D2D2.getStage().getWidth() - controlsHelp.getWidth()) / 2,
-                    (D2D2.getStage().getHeight() - controlsHelp.getHeight()) / 5
+            stage().add(controlsHelp,
+                    (stage().getWidth() - controlsHelp.getWidth()) / 2,
+                    (stage().getHeight() - controlsHelp.getHeight()) / 5
             );
         });
-        getRoot().add(charSelectScene);
+        stage().add(charSelectScene);
     }
 
     private void addRootAndChatEventsIfNotYet() {
         if (!eventsAdded) {
 
-            getRoot().addEventListener(this, InputEvent.MOUSE_DOWN, event -> {
+            stage().addEventListener(this, InputEvent.MOUSE_DOWN, event -> {
                 if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(true);
@@ -460,7 +458,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 }
             });
 
-            getRoot().addEventListener(this, InputEvent.MOUSE_UP, event -> {
+            stage().addEventListener(this, InputEvent.MOUSE_UP, event -> {
                 if (localPlayerActor != null) {
                     final int oldState = localPlayerController.getState();
                     localPlayerController.setB(false);
@@ -470,13 +468,13 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 }
             });
 
-            getRoot().addEventListener(InputEvent.MOUSE_WHEEL, event -> {
+            stage().addEventListener(InputEvent.MOUSE_WHEEL, event -> {
                 var e = (InputEvent) event;
                 int delta = e.getDelta();
                 CLIENT.sendLocalPlayerWeaponSwitch(delta);
             });
 
-            getRoot().addEventListener(InputEvent.KEY_DOWN, event -> {
+            stage().addEventListener(InputEvent.KEY_DOWN, event -> {
                 var e = (InputEvent) event;
                 final int oldState = localPlayerController.getState();
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), true);
@@ -492,7 +490,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 }
             });
 
-            getRoot().addEventListener(InputEvent.KEY_UP, event -> {
+            stage().addEventListener(InputEvent.KEY_UP, event -> {
                 var e = (InputEvent) event;
                 final int oldState = localPlayerController.getState();
                 localPlayerController.key(e.getKeyCode(), e.getKeyChar(), false);
@@ -734,7 +732,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
         uiText.setVisible(false);
         Async.runLater(250, TimeUnit.MILLISECONDS, () -> uiText.setVisible(true));
-        D2D2.getStage().getRoot().add(uiText);
+        stage().add(uiText);
         playerTextMap.put(playerActor, uiText);
     }
 

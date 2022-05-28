@@ -70,14 +70,14 @@ public class Title extends Component {
 		add(borderBottom);
 		
 		titleTouchButton = new TouchButton();
-		titleTouchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e->{
+		titleTouchButton.addEventListener(TouchButtonEvent.DOWN, e->{
 			TouchButtonEvent touchButtonEvent = (TouchButtonEvent)e;
 			oldX = touchButtonEvent.getX();
 			oldY = touchButtonEvent.getY();
 
 		});
 
-		titleTouchButton.addEventListener(TouchButtonEvent.TOUCH_DRAG, e->{
+		titleTouchButton.addEventListener(TouchButtonEvent.DRAG, e->{
 			TouchButtonEvent touchButtonEvent = (TouchButtonEvent)e;
 			float diffX = touchButtonEvent.getX() - oldX;
 			float diffY = touchButtonEvent.getY() - oldY;

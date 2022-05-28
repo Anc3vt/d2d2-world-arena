@@ -6,7 +6,7 @@ import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.norender.NoRenderBackend;
 import com.ancevt.d2d2.debug.FpsMeter;
-import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.IDamaging;
@@ -68,7 +68,7 @@ public class ServerWorldScene {
     private FpsMeter fpsMeter;
 
     private final Map<Integer, PlayerActor> playerActorMap = new ConcurrentHashMap<>();
-    private Root root;
+    private Stage stage;
 
     private ServerWorldScene() {
         MapIO.setMapkitsDirectory("data/mapkits/");
@@ -98,10 +98,10 @@ public class ServerWorldScene {
     }
 
     public void start() {
-        root = D2D2.init(new NoRenderBackend(900, 600));
-        root.addEventListener(this, Event.EACH_FRAME, this::root_eachFrame);
+        stage = D2D2.init(new NoRenderBackend(900, 600));
+        stage.addEventListener(this, Event.EACH_FRAME, this::root_eachFrame);
         fpsMeter = new FpsMeter();
-        root.add(fpsMeter);
+        stage.add(fpsMeter);
         Async.run(D2D2::loop);
     }
 
@@ -149,7 +149,7 @@ public class ServerWorldScene {
                 world.setSceneryPacked(true);
                 world.setPlaying(true);
                 worlds.put(room.getId(), world);
-                root.add(world);
+                stage.add(world);
             });
         } else {
             log.warn("No such map \"{}\"", mapName);

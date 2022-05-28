@@ -7,11 +7,13 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.components.D2D2Components;
 import com.ancevt.d2d2.debug.DebugPanel;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.media.SoundSystem;
 import com.ancevt.d2d2world.D2D2World;
-import com.ancevt.d2d2world.client.scene.GameRoot;
-import com.ancevt.d2d2world.client.scene.intro.IntroRoot;
+import com.ancevt.d2d2world.client.scene.GameScene;
+import com.ancevt.d2d2world.client.scene.intro.IntroScene;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.storage.LocalStorageManager;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
@@ -23,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.Properties;
 
-import static com.ancevt.d2d2.D2D2.getStage;
+import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2.backend.lwjgl.OSDetector.isUnix;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_WINDOW_SIZE;
@@ -78,21 +80,22 @@ public class D2D2WorldArenaClientMain {
 
         String autoEnterPlayerName = CONFIG.getProperty(PLAYERNAME);
 
-        D2D2.init(new LWJGLBackend(
+        Stage stage = D2D2.init(new LWJGLBackend(
                 (int) D2D2World.ORIGIN_WIDTH,
                 (int) D2D2World.ORIGIN_HEIGHT,
                 "(floating) D2D2 World Arena " + autoEnterPlayerName)
         );
 
         D2D2World.init(false, false);
+        D2D2Components.load();
         D2D2WorldArenaClientAssets.load();
 
         startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());
         MonitorManager.getInstance().setStartResolution(startVideoMode.getResolution());
 
-        IntroRoot introRoot = new IntroRoot(projectName + " " + version, defaultGameServer);
+        IntroScene introRoot = new IntroScene(projectName + " " + version, defaultGameServer);
 
-        getStage().setRoot(introRoot);
+        stage().add(introRoot);
 
         CONFIG.ifContains(DEBUG_WINDOW_SIZE, value -> {
             var a = Args.of(value, 'x');
@@ -119,7 +122,7 @@ public class D2D2WorldArenaClientMain {
 
         Chat.getInstance().saveHistory();
         DebugPanel.saveAll();
-        if (GameRoot.INSTANCE != null) GameRoot.INSTANCE.exit();
+        if (GameScene.INSTANCE != null) GameScene.INSTANCE.exit();
 
         log.info("exit");
         System.exit(0);

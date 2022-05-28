@@ -6,7 +6,7 @@ import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.Root;
+import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
@@ -15,7 +15,6 @@ import com.ancevt.d2d2world.client.net.ClientListener;
 import com.ancevt.d2d2world.client.net.Player;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
 import com.ancevt.d2d2world.client.ui.TabWindow;
-import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;
@@ -28,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
-import static com.ancevt.d2d2.D2D2.getStage;
+import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2world.client.ClientCommandProcessor.COMMAND_PROCESSOR;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.RCON_PASSWORD;
@@ -40,12 +39,12 @@ import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
-public class GameRoot extends Root implements ClientListener, FileReceiverManager.FileReceiverManagerListener {
+public class GameScene extends DisplayObjectContainer implements ClientListener, FileReceiverManager.FileReceiverManagerListener {
 
     public static final int DEFAULT_PORT = 2245;
 
     // TODO: refactor
-    public static GameRoot INSTANCE;
+    public static GameScene INSTANCE;
 
     private String server;
     private final WorldScene worldScene;
@@ -54,11 +53,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
     private int attempts;
     private boolean connected;
 
-    public GameRoot() {
-        UiTextInputProcessor.enableRoot(this);
-
-        setBackgroundColor(Color.BLACK);
-
+    public GameScene() {
         CLIENT.addClientListener(this);
 
         Chat.getInstance().addEventListener(ChatEvent.CHAT_TEXT_ENTER, event -> {
@@ -74,7 +69,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             }
         });
 
-        addEventListener(this, InputEvent.KEY_DOWN, event -> {
+        stage().addEventListener(this, InputEvent.KEY_DOWN, event -> {
             var e = (InputEvent) event;
             switch (e.getKeyCode()) {
                 case KeyCode.PAGE_UP -> Chat.getInstance().setScroll(Chat.getInstance().getScroll() - 10);
@@ -118,7 +113,7 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             }
         });
 
-        addEventListener(this, InputEvent.KEY_UP, event -> {
+        stage().addEventListener(this, InputEvent.KEY_UP, event -> {
             var e = (InputEvent) event;
             switch (e.getKeyCode()) {
                 case KeyCode.TAB -> {
@@ -143,10 +138,10 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
         addEventListener(this, Event.ADD_TO_STAGE, event -> {
             removeEventListener(this, Event.ADD_TO_STAGE);
-            getStage().addEventListener(this, Event.RESIZE, resizeEvent -> {
-                Chat.getInstance().setWidth(getStage().getWidth());
-                Chat.getInstance().setHeight(getStage().getHeight() / 3);
-                worldScene.resize(getStage().getWidth(), getStage().getHeight());
+            stage().addEventListener(this, Event.RESIZE, resizeEvent -> {
+                Chat.getInstance().setWidth(stage().getWidth());
+                Chat.getInstance().setHeight(stage().getHeight() / 3);
+                worldScene.resize(stage().getWidth(), stage().getHeight());
             });
         });
 
@@ -266,7 +261,6 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
             start(server, CLIENT.getLocalPlayerName());
         } else {
             Chat.getInstance().addMessage("Can't establish connection. Please try again later");
-            setBackgroundColor(Color.BLACK);
         }
         attempts++;
     }
@@ -358,6 +352,10 @@ public class GameRoot extends Root implements ClientListener, FileReceiverManage
 
     public void setServerName(String serverName) {
         this.serverName = serverName;
+    }
+
+    public String getServerName() {
+        return serverName;
     }
 
     public void exit() {

@@ -4,17 +4,20 @@ package com.ancevt.d2d2world.client.ui.chat;
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
-import com.ancevt.d2d2.display.*;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.UiTextInput;
+import com.ancevt.d2d2.components.UiTextInputEvent;
+import com.ancevt.d2d2.components.UiTextInputProcessor;
+import com.ancevt.d2d2.display.Color;
+import com.ancevt.d2d2.display.DisplayObject;
+import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.file.FileSystemUtils;
-import com.ancevt.d2d2world.client.ui.Font;
-import com.ancevt.d2d2world.client.ui.UiTextInput;
-import com.ancevt.d2d2world.client.ui.UiTextInputEvent;
-import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,8 +62,8 @@ public class Chat extends DisplayObjectContainer {
         history = new ArrayList<>();
         shadowEnabled = true;
 
-        width = D2D2.getStage().getWidth() / 2.0f;
-        height = D2D2.getStage().getHeight() / 3.0f;
+        width = D2D2.stage().getWidth() / 2.0f;
+        height = D2D2.stage().getHeight() / 3.0f;
 
         input.setWidth(20);
         input.addEventListener(UiTextInputEvent.TEXT_ENTER, this::textInputEvent);
@@ -361,11 +364,10 @@ public class Chat extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         D2D2World.init(false, false);
 
-        Root root = D2D2.getStage().getRoot();
-        root.setBackgroundColor(Color.of(0x223344));
+        stage.setBackgroundColor(Color.of(0x223344));
 
         Holder<Integer> idCounter = new Holder<>(1);
 
@@ -377,15 +379,15 @@ public class Chat extends DisplayObjectContainer {
                 chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, text, Color.WHITE);
             }
         });
-        root.add(chat, 10, 10);
+        stage.add(chat, 10, 10);
 
         for (int i = 0; i < 10; i++) {
             idCounter.setValue(idCounter.getValue() + 1);
             chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, "Hello, i'm Ancevt" + i, Color.WHITE);
         }
 
-        UiTextInputProcessor.enableRoot(root);
-        root.addEventListener(InputEvent.KEY_DOWN, event -> {
+        UiTextInputProcessor.setEnabled(true);
+        stage.addEventListener(InputEvent.KEY_DOWN, event -> {
             InputEvent inputEvent = (InputEvent) event;
             switch (inputEvent.getKeyCode()) {
                 case KeyCode.PAGE_UP -> {

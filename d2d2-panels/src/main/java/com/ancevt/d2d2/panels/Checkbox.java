@@ -48,7 +48,7 @@ public class Checkbox extends Component {
 		add(label);
 		
 		touchButton = new TouchButton();
-		touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e->{
+		touchButton.addEventListener(TouchButtonEvent.DOWN, e->{
 			setChecked(!isChecked());
 
 			Focus.setFocusedComponent(this);

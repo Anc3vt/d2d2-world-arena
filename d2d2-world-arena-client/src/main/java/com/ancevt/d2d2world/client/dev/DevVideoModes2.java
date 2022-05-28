@@ -5,21 +5,21 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.components.UiTextInputProcessor;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
-import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
 import com.ancevt.util.command.CommandSet;
 import com.ancevt.util.command.NoSuchCommandException;
 
-import static com.ancevt.d2d2.D2D2.getStage;
+import static com.ancevt.d2d2.D2D2.stage;
 
 public class DevVideoModes2 {
 
@@ -28,18 +28,18 @@ public class DevVideoModes2 {
     private static Sprite sprite;
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas("d2d2-picture-test.png");
         sprite = new Sprite(textureAtlas.createTexture());
         sprite.setAlpha(0.1f);
-        root.add(sprite);
+        stage.add(sprite);
 
         chat = new Chat();
-        root.add(chat, 10f, 10f);
+        stage.add(chat, 10f, 10f);
 
         MonitorManager.getInstance().rememberResolutionAsStart();
 
-        root.addEventListener(InputEvent.KEY_DOWN, event -> {
+        stage.addEventListener(InputEvent.KEY_DOWN, event -> {
             InputEvent inputEvent = (InputEvent) event;
             switch (inputEvent.getKeyCode()) {
                 case KeyCode.PAGE_UP -> {
@@ -73,14 +73,14 @@ public class DevVideoModes2 {
 
         registerCommands();
 
-        getStage().addEventListener(Event.RESIZE, event -> {
-            chat.print("Resize " + getStage().getWidth() + "x" + getStage().getHeight());
+        stage().addEventListener(Event.RESIZE, event -> {
+            chat.print("Resize " + stage().getWidth() + "x" + stage().getHeight());
             fix();
         });
 
         fix();
 
-        UiTextInputProcessor.enableRoot(root);
+        UiTextInputProcessor.setEnabled(true);
 
         chat.openInput();
 
@@ -204,17 +204,17 @@ public class DevVideoModes2 {
     }
 
     private static void fix() {
-        while (sprite.getWidth() * sprite.getScaleX() > getStage().getWidth()) {
+        while (sprite.getWidth() * sprite.getScaleX() > stage().getWidth()) {
             sprite.setScaleX(sprite.getScaleX() - 0.01f);
             sprite.setScaleY(sprite.getScaleX());
         }
 
-        while (sprite.getWidth() * sprite.getScaleX() < getStage().getWidth()) {
+        while (sprite.getWidth() * sprite.getScaleX() < stage().getWidth()) {
             sprite.setScaleX(sprite.getScaleX() + 0.01f);
             sprite.setScaleY(sprite.getScaleX());
         }
 
-        chat.setHeight(getStage().getHeight() - 30);
+        chat.setHeight(stage().getHeight() - 30);
     }
 
 }
