@@ -9,6 +9,7 @@ import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
@@ -48,12 +49,11 @@ public class D2D2WorldEditorMain {
         MapIO.setMapFileName(a.get("--map-filename", "map0.wam"));
 
         var screenDimension = ScreenUtils.getDimension();
-        D2D2.init(new LWJGLBackend(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
+        Stage stage = D2D2.init(new LWJGLBackend(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
         D2D2.getBackend().setWindowXY(0, 40);
         D2D2World.init(true, true);
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");
-        Root root = D2D2.stage().getRoot();
         D2D2.setSmoothMode(false);
 
         DisplayObjectContainer cameraLayer = new DisplayObjectContainer();
@@ -67,30 +67,27 @@ public class D2D2WorldEditorMain {
         world.setMap(map);
         world.setRoomRectVisible(true);
 
-        root.add(cameraLayer);
+        stage.add(cameraLayer);
 
         world.setAreasVisible(true);
 
-        cameraLayer.setXY(D2D2.stage().getWidth() / 2, D2D2.stage().getHeight() / 2);
+        cameraLayer.setXY(stage.getWidth() / 2, stage.getHeight() / 2);
 
-        EditorContainer editorContainer = new EditorContainer(root, world);
-        root.add(editorContainer);
+        EditorContainer editorContainer = new EditorContainer(stage, world);
+        stage.add(editorContainer);
 
-        D2D2.stage().addEventListener(Event.RESIZE, e -> {
+        stage.addEventListener(Event.RESIZE, e -> {
             editorContainer.getGrid().redrawLines();
-            cameraLayer.setXY(D2D2.stage().getWidth() / 2, D2D2.stage().getHeight() / 2);
-            MapkitToolsPanel.getInstance().setX(D2D2.stage().getWidth()
+            cameraLayer.setXY(stage.getWidth() / 2, stage.getHeight() / 2);
+            MapkitToolsPanel.getInstance().setX(stage.getWidth()
                     - MapkitToolsPanel.getInstance().getWidth() - 10);
 
-            world.getCamera().setViewportSize(D2D2.stage().getWidth(), D2D2.stage().getHeight());
+            world.getCamera().setViewportSize(stage.getWidth(), stage.getHeight());
         });
 
+        cameraLayer.setScale(2f, 2f);
 
-        // TODO: uncomment
-        // cameraLayer.setScale(2f, 2f);
-
-
-        root.addEventListener(InputEvent.MOUSE_WHEEL, e -> {
+        stage.addEventListener(InputEvent.MOUSE_WHEEL, e -> {
             if (editorContainer.isMouseAtPanels(Mouse.getX(), Mouse.getY())) return;
 
             if(world.isPlaying()) return;
@@ -108,7 +105,7 @@ public class D2D2WorldEditorMain {
             if (scale < 0.25f) scale = 0.25f;
 
             cameraLayer.setScale(scale, scale);
-            cameraLayer.setXY(D2D2.stage().getWidth() / 2, D2D2.stage().getHeight() / 2);
+            cameraLayer.setXY(stage.getWidth() / 2, stage.getHeight() / 2);
             editorContainer.setInfoText("Zoom: " + cameraLayer.getScaleX());
             editorContainer.getGrid().redrawLines();
         });
@@ -119,7 +116,7 @@ public class D2D2WorldEditorMain {
             );
         }
 
-        root.add(new FpsMeter(), 5, 0);
+        stage.add(new FpsMeter(), 5, 0);
         D2D2.loop();
         DebugPanel.saveAll();
         System.exit(0);

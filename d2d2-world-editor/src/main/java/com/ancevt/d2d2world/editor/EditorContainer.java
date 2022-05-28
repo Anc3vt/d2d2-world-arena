@@ -4,6 +4,7 @@ package com.ancevt.d2d2world.editor;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
@@ -30,7 +31,7 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
 
     private final List<IDisplayObject> panels;
 
-    public EditorContainer(@NotNull Root root, @NotNull World world) {
+    public EditorContainer(@NotNull Stage stage, @NotNull World world) {
         this.world = world;
         this.grid = new Grid();
 
@@ -47,12 +48,12 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
         add(infoBitmapTextShadow, 4, 12);
         add(infoBitmapText, 5, 12);
 
-        root.addEventListener(InputEvent.MOUSE_DOWN, this);
-        root.addEventListener(InputEvent.MOUSE_UP, this);
-        root.addEventListener(InputEvent.MOUSE_MOVE, this);
-        root.addEventListener(InputEvent.KEY_DOWN, this);
-        root.addEventListener(InputEvent.KEY_UP, this);
-        root.addEventListener(InputEvent.MOUSE_WHEEL, this);
+        stage.addEventListener(InputEvent.MOUSE_DOWN, this);
+        stage.addEventListener(InputEvent.MOUSE_UP, this);
+        stage.addEventListener(InputEvent.MOUSE_MOVE, this);
+        stage.addEventListener(InputEvent.KEY_DOWN, this);
+        stage.addEventListener(InputEvent.KEY_UP, this);
+        stage.addEventListener(InputEvent.MOUSE_WHEEL, this);
 
         add(MapkitToolsPanel.getInstance(), 100, 100);
         MapkitToolsPanel.getInstance().addEventListener(MapkitToolsPanelEvent.MAPKIT_ITEM_SELECT, e -> {
