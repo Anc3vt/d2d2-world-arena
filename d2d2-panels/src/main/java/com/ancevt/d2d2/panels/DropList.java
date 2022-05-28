@@ -63,7 +63,7 @@ public class DropList extends Component {
         add(label);
 
         touchButton = new TouchButton(true);
-        touchButton.addEventListener(TouchButtonEvent.TOUCH_DOWN, e -> {
+        touchButton.addEventListener(TouchButtonEvent.DOWN, e -> {
             if (opened) {
                 openRect.getParent().remove(openRect);
                 opened = false;
@@ -153,7 +153,7 @@ public class DropList extends Component {
             openRect.add(bitmapText);
 
             final TouchButton button = new TouchButton(true);
-            button.addEventListener(TouchButtonEvent.TOUCH_DOWN, e->{
+            button.addEventListener(TouchButtonEvent.DOWN, e->{
                 select(item.getKey());
                 openRect.getParent().remove(openRect);
                 opened = false;

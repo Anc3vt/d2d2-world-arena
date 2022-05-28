@@ -5,8 +5,8 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.display.Stage;
 
 public class Bar extends DisplayObjectContainer {
 
@@ -113,15 +113,15 @@ public class Bar extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating"));
-        root.setBackgroundColor(Color.GRAY);
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
+        stage.setBackgroundColor(Color.GRAY);
 
         Bar p = new Bar();
         p.setSize(26, 3);
 
         p.setScale(15f, 15f);
 
-        root.add(p, 100, 100);
+        stage.add(p, 100, 100);
         p.setMaxValue(100);
         p.setValue(75f);
 

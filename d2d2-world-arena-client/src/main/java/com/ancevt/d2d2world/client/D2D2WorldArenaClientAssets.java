@@ -18,22 +18,6 @@ public class D2D2WorldArenaClientAssets {
         getTextureManager().loadTextureDataInfo("d2d2-world-arena-desktop.inf");
     }
 
-    public static Texture getButtonLeftPartTexture() {
-        return getTextureManager().getTexture("d2d2-world-arena-desktop-button-left-part");
-    }
-
-    public static Texture getButtonMiddlePartTexture() {
-        return getTextureManager().getTexture("d2d2-world-arena-desktop-button-middle-part");
-    }
-
-    public static Texture getButtonRightPartTexture() {
-        return getTextureManager().getTexture("d2d2-world-arena-desktop-button-right-part");
-    }
-
-    public static Texture getArrowButtonTexture() {
-        return getTextureManager().getTexture("d2d2-world-arena-desktop-arrow-button");
-    }
-
     public static Texture getPlayerArrowTexture() {
         return getTextureManager().getTexture("d2d2-world-arena-desktop-player-arrow");
     }

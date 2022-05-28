@@ -4,19 +4,19 @@ package com.ancevt.d2d2world.client.dev;
 import com.ancevt.commons.Holder;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.components.UiTextInputProcessor;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObjectContainer;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.client.settings.MonitorManager;
-import com.ancevt.d2d2world.client.ui.UiTextInputProcessor;
 import com.ancevt.d2d2world.client.ui.chat.Chat;
 import com.ancevt.d2d2world.client.ui.chat.ChatEvent;
 import com.ancevt.util.args.Args;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.ancevt.d2d2.D2D2.getStage;
+import static com.ancevt.d2d2.D2D2.stage;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
 public class DevVideoModes {
@@ -37,7 +37,7 @@ public class DevVideoModes {
 
     public static void main(String[] args) {
         //Root root = D2D2.init(new LWJGLStarter(1920, 1080, "(floating)"));
-        Root root = D2D2.init(new LWJGLBackend(640, 480, "(floating)"));
+        Stage stage = D2D2.init(new LWJGLBackend(640, 480, "(floating)"));
 
         TextureAtlas textureAtlas = D2D2.getTextureManager().loadTextureAtlas("d2d2-picture-test.png");
         Sprite sprite = new Sprite(textureAtlas.createTexture());
@@ -45,7 +45,7 @@ public class DevVideoModes {
         IDisplayObjectContainer container = new DisplayObjectContainer();
         container.add(sprite);
 
-        UiTextInputProcessor.enableRoot(root);
+        UiTextInputProcessor.setEnabled(true);
 
         //D2D2.setFullscreen(true);
 
@@ -63,21 +63,21 @@ public class DevVideoModes {
 
         Chat chat = Chat.getInstance();
 
-        getStage().addEventListener(Event.RESIZE, event -> {
-            chat.addMessage("Resize " + getStage().getWidth() + "x" + getStage().getHeight());
+        stage().addEventListener(Event.RESIZE, event -> {
+            chat.addMessage("Resize " + stage().getWidth() + "x" + stage().getHeight());
 
-            while(sprite.getHeight() * sprite.getScaleY() > getStage().getHeight()) {
+            while(sprite.getHeight() * sprite.getScaleY() > stage().getHeight()) {
                 sprite.setScaleY(sprite.getScaleY() - 0.01f);
                 sprite.setScaleX(sprite.getScaleY());
             }
 
-            while(sprite.getHeight() * sprite.getScaleY() < getStage().getHeight()) {
+            while(sprite.getHeight() * sprite.getScaleY() < stage().getHeight()) {
                 sprite.setScaleY(sprite.getScaleY() + 0.01f);
                 sprite.setScaleX(sprite.getScaleY());
             }
         });
 
-        root.addEventListener(InputEvent.KEY_DOWN, event -> {
+        stage.addEventListener(InputEvent.KEY_DOWN, event -> {
             InputEvent inputEvent = (InputEvent) event;
             switch (inputEvent.getKeyCode()) {
                 case KeyCode.PAGE_UP -> {
@@ -156,8 +156,8 @@ public class DevVideoModes {
             return true;
         }));
 
-        root.add(container);
-        root.add(chat, 10, 10);
+        stage.add(container);
+        stage.add(chat, 10, 10);
 
         D2D2.loop();
         chat.saveHistory();

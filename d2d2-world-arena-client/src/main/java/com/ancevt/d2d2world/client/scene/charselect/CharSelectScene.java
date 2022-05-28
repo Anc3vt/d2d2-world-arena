@@ -2,22 +2,22 @@
 package com.ancevt.d2d2world.client.scene.charselect;
 
 import com.ancevt.d2d2.D2D2;
+import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
+import com.ancevt.d2d2.components.UiText;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TouchButtonEvent;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.interactive.TouchButton;
 import com.ancevt.d2d2world.D2D2World;
+import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.data.DataKey;
-import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
-import com.ancevt.d2d2world.client.ui.UiText;
 import com.ancevt.d2d2world.gameobject.PlayerActor;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.ancevt.d2d2.D2D2.getStage;
+import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_CHARACTER;
 
@@ -61,8 +61,8 @@ public class CharSelectScene extends DisplayObjectContainer {
     private void this_addToStage(Event event) {
         removeEventListener(this, Event.ADD_TO_STAGE);
 
-        final float sw = getStage().getWidth();
-        final float sh = getStage().getHeight();
+        final float sw = stage().getWidth();
+        final float sh = stage().getHeight();
 
         bg.setSize(sw, sh);
 
@@ -153,9 +153,9 @@ public class CharSelectScene extends DisplayObjectContainer {
             add(uiText, -uiText.getTextWidth() / 2 + uiText.getCharWidth() / 2, h - 16);
 
             touchButton.setSize(w, h + 20);
-            touchButton.addEventListener(this, TouchButtonEvent.TOUCH_HOVER, this::touchButton_touchHover);
-            touchButton.addEventListener(this, TouchButtonEvent.TOUCH_HOVER_OUT, this::touchButton_touchHoverOut);
-            touchButton.addEventListener(this, TouchButtonEvent.TOUCH_UP, this::touchButton_touchUp);
+            touchButton.addEventListener(this, TouchButtonEvent.HOVER, this::touchButton_touchHover);
+            touchButton.addEventListener(this, TouchButtonEvent.OUT, this::touchButton_touchHoverOut);
+            touchButton.addEventListener(this, TouchButtonEvent.UP, this::touchButton_touchUp);
             add(touchButton, borderedRect.getX(), borderedRect.getY());
 
             Mouse.setVisible(true);
@@ -192,13 +192,13 @@ public class CharSelectScene extends DisplayObjectContainer {
     }
 
     public static void main(String[] args) {
-        Root root = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
+        Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         MapIO.setMapkitsDirectory("/home/ancevt/workspace/ancevt/d2d2/d2d2-world-arena-server/data/mapkits/");
         D2D2World.init(false, false);
 
 
         CharSelectScene charSelectScene = new CharSelectScene();
-        root.add(charSelectScene);
+        stage.add(charSelectScene);
 
         D2D2.loop();
     }

@@ -9,7 +9,6 @@ import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
-import com.ancevt.d2d2.display.Root;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.Mouse;
@@ -54,7 +53,7 @@ public class D2D2WorldEditorMain {
         D2D2World.init(true, true);
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");
-        Root root = D2D2.getStage().getRoot();
+        Root root = D2D2.stage().getRoot();
         D2D2.setSmoothMode(false);
 
         DisplayObjectContainer cameraLayer = new DisplayObjectContainer();
@@ -72,18 +71,18 @@ public class D2D2WorldEditorMain {
 
         world.setAreasVisible(true);
 
-        cameraLayer.setXY(D2D2.getStage().getWidth() / 2, D2D2.getStage().getHeight() / 2);
+        cameraLayer.setXY(D2D2.stage().getWidth() / 2, D2D2.stage().getHeight() / 2);
 
         EditorContainer editorContainer = new EditorContainer(root, world);
         root.add(editorContainer);
 
-        D2D2.getStage().addEventListener(Event.RESIZE, e -> {
+        D2D2.stage().addEventListener(Event.RESIZE, e -> {
             editorContainer.getGrid().redrawLines();
-            cameraLayer.setXY(D2D2.getStage().getWidth() / 2, D2D2.getStage().getHeight() / 2);
-            MapkitToolsPanel.getInstance().setX(D2D2.getStage().getWidth()
+            cameraLayer.setXY(D2D2.stage().getWidth() / 2, D2D2.stage().getHeight() / 2);
+            MapkitToolsPanel.getInstance().setX(D2D2.stage().getWidth()
                     - MapkitToolsPanel.getInstance().getWidth() - 10);
 
-            world.getCamera().setViewportSize(D2D2.getStage().getWidth(), D2D2.getStage().getHeight());
+            world.getCamera().setViewportSize(D2D2.stage().getWidth(), D2D2.stage().getHeight());
         });
 
 
@@ -109,7 +108,7 @@ public class D2D2WorldEditorMain {
             if (scale < 0.25f) scale = 0.25f;
 
             cameraLayer.setScale(scale, scale);
-            cameraLayer.setXY(D2D2.getStage().getWidth() / 2, D2D2.getStage().getHeight() / 2);
+            cameraLayer.setXY(D2D2.stage().getWidth() / 2, D2D2.stage().getHeight() / 2);
             editorContainer.setInfoText("Zoom: " + cameraLayer.getScaleX());
             editorContainer.getGrid().redrawLines();
         });
