@@ -13,6 +13,7 @@
     <artifactId>d2d2-world-arena-client</artifactId>
     <version>1.0.0.6-alpha</version>
     <name>D2D2 World Arena Client</name>
+    <packaging>jar</packaging>
     <url>https://github.com/Anc3vt/d2d2</url>
 
     <developers>
