@@ -113,7 +113,7 @@ public class CharSelectScene extends DisplayObjectContainer {
         private final MapkitItem mapkitItem;
         private final CharSelectScene charSelectScene;
         private final BorderedRect borderedRect;
-        private final InteractiveButton touchButton;
+        private final InteractiveButton interactiveButton;
         private final PlayerActor playerActor;
         private final Sprite decorDoor;
 
@@ -131,7 +131,7 @@ public class CharSelectScene extends DisplayObjectContainer {
 
             addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
 
-            touchButton = new InteractiveButton(true);
+            interactiveButton = new InteractiveButton(true);
         }
 
         private void this_addToStage(Event event) {
@@ -152,16 +152,16 @@ public class CharSelectScene extends DisplayObjectContainer {
             uiText.setAutoSize(true);
             add(uiText, -uiText.getTextWidth() / 2 + uiText.getCharWidth() / 2, h - 16);
 
-            touchButton.setSize(w, h + 20);
-            touchButton.addEventListener(this, InteractiveButtonEvent.HOVER, this::touchButton_touchHover);
-            touchButton.addEventListener(this, InteractiveButtonEvent.OUT, this::touchButton_touchHoverOut);
-            touchButton.addEventListener(this, InteractiveButtonEvent.UP, this::touchButton_touchUp);
-            add(touchButton, borderedRect.getX(), borderedRect.getY());
+            interactiveButton.setSize(w, h + 20);
+            interactiveButton.addEventListener(this, InteractiveButtonEvent.UP, this::interactiveButton_up);
+            interactiveButton.addEventListener(this, InteractiveButtonEvent.OUT, this::interactiveButton_out);
+            interactiveButton.addEventListener(this, InteractiveButtonEvent.HOVER, this::interactiveButton_hover);
+            add(interactiveButton, borderedRect.getX(), borderedRect.getY());
 
             Mouse.setVisible(true);
         }
 
-        private void touchButton_touchUp(Event event) {
+        private void interactiveButton_up(Event event) {
             var e = (InteractiveButtonEvent) event;
             if (e.isOnArea()) {
                 charSelectScene.dispatchEvent(CharSelectSceneEvent.builder()
@@ -173,20 +173,20 @@ public class CharSelectScene extends DisplayObjectContainer {
             }
         }
 
-        private void touchButton_touchHover(Event event) {
+        private void interactiveButton_hover(Event event) {
             borderedRect.setBorderColor(Color.WHITE);
             playerActor.setAnimation(AnimationKey.IDLE, true);
             decorDoor.setVisible(true);
         }
 
-        private void touchButton_touchHoverOut(Event event) {
+        private void interactiveButton_out(Event event) {
             borderedRect.setBorderColor(Color.BLACK);
             playerActor.setAnimation(AnimationKey.WALK, true);
             decorDoor.setVisible(false);
         }
 
         public void dispose() {
-            touchButton.setEnabled(false);
+            interactiveButton.setEnabled(false);
             playerActor.removeFromParent();
         }
     }

@@ -46,7 +46,6 @@ playername.txt
 ban.list
 *.tmp
 buildtmp/
-build.info
 .run/
 data/
 d2d2-world-arena-client.conf
