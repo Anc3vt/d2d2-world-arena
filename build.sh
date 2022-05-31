@@ -1,3 +1,3 @@
 #!/bin/bash
-mvn clean install -Pdesktop 
+mvn clean install -Pclient
 

@@ -1,7 +1,7 @@
 
 package com.ancevt.d2d2world.world;
 
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.IDisplayObjectContainer;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.gameobject.IDirectioned;
@@ -111,7 +111,7 @@ public class Camera {
         if (isBoundsLock()) fixBounds();
     }
 
-    public final DisplayObjectContainer worldParent() {
+    public final IDisplayObjectContainer worldParent() {
         return world.getParent();
     }
 
