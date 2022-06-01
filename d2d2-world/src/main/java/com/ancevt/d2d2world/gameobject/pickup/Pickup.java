@@ -85,9 +85,12 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
 
     @Override
     public void onAddToWorld(World world) {
+        // TODO: fix bug of double call this method
         ICollision.super.onAddToWorld(world);
         this.world = world;
+        world.removeEventListener(this, WorldEvent.WORLD_PROCESS);
         world.addEventListener(this, WorldEvent.WORLD_PROCESS, this::world_worldProcess);
+        removeEventListener(this, Event.REMOVE_FROM_STAGE);
         addEventListener(this, Event.REMOVE_FROM_STAGE, this::this_removeFromStage);
     }
 

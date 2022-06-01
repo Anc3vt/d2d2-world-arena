@@ -46,7 +46,7 @@ scp * "$HOST:app"
 cd ..
 ssh $HOST "rm -rf app/data/"
 scp -r "d2d2-world-arena-server/data" "$HOST:app/"
-ssh $HOST "ps x | grep java | grep 'd2d2-world-arena' | sed 's/^ *//i' | cut -d ' ' -f 1 | xargs kill -9"
+ssh $HOST "ps x | grep java | grep 'd2d2-world-arena'| grep 3333 | sed 's/^ *//i' | cut -d ' ' -f 1 | xargs kill -9"
 
 echo Server deployment complete
 

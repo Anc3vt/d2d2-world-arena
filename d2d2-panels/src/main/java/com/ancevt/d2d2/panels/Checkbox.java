@@ -5,8 +5,8 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 public class Checkbox extends Component {
 	
@@ -24,7 +24,7 @@ public class Checkbox extends Component {
 	private final BorderedRect boxOuter;
 	private final PlainRect boxInner;
 	private final BitmapText label;
-	private final InteractiveButton touchButton;
+	private final InteractiveContainer touchButton;
 	
 	private boolean checked;
 	
@@ -47,8 +47,8 @@ public class Checkbox extends Component {
 		label.setY((boxOuter.getHeight() - label.getBitmapFont().getCharHeight() * label.getAbsoluteScaleY()) / 2);
 		add(label);
 		
-		touchButton = new InteractiveButton();
-		touchButton.addEventListener(InteractiveButtonEvent.DOWN, e->{
+		touchButton = new InteractiveContainer();
+		touchButton.addEventListener(InteractiveEvent.DOWN, e->{
 			setChecked(!isChecked());
 
 			Focus.setFocusedComponent(this);

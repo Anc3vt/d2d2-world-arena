@@ -7,8 +7,8 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class DropList extends Component {
     private final BorderedRect rect;
     private final List<DropListItem> items;
     private final BitmapText label;
-    private final InteractiveButton touchButton;
+    private final InteractiveContainer touchButton;
 
     private float width;
     private final float height;
@@ -62,8 +62,8 @@ public class DropList extends Component {
         label.setColor(FOREGROUND_COLOR);
         add(label);
 
-        touchButton = new InteractiveButton(true);
-        touchButton.addEventListener(InteractiveButtonEvent.DOWN, e -> {
+        touchButton = new InteractiveContainer(true);
+        touchButton.addEventListener(InteractiveEvent.DOWN, e -> {
             if (opened) {
                 openRect.getParent().remove(openRect);
                 opened = false;
@@ -152,8 +152,8 @@ public class DropList extends Component {
             bitmapText.setY(i * DEFAULT_HEIGHT + (DEFAULT_HEIGHT - bitmapText.getBitmapFont().getCharHeight()) / 2);
             openRect.add(bitmapText);
 
-            final InteractiveButton button = new InteractiveButton(true);
-            button.addEventListener(InteractiveButtonEvent.DOWN, e->{
+            final InteractiveContainer button = new InteractiveContainer(true);
+            button.addEventListener(InteractiveEvent.DOWN, e->{
                 select(item.getKey());
                 openRect.getParent().remove(openRect);
                 opened = false;

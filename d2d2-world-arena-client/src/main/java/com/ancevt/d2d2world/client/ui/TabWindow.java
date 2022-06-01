@@ -4,7 +4,7 @@ package com.ancevt.d2d2world.client.ui;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObject;
@@ -30,7 +30,7 @@ public class TabWindow extends DisplayObjectContainer {
     private static final float COLUMN_4 = 600f;
 
     private final PlainRect plainRect;
-    private final UiText uiServerName;
+    private final BitmapTextEx uiServerName;
     private final List<IDisplayObject> texts;
     private List<Player> remotePlayers;
 
@@ -40,7 +40,7 @@ public class TabWindow extends DisplayObjectContainer {
 
         texts = new CopyOnWriteArrayList<>();
 
-        uiServerName = new UiText();
+        uiServerName = new BitmapTextEx();
         uiServerName.setAutoSize(true);
 
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
@@ -76,10 +76,10 @@ public class TabWindow extends DisplayObjectContainer {
     }
 
     private void addPlayerTexts(int y, int id, String name, int frags, int ping, Color color) {
-        UiText uiId = new UiText(id);
-        UiText uiName = new UiText(name);
-        UiText uiFrags = new UiText(frags);
-        UiText uiPing = new UiText(ping);
+        BitmapTextEx uiId = new BitmapTextEx(id);
+        BitmapTextEx uiName = new BitmapTextEx(name);
+        BitmapTextEx uiFrags = new BitmapTextEx(frags);
+        BitmapTextEx uiPing = new BitmapTextEx(ping);
 
         uiId.setColor(color);
         uiName.setColor(color);
@@ -108,16 +108,16 @@ public class TabWindow extends DisplayObjectContainer {
     private void drawTitle() {
         Color color = Color.GRAY;
 
-        UiText uiId = new UiText("id");
+        BitmapTextEx uiId = new BitmapTextEx("id");
         uiId.setColor(color);
 
-        UiText uiName = new UiText("name");
+        BitmapTextEx uiName = new BitmapTextEx("name");
         uiName.setColor(color);
 
-        UiText uiFrags = new UiText("frags");
+        BitmapTextEx uiFrags = new BitmapTextEx("frags");
         uiFrags.setColor(color);
 
-        UiText uiPing = new UiText("ping");
+        BitmapTextEx uiPing = new BitmapTextEx("ping");
         uiPing.setColor(color);
 
         add(uiId, COLUMN_1, 30);

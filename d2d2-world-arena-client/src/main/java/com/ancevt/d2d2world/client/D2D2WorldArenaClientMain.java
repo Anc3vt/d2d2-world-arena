@@ -7,7 +7,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.D2D2ComponentAssets;
+import com.ancevt.d2d2.components.ComponentAssets;
 import com.ancevt.d2d2.debug.DebugPanel;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.media.SoundSystem;
@@ -91,7 +91,7 @@ public class D2D2WorldArenaClientMain {
         );
 
         D2D2World.init(false, false);
-        D2D2ComponentAssets.load();
+        ComponentAssets.load();
         D2D2WorldArenaClientAssets.load();
 
         startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());

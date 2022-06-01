@@ -5,8 +5,8 @@ import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 public class Title extends Component {
 
@@ -24,7 +24,7 @@ public class Title extends Component {
 	private final BitmapText label;
 	
 	private final DisplayObject owner;
-	private final InteractiveButton titleTouchButton;
+	private final InteractiveContainer titleTouchButton;
 
 	private float oldX;
 	private float oldY;
@@ -69,16 +69,16 @@ public class Title extends Component {
 		add(borderTop);
 		add(borderBottom);
 		
-		titleTouchButton = new InteractiveButton();
-		titleTouchButton.addEventListener(InteractiveButtonEvent.DOWN, e->{
-			InteractiveButtonEvent touchButtonEvent = (InteractiveButtonEvent)e;
+		titleTouchButton = new InteractiveContainer();
+		titleTouchButton.addEventListener(InteractiveEvent.DOWN, e->{
+			InteractiveEvent touchButtonEvent = (InteractiveEvent)e;
 			oldX = touchButtonEvent.getX();
 			oldY = touchButtonEvent.getY();
 
 		});
 
-		titleTouchButton.addEventListener(InteractiveButtonEvent.DRAG, e->{
-			InteractiveButtonEvent touchButtonEvent = (InteractiveButtonEvent)e;
+		titleTouchButton.addEventListener(InteractiveEvent.DRAG, e->{
+			InteractiveEvent touchButtonEvent = (InteractiveEvent)e;
 			float diffX = touchButtonEvent.getX() - oldX;
 			float diffY = touchButtonEvent.getY() - oldY;
 			owner.moveX(diffX);

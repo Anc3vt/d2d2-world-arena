@@ -5,7 +5,6 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.UiTextInputProcessor;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
@@ -79,8 +78,6 @@ public class DevVideoModes2 {
         });
 
         fix();
-
-        UiTextInputProcessor.setEnabled(true);
 
         chat.openInput();
 

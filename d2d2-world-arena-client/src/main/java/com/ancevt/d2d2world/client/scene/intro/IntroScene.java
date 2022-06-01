@@ -8,12 +8,12 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.common.PlainRect;
+import com.ancevt.d2d2.components.BitmapTextEx;
+import com.ancevt.d2d2.components.Button;
 import com.ancevt.d2d2.components.Chooser;
 import com.ancevt.d2d2.components.Font;
-import com.ancevt.d2d2.components.UiText;
-import com.ancevt.d2d2.components.UiTextInput;
-import com.ancevt.d2d2.components.UiTextInputEvent;
-import com.ancevt.d2d2.components.UiTextInputProcessor;
+import com.ancevt.d2d2.components.TextInput;
+import com.ancevt.d2d2.components.TextInputEvent;
 import com.ancevt.d2d2.components.dialog.AlertWindow;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
@@ -21,8 +21,9 @@ import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
+import com.ancevt.d2d2.event.InteractiveEvent;
 import com.ancevt.d2d2.input.KeyCode;
-import com.ancevt.d2d2.panels.Button;
+import com.ancevt.d2d2.interactive.InteractiveManager;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.net.ServerInfoRetriever;
 import com.ancevt.d2d2world.client.scene.GameScene;
@@ -37,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import static com.ancevt.d2d2.D2D2.getTextureManager;
 import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2world.client.config.ClientConfig.AUTO_ENTER;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
@@ -56,38 +58,38 @@ public class IntroScene extends DisplayObjectContainer {
 
     private final DisplayObjectContainer panel;
     private final PlainRect panelRect;
-    private final UiTextInput uiTextInputServer;
-    private final UiTextInput uiTextInputPlayername;
+    private final TextInput uiTextInputServer;
+    private final TextInput uiTextInputPlayername;
     private final MonitorChooser monitorChooser;
     private final ResolutionChooser resolutionChooser;
-    private UiText labelVersion;
+    private BitmapTextEx labelVersion;
     private EventListener addToStageEventListener;
 
     public IntroScene(@NotNull String version, String defaultGameServer) {
         instance = this;
 
-        textureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
+        getTextureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
 
-        UiText labelServer = new UiText();
+        BitmapTextEx labelServer = new BitmapTextEx();
         labelServer.setText("Server:");
 
-        UiText labelPlayerName = new UiText();
+        BitmapTextEx labelPlayerName = new BitmapTextEx();
         labelPlayerName.setText("Player name:");
 
-        uiTextInputServer = new UiTextInput();
+        uiTextInputServer = new TextInput();
 
         CONFIG.ifContainsOrElse(SERVER, uiTextInputServer::setText, () -> uiTextInputServer.setText(defaultGameServer));
 
-        uiTextInputPlayername = new UiTextInput();
-        uiTextInputPlayername.requestFocus();
-        uiTextInputPlayername.addEventListener(UiTextInputEvent.TEXT_ENTER, this::keyEnter);
-        uiTextInputPlayername.addEventListener(UiTextInputEvent.TEXT_CHANGE, event -> {
-            var e = (UiTextInputEvent) event;
+        uiTextInputPlayername = new TextInput();
+        uiTextInputPlayername.focus();
+        uiTextInputPlayername.addEventListener(TextInputEvent.ENTER, this::keyEnter);
+        uiTextInputPlayername.addEventListener(TextInputEvent.TEXT_CHANGE, event -> {
+            var e = (TextInputEvent) event;
             boolean valid = PatternMatcher.check(e.getText(), NAME_PATTERN);
-            uiTextInputPlayername.setColor(valid ? Color.WHITE : Color.RED);
+            uiTextInputPlayername.setTextColor(valid ? Color.WHITE : Color.RED);
         });
 
-        uiTextInputServer.addEventListener(UiTextInputEvent.TEXT_ENTER, event -> uiTextInputPlayername.requestFocus());
+        uiTextInputServer.addEventListener(TextInputEvent.ENTER, event -> uiTextInputPlayername.focus());
 
         CONFIG.ifContains(PLAYERNAME, uiTextInputPlayername::setText);
 
@@ -103,12 +105,11 @@ public class IntroScene extends DisplayObjectContainer {
         panel.add(uiTextInputServer, 130, 20 - 10);
         panel.add(uiTextInputPlayername, 130, 60 - 10);
 
-        Button button = new Button("Enter") {
-            @Override
-            public void onButtonPressed() {
-                enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
-            }
-        };
+        Button button = new Button("Enter");
+        button.addEventListener(this, InteractiveEvent.DOWN, event -> {
+            enter(uiTextInputServer.getText(), uiTextInputPlayername.getText());
+        });
+        button.disposeOnRemoveFromStage();
         button.setWidth(panelRect.getWidth());
         panel.add(button, 10, 100);
 
@@ -116,6 +117,8 @@ public class IntroScene extends DisplayObjectContainer {
         resolutionChooser = new ResolutionChooser();
 
         addEventListener(Event.ADD_TO_STAGE, addToStageEventListener = event -> {
+            InteractiveManager.getInstance().setTabbingEnabled(true);
+
             removeEventListener(Event.ADD_TO_STAGE, addToStageEventListener);
 
             PlainRect plainRect = new PlainRect(
@@ -127,7 +130,7 @@ public class IntroScene extends DisplayObjectContainer {
 
             add(new CityBgSprite(), -1920, 200);
 
-            UiText labelThanksTo = new UiText();
+            BitmapTextEx labelThanksTo = new BitmapTextEx();
             labelThanksTo.setVisible(false);
             labelThanksTo.setText("Special thanks to");
             add(labelThanksTo, stage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
@@ -137,12 +140,11 @@ public class IntroScene extends DisplayObjectContainer {
             thanksToContainer.addEventListener(Event.COMPLETE, e -> labelThanksTo.setVisible(true));
             thanksToContainer.start();
 
-            labelVersion = new UiText();
+            labelVersion = new BitmapTextEx();
             labelVersion.setText(version);
             labelVersion.setWidth(1000);
 
             add(panel, (stage().getWidth() - panelRect.getWidth()) / 2, (stage().getHeight() - panelRect.getHeight()) / 4);
-            UiTextInputProcessor.setEnabled(true);
 
             int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
 
@@ -323,13 +325,12 @@ public class IntroScene extends DisplayObjectContainer {
     }
 
     private void warningDialog(String text) {
-        UiTextInputProcessor.INSTANCE.unfocus();
         AlertWindow alertWindow = AlertWindow.show(text, stage());
         alertWindow.setXY(
                 (D2D2World.ORIGIN_WIDTH - alertWindow.getWidth()) / 2,
                 (D2D2World.ORIGIN_HEIGHT - alertWindow.getHeight()) / 2
         );
-        alertWindow.setOnCloseFunction(uiTextInputPlayername::requestFocus);
+        alertWindow.setOnCloseFunction(uiTextInputPlayername::focus);
     }
 
     private @Nullable ServerInfoDto retrieveServerInfo(@NotNull String server) {

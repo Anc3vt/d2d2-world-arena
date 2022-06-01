@@ -1,9 +1,8 @@
 
 package com.ancevt.d2d2world.client.scene.intro;
 
-import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.FramedSprite;
@@ -14,6 +13,8 @@ import com.ancevt.d2d2.display.texture.TextureUrlLoader;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TextureUrlLoaderEvent;
 import com.ancevt.d2d2world.client.ui.Preloader;
+
+import static com.ancevt.d2d2.D2D2.getTextureManager;
 
 public class ThanksTo extends DisplayObjectContainer {
 
@@ -40,7 +41,7 @@ public class ThanksTo extends DisplayObjectContainer {
 
         fileSize = 0L;
 
-        UiText uiText = new UiText();
+        BitmapTextEx uiText = new BitmapTextEx();
         uiText.setText(name);
 
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);
@@ -53,7 +54,7 @@ public class ThanksTo extends DisplayObjectContainer {
         this.textureUrl = textureUrl;
         this.name = name;
         this.fileSize = fileSize;
-        UiText uiText = new UiText();
+        BitmapTextEx uiText = new BitmapTextEx();
         uiText.setText(name);
         uiText.getTextWidth();
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);
@@ -100,7 +101,7 @@ public class ThanksTo extends DisplayObjectContainer {
 
     private void startGlassEffect() {
         if (glassEffectAtlas == null) {
-            glassEffectAtlas = D2D2.getTextureManager().loadTextureAtlas("thanksto/glare.png");
+            glassEffectAtlas = getTextureManager().loadTextureAtlas("thanksto/glare.png");
         }
 
         Texture[] textures = new Texture[21];
@@ -127,7 +128,7 @@ public class ThanksTo extends DisplayObjectContainer {
 
     public void dispose() {
         if (texture != null) {
-            textureManager().unloadTextureAtlas(texture.getTextureAtlas());
+            getTextureManager().unloadTextureAtlas(texture.getTextureAtlas());
         }
     }
 

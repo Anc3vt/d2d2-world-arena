@@ -6,9 +6,8 @@ import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.components.Font;
-import com.ancevt.d2d2.components.UiTextInput;
-import com.ancevt.d2d2.components.UiTextInputEvent;
-import com.ancevt.d2d2.components.UiTextInputProcessor;
+import com.ancevt.d2d2.components.TextInput;
+import com.ancevt.d2d2.components.TextInputEvent;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -44,7 +43,7 @@ public class Chat extends DisplayObjectContainer {
 
     private int alphaTime = ALPHA_TIME;
 
-    private final UiTextInput input;
+    private final TextInput input;
     private final List<ChatMessage> messages;
     private final List<ChatMessage> displayedMessages;
     private final List<String> history;
@@ -56,7 +55,7 @@ public class Chat extends DisplayObjectContainer {
     private int historyIndex;
 
     public Chat() {
-        input = new UiTextInput();
+        input = new TextInput();
         messages = new CopyOnWriteArrayList<>();
         displayedMessages = new CopyOnWriteArrayList<>();
         history = new ArrayList<>();
@@ -66,9 +65,9 @@ public class Chat extends DisplayObjectContainer {
         height = D2D2.stage().getHeight() / 3.0f;
 
         input.setWidth(20);
-        input.addEventListener(UiTextInputEvent.TEXT_ENTER, this::textInputEvent);
-        input.addEventListener(UiTextInputEvent.TEXT_CHANGE, this::textInputEvent);
-        input.addEventListener(UiTextInputEvent.TEXT_INPUT_KEY_DOWN, this::textInputEvent);
+        input.addEventListener(TextInputEvent.ENTER, this::textInputEvent);
+        input.addEventListener(TextInputEvent.TEXT_CHANGE, this::textInputEvent);
+        input.addEventListener(TextInputEvent.KEY_DOWN, this::textInputEvent);
 
         loadHistory();
 
@@ -275,10 +274,10 @@ public class Chat extends DisplayObjectContainer {
 
     // TODO: split to 3 methods
     public void textInputEvent(Event event) {
-        if (event instanceof UiTextInputEvent uiTextInputEvent) {
+        if (event instanceof TextInputEvent uiTextInputEvent) {
             switch (event.getType()) {
 
-                case UiTextInputEvent.TEXT_CHANGE -> {
+                case TextInputEvent.TEXT_CHANGE -> {
                     setAlpha(1.0f);
                     alphaTime = ALPHA_TIME;
                     String text = uiTextInputEvent.getText();
@@ -291,7 +290,7 @@ public class Chat extends DisplayObjectContainer {
                     input.setWidth(w + 20);
                 }
 
-                case UiTextInputEvent.TEXT_ENTER -> {
+                case TextInputEvent.ENTER -> {
                     String text = uiTextInputEvent.getText();
                     if (!text.isBlank()) {
                         dispatchEvent(ChatEvent.builder()
@@ -305,7 +304,7 @@ public class Chat extends DisplayObjectContainer {
                     closeInput();
                 }
 
-                case UiTextInputEvent.TEXT_INPUT_KEY_DOWN -> {
+                case TextInputEvent.KEY_DOWN -> {
                     switch (uiTextInputEvent.getKeyCode()) {
                         case KeyCode.UP -> {
                             if (historyIndex == history.size()) {
@@ -386,7 +385,6 @@ public class Chat extends DisplayObjectContainer {
             chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, "Hello, i'm Ancevt" + i, Color.WHITE);
         }
 
-        UiTextInputProcessor.setEnabled(true);
         stage.addEventListener(InputEvent.KEY_DOWN, event -> {
             InputEvent inputEvent = (InputEvent) event;
             switch (inputEvent.getKeyCode()) {

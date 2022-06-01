@@ -3,7 +3,7 @@ package com.ancevt.d2d2world.client.ui.hud;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.Sprite;
@@ -13,11 +13,11 @@ import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import org.jetbrains.annotations.NotNull;
 
 public class AmmunitionHud extends DisplayObjectContainer {
-    private final UiText uiAmmunition;
+    private final BitmapTextEx uiAmmunition;
     private final Sprite weaponSprite;
 
     public AmmunitionHud() {
-        uiAmmunition = new UiText();
+        uiAmmunition = new BitmapTextEx();
         uiAmmunition.setText("~");
         add(uiAmmunition, 35, 16-8);
 

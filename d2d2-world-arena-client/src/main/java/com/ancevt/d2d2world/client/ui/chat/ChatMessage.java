@@ -2,7 +2,7 @@
 package com.ancevt.d2d2world.client.ui.chat;
 
 import com.ancevt.d2d2.components.Font;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +18,8 @@ public class ChatMessage extends DisplayObjectContainer {
     private final int playerId;
     private final String playerName;
     private final String text;
-    private final UiText nameUiText;
-    private final UiText textUiText;
+    private final BitmapTextEx nameBitmapTextEx;
+    private final BitmapTextEx textUiText;
     private final Color textColor;
 
     public ChatMessage(int id,
@@ -34,27 +34,27 @@ public class ChatMessage extends DisplayObjectContainer {
         this.playerName = playerName;
         this.text = messageText;
         this.textColor = textColor;
-        nameUiText = new UiText();
-        textUiText = new UiText();
+        nameBitmapTextEx = new BitmapTextEx();
+        textUiText = new BitmapTextEx();
 
         String playerNameToShow = format("%s(%d):", playerName, playerId);
 
-        nameUiText.setColor(Color.of(playerColor));
+        nameBitmapTextEx.setColor(Color.of(playerColor));
         textUiText.setColor(textColor);
-        nameUiText.setText(playerNameToShow);
-        nameUiText.setSize(playerNameToShow.length() * Font.getBitmapFont().getCharInfo('0').width() + 10, 30);
+        nameBitmapTextEx.setText(playerNameToShow);
+        nameBitmapTextEx.setSize(playerNameToShow.length() * Font.getBitmapFont().getCharInfo('0').width() + 10, 30);
 
         textUiText.setText(messageText);
-        textUiText.setX(nameUiText.getWidth());
+        textUiText.setX(nameBitmapTextEx.getWidth());
         textUiText.setWidth(DEFAULT_WIDTH);
         textUiText.setHeight(DEFAULT_HEIGHT);
 
-        nameUiText.setHeight(DEFAULT_HEIGHT);
+        nameBitmapTextEx.setHeight(DEFAULT_HEIGHT);
 
         textUiText.setVertexBleedingFix(0);
-        nameUiText.setVertexBleedingFix(0);
+        nameBitmapTextEx.setVertexBleedingFix(0);
 
-        add(nameUiText);
+        add(nameBitmapTextEx);
         add(textUiText);
     }
 
@@ -64,8 +64,8 @@ public class ChatMessage extends DisplayObjectContainer {
         this.playerName = null;
         this.text = messageText;
         this.textColor = textColor;
-        nameUiText = null;
-        textUiText = new UiText();
+        nameBitmapTextEx = null;
+        textUiText = new BitmapTextEx();
 
         textUiText.setWidth(DEFAULT_WIDTH);
         textUiText.setHeight(DEFAULT_HEIGHT);
@@ -78,8 +78,8 @@ public class ChatMessage extends DisplayObjectContainer {
     }
 
     public void setShadowEnabled(boolean b) {
-        if (nameUiText != null) {
-            nameUiText.setShadowEnabled(b);
+        if (nameBitmapTextEx != null) {
+            nameBitmapTextEx.setShadowEnabled(b);
         }
         textUiText.setShadowEnabled(b);
     }
@@ -119,7 +119,7 @@ public class ChatMessage extends DisplayObjectContainer {
                 ", playerId=" + playerId +
                 ", playerName='" + playerName + '\'' +
                 ", text='" + text + '\'' +
-                ", nameUiText=" + nameUiText +
+                ", nameUiText=" + nameBitmapTextEx +
                 ", textUiText=" + textUiText +
                 ", textColor=" + textColor +
                 '}';

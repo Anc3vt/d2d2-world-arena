@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+import static com.ancevt.d2d2.D2D2.getTextureManager;
 import static java.lang.Math.random;
 
 public class Particle extends DisplayObjectContainer {
@@ -18,7 +19,7 @@ public class Particle extends DisplayObjectContainer {
     private ISprite sprite;
 
     private Particle() {
-        Texture texture = textureManager().getTexture("d2d2-world-particle");
+        Texture texture = getTextureManager().getTexture("d2d2-world-particle");
 
         Texture[] textures = new Texture[]{
                 texture.getSubtexture(0, 0, 16, 16),

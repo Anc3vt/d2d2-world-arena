@@ -4,8 +4,8 @@ package com.ancevt.d2d2.panels;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 public class Button extends Panel {
 
@@ -16,7 +16,7 @@ public class Button extends Panel {
     private static final Color DISABLED_COLOR = Color.GRAY;
 
     private final BitmapText label;
-    private final InteractiveButton touchButton;
+    private final InteractiveContainer touchButton;
     private Sprite icon;
     private boolean pressed;
 
@@ -29,9 +29,9 @@ public class Button extends Panel {
         label.setColor(Color.BLACK);
         label.setText(labelText);
 
-        touchButton = new InteractiveButton();
+        touchButton = new InteractiveContainer();
 
-        touchButton.addEventListener(InteractiveButtonEvent.DOWN, e -> {
+        touchButton.addEventListener(InteractiveEvent.DOWN, e -> {
             Focus.setFocusedComponent(this);
 
             borderLeft.setColor(BORDER_COLOR_2);
@@ -42,8 +42,8 @@ public class Button extends Panel {
             pressed = true;
         });
 
-        touchButton.addEventListener(InteractiveButtonEvent.UP, event -> {
-            var e = (InteractiveButtonEvent) event;
+        touchButton.addEventListener(InteractiveEvent.UP, event -> {
+            var e = (InteractiveEvent) event;
 
             borderLeft.setColor(BORDER_COLOR_1);
             borderRight.setColor(BORDER_COLOR_2);

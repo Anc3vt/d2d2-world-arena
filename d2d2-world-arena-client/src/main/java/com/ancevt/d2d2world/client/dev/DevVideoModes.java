@@ -6,7 +6,6 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.UiTextInputProcessor;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
 import com.ancevt.d2d2.display.IDisplayObjectContainer;
@@ -44,8 +43,6 @@ public class DevVideoModes {
 
         IDisplayObjectContainer container = new DisplayObjectContainer();
         container.add(sprite);
-
-        UiTextInputProcessor.setEnabled(true);
 
         //D2D2.setFullscreen(true);
 

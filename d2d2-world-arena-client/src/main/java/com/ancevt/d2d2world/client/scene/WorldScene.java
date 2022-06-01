@@ -5,7 +5,7 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.DisplayObjectContainer;
@@ -91,7 +91,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private final Set<ChatBubble> chatBubbles;
 
     private final PlayerArrowView playerArrowView;
-    private final Map<PlayerActor, UiText> playerTextMap;
+    private final Map<PlayerActor, BitmapTextEx> playerTextMap;
 
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
@@ -704,12 +704,12 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName, boolean updateOnly) {
         if (updateOnly) {
-            UiText uiTextToUpdate = playerTextMap.get(playerActor);
+            BitmapTextEx uiTextToUpdate = playerTextMap.get(playerActor);
             uiTextToUpdate.setText(playerName + "(" + playerId + ")");
             return;
         }
 
-        UiText uiTextToRemove = playerTextMap.remove(playerActor);
+        BitmapTextEx uiTextToRemove = playerTextMap.remove(playerActor);
         if (uiTextToRemove != null) {
             uiTextToRemove.removeFromParent();
         }
@@ -719,7 +719,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         playerActor.setPlayerName(playerName);
         playerActor.setPlayerId(playerId);
 
-        UiText uiText = new UiText(playerName + "(" + playerId + ")") {
+        BitmapTextEx uiText = new BitmapTextEx(playerName + "(" + playerId + ")") {
             @Override
             public void onEachFrame() {
                 this.setXY(
