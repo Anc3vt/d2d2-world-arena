@@ -2,9 +2,9 @@
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.common.IDisposable;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 
-public class Component extends DisplayObjectContainer implements IDisposable {
+public class Component extends Container implements IDisposable {
 
 	private boolean focused;
 	private boolean disposed;

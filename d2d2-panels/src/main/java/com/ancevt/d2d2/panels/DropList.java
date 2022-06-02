@@ -62,7 +62,7 @@ public class DropList extends Component {
         label.setColor(FOREGROUND_COLOR);
         add(label);
 
-        touchButton = new InteractiveContainer(true);
+        touchButton = new InteractiveContainer();
         touchButton.addEventListener(InteractiveEvent.DOWN, e -> {
             if (opened) {
                 openRect.getParent().remove(openRect);
@@ -152,7 +152,7 @@ public class DropList extends Component {
             bitmapText.setY(i * DEFAULT_HEIGHT + (DEFAULT_HEIGHT - bitmapText.getBitmapFont().getCharHeight()) / 2);
             openRect.add(bitmapText);
 
-            final InteractiveContainer button = new InteractiveContainer(true);
+            final InteractiveContainer button = new InteractiveContainer();
             button.addEventListener(InteractiveEvent.DOWN, e->{
                 select(item.getKey());
                 openRect.getParent().remove(openRect);
