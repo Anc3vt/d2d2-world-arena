@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.ancevt.d2d2world.client.scene.charselect;
 
@@ -7,7 +24,7 @@ import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
@@ -35,7 +52,7 @@ import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_CHARACTER;
 
-public class CharSelectScene extends DisplayObjectContainer {
+public class CharSelectScene extends Container {
 
     private final PlainRect bg;
     private final Set<CharSelectItem> charSelectItems;
@@ -108,7 +125,7 @@ public class CharSelectScene extends DisplayObjectContainer {
         private final MapkitItem mapkitItem;
     }
 
-    private static class CharSelectItem extends DisplayObjectContainer {
+    private static class CharSelectItem extends Container {
 
         private final MapkitItem mapkitItem;
         private final CharSelectScene charSelectScene;
@@ -131,7 +148,7 @@ public class CharSelectScene extends DisplayObjectContainer {
 
             addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
 
-            interactiveButton = new InteractiveContainer(true);
+            interactiveButton = new InteractiveContainer();
         }
 
         private void this_addToStage(Event event) {

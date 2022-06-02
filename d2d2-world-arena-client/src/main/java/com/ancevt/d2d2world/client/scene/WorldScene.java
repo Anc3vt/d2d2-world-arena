@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.ancevt.d2d2world.client.scene;
 
@@ -8,7 +25,7 @@ import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
@@ -72,7 +89,7 @@ import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
 
 @Slf4j
-public class WorldScene extends DisplayObjectContainer implements ClientListener {
+public class WorldScene extends Container implements ClientListener {
 
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();

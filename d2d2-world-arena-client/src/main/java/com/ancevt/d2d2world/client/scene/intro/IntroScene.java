@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.ancevt.d2d2world.client.scene.intro;
 
@@ -17,7 +34,7 @@ import com.ancevt.d2d2.components.TextInputEvent;
 import com.ancevt.d2d2.components.dialog.AlertWindow;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
@@ -50,13 +67,13 @@ import static com.ancevt.d2d2world.client.config.ClientConfig.SERVER;
 import static java.lang.Integer.parseInt;
 
 @Slf4j
-public class IntroScene extends DisplayObjectContainer {
+public class IntroScene extends Container {
 
     private static final String NAME_PATTERN = "[\\[\\]()_а-яА-Яa-zA-Z0-9]+";
 
     public static IntroScene instance;
 
-    private final DisplayObjectContainer panel;
+    private final Container panel;
     private final PlainRect panelRect;
     private final TextInput uiTextInputServer;
     private final TextInput uiTextInputPlayername;
@@ -93,7 +110,7 @@ public class IntroScene extends DisplayObjectContainer {
 
         CONFIG.ifContains(PLAYERNAME, uiTextInputPlayername::setText);
 
-        panel = new DisplayObjectContainer();
+        panel = new Container();
 
         panelRect = new PlainRect(330, 200, Color.WHITE);
         panelRect.setVisible(false);
@@ -368,7 +385,7 @@ public class IntroScene extends DisplayObjectContainer {
         monitorChooser.setEnabled(b);
     }
 
-    public static class UAFlag extends DisplayObjectContainer {
+    public static class UAFlag extends Container {
 
         final float factor = 0.25f;
 

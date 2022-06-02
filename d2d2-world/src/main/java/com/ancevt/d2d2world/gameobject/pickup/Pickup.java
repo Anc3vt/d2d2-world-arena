@@ -1,9 +1,26 @@
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.ancevt.d2d2world.gameobject.pickup;
 
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.D2D2WorldAssets;
@@ -23,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
 
-abstract public class Pickup extends DisplayObjectContainer implements ICollision, IResettable, ISynchronized, ISonicSynchronized {
+abstract public class Pickup extends Container implements ICollision, IResettable, ISynchronized, ISonicSynchronized {
 
     public static final int PICKUP_DISAPPEAR_AFTER_TACT = 5000;
 
@@ -32,7 +49,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     private final MapkitItem mapkitItem;
     private final int gameObjectId;
     protected final Sprite image;
-    protected final DisplayObjectContainer container;
+    protected final Container container;
     protected final Sprite bubbleSprite;
 
     private int counter = 0;
@@ -54,7 +71,7 @@ abstract public class Pickup extends DisplayObjectContainer implements ICollisio
     public Pickup(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         this.mapkitItem = mapkitItem;
         this.gameObjectId = gameObjectId;
-        container = new DisplayObjectContainer();
+        container = new Container();
         bubbleSprite = new Sprite(D2D2WorldAssets.getPickupBubbleTexture32());
         bubbleSprite.setAlpha(0.75f);
         image = new Sprite(mapkitItem.getTexture());

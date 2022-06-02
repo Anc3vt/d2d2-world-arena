@@ -1,10 +1,27 @@
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.Pair;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.FramedSprite;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Sprite;
@@ -92,8 +109,8 @@ abstract public class Actor extends Animated implements
     private boolean alive;
     private boolean pushable;
     private final HealthBar healthBar;
-    private final DisplayObjectContainer weaponContainer;
-    private final DisplayObjectContainer headContainer;
+    private final Container weaponContainer;
+    private final Container headContainer;
     private final Sprite armSprite;
     private float weaponDegree;
     private int goDirection;
@@ -119,7 +136,7 @@ abstract public class Actor extends Animated implements
         healthBar = new HealthBar();
         weapons = new ArrayList<>();
 
-        weaponContainer = new DisplayObjectContainer();
+        weaponContainer = new Container();
         resetWeapons();
 
         headFramedDisplayObject = new FramedSprite(mapkitItem
@@ -130,7 +147,7 @@ abstract public class Actor extends Animated implements
         headFramedDisplayObject.setFrame(0);
         headFramedDisplayObject.setLoop(true);
         headFramedDisplayObject.play();
-        headContainer = new DisplayObjectContainer();
+        headContainer = new Container();
 
         armSprite = new Sprite(mapkitItem.getTextureAtlas()
                 .createTexture(mapkitItem.getDataEntry()
