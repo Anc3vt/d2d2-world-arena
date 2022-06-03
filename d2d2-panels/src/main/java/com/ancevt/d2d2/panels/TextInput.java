@@ -90,7 +90,8 @@ public class TextInput extends Component implements EventListener {
     @Override
     public void onFocus() {
         rect.setBorderColor(FOCUSED_BORDER_COLOR);
-        stage().addEventListener(this, InputEvent.KEY_DOWN, this, true);
+        stage().removeEventListener(this, InputEvent.KEY_DOWN);
+        stage().addEventListener(this, InputEvent.KEY_DOWN, this);
         relocateCursor();
         add(cursor);
         super.onFocus();

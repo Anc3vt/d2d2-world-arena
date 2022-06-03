@@ -654,9 +654,13 @@ public class WorldScene extends Container implements ClientListener {
             overlay.startOut();
         }
 
-        localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor), true);
-        localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor), true);
-        localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn), true);
+        localPlayerActor.removeEventListener(WorldScene.class, ActorEvent.AMMUNITION_CHANGE);
+        localPlayerActor.removeEventListener(WorldScene.class, ActorEvent.SET_WEAPON);
+        localPlayerActor.removeEventListener(WorldScene.class, ActorEvent.ACTOR_DEATH);
+
+        localPlayerActor.addEventListener(WorldScene.class, ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
+        localPlayerActor.addEventListener(WorldScene.class, ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));
+        localPlayerActor.addEventListener(WorldScene.class, ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn));
 
         localPlayerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
             var e = (ActorEvent) event;
