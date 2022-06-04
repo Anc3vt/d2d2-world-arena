@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.common.PlainRect;
@@ -117,7 +116,7 @@ public class Title extends Component {
 		borderRight.setX(width);
 		
 		background.setWidth(width);
-		label.setBounds(getWidth() - PADDING * 2, label.getBitmapFont().getCharHeight());
+		label.setSize(getWidth() - PADDING * 2, label.getBitmapFont().getCharHeight());
 		titleTouchButton.setWidth((int)width);
 	}
 	

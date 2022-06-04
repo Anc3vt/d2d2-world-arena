@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.scene;
 
 import com.ancevt.commons.concurrent.Lock;
@@ -91,7 +90,6 @@ public class GameScene extends Container implements ClientListener, FileReceiver
             switch (e.getKeyCode()) {
                 case KeyCode.PAGE_UP -> Chat.getInstance().setScroll(Chat.getInstance().getScroll() - 10);
                 case KeyCode.PAGE_DOWN -> Chat.getInstance().setScroll(Chat.getInstance().getScroll() + 10);
-                case KeyCode.F8 -> Chat.getInstance().setShadowEnabled(!Chat.getInstance().isShadowEnabled());
                 case KeyCode.F6 -> {
                     if (!Chat.getInstance().isInputOpened()) {
                         Chat.getInstance().openInput();

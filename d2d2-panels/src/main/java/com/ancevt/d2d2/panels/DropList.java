@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.D2D2;
@@ -162,7 +161,7 @@ public class DropList extends Component {
             final DropListItem item = items.get(i);
 
             final BitmapText bitmapText = new BitmapText();
-            bitmapText.setBounds(getWidth(), DEFAULT_HEIGHT);
+            bitmapText.setSize(getWidth(), DEFAULT_HEIGHT);
             bitmapText.setText(item.getLabelText());
             bitmapText.setColor(FOREGROUND_COLOR);
             bitmapText.setX(PADDING);

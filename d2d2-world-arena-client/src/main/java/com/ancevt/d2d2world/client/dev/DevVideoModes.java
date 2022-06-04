@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.dev;
 
 import com.ancevt.commons.Holder;
@@ -100,10 +99,6 @@ public class DevVideoModes {
 
                 case KeyCode.PAGE_DOWN -> {
                     chat.setScroll(chat.getScroll() + 10);
-                }
-
-                case KeyCode.F8 -> {
-                    chat.setShadowEnabled(!chat.isShadowEnabled());
                 }
 
                 case KeyCode.F6, KeyCode.T -> {

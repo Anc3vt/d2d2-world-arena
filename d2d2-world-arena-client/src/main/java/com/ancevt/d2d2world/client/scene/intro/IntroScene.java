@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.scene.intro;
 
 import com.ancevt.commons.Holder;
@@ -25,7 +24,6 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.VideoMode;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.components.Button;
 import com.ancevt.d2d2.components.Chooser;
 import com.ancevt.d2d2.components.Font;
@@ -35,6 +33,7 @@ import com.ancevt.d2d2.components.dialog.AlertWindow;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
@@ -79,7 +78,7 @@ public class IntroScene extends Container {
     private final TextInput uiTextInputPlayername;
     private final MonitorChooser monitorChooser;
     private final ResolutionChooser resolutionChooser;
-    private BitmapTextEx labelVersion;
+    private BitmapText labelVersion;
     private EventListener addToStageEventListener;
 
     public IntroScene(@NotNull String version, String defaultGameServer) {
@@ -87,10 +86,11 @@ public class IntroScene extends Container {
 
         getTextureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
 
-        BitmapTextEx labelServer = new BitmapTextEx();
+        BitmapText labelServer = new BitmapText();
+        labelServer.setBitmapFont(Font.getBitmapFont());
         labelServer.setText("Server:");
 
-        BitmapTextEx labelPlayerName = new BitmapTextEx();
+        BitmapText labelPlayerName = new BitmapText();
         labelPlayerName.setText("Player name:");
 
         uiTextInputServer = new TextInput();
@@ -147,17 +147,19 @@ public class IntroScene extends Container {
 
             add(new CityBgSprite(), -1920, 200);
 
-            BitmapTextEx labelThanksTo = new BitmapTextEx();
+            BitmapText labelThanksTo = new BitmapText();
+            labelThanksTo.setBitmapFont(Font.getBitmapFont());
             labelThanksTo.setVisible(false);
             labelThanksTo.setText("Special thanks to");
-            add(labelThanksTo, stage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2, 330 - 55);
+            add(labelThanksTo, stage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2f, 330 - 55);
 
             ThanksToContainer thanksToContainer = new ThanksToContainer();
             add(thanksToContainer, 0, 300);
             thanksToContainer.addEventListener(Event.COMPLETE, e -> labelThanksTo.setVisible(true));
             thanksToContainer.start();
 
-            labelVersion = new BitmapTextEx();
+            labelVersion = new BitmapText();
+            labelVersion.setBitmapFont(Font.getBitmapFont());
             labelVersion.setText(version);
             labelVersion.setWidth(1000);
 

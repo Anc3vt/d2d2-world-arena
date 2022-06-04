@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.editor.panels;
 
 import com.ancevt.d2d2.common.BorderedRect;
@@ -92,7 +91,7 @@ public class MapkitToolsPanel extends TitledPanel {
         add(pageNext, 40, palette.getY() + palette.getHeight() + 5);
 
         label = new Label("Label");
-        label.setBounds(180, 30);
+        label.setSize(180, 30);
         add(label, 80, palette.getY() + palette.getHeight() + 5);
 
         dropListClass = new DropList() {

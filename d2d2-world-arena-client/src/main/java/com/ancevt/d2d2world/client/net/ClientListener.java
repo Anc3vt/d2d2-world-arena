@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.net;
 
 import com.ancevt.d2d2world.net.dto.server.ServerInfoDto;

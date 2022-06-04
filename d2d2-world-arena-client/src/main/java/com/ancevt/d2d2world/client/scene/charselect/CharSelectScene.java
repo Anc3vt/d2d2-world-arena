@@ -15,18 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.scene.charselect;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.BitmapTextEx;
+import com.ancevt.d2d2.components.Font;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InteractiveEvent;
 import com.ancevt.d2d2.input.Mouse;
@@ -62,7 +62,8 @@ public class CharSelectScene extends Container {
         add(bg);
         charSelectItems = new HashSet<>();
 
-        BitmapTextEx uiLabel = new BitmapTextEx("Select a character:");
+        BitmapText uiLabel = new BitmapText("Select a character:");
+        uiLabel.setBitmapFont(Font.getBitmapFont());
         add(uiLabel, 10, 14);
 
         addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
@@ -165,9 +166,10 @@ public class CharSelectScene extends Container {
             playerActor.setWeaponVisible(false);
             add(playerActor);
 
-            BitmapTextEx uiText = new BitmapTextEx(mapkitItem.getDataEntry().getString(DataKey.READABLE_NAME));
-            uiText.setAutoSize(true);
-            add(uiText, -uiText.getTextWidth() / 2 + uiText.getCharWidth() / 2, h - 16);
+            BitmapText uiText = new BitmapText(mapkitItem.getDataEntry().getString(DataKey.READABLE_NAME));
+            uiText.setBitmapFont(Font.getBitmapFont());
+            uiText.setAutosize(true);
+            add(uiText, -uiText.getTextWidth() / 2f + uiText.getCharWidth() / 2, h - 16);
 
             interactiveButton.setSize(w, h + 20);
             interactiveButton.addEventListener(this, InteractiveEvent.UP, this::interactiveButton_up);

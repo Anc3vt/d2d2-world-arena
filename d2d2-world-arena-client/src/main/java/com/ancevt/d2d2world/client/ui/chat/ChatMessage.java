@@ -15,13 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.ui.chat;
 
 import com.ancevt.d2d2.components.Font;
-import com.ancevt.d2d2.components.BitmapTextEx;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
+import com.ancevt.d2d2.display.text.BitmapText;
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.String.format;
@@ -35,8 +34,8 @@ public class ChatMessage extends Container {
     private final int playerId;
     private final String playerName;
     private final String text;
-    private final BitmapTextEx nameBitmapTextEx;
-    private final BitmapTextEx textUiText;
+    private final BitmapText nameBitmapText;
+    private final BitmapText bitmapText;
     private final Color textColor;
 
     public ChatMessage(int id,
@@ -51,28 +50,30 @@ public class ChatMessage extends Container {
         this.playerName = playerName;
         this.text = messageText;
         this.textColor = textColor;
-        nameBitmapTextEx = new BitmapTextEx();
-        textUiText = new BitmapTextEx();
+        nameBitmapText = new BitmapText();
+        nameBitmapText.setBitmapFont(Font.getBitmapFont());
+        bitmapText = new BitmapText();
+        bitmapText.setBitmapFont(Font.getBitmapFont());
 
         String playerNameToShow = format("%s(%d):", playerName, playerId);
 
-        nameBitmapTextEx.setColor(Color.of(playerColor));
-        textUiText.setColor(textColor);
-        nameBitmapTextEx.setText(playerNameToShow);
-        nameBitmapTextEx.setSize(playerNameToShow.length() * Font.getBitmapFont().getCharInfo('0').width() + 10, 30);
+        nameBitmapText.setColor(Color.of(playerColor));
+        bitmapText.setColor(textColor);
+        nameBitmapText.setText(playerNameToShow);
+        nameBitmapText.setSize(playerNameToShow.length() * Font.getBitmapFont().getCharInfo('0').width() + 10, 30);
 
-        textUiText.setText(messageText);
-        textUiText.setX(nameBitmapTextEx.getWidth());
-        textUiText.setWidth(DEFAULT_WIDTH);
-        textUiText.setHeight(DEFAULT_HEIGHT);
+        bitmapText.setText(messageText);
+        bitmapText.setX(nameBitmapText.getWidth());
+        bitmapText.setWidth(DEFAULT_WIDTH);
+        bitmapText.setHeight(DEFAULT_HEIGHT);
 
-        nameBitmapTextEx.setHeight(DEFAULT_HEIGHT);
+        nameBitmapText.setHeight(DEFAULT_HEIGHT);
 
-        textUiText.setVertexBleedingFix(0);
-        nameBitmapTextEx.setVertexBleedingFix(0);
+        bitmapText.setVertexBleedingFix(0);
+        nameBitmapText.setVertexBleedingFix(0);
 
-        add(nameBitmapTextEx);
-        add(textUiText);
+        add(nameBitmapText);
+        add(bitmapText);
     }
 
     public ChatMessage(int id, String messageText, Color textColor) {
@@ -81,32 +82,22 @@ public class ChatMessage extends Container {
         this.playerName = null;
         this.text = messageText;
         this.textColor = textColor;
-        nameBitmapTextEx = null;
-        textUiText = new BitmapTextEx();
+        nameBitmapText = null;
+        bitmapText = new BitmapText();
+        bitmapText.setBitmapFont(Font.getBitmapFont());
 
-        textUiText.setWidth(DEFAULT_WIDTH);
-        textUiText.setHeight(DEFAULT_HEIGHT);
-        textUiText.setColor(textColor);
-        textUiText.setText(messageText);
+        bitmapText.setWidth(DEFAULT_WIDTH);
+        bitmapText.setHeight(DEFAULT_HEIGHT);
+        bitmapText.setColor(textColor);
+        bitmapText.setText(messageText);
 
-        textUiText.setVertexBleedingFix(0);
+        bitmapText.setVertexBleedingFix(0);
 
-        add(textUiText);
-    }
-
-    public void setShadowEnabled(boolean b) {
-        if (nameBitmapTextEx != null) {
-            nameBitmapTextEx.setShadowEnabled(b);
-        }
-        textUiText.setShadowEnabled(b);
+        add(bitmapText);
     }
 
     public boolean isFromPlayer() {
         return playerName != null;
-    }
-
-    public boolean isShadowEnabled() {
-        return textUiText.isShadowEnabled();
     }
 
     public int getPlayerId() {
@@ -136,8 +127,8 @@ public class ChatMessage extends Container {
                 ", playerId=" + playerId +
                 ", playerName='" + playerName + '\'' +
                 ", text='" + text + '\'' +
-                ", nameUiText=" + nameBitmapTextEx +
-                ", textUiText=" + textUiText +
+                ", nameUiText=" + nameBitmapText +
+                ", textUiText=" + bitmapText +
                 ", textColor=" + textColor +
                 '}';
     }

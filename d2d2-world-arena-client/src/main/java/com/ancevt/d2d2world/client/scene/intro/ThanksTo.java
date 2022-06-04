@@ -15,15 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.scene.intro;
 
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.BitmapTextEx;
+import com.ancevt.d2d2.components.Font;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.FramedSprite;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.display.texture.TextureUrlLoader;
@@ -58,7 +58,8 @@ public class ThanksTo extends Container {
 
         fileSize = 0L;
 
-        BitmapTextEx uiText = new BitmapTextEx();
+        BitmapText uiText = new BitmapText();
+        uiText.setBitmapFont(Font.getBitmapFont());
         uiText.setText(name);
 
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);
@@ -71,7 +72,8 @@ public class ThanksTo extends Container {
         this.textureUrl = textureUrl;
         this.name = name;
         this.fileSize = fileSize;
-        BitmapTextEx uiText = new BitmapTextEx();
+        BitmapText uiText = new BitmapText();
+        uiText.setBitmapFont(Font.getBitmapFont());
         uiText.setText(name);
         uiText.getTextWidth();
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);

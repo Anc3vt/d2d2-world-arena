@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.ui.chat;
 
 import com.ancevt.commons.Holder;
@@ -89,15 +88,6 @@ public class Chat extends Container {
         loadHistory();
 
         redraw();
-    }
-
-    public void setShadowEnabled(boolean b) {
-        this.shadowEnabled = b;
-        messages.forEach(m -> m.setShadowEnabled(b));
-    }
-
-    public boolean isShadowEnabled() {
-        return shadowEnabled;
     }
 
     public int getLastChatMessageId() {
@@ -246,7 +236,6 @@ public class Chat extends Container {
     private void addMessage(@NotNull ChatMessage chatMessage) {
         setAlpha(1.0f);
         alphaTime = ALPHA_TIME;
-        chatMessage.setShadowEnabled(isShadowEnabled());
         messages.add(chatMessage);
 
         if (messages.size() > MAX_MESSAGES) {
@@ -411,10 +400,6 @@ public class Chat extends Container {
 
                 case KeyCode.PAGE_DOWN -> {
                     chat.setScroll(chat.getScroll() + 10);
-                }
-
-                case KeyCode.F8 -> {
-                    chat.setShadowEnabled(!chat.isShadowEnabled());
                 }
 
                 case KeyCode.F6, KeyCode.T -> {

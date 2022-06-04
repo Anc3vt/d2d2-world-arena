@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.commons.Holder;
@@ -421,7 +420,7 @@ abstract public class Actor extends Animated implements
                     super.onEachFrame();
                 }
             };
-            bitmapTextDebug.setBounds(1000, 1000);
+            bitmapTextDebug.setSize(1000, 1000);
         }
 
         bitmapTextDebug.setText(o != null ? o.toString() : null);

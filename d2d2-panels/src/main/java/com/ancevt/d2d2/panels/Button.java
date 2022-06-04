@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.display.Color;
@@ -115,7 +114,7 @@ public class Button extends Panel {
 
         if (label != null && touchButton != null) {
             final int charHeight = label.getBitmapFont().getCharHeight();
-            label.setBounds(width - PADDING * 2, charHeight);
+            label.setSize(width - PADDING * 2, charHeight);
             label.setX(PADDING);
             touchButton.setWidth(width);
         }

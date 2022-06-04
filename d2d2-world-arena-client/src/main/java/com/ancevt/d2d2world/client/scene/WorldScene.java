@@ -15,17 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.scene;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
-import com.ancevt.d2d2.components.BitmapTextEx;
+import com.ancevt.d2d2.components.Font;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.Container;
+import com.ancevt.d2d2.display.DisplayObject;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
@@ -108,7 +108,7 @@ public class WorldScene extends Container implements ClientListener {
     private final Set<ChatBubble> chatBubbles;
 
     private final PlayerArrowView playerArrowView;
-    private final Map<PlayerActor, BitmapTextEx> playerTextMap;
+    private final Map<PlayerActor, BitmapText> playerTextMap;
 
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
@@ -725,12 +725,12 @@ public class WorldScene extends Container implements ClientListener {
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName, boolean updateOnly) {
         if (updateOnly) {
-            BitmapTextEx uiTextToUpdate = playerTextMap.get(playerActor);
+            BitmapText uiTextToUpdate = playerTextMap.get(playerActor);
             uiTextToUpdate.setText(playerName + "(" + playerId + ")");
             return;
         }
 
-        BitmapTextEx uiTextToRemove = playerTextMap.remove(playerActor);
+        BitmapText uiTextToRemove = playerTextMap.remove(playerActor);
         if (uiTextToRemove != null) {
             uiTextToRemove.removeFromParent();
         }
@@ -740,7 +740,7 @@ public class WorldScene extends Container implements ClientListener {
         playerActor.setPlayerName(playerName);
         playerActor.setPlayerId(playerId);
 
-        BitmapTextEx uiText = new BitmapTextEx(playerName + "(" + playerId + ")") {
+        BitmapText bitmapText = new BitmapText(playerName + "(" + playerId + ")") {
             @Override
             public void onEachFrame() {
                 this.setXY(
@@ -749,12 +749,13 @@ public class WorldScene extends Container implements ClientListener {
                 );
             }
         };
-        uiText.setScale(1f, 1f);
-        PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
-        uiText.setVisible(false);
-        Async.runLater(250, TimeUnit.MILLISECONDS, () -> uiText.setVisible(true));
-        stage().add(uiText);
-        playerTextMap.put(playerActor, uiText);
+        bitmapText.setBitmapFont(Font.getBitmapFont());
+        bitmapText.setScale(1f, 1f);
+        PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> bitmapText.setColor(Color.of(player.getColor())));
+        bitmapText.setVisible(false);
+        Async.runLater(250, TimeUnit.MILLISECONDS, () -> bitmapText.setVisible(true));
+        stage().add(bitmapText);
+        playerTextMap.put(playerActor, bitmapText);
     }
 
     private Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {

@@ -15,17 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.ui;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.BitmapTextEx;
+import com.ancevt.d2d2.components.Font;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Stage;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.client.net.Player;
 
@@ -47,7 +47,7 @@ public class TabWindow extends Container {
     private static final float COLUMN_4 = 600f;
 
     private final PlainRect plainRect;
-    private final BitmapTextEx uiServerName;
+    private final BitmapText uiServerName;
     private final List<IDisplayObject> texts;
     private List<Player> remotePlayers;
 
@@ -57,8 +57,8 @@ public class TabWindow extends Container {
 
         texts = new CopyOnWriteArrayList<>();
 
-        uiServerName = new BitmapTextEx();
-        uiServerName.setAutoSize(true);
+        uiServerName = new BitmapText();
+        uiServerName.setAutosize(true);
 
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
     }
@@ -93,10 +93,17 @@ public class TabWindow extends Container {
     }
 
     private void addPlayerTexts(int y, int id, String name, int frags, int ping, Color color) {
-        BitmapTextEx uiId = new BitmapTextEx(id);
-        BitmapTextEx uiName = new BitmapTextEx(name);
-        BitmapTextEx uiFrags = new BitmapTextEx(frags);
-        BitmapTextEx uiPing = new BitmapTextEx(ping);
+        BitmapText uiId = new BitmapText(id + "");
+        uiId.setBitmapFont(Font.getBitmapFont());
+
+        BitmapText uiName = new BitmapText(name + "");
+        uiName.setBitmapFont(Font.getBitmapFont());
+
+        BitmapText uiFrags = new BitmapText(frags + "");
+        uiFrags.setBitmapFont(Font.getBitmapFont());
+
+        BitmapText uiPing = new BitmapText(ping + "");
+        uiPing.setBitmapFont(Font.getBitmapFont());
 
         uiId.setColor(color);
         uiName.setColor(color);
@@ -125,16 +132,20 @@ public class TabWindow extends Container {
     private void drawTitle() {
         Color color = Color.GRAY;
 
-        BitmapTextEx uiId = new BitmapTextEx("id");
+        BitmapText uiId = new BitmapText("id");
+        uiId.setBitmapFont(Font.getBitmapFont());
         uiId.setColor(color);
 
-        BitmapTextEx uiName = new BitmapTextEx("name");
+        BitmapText uiName = new BitmapText("name");
+        uiName.setBitmapFont(Font.getBitmapFont());
         uiName.setColor(color);
 
-        BitmapTextEx uiFrags = new BitmapTextEx("frags");
+        BitmapText uiFrags = new BitmapText("frags");
+        uiFrags.setBitmapFont(Font.getBitmapFont());
         uiFrags.setColor(color);
 
-        BitmapTextEx uiPing = new BitmapTextEx("ping");
+        BitmapText uiPing = new BitmapText("ping");
+        uiPing.setBitmapFont(Font.getBitmapFont());
         uiPing.setColor(color);
 
         add(uiId, COLUMN_1, 30);

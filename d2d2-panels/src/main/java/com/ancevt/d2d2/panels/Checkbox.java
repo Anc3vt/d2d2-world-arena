@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.common.BorderedRect;
@@ -57,7 +56,7 @@ public class Checkbox extends Component {
 		boxInner.setXY((BOX_OUTER_SIZE - BOX_INNER_SIZE)/2, (BOX_OUTER_SIZE - BOX_INNER_SIZE)/2);
 		
 		label = new BitmapText();
-		label.setBoundWidth(DEFAULT_WIDTH - BOX_OUTER_SIZE - PADDING);
+		label.setWidth(DEFAULT_WIDTH - BOX_OUTER_SIZE - PADDING);
 		label.setText(labelText);
 		label.setColor(LABEL_COLOR);
 		label.setX(boxOuter.getWidth() + PADDING);
@@ -83,7 +82,7 @@ public class Checkbox extends Component {
 	}
 	
 	public void setWidth(float width) {
-		label.setBoundWidth(width - BOX_OUTER_SIZE - PADDING);
+		label.setWidth(width - BOX_OUTER_SIZE - PADDING);
 		touchButton.setSize(boxOuter.getWidth() + PADDING + label.getWidth(), boxOuter.getHeight());
 	}
 	

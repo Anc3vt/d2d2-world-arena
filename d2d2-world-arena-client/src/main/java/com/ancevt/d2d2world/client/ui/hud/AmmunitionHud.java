@@ -15,26 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2world.client.ui.hud;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.BitmapTextEx;
+import com.ancevt.d2d2.components.Font;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import org.jetbrains.annotations.NotNull;
 
 public class AmmunitionHud extends Container {
-    private final BitmapTextEx uiAmmunition;
+    private final BitmapText uiAmmunition;
     private final Sprite weaponSprite;
 
     public AmmunitionHud() {
-        uiAmmunition = new BitmapTextEx();
+        uiAmmunition = new BitmapText();
+        uiAmmunition.setBitmapFont(Font.getBitmapFont());
         uiAmmunition.setText("~");
         add(uiAmmunition, 35, 16-8);
 
@@ -46,7 +47,7 @@ public class AmmunitionHud extends Container {
         final Weapon weapon = actor.getCurrentWeapon();
 
         weaponSprite.setTexture(weapon.getTexture());
-        uiAmmunition.setText(weapon.getAmmunition());
+        uiAmmunition.setText(weapon.getAmmunition() + "");
 
         if(weapon.getAmmunition() < 25) {
             uiAmmunition.setColor(Color.RED);

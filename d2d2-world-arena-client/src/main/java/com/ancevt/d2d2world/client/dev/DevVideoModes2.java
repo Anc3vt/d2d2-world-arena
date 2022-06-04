@@ -66,10 +66,6 @@ public class DevVideoModes2 {
                     chat.setScroll(chat.getScroll() + 10);
                 }
 
-                case KeyCode.F8 -> {
-                    chat.setShadowEnabled(!chat.isShadowEnabled());
-                }
-
                 case KeyCode.F6, KeyCode.T -> {
                     if (!chat.isInputOpened()) chat.openInput();
                 }

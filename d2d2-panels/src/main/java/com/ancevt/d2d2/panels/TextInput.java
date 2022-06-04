@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.common.BorderedRect;
@@ -119,14 +118,14 @@ public class TextInput extends Component implements EventListener {
 
     public void setWidth(float width) {
         rect.setWidth(width);
-        bitmapText.setBoundWidth(width);
+        bitmapText.setWidth(width);
         touchButton.setWidth((int) width);
     }
 
     public void setHeight(float height) {
         rect.setHeight(height);
 
-        bitmapText.setBoundHeight(height - bitmapText.getBitmapFont().getCharHeight());
+        bitmapText.setHeight(height - bitmapText.getBitmapFont().getCharHeight());
         bitmapText.setY((getHeight() - bitmapText.getBitmapFont().getCharHeight()) / 2);
         cursor.setY((getHeight() - cursor.getHeight()) / 2);
         touchButton.setHeight((int) height);
