@@ -17,7 +17,7 @@
  */
 package com.ancevt.d2d2world.client.ui.chat;
 
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.text.BitmapText;
@@ -51,16 +51,16 @@ public class ChatMessage extends Container {
         this.text = messageText;
         this.textColor = textColor;
         nameBitmapText = new BitmapText();
-        nameBitmapText.setBitmapFont(Font.getBitmapFont());
+        nameBitmapText.setBitmapFont(ComponentFont.getBitmapFont());
         bitmapText = new BitmapText();
-        bitmapText.setBitmapFont(Font.getBitmapFont());
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFont());
 
         String playerNameToShow = format("%s(%d):", playerName, playerId);
 
         nameBitmapText.setColor(Color.of(playerColor));
         bitmapText.setColor(textColor);
         nameBitmapText.setText(playerNameToShow);
-        nameBitmapText.setSize(playerNameToShow.length() * Font.getBitmapFont().getCharInfo('0').width() + 10, 30);
+        nameBitmapText.setSize(playerNameToShow.length() * ComponentFont.getBitmapFont().getCharInfo('0').width() + 10, 30);
 
         bitmapText.setText(messageText);
         bitmapText.setX(nameBitmapText.getWidth());
@@ -84,7 +84,7 @@ public class ChatMessage extends Container {
         this.textColor = textColor;
         nameBitmapText = null;
         bitmapText = new BitmapText();
-        bitmapText.setBitmapFont(Font.getBitmapFont());
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFont());
 
         bitmapText.setWidth(DEFAULT_WIDTH);
         bitmapText.setHeight(DEFAULT_HEIGHT);

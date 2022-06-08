@@ -20,7 +20,7 @@ package com.ancevt.d2d2world.client.ui;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.IDisplayObject;
@@ -94,16 +94,16 @@ public class TabWindow extends Container {
 
     private void addPlayerTexts(int y, int id, String name, int frags, int ping, Color color) {
         BitmapText uiId = new BitmapText(id + "");
-        uiId.setBitmapFont(Font.getBitmapFont());
+        uiId.setBitmapFont(ComponentFont.getBitmapFont());
 
         BitmapText uiName = new BitmapText(name + "");
-        uiName.setBitmapFont(Font.getBitmapFont());
+        uiName.setBitmapFont(ComponentFont.getBitmapFont());
 
         BitmapText uiFrags = new BitmapText(frags + "");
-        uiFrags.setBitmapFont(Font.getBitmapFont());
+        uiFrags.setBitmapFont(ComponentFont.getBitmapFont());
 
         BitmapText uiPing = new BitmapText(ping + "");
-        uiPing.setBitmapFont(Font.getBitmapFont());
+        uiPing.setBitmapFont(ComponentFont.getBitmapFont());
 
         uiId.setColor(color);
         uiName.setColor(color);
@@ -133,19 +133,19 @@ public class TabWindow extends Container {
         Color color = Color.GRAY;
 
         BitmapText uiId = new BitmapText("id");
-        uiId.setBitmapFont(Font.getBitmapFont());
+        uiId.setBitmapFont(ComponentFont.getBitmapFont());
         uiId.setColor(color);
 
         BitmapText uiName = new BitmapText("name");
-        uiName.setBitmapFont(Font.getBitmapFont());
+        uiName.setBitmapFont(ComponentFont.getBitmapFont());
         uiName.setColor(color);
 
         BitmapText uiFrags = new BitmapText("frags");
-        uiFrags.setBitmapFont(Font.getBitmapFont());
+        uiFrags.setBitmapFont(ComponentFont.getBitmapFont());
         uiFrags.setColor(color);
 
         BitmapText uiPing = new BitmapText("ping");
-        uiPing.setBitmapFont(Font.getBitmapFont());
+        uiPing.setBitmapFont(ComponentFont.getBitmapFont());
         uiPing.setColor(color);
 
         add(uiId, COLUMN_1, 30);

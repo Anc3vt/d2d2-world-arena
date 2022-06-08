@@ -21,7 +21,7 @@ import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Sprite;
@@ -63,7 +63,7 @@ public class CharSelectScene extends Container {
         charSelectItems = new HashSet<>();
 
         BitmapText uiLabel = new BitmapText("Select a character:");
-        uiLabel.setBitmapFont(Font.getBitmapFont());
+        uiLabel.setBitmapFont(ComponentFont.getBitmapFont());
         add(uiLabel, 10, 14);
 
         addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
@@ -167,7 +167,7 @@ public class CharSelectScene extends Container {
             add(playerActor);
 
             BitmapText uiText = new BitmapText(mapkitItem.getDataEntry().getString(DataKey.READABLE_NAME));
-            uiText.setBitmapFont(Font.getBitmapFont());
+            uiText.setBitmapFont(ComponentFont.getBitmapFont());
             uiText.setAutosize(true);
             add(uiText, -uiText.getTextWidth() / 2f + uiText.getCharWidth() / 2, h - 16);
 

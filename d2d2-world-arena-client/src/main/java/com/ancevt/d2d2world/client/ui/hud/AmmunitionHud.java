@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.client.ui.hud;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Sprite;
@@ -35,7 +35,7 @@ public class AmmunitionHud extends Container {
 
     public AmmunitionHud() {
         uiAmmunition = new BitmapText();
-        uiAmmunition.setBitmapFont(Font.getBitmapFont());
+        uiAmmunition.setBitmapFont(ComponentFont.getBitmapFont());
         uiAmmunition.setText("~");
         add(uiAmmunition, 35, 16-8);
 

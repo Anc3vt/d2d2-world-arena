@@ -26,7 +26,7 @@ import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.components.Button;
 import com.ancevt.d2d2.components.Chooser;
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.components.TextInput;
 import com.ancevt.d2d2.components.TextInputEvent;
 import com.ancevt.d2d2.components.dialog.AlertWindow;
@@ -87,7 +87,7 @@ public class IntroScene extends Container {
         getTextureManager().loadTextureDataInfo("thanksto/thanksto-texturedata.inf");
 
         BitmapText labelServer = new BitmapText();
-        labelServer.setBitmapFont(Font.getBitmapFont());
+        labelServer.setBitmapFont(ComponentFont.getBitmapFont());
         labelServer.setText("Server:");
 
         BitmapText labelPlayerName = new BitmapText();
@@ -148,7 +148,7 @@ public class IntroScene extends Container {
             add(new CityBgSprite(), -1920, 200);
 
             BitmapText labelThanksTo = new BitmapText();
-            labelThanksTo.setBitmapFont(Font.getBitmapFont());
+            labelThanksTo.setBitmapFont(ComponentFont.getBitmapFont());
             labelThanksTo.setVisible(false);
             labelThanksTo.setText("Special thanks to");
             add(labelThanksTo, stage().getWidth() / 2 - labelThanksTo.getTextWidth() / 2f, 330 - 55);
@@ -159,13 +159,13 @@ public class IntroScene extends Container {
             thanksToContainer.start();
 
             labelVersion = new BitmapText();
-            labelVersion.setBitmapFont(Font.getBitmapFont());
+            labelVersion.setBitmapFont(ComponentFont.getBitmapFont());
             labelVersion.setText(version);
             labelVersion.setWidth(1000);
 
             add(panel, (stage().getWidth() - panelRect.getWidth()) / 2, (stage().getHeight() - panelRect.getHeight()) / 4);
 
-            int labelVersionWidth = labelVersion.getText().length() * Font.getBitmapFont().getCharInfo('0').width();
+            int labelVersionWidth = labelVersion.getText().length() * ComponentFont.getBitmapFont().getCharInfo('0').width();
 
             add(labelVersion, (stage().getWidth() - labelVersionWidth) / 2, 20);
 

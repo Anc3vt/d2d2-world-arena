@@ -20,6 +20,8 @@ package com.ancevt.d2d2world.data;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface DataEntry {
 
     String DELIMITER = "\\|";
@@ -35,6 +37,8 @@ public interface DataEntry {
     static @NotNull DataEntry newInstance() {
         return new DataEntryImpl();
     }
+
+    List<KeyValue> getKeyValues();
 
     void parse(String source);
 
@@ -68,4 +72,7 @@ public interface DataEntry {
     FloatRectangle getFloatRectangle(String key, FloatRectangle defaultValue);
 
     String stringify();
+
+    record KeyValue(String key, Object value) {
+    }
 }

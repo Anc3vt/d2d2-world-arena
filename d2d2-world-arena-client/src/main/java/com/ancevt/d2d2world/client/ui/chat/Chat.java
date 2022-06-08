@@ -21,7 +21,7 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.components.TextInput;
 import com.ancevt.d2d2.components.TextInputEvent;
 import com.ancevt.d2d2.display.Color;
@@ -292,7 +292,7 @@ public class Chat extends Container {
                         input.setText(text.substring(0, INPUT_MAX_LENGTH));
                         return;
                     }
-                    int w = text.length() * Font.getBitmapFont().getCharInfo('0').width();
+                    int w = text.length() * ComponentFont.getBitmapFont().getCharInfo('0').width();
                     input.setWidth(w + 20);
                 }
 

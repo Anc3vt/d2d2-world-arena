@@ -21,7 +21,7 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.DisplayObject;
@@ -749,7 +749,7 @@ public class WorldScene extends Container implements ClientListener {
                 );
             }
         };
-        bitmapText.setBitmapFont(Font.getBitmapFont());
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFont());
         bitmapText.setScale(1f, 1f);
         PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> bitmapText.setColor(Color.of(player.getColor())));
         bitmapText.setVisible(false);

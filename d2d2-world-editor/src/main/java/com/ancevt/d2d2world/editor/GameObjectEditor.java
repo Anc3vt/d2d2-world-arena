@@ -17,7 +17,6 @@
  */
 package com.ancevt.d2d2world.editor;
 
-import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.IDisplayObject;
@@ -31,6 +30,7 @@ import com.ancevt.d2d2world.editor.objects.SelectArea;
 import com.ancevt.d2d2world.editor.objects.SelectRectangle;
 import com.ancevt.d2d2world.editor.objects.Selection;
 import com.ancevt.d2d2world.editor.swing.JPropertiesEditor;
+import com.ancevt.d2d2world.editor.ui.propeditor.PropEditor;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
 import com.ancevt.d2d2world.gameobject.GameObjectUtils;
 import com.ancevt.d2d2world.gameobject.ICollision;
@@ -61,6 +61,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+
+import static com.ancevt.d2d2.D2D2.stage;
 
 public class GameObjectEditor {
 
@@ -817,7 +819,9 @@ public class GameObjectEditor {
 
     public void enter() {
         if (isSomethingSelected() && selections.size() == 1) {
-            JPropertiesEditor.create(getSelectedGameObject().orElseThrow());
+            PropEditor propEditor = new PropEditor(getSelectedGameObject().orElseThrow());
+            stage().add(propEditor);
+            //JPropertiesEditor.create(getSelectedGameObject().orElseThrow());
         }
     }
 
@@ -852,7 +856,7 @@ public class GameObjectEditor {
 
         getWorld().getCamera().setAttachedTo(playerActor);
 
-        Stage stage = D2D2.stage();
+        Stage stage = stage();
 
         stage.removeEventListener(this, InputEvent.KEY_DOWN);
         stage.addEventListener(this, InputEvent.KEY_DOWN, event -> {

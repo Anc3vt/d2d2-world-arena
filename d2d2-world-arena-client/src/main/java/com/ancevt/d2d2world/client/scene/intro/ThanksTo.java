@@ -18,7 +18,7 @@
 package com.ancevt.d2d2world.client.scene.intro;
 
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.Font;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.FramedSprite;
@@ -59,7 +59,7 @@ public class ThanksTo extends Container {
         fileSize = 0L;
 
         BitmapText uiText = new BitmapText();
-        uiText.setBitmapFont(Font.getBitmapFont());
+        uiText.setBitmapFont(ComponentFont.getBitmapFont());
         uiText.setText(name);
 
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);
@@ -73,7 +73,7 @@ public class ThanksTo extends Container {
         this.name = name;
         this.fileSize = fileSize;
         BitmapText uiText = new BitmapText();
-        uiText.setBitmapFont(Font.getBitmapFont());
+        uiText.setBitmapFont(ComponentFont.getBitmapFont());
         uiText.setText(name);
         uiText.getTextWidth();
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);

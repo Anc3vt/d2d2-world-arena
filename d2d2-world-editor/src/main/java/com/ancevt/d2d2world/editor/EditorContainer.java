@@ -17,6 +17,7 @@
  */
 package com.ancevt.d2d2world.editor;
 
+import com.ancevt.d2d2.components.ComponentHitTestManager;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.IDisplayObject;
@@ -112,15 +113,16 @@ public class EditorContainer extends Container implements EventListener {
                 case InputEvent.KEY_DOWN -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), true);
                 case InputEvent.KEY_UP -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), false);
                 case InputEvent.MOUSE_DOWN -> {
-                    if (!isMouseAtPanels(x, y) || world.isPlaying()) editor.mouseButton(x, y, worldX, worldY, true, inputEvent.getMouseButton());
+                    if (!isMouseOnPanels(x, y) || world.isPlaying())
+                        editor.mouseButton(x, y, worldX, worldY, true, inputEvent.getMouseButton());
                 }
                 case InputEvent.MOUSE_UP -> editor.mouseButton(x, y, worldX, worldY, false, inputEvent.getMouseButton());
                 case InputEvent.MOUSE_MOVE -> {
-                    if (!isMouseAtPanels(x, y) || world.isPlaying())
+                    //if (!isMouseOnPanels(x, y) || world.isPlaying())
                         editor.mouseMove(x, y, worldX, worldY, inputEvent.isDrag());
                 }
                 case InputEvent.MOUSE_WHEEL -> {
-                    if(isMouseAtPanels(Mouse.getX(), Mouse.getY())) {
+                    if (isMouseOnPanels(Mouse.getX(), Mouse.getY())) {
                         MapkitToolsPanel.getInstance().moveY(inputEvent.getDelta() * 100);
                     }
                 }
@@ -128,8 +130,12 @@ public class EditorContainer extends Container implements EventListener {
         }
     }
 
-    public boolean isMouseAtPanels(float mouseX, float mouseY) {
-        return panels.stream().filter(p->isOnScreen() && p.isVisible()).anyMatch(panel ->
+    public boolean isMouseOnPanels(float mouseX, float mouseY) {
+        if (ComponentHitTestManager.getInstance().hitTest(mouseX, mouseY)) {
+            return true;
+        }
+
+        return panels.stream().filter(p -> isOnScreen() && p.isVisible()).anyMatch(panel ->
                 isMouseAtArea(mouseX, mouseY, panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight()));
     }
 

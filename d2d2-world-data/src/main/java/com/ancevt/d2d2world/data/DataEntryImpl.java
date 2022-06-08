@@ -22,7 +22,7 @@ import java.util.List;
 
 class DataEntryImpl implements DataEntry {
 
-    private final List<KV> kvs;
+    private final List<KeyValue> kvs;
 
     DataEntryImpl() {
         kvs = new ArrayList<>();
@@ -47,6 +47,11 @@ class DataEntryImpl implements DataEntry {
     }
 
     @Override
+    public List<KeyValue> getKeyValues() {
+        return List.copyOf(kvs);
+    }
+
+    @Override
     public void add(String key) {
         add(key, null);
     }
@@ -61,17 +66,17 @@ class DataEntryImpl implements DataEntry {
             value = rectangle.stringify();
         }
 
-        kvs.add(new KV(key, value));
+        kvs.add(new KeyValue(key, value));
     }
 
     @Override
     public void remove(String key) {
-        kvs.removeIf(kv -> kv.key.equals(key));
+        kvs.removeIf(kv -> kv.key().equals(key));
     }
 
     @Override
     public boolean containsKey(String key) {
-        return kvs.stream().anyMatch(kv -> kv.key.equals(key));
+        return kvs.stream().anyMatch(kv -> kv.key().equals(key));
     }
 
     @Override
@@ -126,8 +131,8 @@ class DataEntryImpl implements DataEntry {
 
     @Override
     public String getString(String key) {
-        for (KV kv : kvs)
-            if (key.equals(kv.key())) return String.valueOf(kv.value);
+        for (KeyValue kv : kvs)
+            if (key.equals(kv.key())) return String.valueOf(kv.value());
 
         throw new IllegalStateException("no such key: " + key + " in data line " + this);
     }
@@ -171,11 +176,11 @@ class DataEntryImpl implements DataEntry {
     public String stringify() {
         final StringBuilder sb = new StringBuilder();
 
-        for (KV kv : kvs) {
+        for (KeyValue kv : kvs) {
             if (kv.value() != null) {
-                sb.append(kv.key).append(" = ").append(kv.value);
+                sb.append(kv.key()).append(" = ").append(kv.value());
             } else {
-                sb.append(kv.key);
+                sb.append(kv.key());
             }
 
             sb.append(" | ");
@@ -193,6 +198,5 @@ class DataEntryImpl implements DataEntry {
         return "DataEntryImpl{" + stringify() + '}';
     }
 
-    private record KV(String key, Object value) {
-    }
+
 }
