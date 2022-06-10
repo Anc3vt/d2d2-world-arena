@@ -2,7 +2,7 @@ package com.ancevt.d2d2world.editor.ui.propeditor;
 
 import com.ancevt.d2d2.components.ButtonEx;
 import com.ancevt.d2d2.components.ComponentEvent;
-import com.ancevt.d2d2.components.ComponentHitTestManager;
+import com.ancevt.d2d2.components.FrameManager;
 import com.ancevt.d2d2.components.ComponentKit;
 import com.ancevt.d2d2.components.Frame;
 import com.ancevt.d2d2.components.Padding;
@@ -59,7 +59,7 @@ public class PropEditor extends Frame {
 
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-        ComponentHitTestManager.getInstance().register(this);
+        FrameManager.getInstance().register(this);
     }
 
     private void ok() {
@@ -94,6 +94,6 @@ public class PropEditor extends Frame {
     @Override
     public void dispose() {
         super.dispose();
-        ComponentHitTestManager.getInstance().unregister(this);
+        FrameManager.getInstance().unregister(this);
     }
 }

@@ -17,7 +17,7 @@
  */
 package com.ancevt.d2d2world.editor;
 
-import com.ancevt.d2d2.components.ComponentHitTestManager;
+import com.ancevt.d2d2.components.FrameManager;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.IDisplayObject;
@@ -131,7 +131,7 @@ public class EditorContainer extends Container implements EventListener {
     }
 
     public boolean isMouseOnPanels(float mouseX, float mouseY) {
-        if (ComponentHitTestManager.getInstance().hitTest(mouseX, mouseY)) {
+        if (FrameManager.getInstance().hitTest(mouseX, mouseY)) {
             return true;
         }
 

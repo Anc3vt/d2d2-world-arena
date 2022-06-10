@@ -107,7 +107,7 @@ public class D2D2WorldArenaClientMain {
         );
 
         D2D2World.init(false, false);
-        ComponentAssets.load();
+        ComponentAssets.init();
         D2D2WorldArenaClientAssets.load();
 
         startVideoMode = GLFWUtils.getVideoMode(MonitorManager.getInstance().getMonitorDeviceId());

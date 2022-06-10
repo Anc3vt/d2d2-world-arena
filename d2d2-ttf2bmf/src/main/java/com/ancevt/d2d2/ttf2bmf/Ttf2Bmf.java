@@ -17,6 +17,9 @@
  */
 package com.ancevt.d2d2.ttf2bmf;
 
+import com.ancevt.util.args.Args;
+
+import javax.imageio.ImageIO;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -28,10 +31,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-
-import javax.imageio.ImageIO;
-
-import com.ancevt.util.args.Args;
 
 public class Ttf2Bmf {
 
@@ -278,25 +277,12 @@ public class Ttf2Bmf {
                 System.out.println("test: " + test);
             }
 
-
             try (DataInputStream dataInputStream = new DataInputStream(new FileInputStream(
                     "/home/ancevt/workspace/ancevt/d2d2/d2d2-world-desktop/src/main/resources/assets/bitmapfonts/Terminus_Bold_8x16_spaced_shadowed_v1.bmf"
             ))) {
                 int test = dataInputStream.readUnsignedShort();
                 System.out.println("test2: " + test);
             }
-
-
-
-
-
-
-
-
-
-
-
-
 
         } catch (IOException e) {
             throw new RuntimeException(e);

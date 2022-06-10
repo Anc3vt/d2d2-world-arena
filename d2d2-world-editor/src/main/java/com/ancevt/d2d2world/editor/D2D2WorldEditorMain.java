@@ -66,7 +66,7 @@ public class D2D2WorldEditorMain {
         Stage stage = D2D2.init(new LWJGLBackend(screenDimension.width(), screenDimension.height() - 300, "D2D2 World Editor (floating)"));
         D2D2.getBackend().setWindowXY(0, 40);
         D2D2World.init(true, true);
-        ComponentAssets.load();
+        ComponentAssets.init();
 
 
         // BitmapFont.loadDefaultBitmapFont("PressStart2P.bmf");
