@@ -51,16 +51,16 @@ public class ChatMessage extends Container {
         this.text = messageText;
         this.textColor = textColor;
         nameBitmapText = new BitmapText();
-        nameBitmapText.setBitmapFont(ComponentFont.getBitmapFont());
+        nameBitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         bitmapText = new BitmapText();
-        bitmapText.setBitmapFont(ComponentFont.getBitmapFont());
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
 
         String playerNameToShow = format("%s(%d):", playerName, playerId);
 
         nameBitmapText.setColor(Color.of(playerColor));
         bitmapText.setColor(textColor);
         nameBitmapText.setText(playerNameToShow);
-        nameBitmapText.setSize(playerNameToShow.length() * ComponentFont.getBitmapFont().getCharInfo('0').width() + 10, 30);
+        nameBitmapText.setSize(playerNameToShow.length() * ComponentFont.getBitmapFontMiddle().getCharInfo('0').width() + 10, 30);
 
         bitmapText.setText(messageText);
         bitmapText.setX(nameBitmapText.getWidth());
@@ -84,7 +84,7 @@ public class ChatMessage extends Container {
         this.textColor = textColor;
         nameBitmapText = null;
         bitmapText = new BitmapText();
-        bitmapText.setBitmapFont(ComponentFont.getBitmapFont());
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
 
         bitmapText.setWidth(DEFAULT_WIDTH);
         bitmapText.setHeight(DEFAULT_HEIGHT);

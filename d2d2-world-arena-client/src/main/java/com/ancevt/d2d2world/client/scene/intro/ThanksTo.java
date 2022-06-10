@@ -59,7 +59,7 @@ public class ThanksTo extends Container {
         fileSize = 0L;
 
         BitmapText uiText = new BitmapText();
-        uiText.setBitmapFont(ComponentFont.getBitmapFont());
+        uiText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiText.setText(name);
 
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);
@@ -73,7 +73,7 @@ public class ThanksTo extends Container {
         this.name = name;
         this.fileSize = fileSize;
         BitmapText uiText = new BitmapText();
-        uiText.setBitmapFont(ComponentFont.getBitmapFont());
+        uiText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiText.setText(name);
         uiText.getTextWidth();
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);

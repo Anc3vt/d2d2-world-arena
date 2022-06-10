@@ -94,16 +94,16 @@ public class TabWindow extends Container {
 
     private void addPlayerTexts(int y, int id, String name, int frags, int ping, Color color) {
         BitmapText uiId = new BitmapText(id + "");
-        uiId.setBitmapFont(ComponentFont.getBitmapFont());
+        uiId.setBitmapFont(ComponentFont.getBitmapFontMiddle());
 
         BitmapText uiName = new BitmapText(name + "");
-        uiName.setBitmapFont(ComponentFont.getBitmapFont());
+        uiName.setBitmapFont(ComponentFont.getBitmapFontMiddle());
 
         BitmapText uiFrags = new BitmapText(frags + "");
-        uiFrags.setBitmapFont(ComponentFont.getBitmapFont());
+        uiFrags.setBitmapFont(ComponentFont.getBitmapFontMiddle());
 
         BitmapText uiPing = new BitmapText(ping + "");
-        uiPing.setBitmapFont(ComponentFont.getBitmapFont());
+        uiPing.setBitmapFont(ComponentFont.getBitmapFontMiddle());
 
         uiId.setColor(color);
         uiName.setColor(color);
@@ -133,19 +133,19 @@ public class TabWindow extends Container {
         Color color = Color.GRAY;
 
         BitmapText uiId = new BitmapText("id");
-        uiId.setBitmapFont(ComponentFont.getBitmapFont());
+        uiId.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiId.setColor(color);
 
         BitmapText uiName = new BitmapText("name");
-        uiName.setBitmapFont(ComponentFont.getBitmapFont());
+        uiName.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiName.setColor(color);
 
         BitmapText uiFrags = new BitmapText("frags");
-        uiFrags.setBitmapFont(ComponentFont.getBitmapFont());
+        uiFrags.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiFrags.setColor(color);
 
         BitmapText uiPing = new BitmapText("ping");
-        uiPing.setBitmapFont(ComponentFont.getBitmapFont());
+        uiPing.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiPing.setColor(color);
 
         add(uiId, COLUMN_1, 30);

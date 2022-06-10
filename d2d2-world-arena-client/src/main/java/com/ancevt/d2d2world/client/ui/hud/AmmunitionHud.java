@@ -35,7 +35,7 @@ public class AmmunitionHud extends Container {
 
     public AmmunitionHud() {
         uiAmmunition = new BitmapText();
-        uiAmmunition.setBitmapFont(ComponentFont.getBitmapFont());
+        uiAmmunition.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiAmmunition.setText("~");
         add(uiAmmunition, 35, 16-8);
 

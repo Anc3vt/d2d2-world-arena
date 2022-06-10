@@ -749,7 +749,7 @@ public class WorldScene extends Container implements ClientListener {
                 );
             }
         };
-        bitmapText.setBitmapFont(ComponentFont.getBitmapFont());
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         bitmapText.setScale(1f, 1f);
         PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> bitmapText.setColor(Color.of(player.getColor())));
         bitmapText.setVisible(false);

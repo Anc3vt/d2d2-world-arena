@@ -292,7 +292,7 @@ public class Chat extends Container {
                         input.setText(text.substring(0, INPUT_MAX_LENGTH));
                         return;
                     }
-                    int w = text.length() * ComponentFont.getBitmapFont().getCharInfo('0').width();
+                    int w = text.length() * ComponentFont.getBitmapFontMiddle().getCharInfo('0').width();
                     input.setWidth(w + 20);
                 }
 

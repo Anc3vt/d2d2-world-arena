@@ -21,7 +21,7 @@ public class PropEditorLine extends Component {
         this.value = value;
         bitmapText = new BitmapText();
         bitmapText.setColor(Color.GRAY);
-        bitmapText.setBitmapFont(ComponentFont.getBitmapFont());
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         bitmapText.setText(getReadablePropertyName(propertyName));
         bitmapText.setAutosize(true);
         add(bitmapText);

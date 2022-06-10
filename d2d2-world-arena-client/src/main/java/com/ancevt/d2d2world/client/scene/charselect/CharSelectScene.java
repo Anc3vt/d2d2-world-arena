@@ -63,7 +63,7 @@ public class CharSelectScene extends Container {
         charSelectItems = new HashSet<>();
 
         BitmapText uiLabel = new BitmapText("Select a character:");
-        uiLabel.setBitmapFont(ComponentFont.getBitmapFont());
+        uiLabel.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         add(uiLabel, 10, 14);
 
         addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
@@ -167,7 +167,7 @@ public class CharSelectScene extends Container {
             add(playerActor);
 
             BitmapText uiText = new BitmapText(mapkitItem.getDataEntry().getString(DataKey.READABLE_NAME));
-            uiText.setBitmapFont(ComponentFont.getBitmapFont());
+            uiText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
             uiText.setAutosize(true);
             add(uiText, -uiText.getTextWidth() / 2f + uiText.getCharWidth() / 2, h - 16);
 
