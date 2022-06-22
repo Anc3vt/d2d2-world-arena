@@ -113,7 +113,7 @@ public class Button extends Panel {
         super.setWidth(width);
 
         if (label != null && touchButton != null) {
-            final int charHeight = label.getBitmapFont().getCharHeight();
+            final int charHeight = label.getBitmapFont().getZeroCharHeight();
             label.setSize(width - PADDING * 2, charHeight);
             label.setX(PADDING);
             touchButton.setWidth(width);
@@ -129,7 +129,7 @@ public class Button extends Panel {
         super.setHeight(height);
 
         if (label != null && touchButton != null) {
-            final int charHeight = label.getBitmapFont().getCharHeight();
+            final int charHeight = label.getBitmapFont().getZeroCharHeight();
             touchButton.setHeight(height);
             label.setY(getAbsoluteScaleY() * (height - charHeight) / 2);
         }

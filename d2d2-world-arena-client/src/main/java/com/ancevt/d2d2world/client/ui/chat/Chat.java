@@ -21,6 +21,7 @@ import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
+import com.ancevt.d2d2.components.ComponentAssets;
 import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.components.TextInput;
 import com.ancevt.d2d2.components.TextInputEvent;
@@ -371,6 +372,7 @@ public class Chat extends Container {
     public static void main(String[] args) {
         Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         D2D2World.init(false, false);
+        ComponentAssets.init();
 
         stage.setBackgroundColor(Color.of(0x223344));
 
@@ -384,6 +386,7 @@ public class Chat extends Container {
                 chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, text, Color.WHITE);
             }
         });
+
         stage.add(chat, 10, 10);
 
         for (int i = 0; i < 10; i++) {

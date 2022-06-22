@@ -60,7 +60,7 @@ public class Checkbox extends Component {
 		label.setText(labelText);
 		label.setColor(LABEL_COLOR);
 		label.setX(boxOuter.getWidth() + PADDING);
-		label.setY((boxOuter.getHeight() - label.getBitmapFont().getCharHeight() * label.getAbsoluteScaleY()) / 2);
+		label.setY((boxOuter.getHeight() - label.getBitmapFont().getZeroCharHeight() * label.getAbsoluteScaleY()) / 2);
 		add(label);
 		
 		touchButton = new InteractiveContainer();

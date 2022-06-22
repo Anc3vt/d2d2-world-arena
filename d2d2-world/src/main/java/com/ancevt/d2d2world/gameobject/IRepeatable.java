@@ -20,19 +20,19 @@ package com.ancevt.d2d2world.gameobject;
 import com.ancevt.d2d2world.data.Property;
 
 public interface IRepeatable {
-	void setRepeat(int repeatX, int repeatY);
+	void setRepeat(float repeatX, float repeatY);
 
 	@Property
-	void setRepeatX(int repeatX);
+	void setRepeatX(float repeatX);
 
 	@Property
-	void setRepeatY(int repeatY);
+	void setRepeatY(float repeatY);
 
 	@Property
-	int getRepeatX();
+	float getRepeatX();
 
 	@Property
-	int getRepeatY();
+	float getRepeatY();
 
 	float getOriginalWidth();
 	float getOriginalHeight();

@@ -43,10 +43,10 @@ public class SceneryPacker {
                     float scaleY = scenery.getScaleY();
                     float alpha = scenery.getAlpha();
                     float rotation = scenery.getRotation();
-                    int repeatX = scenery.getRepeatX();
-                    int repeatY = scenery.getRepeatY();
+                    float repeatX = scenery.getRepeatX();
+                    float repeatY = scenery.getRepeatY();
                     Color color = scenery.getColor();
-                    comb.append(textureRegion, x, y, color, scaleX, scaleY, alpha, rotation, repeatX, repeatY);
+                    comb.append(textureRegion, x, y, color, scaleX, scaleY, alpha, rotation, (int) repeatX, (int) repeatY);
                 }
             }
         }

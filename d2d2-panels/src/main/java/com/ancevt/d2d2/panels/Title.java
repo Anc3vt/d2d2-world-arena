@@ -60,7 +60,7 @@ public class Title extends Component {
 		label.setText(titleText);
 		
 		label.setX(PADDING);
-		label.setY((HEIGHT - label.getBitmapFont().getCharHeight()) / 2.0f);
+		label.setY((HEIGHT - label.getBitmapFont().getZeroCharHeight()) / 2.0f);
 		
 		add(background);
 		add(label);
@@ -116,7 +116,7 @@ public class Title extends Component {
 		borderRight.setX(width);
 		
 		background.setWidth(width);
-		label.setSize(getWidth() - PADDING * 2, label.getBitmapFont().getCharHeight());
+		label.setSize(getWidth() - PADDING * 2, label.getBitmapFont().getZeroCharHeight());
 		titleTouchButton.setWidth((int)width);
 	}
 	

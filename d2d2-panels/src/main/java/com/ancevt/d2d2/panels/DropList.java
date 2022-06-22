@@ -109,7 +109,7 @@ public class DropList extends Component {
         arrow.setX(width - arrow.getWidth());
         arrow.setY((height - arrow.getHeight()) / 2);
         label.setX(PADDING);
-        label.setY((height - label.getBitmapFont().getCharHeight()) / 2);
+        label.setY((height - label.getBitmapFont().getZeroCharHeight()) / 2);
         touchButton.setSize(width, height);
     }
 
@@ -165,7 +165,7 @@ public class DropList extends Component {
             bitmapText.setText(item.getLabelText());
             bitmapText.setColor(FOREGROUND_COLOR);
             bitmapText.setX(PADDING);
-            bitmapText.setY(i * DEFAULT_HEIGHT + (DEFAULT_HEIGHT - bitmapText.getBitmapFont().getCharHeight()) / 2);
+            bitmapText.setY(i * DEFAULT_HEIGHT + (DEFAULT_HEIGHT - bitmapText.getBitmapFont().getZeroCharHeight()) / 2);
             openRect.add(bitmapText);
 
             final InteractiveContainer button = new InteractiveContainer();

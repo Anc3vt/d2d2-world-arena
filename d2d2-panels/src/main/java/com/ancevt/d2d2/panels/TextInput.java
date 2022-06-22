@@ -125,8 +125,8 @@ public class TextInput extends Component implements EventListener {
     public void setHeight(float height) {
         rect.setHeight(height);
 
-        bitmapText.setHeight(height - bitmapText.getBitmapFont().getCharHeight());
-        bitmapText.setY((getHeight() - bitmapText.getBitmapFont().getCharHeight()) / 2);
+        bitmapText.setHeight(height - bitmapText.getBitmapFont().getZeroCharHeight());
+        bitmapText.setY((getHeight() - bitmapText.getBitmapFont().getZeroCharHeight()) / 2);
         cursor.setY((getHeight() - cursor.getHeight()) / 2);
         touchButton.setHeight((int) height);
     }
