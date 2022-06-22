@@ -60,7 +60,6 @@
         <module>d2d2-world-arena-client</module>
         <module>d2d2-world-arena-networking</module>
         <module>d2d2-world-arena-server</module>
-        <module>d2d2-ttf2bmf</module>
     </modules>
 
     <properties>
