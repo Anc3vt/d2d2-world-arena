@@ -18,6 +18,7 @@
 package com.ancevt.d2d2world.editor;
 
 import com.ancevt.d2d2.display.text.BitmapFont;
+import com.ancevt.d2d2.display.text.BitmapFontManager;
 import com.ancevt.d2d2.input.KeyCode;
 import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.map.Room;
@@ -28,7 +29,7 @@ import com.ancevt.util.args.Args;
 public class Editor {
 
     public static BitmapFont getBitmapFont() {
-        return BitmapFont.getDefaultBitmapFont();
+        return BitmapFontManager.getInstance().getDefaultBitmapFont();
     }
 
     private final World world;
