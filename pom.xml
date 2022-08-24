@@ -53,7 +53,6 @@
     </repositories>
 
     <modules>
-        <module>d2d2-panels</module>
         <module>d2d2-world</module>
         <module>d2d2-world-data</module>
         <module>d2d2-world-editor</module>
@@ -119,11 +118,6 @@
                 <groupId>com.ancevt.d2d2</groupId>
                 <artifactId>d2d2-components</artifactId>
                 <version>0.0.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ancevt.d2d2</groupId>
-                <artifactId>d2d2-panels</artifactId>
-                <version>1.0.0.6-alpha</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.d2d2world</groupId>
