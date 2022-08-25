@@ -85,6 +85,8 @@ public class Chat extends Container {
         input.addEventListener(TextInputEvent.ENTER, this::textInputEvent);
         input.addEventListener(TextInputEvent.TEXT_CHANGE, this::textInputEvent);
         input.addEventListener(TextInputEvent.KEY_DOWN, this::textInputEvent);
+        input.setComponentFocusRectVisibleEnabled(false);
+        input.setFocusRectVisibleEnabled(false);
 
         loadHistory();
 
@@ -256,6 +258,7 @@ public class Chat extends Container {
             setAlpha(1.0f);
             alphaTime = ALPHA_TIME;
             add(input);
+            input.focus();
             dispatchEvent(ChatEvent.builder()
                     .type(ChatEvent.CHAT_INPUT_OPEN)
                     .build());
@@ -406,7 +409,10 @@ public class Chat extends Container {
                 }
 
                 case KeyCode.F6, KeyCode.T -> {
-                    if (!chat.isInputOpened()) chat.openInput();
+                    if (!chat.isInputOpened())
+                        chat.openInput();
+                    else
+                        chat.closeInput();
                 }
             }
         });

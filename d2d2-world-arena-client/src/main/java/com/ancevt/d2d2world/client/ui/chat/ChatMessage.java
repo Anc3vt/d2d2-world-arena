@@ -63,7 +63,7 @@ public class ChatMessage extends Container {
         nameBitmapText.setSize(playerNameToShow.length() * ComponentFont.getBitmapFontMiddle().getCharInfo('0').width() + 10, 30);
 
         bitmapText.setText(messageText);
-        bitmapText.setX(nameBitmapText.getWidth());
+        bitmapText.setX(nameBitmapText.getWidth() + 8);
         bitmapText.setWidth(DEFAULT_WIDTH);
         bitmapText.setHeight(DEFAULT_HEIGHT);
 
