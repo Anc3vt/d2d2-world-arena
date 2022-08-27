@@ -131,7 +131,7 @@ public class EditorContainer extends Container implements EventListener {
     }
 
     public boolean isMouseOnPanels(float mouseX, float mouseY) {
-        if (FrameManager.getInstance().hitTest(mouseX, mouseY)) {
+        if (FrameManager.getInstance().isPointUnderAnyFrame(mouseX, mouseY)) {
             return true;
         }
 
