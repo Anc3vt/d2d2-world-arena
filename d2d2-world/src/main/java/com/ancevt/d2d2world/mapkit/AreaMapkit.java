@@ -29,6 +29,12 @@ public class AreaMapkit extends Mapkit {
 
     public static final String NAME = "areas";
 
+    private static AreaMapkit instance;
+
+    public static AreaMapkit getInstance() {
+        return instance == null ? instance = (AreaMapkit) MapkitManager.getInstance().getMapkit(NAME) : instance;
+    }
+
     AreaMapkit() {
         super(NAME);
         addItems();
