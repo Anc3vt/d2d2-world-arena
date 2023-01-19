@@ -25,12 +25,13 @@ import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.ActorEvent;
+import com.ancevt.d2d2world.gameobject.IAnimated;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.ISynchronized;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
 import com.ancevt.d2d2world.gameobject.Parallax;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.Scenery;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -54,7 +55,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
-import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
 
 @Slf4j
 public class World extends Container {
@@ -343,7 +343,7 @@ public class World extends Container {
                 camera.setXY(actorX, actorY);
                 addGameObject(actor, 5, false);
                 camera.setAttachedTo(actor);
-                actor.setAnimation(IDLE);
+                actor.setAnimation(IAnimated.IDLE);
                 actor.dispatchEvent(ActorEvent.builder()
                         .type(ActorEvent.ACTOR_ENTER_ROOM)
                         .roomId(roomIdSwitchTo)
@@ -443,7 +443,7 @@ public class World extends Container {
     public void reset() {
         playProcessor.reset();
         gameObjects.forEach(o -> {
-            if (!(o instanceof PlayerActor) && o instanceof IResettable r) {
+            if (!(o instanceof PlayerActor_) && o instanceof IResettable r) {
                 r.reset();
             }
         });

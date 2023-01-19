@@ -31,8 +31,8 @@ import java.util.concurrent.TimeUnit;
 public class DebugActorCreator {
 
 
-    public static synchronized @NotNull PlayerActor createTestPlayerActor(PlayerActor targetPlayerActor, @NotNull World world) {
-        PlayerActor playerActor = (PlayerActor) MapkitManager.getInstance()
+    public static synchronized @NotNull PlayerActor_ createTestPlayerActor(PlayerActor_ targetPlayerActor, @NotNull World world) {
+        PlayerActor_ playerActor = (PlayerActor_) MapkitManager.getInstance()
                 .getMapkit(BuiltInMapkit.NAME)
                 .getItemById("character_stranger")
                 .createGameObject(IdGenerator.getInstance().getNewId());

@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.ancevt.d2d2world.D2D2World.isServer;
 
-public class PlayerActor extends Actor {
+public class PlayerActor_ extends Actor {
 
     private boolean localPlayerActor;
     private boolean localAim;
@@ -39,7 +39,7 @@ public class PlayerActor extends Actor {
     private String playerName;
     private int playerId;
 
-    public PlayerActor(@NotNull MapkitItem mapkitItem, int gameObjectId) {
+    public PlayerActor_(@NotNull MapkitItem mapkitItem, int gameObjectId) {
         super(mapkitItem, gameObjectId);
 
         playerColor = new Color(0xFFFFFF);
@@ -106,7 +106,7 @@ public class PlayerActor extends Actor {
         if (!isServer()) {
             if (isLocalPlayerActor() && collideWith instanceof Weapon.Bullet bullet &&
                     bullet.getDamagingOwnerActor() != this &&
-                    bullet.getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+                    bullet.getDamagingOwnerActor() instanceof PlayerActor_ playerActor) {
 
                 getWorld().dispatchEvent(WorldEvent.builder()
                         .type(WorldEvent.PLAYER_ACTOR_TAKE_BULLET)

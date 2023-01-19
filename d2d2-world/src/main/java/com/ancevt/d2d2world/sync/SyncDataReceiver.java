@@ -22,14 +22,14 @@ import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.data.DataKey;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.IActioned;
-import com.ancevt.d2d2world.gameobject.IAnimated;
+import com.ancevt.d2d2world.gameobject.IAnimated_old;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IDestroyable;
 import com.ancevt.d2d2world.gameobject.IDirectioned;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.ISonicSynchronized;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
@@ -175,20 +175,20 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     }
 
     private void hook(int gameObjectId, int hookGameObjectId) {
-        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor playerActor) {
+        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor_ playerActor) {
             AreaHook hook = (AreaHook) world.getGameObjectById(hookGameObjectId);
             playerActor.setHook(hook);
         }
     }
 
     private void addWeapon(int gameObjectId, String weaponClassname) {
-        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor actor) {
+        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor_ actor) {
             actor.addWeapon(weaponClassname, 0);
         }
     }
 
     private void pickup(int gameObjectId, int pickupGameObjectId) {
-        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor &&
+        if (world.getGameObjectById(gameObjectId) instanceof PlayerActor_ &&
                 world.getGameObjectById(pickupGameObjectId) instanceof Pickup pickup) {
             pickup.playPickUpSound();
         }
@@ -214,7 +214,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     private void aim(int gameObjectId, float aimX, float aimY) {
         if (world.getGameObjectById(gameObjectId) instanceof Actor actor) {
-            if (actor instanceof PlayerActor playerActor) {
+            if (actor instanceof PlayerActor_ playerActor) {
                 if (playerActor.isLocalPlayerActor()) return;
             }
             actor.setAimXY(aimX, aimY);
@@ -260,7 +260,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
             int ownerGameObjectId = dataEntry.getInt(DataKey.OWNER_GAME_OBJECT_ID);
 
             Actor ownerActor = (Actor) world.getGameObjectById(ownerGameObjectId);
-            if (ownerActor instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
+            if (ownerActor instanceof PlayerActor_ playerActor && playerActor.isLocalPlayerActor()) {
                 return;
             }
             bullet.setDamagingOwnerActor(ownerActor);
@@ -278,7 +278,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
 
     private void setDirection(int gameObjectId, int direction) {
         if (world.getGameObjectById(gameObjectId) instanceof IDirectioned d) {
-            if (d instanceof PlayerActor playerActor) {
+            if (d instanceof PlayerActor_ playerActor) {
                 if (playerActor.isLocalPlayerActor()) return;
             }
             d.setDirection(direction);
@@ -301,7 +301,7 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     private void setXY(int gameObjectId, float x, float y) {
         IGameObject o = world.getGameObjectById(gameObjectId);
         if (o != null) {
-            if (o instanceof Weapon.Bullet || (o instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()))
+            if (o instanceof Weapon.Bullet || (o instanceof PlayerActor_ playerActor && playerActor.isLocalPlayerActor()))
                 return;
             //o.setXY(x, y);
             SyncMotion.moveMotion(o, x, y);
@@ -309,9 +309,9 @@ public class SyncDataReceiver implements ISyncDataReceiver {
     }
 
     private void setAnimation(int gameObjectId, int animKey, boolean loop) {
-        if (world.getGameObjectById(gameObjectId) instanceof IAnimated a) {
+        if (world.getGameObjectById(gameObjectId) instanceof IAnimated_old a) {
 
-            if (a instanceof PlayerActor playerActor) {
+            if (a instanceof PlayerActor_ playerActor) {
                 if (playerActor.isLocalPlayerActor()) return;
             }
 

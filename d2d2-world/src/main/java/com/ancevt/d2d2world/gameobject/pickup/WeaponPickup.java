@@ -19,7 +19,7 @@ package com.ancevt.d2d2world.gameobject.pickup;
 
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2world.data.Property;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.weapon.PlasmaWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -87,7 +87,7 @@ public class WeaponPickup extends Pickup {
     }
 
     @Override
-    public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor playerActor) {
+    public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor_ playerActor) {
         return playerActor.addWeapon(weaponClass, getAmmunition());
     }
 

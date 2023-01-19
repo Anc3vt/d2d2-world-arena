@@ -19,22 +19,13 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2world.data.Property;
 
-public interface IAnimated extends IDirectioned, IGameObject {
-
-
-	String IDLE = "animation:idle";
-	String WALK = "animation:walk";
-	String JUMP = "animation:jump";
-	String FALL = "animation:fall";
-	String HOOK = "animation:hook";
-	String DAMAGE = "animation:damage";
-
+public interface IAnimated_old extends IDirectioned, IGameObject {
 
 	@Property
-	String getAnimation();
+	int getAnimation();
 
 	@Property
-	void setAnimation(String animationKey);
+	void setAnimation(int animationKey);
 
-	void setAnimation(String animationKey, boolean loop);
+	void setAnimation(int animationKey, boolean loop);
 }

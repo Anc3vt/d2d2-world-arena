@@ -38,7 +38,7 @@ public interface ISyncDataAggregator {
     default void xy(IGameObject gameObject) {
     }
 
-    default void animation(IAnimated animated, boolean loop) {
+    default void animation(IAnimated_old animated, boolean loop) {
     }
 
     default void health(IDestroyable destroyable, IDamaging damaging) {
@@ -78,7 +78,7 @@ public interface ISyncDataAggregator {
         newGameObject(o);
         xy(o);
         visibility(o);
-        if (o instanceof IAnimated a) {
+        if (o instanceof IAnimated_old a) {
             animation(a, true);
         }
         if (o instanceof IDirectioned d) {
@@ -90,7 +90,7 @@ public interface ISyncDataAggregator {
         }
     }
 
-    default void pickUp(PlayerActor playerActor, int pickupGameObjectId) {
+    default void pickUp(PlayerActor_ playerActor, int pickupGameObjectId) {
     }
 
     default void addWeapon(@NotNull Actor actor, String weaponClassname) {

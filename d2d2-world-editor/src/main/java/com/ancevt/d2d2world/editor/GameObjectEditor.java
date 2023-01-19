@@ -41,7 +41,7 @@ import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.IRotatable;
 import com.ancevt.d2d2world.gameobject.ISizable;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.weapon.AutomaticWeapon;
 import com.ancevt.d2d2world.gameobject.weapon.FireWeapon;
 import com.ancevt.d2d2world.map.MapIO;
@@ -87,7 +87,7 @@ public class GameObjectEditor {
     private float oldMouseY = 64;
     private boolean selecting;
     private MapkitItem lastPlacingMapkitItem;
-    private PlayerActor playerActor;
+    private PlayerActor_ playerActor;
     private boolean collisionVisible;
     private boolean brushMode;
     private int mouseButton;
@@ -424,10 +424,10 @@ public class GameObjectEditor {
     private void setPlayerXYToCursor() {
         getWorld().getGameObjects()
                 .stream()
-                .filter(o -> o instanceof PlayerActor)
+                .filter(o -> o instanceof PlayerActor_)
                 .findAny()
                 .ifPresentOrElse(p -> {
-                    playerActor = (PlayerActor) p;
+                    playerActor = (PlayerActor_) p;
                     playerActor.repair();
                     playerActor.setXY(playerActor.getAimX(), playerActor.getAimY());
                 }, this::addPlayerActor);
@@ -504,7 +504,7 @@ public class GameObjectEditor {
 
     private void copy() {
         getSelectedGameObject().ifPresent(gameObject -> {
-            if (gameObject instanceof PlayerActor) return;
+            if (gameObject instanceof PlayerActor_) return;
 
             copyBuffer.clear();
             copyBuffer.addAll(selectedGameObjects);
@@ -537,7 +537,7 @@ public class GameObjectEditor {
     public void delete() {
         getSelectedGameObject().ifPresent(
                 gameObject -> {
-                    if (gameObject instanceof PlayerActor) return;
+                    if (gameObject instanceof PlayerActor_) return;
 
                     int count = selectedGameObjects.size();
                     if (count == 0) return;
@@ -832,7 +832,7 @@ public class GameObjectEditor {
         });
     }
 
-    public PlayerActor getPlayerActor() {
+    public PlayerActor_ getPlayerActor() {
         return playerActor;
     }
 
@@ -841,7 +841,7 @@ public class GameObjectEditor {
                 .getMapkit(BuiltInMapkit.NAME)
                 .getItemById("character_blake");
 
-        playerActor = (PlayerActor) playerActorMapkitItem.createGameObject(-1);
+        playerActor = (PlayerActor_) playerActorMapkitItem.createGameObject(-1);
         playerActor.setXY(64, 64);
 
         playerActor.setName("lpa");

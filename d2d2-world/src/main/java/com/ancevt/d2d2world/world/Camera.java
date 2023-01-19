@@ -22,7 +22,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.gameobject.IDirectioned;
 import com.ancevt.d2d2world.gameobject.IGameObject;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 
 import static java.lang.Math.abs;
 
@@ -206,8 +206,8 @@ public class Camera {
         float x = getX() + (left ? side : -side);
         float y = getY();
 
-        float factorX = attachedTo instanceof PlayerActor playerActor && abs(playerActor.getVelocityX()) > 6 ? 7.5f : 2f;
-        float factorY = attachedTo instanceof PlayerActor playerActor && abs(playerActor.getVelocityY()) > 5 ? 7.5f : 3f;
+        float factorX = attachedTo instanceof PlayerActor_ playerActor && abs(playerActor.getVelocityX()) > 6 ? 7.5f : 2f;
+        float factorY = attachedTo instanceof PlayerActor_ playerActor && abs(playerActor.getVelocityY()) > 5 ? 7.5f : 3f;
 
         if (aX > x) {
             float t = (aX - x) / (smooth / factorX);

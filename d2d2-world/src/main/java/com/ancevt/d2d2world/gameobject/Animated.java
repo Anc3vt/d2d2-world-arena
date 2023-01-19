@@ -19,160 +19,115 @@ package com.ancevt.d2d2world.gameobject;
 
 import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.FramedSprite;
+import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.IFramedDisplayObject;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
+import com.ancevt.d2d2world.data.DataEntry;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
-import com.ancevt.d2d2world.world.World;
-import org.jetbrains.annotations.NotNull;
+import com.ancevt.util.args.Args;
 
-import static com.ancevt.commons.unix.UnixDisplay.debug;
-import static com.ancevt.d2d2world.D2D2World.isServer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 abstract public class Animated extends Container implements IAnimated, ISynchronized {
 
-    private final MapkitItem mapkitItem;
+    private final Map<String, IFramedDisplayObject> animations;
+
     private final int gameObjectId;
+
+    private final MapkitItem mapkitItem;
+
+    private final float width;
+
+    private final float height;
+
+    private IDisplayObject currentAnimation;
+
     private int direction;
-    private int currentAnimationKey = -1;
-    private IFramedDisplayObject[] animations;
-    private boolean backward;
-    private boolean animationsPrepared;
-    private boolean permanentSync;
-    private World world;
 
-    public Animated(@NotNull MapkitItem mapKitItem, int gameObjectId) {
-        this.mapkitItem = mapKitItem;
+    private String currentAnimationKey;
+
+    public Animated(MapkitItem mapkitItem, int gameObjectId) {
         this.gameObjectId = gameObjectId;
+        this.mapkitItem = mapkitItem;
+
+        animations = new HashMap<>();
+
+        width = mapkitItem.getDataEntry().getFloat("width");
+        height = mapkitItem.getDataEntry().getFloat("height");
+
         prepareAnimations();
-        setPermanentSync(true);
     }
 
-    @Override
-    public MapkitItem getMapkitItem() {
-        return mapkitItem;
+    public void prepareAnimations() {
+        DataEntry e = mapkitItem.getDataEntry();
+
+        e.getKeyValues().stream()
+                .filter(keyValue -> keyValue.key().startsWith("animation:"))
+                .findAny()
+                .ifPresent(keyValue -> addAnimation(keyValue.key()));
+
+        if (animations.containsKey(Animated.IDLE)) {
+            IFramedDisplayObject framedDisplayObject = animations.get(Animated.IDLE);
+            framedDisplayObject.setVisible(true);
+        }
     }
 
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
-    }
+    private void addAnimation(String key) {
+        Texture mapkitItemTexture = mapkitItem.getTexture();
 
-    @Override
-    public World getWorld() {
-        return world;
-    }
+        CoordsInfo.parse(mapkitItem.getDataEntry(), key, height).ifPresent(coordsInfo -> {
+            Texture[] textures = new Texture[coordsInfo.frameCount];
 
-    public void setBackward(boolean backward) {
-        this.backward = backward;
-    }
-
-    public boolean isBackward() {
-        return backward;
-    }
-
-    private void prepareAnimations() {
-        animations = new IFramedDisplayObject[AnimationKey.MAX_ANIMATIONS];
-
-        for (int animKey = 0; animKey < AnimationKey.MAX_ANIMATIONS; animKey++) {
-
-            if (!getMapkitItem().isAnimationKeyExists(animKey)) continue;
-
-            final int framesCount = getMapkitItem().getTextureCount(animKey);
-
-            Texture[] frames = new Texture[framesCount];
-            for (int i = 0; i < framesCount; i++) {
-                frames[i] = getMapkitItem().getTexture(animKey, i);
+            for (int i = 0; i < textures.length; i++) {
+                textures[i] = mapkitItemTexture.getSubtexture(
+                        0,
+                        (int) coordsInfo.yOnTileset,
+                        (int) width,
+                        (int) height
+                );
             }
 
-            IFramedDisplayObject framedDisplayObject = new FramedSprite(frames);
-            framedDisplayObject.setFrame(0);
-            framedDisplayObject.setLoop(true);
-            framedDisplayObject.setSlowing(AnimationKey.SLOWING);
-            animations[animKey] = framedDisplayObject;
-            add(framedDisplayObject);
-        }
+            IFramedDisplayObject framed = new FramedSprite(textures);
 
-        animationsPrepared = true;
-        setAnimation(AnimationKey.IDLE);
+            animations.put(key, framed);
+            framed.setVisible(false);
+            add(framed, -width / 2, -height / 2);
+        });
     }
 
     @Override
-    public void setVisible(boolean value) {
-        super.setVisible(value);
-        if (isOnWorld() && isPermanentSync()) {
-            getWorld().getSyncDataAggregator().visibility(this);
-        }
+    public float getWidth() {
+        return width;
     }
 
     @Override
-    public boolean isSavable() {
-        return false;
+    public float getHeight() {
+        return height;
     }
 
     @Override
-    public int getAnimation() {
+    public String getAnimation() {
         return currentAnimationKey;
     }
 
     @Override
-    public void setAnimation(final int animationKey) {
-        //if (isServer()) { // <== TODO: please refactor and remove it
-
-        if (!isServer() && this instanceof PlayerActor playerActor) {
-            if(playerActor.isLocalPlayerActor()) setAnimation(animationKey, true);
+    public void setAnimation(String animationKey) {
+        IDisplayObject framed = animations.get(animationKey);
+        if (framed != null) {
+            this.currentAnimationKey = animationKey;
+            this.currentAnimation = framed;
+            framed.setVisible(true);
         } else {
-            setAnimation(animationKey, true);
+            throw new IllegalStateException("%s: no such animation key %s".formatted(getName(), animationKey));
         }
-
-        //}
     }
 
     @Override
-    public void setAnimation(int animationKey, boolean loop) {
-        if (!animationsPrepared || animationKey == getAnimation()) return;
-
-        if(this instanceof Actor actor && actor.getHook() != null) {
-            //setAnimation(HOOK);
-            return;
-        }
-
+    public void setAnimation(String animationKey, boolean loop) {
         this.currentAnimationKey = animationKey;
-
-        for (int i = 0; i < animations.length; i++) {
-            IFramedDisplayObject currentFrameSet;
-            IFramedDisplayObject fs = currentFrameSet = animations[i];
-
-            if (getMapkitItem() == null) {
-                debug("Animated:115: <A>" + this);
-            }
-
-            if (fs == null || !getMapkitItem().isAnimationKeyExists(animationKey)) continue;
-
-            if (i != animationKey) currentFrameSet.setVisible(false);
-
-            if (i == animationKey) {
-                fs.setBackward(isBackward());
-                fs.setLoop(loop);
-
-                if (animationKey != AnimationKey.WALK_ATTACK) fs.setFrame(0);
-
-                fs.play();
-                fs.setVisible(true);
-            }
-        }
-
-        if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().animation(this, loop);
-    }
-
-    protected void fixXY() {
-        for (IFramedDisplayObject fs : animations) {
-            if (fs != null) {
-                float leftOffset = direction == Direction.LEFT ? fs.getWidth() : 0;
-                fs.setXY(-fs.getWidth() / 2 + leftOffset, -fs.getHeight() / 2);
-            }
-        }
     }
 
     @Override
@@ -229,18 +184,21 @@ abstract public class Animated extends Container implements IAnimated, ISynchron
         if (direction == this.direction) return;
         this.direction = direction;
 
-        for (IFramedDisplayObject fs : animations) {
-            if (fs == null) continue;
-
-            if (direction == 0) {
-                throw new IllegalStateException("direction is 0. Must be 1 or -1");
-            }
-
-            fs.setScaleX(direction);
-        }
+        animations.forEach((k, v) -> {
+            v.setScaleX(direction);
+        });
 
         fixXY();
         if (isOnWorld() && isPermanentSync()) getWorld().getSyncDataAggregator().direction(this);
+    }
+
+    protected void fixXY() {
+        animations.forEach((k, v) -> {
+            if (v != null) {
+                float leftOffset = direction == Direction.LEFT ? v.getWidth() : 0;
+                v.setXY(-v.getWidth() / 2 + leftOffset, -v.getHeight() / 2);
+            }
+        });
     }
 
     @Override
@@ -254,12 +212,53 @@ abstract public class Animated extends Container implements IAnimated, ISynchron
     }
 
     @Override
-    public void setPermanentSync(boolean permanentSync) {
-        this.permanentSync = permanentSync;
+    public boolean isSavable() {
+        return false;
     }
 
-    @Override
-    public boolean isPermanentSync() {
-        return permanentSync;
+    private static class CoordsInfo {
+
+        float yOnTileset;
+        int frameCount;
+
+        private CoordsInfo(float yOnTileset, int frameCount) {
+            this.yOnTileset = yOnTileset;
+            this.frameCount = frameCount;
+        }
+
+        static Optional<CoordsInfo> parse(DataEntry dataEntry, String key, float height) {
+            if (dataEntry.containsKey(key)) return Optional.empty();
+
+            String s = dataEntry.getString(key);
+            Args args = Args.of("_idle, ','");
+            float y = args.next(float.class) * height;
+            int frameCount = args.next(int.class);
+
+            return Optional.of(new CoordsInfo(y, frameCount));
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -25,7 +25,6 @@ import com.ancevt.d2d2.display.FramedSprite;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.constant.Direction;
 import com.ancevt.d2d2world.control.Controller;
 import com.ancevt.d2d2world.data.DataKey;
@@ -49,23 +48,12 @@ import java.util.List;
 
 import static com.ancevt.d2d2world.D2D2World.isClient;
 import static com.ancevt.d2d2world.D2D2World.isServer;
-import static com.ancevt.d2d2world.constant.AnimationKey.ATTACK;
-import static com.ancevt.d2d2world.constant.AnimationKey.DAMAGE;
-import static com.ancevt.d2d2world.constant.AnimationKey.FALL;
-import static com.ancevt.d2d2world.constant.AnimationKey.FALL_ATTACK;
-import static com.ancevt.d2d2world.constant.AnimationKey.HOOK;
-import static com.ancevt.d2d2world.constant.AnimationKey.IDLE;
-import static com.ancevt.d2d2world.constant.AnimationKey.JUMP;
-import static com.ancevt.d2d2world.constant.AnimationKey.JUMP_ATTACK;
 import static com.ancevt.d2d2world.constant.AnimationKey.SLOWING;
-import static com.ancevt.d2d2world.constant.AnimationKey.WALK;
-import static com.ancevt.d2d2world.constant.AnimationKey.WALK_ATTACK;
 
 abstract public class Actor extends Animated implements
         IProcessable,
         IDirectioned,
         IMovable,
-        IAnimated,
         IDestroyable,
         ITight,
         IResettable,
@@ -176,7 +164,7 @@ abstract public class Actor extends Animated implements
         tact++;
 
         if (attackTime > 0) {
-            if (getVelocityY() == 0) setAnimation(ATTACK);
+            if (getVelocityY() == 0) setAnimation(IDLE);
         }
 
         Controller c = getController();
@@ -191,9 +179,9 @@ abstract public class Actor extends Animated implements
                 go(direction);
 
                 if (attackTime == 0 && !c.isB()) {
-                    setAnimation(AnimationKey.WALK);
+                    setAnimation(WALK);
                 } else {
-                    setAnimation(AnimationKey.WALK_ATTACK);
+                    setAnimation(WALK);
                 }
             }
 
@@ -231,9 +219,7 @@ abstract public class Actor extends Animated implements
 
         if (getFloor() == null) {
             setAnimation(
-                    getVelocityY() < 0 ?
-                            (attackTime == 0 ? AnimationKey.JUMP : AnimationKey.JUMP_ATTACK) :
-                            (attackTime == 0 ? AnimationKey.FALL : AnimationKey.FALL_ATTACK)
+                    getVelocityY() < 0 ? JUMP : FALL
             );
 
         } else if (getFloor() instanceof final IMovable movableFloor) {
@@ -319,13 +305,13 @@ abstract public class Actor extends Animated implements
     private void fixHeadContainerXY() {
         if (headContainer != null) {
             switch (getAnimation()) {
-                case WALK, WALK_ATTACK -> {
+                case WALK -> {
                     headContainer.setXY(3 * getDirection(), -5);
                 }
-                case JUMP, JUMP_ATTACK -> {
+                case JUMP -> {
                     headContainer.setXY(0, -6);
                 }
-                case FALL, FALL_ATTACK -> {
+                case FALL -> {
                     headContainer.setXY(3 * getDirection(), -6);
                 }
                 default -> {
@@ -380,7 +366,12 @@ abstract public class Actor extends Animated implements
     }
 
     @Override
-    public void setAnimation(int animationKey, boolean loop) {
+    public void setAnimation(String animationKey) {
+
+    }
+
+    @Override
+    public void setAnimation(String animationKey, boolean loop) {
         if (damagingTime > 0 || animationKey == getAnimation()) return;
 
         if (headFramedDisplayObject != null) {
@@ -443,7 +434,7 @@ abstract public class Actor extends Animated implements
         } else {
             setDirection(1);
         }
-        setBackward(goDirection != getDirection());
+        //setBackward(goDirection != getDirection());
 
         weaponContainer.setRotation(-deg);
         weaponDegree = -deg;
@@ -537,7 +528,7 @@ abstract public class Actor extends Animated implements
     public void damage(int fromHealth, IDamaging damaging) {
         if (fromHealth > 0) {
             if (damagingTime > 0) return;
-            if (attackTime == 0) setAnimation(AnimationKey.DAMAGE);
+            if (attackTime == 0) setAnimation(DAMAGE);
         }
 
         setHealthBy(getHealth() - fromHealth, damaging, false);
@@ -554,7 +545,7 @@ abstract public class Actor extends Animated implements
 
     @Override
     public void repair() {
-        setAnimation(AnimationKey.IDLE);
+        setAnimation(IDLE);
         setHealth(getMaxHealth());
         setAlive(true);
 

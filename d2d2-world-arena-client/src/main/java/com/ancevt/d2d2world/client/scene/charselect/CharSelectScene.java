@@ -35,7 +35,7 @@ import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.data.DataKey;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -132,7 +132,7 @@ public class CharSelectScene extends Container {
         private final CharSelectScene charSelectScene;
         private final BorderedRect borderedRect;
         private final InteractiveContainer interactiveButton;
-        private final PlayerActor playerActor;
+        private final PlayerActor_ playerActor;
         private final Sprite decorDoor;
 
         public CharSelectItem(@NotNull MapkitItem mapkitItem, CharSelectScene charSelectScene) {
@@ -141,7 +141,7 @@ public class CharSelectScene extends Container {
 
             decorDoor = new Sprite(D2D2WorldArenaClientAssets.getCharSelectDoorTexture());
 
-            playerActor = (PlayerActor) mapkitItem.createGameObject(0);
+            playerActor = (PlayerActor_) mapkitItem.createGameObject(0);
             playerActor.setAnimation(AnimationKey.WALK, true);
             playerActor.setHealthBarVisible(false);
 

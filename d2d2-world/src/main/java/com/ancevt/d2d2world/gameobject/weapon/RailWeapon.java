@@ -22,7 +22,7 @@ import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -114,7 +114,7 @@ public class RailWeapon extends Weapon {
                         if (getAlpha() < 0.01f) removeFromParent();
                     }
                 };
-                if(getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+                if(getDamagingOwnerActor() instanceof PlayerActor_ playerActor) {
                     sprite.setColor(playerActor.getPlayerColor());
                 }
 

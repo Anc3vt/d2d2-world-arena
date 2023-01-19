@@ -22,7 +22,7 @@ import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.ISprite;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -89,7 +89,7 @@ public class PlasmaWeapon extends Weapon {
         private void this_addToStage(Event event) {
             removeEventListener(this, Event.ADD_TO_STAGE);
             sprite = new Sprite(getMapkitItem().getTexture());
-            if (getDamagingOwnerActor() instanceof PlayerActor playerActor) {
+            if (getDamagingOwnerActor() instanceof PlayerActor_ playerActor) {
                 sprite.setColor(Color.of(0x00FFFF));
             } else {
                 sprite.setColor(Color.of(0x00FFFF));

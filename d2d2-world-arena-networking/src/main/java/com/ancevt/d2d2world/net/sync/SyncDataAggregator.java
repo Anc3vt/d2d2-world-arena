@@ -82,7 +82,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public synchronized void pickUp(@NotNull PlayerActor playerActor, int pickupGameObjectId) {
+    public synchronized void pickUp(@NotNull PlayerActor_ playerActor, int pickupGameObjectId) {
         buffer.writeByte(SyncDataType.PICKUP)
                 .writeInt(playerActor.getGameObjectId())
                 .writeInt(pickupGameObjectId);
@@ -138,7 +138,7 @@ public class SyncDataAggregator implements ISyncDataAggregator {
     }
 
     @Override
-    public synchronized void animation(@NotNull IAnimated animated, boolean loop) {
+    public synchronized void animation(@NotNull IAnimated_old animated, boolean loop) {
         if (!(animated instanceof ISynchronized)) return;
 
         buffer.writeByte(SyncDataType.ANIMATION)

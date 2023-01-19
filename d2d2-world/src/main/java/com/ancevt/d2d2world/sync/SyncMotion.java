@@ -24,7 +24,7 @@ import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -83,7 +83,7 @@ public class SyncMotion {
                 displayObject.setXY(tX, tY);
             }
 
-            if (displayObject instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
+            if (displayObject instanceof PlayerActor_ playerActor && playerActor.isLocalPlayerActor()) {
                 toRemove.add(displayObject);
             }
         });

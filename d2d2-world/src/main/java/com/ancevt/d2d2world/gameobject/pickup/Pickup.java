@@ -29,7 +29,7 @@ import com.ancevt.d2d2world.gameobject.ICollision;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.ISonicSynchronized;
 import com.ancevt.d2d2world.gameobject.ISynchronized;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
 import com.ancevt.d2d2world.world.World;
 import com.ancevt.d2d2world.world.WorldEvent;
@@ -127,7 +127,7 @@ abstract public class Pickup extends Container implements ICollision, IResettabl
         }
     }
 
-    public abstract boolean onPlayerActorPickUpPickup(PlayerActor playerActor);
+    public abstract boolean onPlayerActorPickUpPickup(PlayerActor_ playerActor);
 
     public Sprite getImage() {
         return image;
@@ -187,7 +187,7 @@ abstract public class Pickup extends Container implements ICollision, IResettabl
     public void onCollide(ICollision collideWith) {
         if (!isServer()) return;
 
-        if (collideWith instanceof PlayerActor playerActor && pickUpTimeMillis == 0 && playerActor.isAlive()) {
+        if (collideWith instanceof PlayerActor_ playerActor && pickUpTimeMillis == 0 && playerActor.isAlive()) {
             var result = onPlayerActorPickUpPickup(playerActor);
 
             if (result) {

@@ -32,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.ancevt.d2d2world.data.Properties.setProperties;
 
@@ -44,6 +46,8 @@ public class MapkitItem {
     private final DataEntry dataEntry;
 
     private final Texture[][] textures;
+
+    private final Map<String, Class<? extends IGameObject>> classes = new HashMap<>();
 
     public MapkitItem(Mapkit mapkit, DataEntry dataEntry) {
         this.mapkit = mapkit;
@@ -69,7 +73,16 @@ public class MapkitItem {
         }
 
         try {
-            return (Class<? extends IGameObject>) Class.forName(classname);
+            Class<? extends IGameObject> clazz;
+            if (classes.containsKey(classname)) {
+                clazz = classes.get(classname);
+                return clazz;
+            } else {
+                clazz = (Class<? extends IGameObject>) Class.forName(classname);
+                classes.put(classname, clazz);
+            }
+
+            return clazz;
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
@@ -81,8 +94,9 @@ public class MapkitItem {
                     .getDeclaredConstructor(MapkitItem.class, int.class)
                     .newInstance(this, gameObjectId);
             setProperties(gameObject, dataEntry);
-            return (IGameObject) gameObject;
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            return gameObject;
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             throw new IllegalStateException(dataEntry + " ---" + this, e);
         }
     }

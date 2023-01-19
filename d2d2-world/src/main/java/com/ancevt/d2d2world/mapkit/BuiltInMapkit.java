@@ -18,8 +18,9 @@
 package com.ancevt.d2d2world.mapkit;
 
 import com.ancevt.d2d2world.data.DataEntry;
+import com.ancevt.d2d2world.gameobject.Animated;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.Scenery;
 import com.ancevt.d2d2world.gameobject.SceneryRect;
 import com.ancevt.d2d2world.gameobject.pickup.Pickup;
@@ -110,7 +111,52 @@ public class BuiltInMapkit extends Mapkit {
                 add("""
                         id = character_blake
                         | readableName = Blake
-                        | class =""" + PlayerActor.class.getName() + """
+                        | class =""" + PlayerActor_.class.getName() + """
+                        | weight = 0.4
+                        | maxHealth = 100
+                        | health = 100
+                        | speed = 0.65
+                        | jumpPower = 3.0
+                        | collisionX = -6
+                        | collisionY = -12
+                        | collisionWidth = 12
+                        | collisionHeight = 28
+                        | weaponX=15
+                        | weaponY=-3
+                        | atlas=$CHARACTER_ATLAS$
+                        | idle = 0,0,48,48 h 2
+                        | attack = 0,0,48,48 h 2
+                        | walk = 96,0,48,48 h 4
+                        | walkAttack = 96,0,48,48 h 4
+                        | jump = 288,0,48,48
+                        | fall = 336,0,48,48
+                        | jumpAttack = 288,0,48,48
+                        | fallAttack = 336,0,48,48
+                        | hook = 384,0,48,48
+                        | hookAttack = 384,0,48,48
+                        | damage = 432,0,48,48
+                        | head = 576,0,16,24 h 2
+                        | headFall = 608,0,16,24
+                        | arm = 576,32,16,16
+                        | damageSound = character-damage.ogg
+                        """);
+                add("""
+                          id = blake
+                        | readableName = Blake
+                        | class =""" + Animated.class.getName() + """
+                          width = 48
+                          height = 48
+                          
+                          animation:idle=0,2
+                          animation:walk=1,4
+                          animation:jump=2,1
+                          animation:fall=3,1
+                          animation:hook=4,1
+                          animation:damage=5,1
+                          
+                          _handCoords=0,288,16,16
+                          _headCoords=16,288,16,32 h 2
+                          
                         | weight = 0.4
                         | maxHealth = 100
                         | health = 100
@@ -142,7 +188,7 @@ public class BuiltInMapkit extends Mapkit {
                 add("""
                         id = character_ava
                         | readableName = Ava
-                        | class =""" + PlayerActor.class.getName() + """
+                        | class =""" + PlayerActor_.class.getName() + """
                         | weight = 0.4
                         | maxHealth = 100
                         | health = 100
@@ -174,7 +220,7 @@ public class BuiltInMapkit extends Mapkit {
                 add("""
                         id = character_stranger
                         | readableName = Stranger
-                        | class =""" + PlayerActor.class.getName() + """
+                        | class =""" + PlayerActor_.class.getName() + """
                         | weight = 0.4
                         | maxHealth = 100
                         | health = 100

@@ -24,7 +24,7 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.data.Property;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.BuiltInMapkit;
 import com.ancevt.d2d2world.mapkit.MapkitItem;
@@ -66,7 +66,7 @@ public class HealthPickup extends Pickup {
     }
 
     @Override
-    public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor playerActor) {
+    public boolean onPlayerActorPickUpPickup(@NotNull PlayerActor_ playerActor) {
         if (playerActor.getHealth() >= playerActor.getMaxHealth()) return false;
         playerActor.setHealth(playerActor.getHealth() + value);
         return true;

@@ -29,7 +29,7 @@ import com.ancevt.d2d2world.gameobject.IHookable;
 import com.ancevt.d2d2world.gameobject.IMovable;
 import com.ancevt.d2d2world.gameobject.IPlatform;
 import com.ancevt.d2d2world.gameobject.ITight;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.area.AreaCollision;
 import com.ancevt.d2d2world.gameobject.area.AreaDoorTeleport;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
@@ -196,7 +196,7 @@ public class PlayProcessor {
 
         if (damaging instanceof AreaWater) return;
 
-        if (o instanceof PlayerActor playerActor) {
+        if (o instanceof PlayerActor_ playerActor) {
             if (isClient()) o.damage(damagingPower, damaging);
         } else {
             o.damage(damagingPower, damaging);
@@ -218,7 +218,7 @@ public class PlayProcessor {
             if (bullet.getOwnerGameObjectId() == o1.getGameObjectId()) return;
         }
 
-        if (o1 instanceof PlayerActor && o2 instanceof PlayerActor) return;
+        if (o1 instanceof PlayerActor_ && o2 instanceof PlayerActor_) return;
 
 
         float tx1 = o1.getCollisionX();
@@ -301,7 +301,7 @@ public class PlayProcessor {
 
         if (!o.isGravityEnabled()) return;
 
-        if (!isServer() && o instanceof PlayerActor playerActor && !playerActor.isLocalPlayerActor()) return;
+        if (!isServer() && o instanceof PlayerActor_ playerActor && !playerActor.isLocalPlayerActor()) return;
 
         float velX = o.getVelocityX();
         if (Math.abs(velX) > MAX_VELOCITY_X) o.setVelocityX(velX * .05f);
@@ -319,7 +319,7 @@ public class PlayProcessor {
             o.setVelocityX(Math.abs(velX) < 0.1f ? 0 : velX * 0.95f);
         }
 
-        if (isServer() && !isEditor() && o instanceof PlayerActor playerActor) {
+        if (isServer() && !isEditor() && o instanceof PlayerActor_ playerActor) {
             return;
         }
 
@@ -353,7 +353,7 @@ public class PlayProcessor {
 
     private void processDoorTeleportActor(Actor actor, AreaDoorTeleport area) {
         if (world.isSwitchingRoomsNow() || (isServer() && !isEditor())) return;
-        if (actor instanceof PlayerActor playerActor && playerActor.isLocalPlayerActor()) {
+        if (actor instanceof PlayerActor_ playerActor && playerActor.isLocalPlayerActor()) {
             String targetAreaName = area.getTargetAreaName();
 
             AreaTarget areaTarget = (AreaTarget) world.getMap().getAllGameObjectsFromAllRooms().stream()
@@ -376,7 +376,7 @@ public class PlayProcessor {
     }
 
     private boolean isPlayerActor(IGameObject gameObject) {
-        return gameObject instanceof PlayerActor;
+        return gameObject instanceof PlayerActor_;
     }
 
     // Push states:

@@ -28,7 +28,7 @@ import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.IDamaging;
 import com.ancevt.d2d2world.gameobject.IResettable;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.area.AreaHook;
 import com.ancevt.d2d2world.gameobject.area.AreaSpawn;
 import com.ancevt.d2d2world.gameobject.pickup.WeaponPickup;
@@ -83,7 +83,7 @@ public class ServerWorldScene {
     private GameMap gameMap;
     private FpsMeter fpsMeter;
 
-    private final Map<Integer, PlayerActor> playerActorMap = new ConcurrentHashMap<>();
+    private final Map<Integer, PlayerActor_> playerActorMap = new ConcurrentHashMap<>();
     private Stage stage;
 
     private ServerWorldScene() {
@@ -174,7 +174,7 @@ public class ServerWorldScene {
 
     private void world_actorAttack(Event event) {
         var e = (WorldEvent) event;
-        if (e.getActor() instanceof PlayerActor playerActor) {
+        if (e.getActor() instanceof PlayerActor_ playerActor) {
             int playerId = playerActor.getPlayerId();
             SENDER.sendToAllOfRoom(createMessagePlayerAttack(playerId), playerActor.getWorld().getRoom().getId());
         }
@@ -205,7 +205,7 @@ public class ServerWorldScene {
 
     private void world_addGameObject(Event event) {
         var e = (WorldEvent) event;
-        if (e.getGameObject() instanceof PlayerActor playerActor) {
+        if (e.getGameObject() instanceof PlayerActor_ playerActor) {
 
             World world = (World) e.getSource();
 
@@ -221,7 +221,7 @@ public class ServerWorldScene {
 
     private void world_removeGameObject(Event event) {
         var e = (WorldEvent) event;
-        if (e.getGameObject() instanceof PlayerActor playerActor) {
+        if (e.getGameObject() instanceof PlayerActor_ playerActor) {
             World world = (World) e.getSource();
 
             if (world.getRoom() != null) {
@@ -249,7 +249,7 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public void playerController(int playerId, int controllerState) {
-        PlayerActor playerActor = playerActorMap.get(playerId);
+        PlayerActor_ playerActor = playerActorMap.get(playerId);
         if (playerActor != null) {
             playerActor.getController().applyState(controllerState);
         }
@@ -259,7 +259,7 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public void playerXY(int playerId, float x, float y) {
-        PlayerActor playerActor = playerActorMap.get(playerId);
+        PlayerActor_ playerActor = playerActorMap.get(playerId);
         if (playerActor != null) {
             playerActor.setXY(x, y);
         }
@@ -269,7 +269,7 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public void playerAimXY(int playerId, float x, float y) {
-        PlayerActor playerActor = playerActorMap.get(playerId);
+        PlayerActor_ playerActor = playerActorMap.get(playerId);
         if (playerActor != null) {
             playerActor.setAimXY(x, y);
         }
@@ -279,7 +279,7 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public void playerWeaponSwitch(int playerId, int delta) {
-        PlayerActor playerActor = playerActorMap.get(playerId);
+        PlayerActor_ playerActor = playerActorMap.get(playerId);
         if (playerActor != null) {
             if (delta > 0) playerActor.nextWeapon();
             else playerActor.prevWeapon();
@@ -290,7 +290,7 @@ public class ServerWorldScene {
      * Calls from {@link GeneralService}
      */
     public int spawnPlayerFirstTime(@NotNull Player player, @NotNull String mapkitItemId) {
-        PlayerActor playerActor = SERVER_WORLD_SCENE.createPlayerActor(player, mapkitItemId);
+        PlayerActor_ playerActor = SERVER_WORLD_SCENE.createPlayerActor(player, mapkitItemId);
         playerActor.setVisible(true);
         playerActor.setAnimation(IDLE);
         sendGameObjectsSyncData(player.getId());
@@ -302,7 +302,7 @@ public class ServerWorldScene {
      */
     public void changePlayerRoom(int playerId, String roomId, float x, float y) {
         PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> player.setRoomId(roomId));
-        PlayerActor playerActor = playerActorMap.get(playerId);
+        PlayerActor_ playerActor = playerActorMap.get(playerId);
         if (playerActor.isOnWorld()) {
             playerActor.getWorld().removeGameObject(playerActor, false);
         }
@@ -336,13 +336,13 @@ public class ServerWorldScene {
         });
     }
 
-    public Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {
+    public Optional<PlayerActor_> getPlayerActorByPlayerId(int playerId) {
         return Optional.ofNullable(playerActorMap.get(playerId));
     }
 
-    public PlayerActor createPlayerActor(@NotNull Player player, @NotNull String mapkitItemId) {
+    public PlayerActor_ createPlayerActor(@NotNull Player player, @NotNull String mapkitItemId) {
         MapkitItem mapkitItem = MapkitManager.getInstance().getMapkit(BuiltInMapkit.NAME).getItemById(mapkitItemId);
-        PlayerActor playerActor = (PlayerActor) mapkitItem.createGameObject(IdGenerator.getInstance().getNewId());
+        PlayerActor_ playerActor = (PlayerActor_) mapkitItem.createGameObject(IdGenerator.getInstance().getNewId());
         playerActor.setHumanControllable(true);
         playerActor.getController().setEnabled(true);
         playerActor.setPlayerColorValue(player.getColor());
@@ -361,7 +361,7 @@ public class ServerWorldScene {
         return playerActor;
     }
 
-    public World spawnPlayerActorToRandomSpawnPoint(int playerId, PlayerActor playerActor) {
+    public World spawnPlayerActorToRandomSpawnPoint(int playerId, PlayerActor_ playerActor) {
         while (true) {
             World world = getRandomWorld();
             List<AreaSpawn> areas = new ArrayList<>();
@@ -416,7 +416,7 @@ public class ServerWorldScene {
     }
 
     public void removePlayer(@NotNull Player player) {
-        PlayerActor playerActor = playerActorMap.remove(player.getId());
+        PlayerActor_ playerActor = playerActorMap.remove(player.getId());
         if (playerActor != null && playerActor.isOnWorld()) {
             playerActor.getWorld().removeGameObject(playerActor, false);
         }
@@ -439,7 +439,7 @@ public class ServerWorldScene {
         final Holder<Integer> killerPlayerId = new Holder<>(0);
 
         // get victim player id
-        if (world.getGameObjectById(e.getDeadActorGameObjectId()) instanceof PlayerActor playerActor) {
+        if (world.getGameObjectById(e.getDeadActorGameObjectId()) instanceof PlayerActor_ playerActor) {
             playerActorMap.entrySet()
                     .stream()
                     .filter(entry -> entry.getValue().getGameObjectId() == playerActor.getGameObjectId())
@@ -448,7 +448,7 @@ public class ServerWorldScene {
         }
 
         // get killer player id
-        if (world.getGameObjectById(e.getKillerGameObjectId()) instanceof PlayerActor playerActor) {
+        if (world.getGameObjectById(e.getKillerGameObjectId()) instanceof PlayerActor_ playerActor) {
             playerActorMap.entrySet()
                     .stream()
                     .filter(entry -> entry.getValue().getGameObjectId() == playerActor.getGameObjectId())
@@ -468,7 +468,7 @@ public class ServerWorldScene {
                     .build();
             SENDER.sendToAll(deathDto);
 
-            PlayerActor deadPlayerActor = playerActorMap.get(deadPlayerId.getValue());
+            PlayerActor_ deadPlayerActor = playerActorMap.get(deadPlayerId.getValue());
             if (deadPlayerActor != null) {
 
                 // weapon pickup drop

@@ -48,7 +48,7 @@ import com.ancevt.d2d2world.gameobject.DefaultMaps;
 import com.ancevt.d2d2world.gameobject.DestroyableBox;
 import com.ancevt.d2d2world.gameobject.IGameObject;
 import com.ancevt.d2d2world.gameobject.IdGenerator;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.weapon.Weapon;
 import com.ancevt.d2d2world.map.MapIO;
 import com.ancevt.d2d2world.mapkit.MapkitManager;
@@ -98,9 +98,9 @@ public class WorldScene extends Container implements ClientListener {
     private boolean eventsAdded;
 
     private long frameCounter;
-    private PlayerActor localPlayerActor;
+    private PlayerActor_ localPlayerActor;
     private final GameObjectTexts gameObjectTexts;
-    private final Map<Integer, PlayerActor> playerIdPlayerActorMap;
+    private final Map<Integer, PlayerActor_> playerIdPlayerActorMap;
 
     private List<Weapon> roomChangePlayerActorWeapons;
     private Weapon roomChangePlayerActorCurrentWeapon;
@@ -108,7 +108,7 @@ public class WorldScene extends Container implements ClientListener {
     private final Set<ChatBubble> chatBubbles;
 
     private final PlayerArrowView playerArrowView;
-    private final Map<PlayerActor, BitmapText> playerTextMap;
+    private final Map<PlayerActor_, BitmapText> playerTextMap;
 
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
@@ -143,7 +143,7 @@ public class WorldScene extends Container implements ClientListener {
             @Override
             public void serverInfo(@NotNull ServerInfoDto result) {
                 result.getPlayers().forEach(player -> {
-                    if (world.getGameObjectById(player.getPlayerActorGameObjectId()) instanceof PlayerActor playerActor) {
+                    if (world.getGameObjectById(player.getPlayerActorGameObjectId()) instanceof PlayerActor_ playerActor) {
                         playerActorUiText(playerActor, player.getId(), player.getName(), true);
                         playerIdPlayerActorMap.put(player.getId(), playerActor);
                         PLAYER_MANAGER.getPlayerById(player.getId()).ifPresent(
@@ -287,7 +287,7 @@ public class WorldScene extends Container implements ClientListener {
 
     private void world_actorDeath(Event event) {
         var e = (WorldEvent) event;
-        if (world.getGameObjectById(e.getDeadActorGameObjectId()) instanceof PlayerActor playerActor) {
+        if (world.getGameObjectById(e.getDeadActorGameObjectId()) instanceof PlayerActor_ playerActor) {
             playerArrowView.removePlayerArrow(playerActor);
         }
     }
@@ -346,7 +346,7 @@ public class WorldScene extends Container implements ClientListener {
 
     private void world_addGameObject(Event event) {
         var e = (WorldEvent) event;
-        if (e.getGameObject() instanceof PlayerActor playerActor) {
+        if (e.getGameObject() instanceof PlayerActor_ playerActor) {
             PLAYER_MANAGER.getPlayerByPlayerActorGameObjectId(playerActor.getGameObjectId()).ifPresent(player -> {
                 if (player.isChatOpened()) showChatBubble(playerActor);
             });
@@ -367,7 +367,7 @@ public class WorldScene extends Container implements ClientListener {
 
     private void world_removeGameObject(Event event) {
         var e = (WorldEvent) event;
-        if (e.getGameObject() instanceof PlayerActor playerActor) {
+        if (e.getGameObject() instanceof PlayerActor_ playerActor) {
             hideChatBubble(playerActor);
             playerArrowView.removePlayerArrow(playerActor);
             playerActorUiText(playerActor, playerActor.getPlayerId(), null, false);
@@ -544,7 +544,7 @@ public class WorldScene extends Container implements ClientListener {
      * {@link ClientListener} method
      */
     public void localPlayerActorGameObjectId(int playerActorGameObjectId) {
-        PlayerActor playerActor = (PlayerActor) world.getGameObjectById(playerActorGameObjectId);
+        PlayerActor_ playerActor = (PlayerActor_) world.getGameObjectById(playerActorGameObjectId);
 
         if (playerActor == null) {
             Async.runLater(1, TimeUnit.SECONDS, () -> localPlayerActorGameObjectId(playerActorGameObjectId));
@@ -609,7 +609,7 @@ public class WorldScene extends Container implements ClientListener {
         }
     }
 
-    private void showChatBubble(@NotNull PlayerActor playerActor) {
+    private void showChatBubble(@NotNull PlayerActor_ playerActor) {
         ChatBubble chatBubble = (ChatBubble) playerActor.extra().get(ChatBubble.class.getName());
         if (chatBubble == null) {
             chatBubble = new ChatBubble() {
@@ -632,7 +632,7 @@ public class WorldScene extends Container implements ClientListener {
         world.add(chatBubble);
     }
 
-    private void hideChatBubble(@NotNull PlayerActor playerActor) {
+    private void hideChatBubble(@NotNull PlayerActor_ playerActor) {
         ChatBubble chatHint = (ChatBubble) playerActor.extra().get(ChatBubble.class.getName());
         if (chatHint != null) chatHint.removeFromParent();
     }
@@ -642,7 +642,7 @@ public class WorldScene extends Container implements ClientListener {
         chatBubbles.clear();
     }
 
-    private void setLocalPlayerActor(PlayerActor playerActor) {
+    private void setLocalPlayerActor(PlayerActor_ playerActor) {
         if (localPlayerActor == playerActor) return;
 
         localPlayerActor = playerActor;
@@ -723,7 +723,7 @@ public class WorldScene extends Container implements ClientListener {
         }
     }
 
-    public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName, boolean updateOnly) {
+    public void playerActorUiText(@NotNull PlayerActor_ playerActor, int playerId, String playerName, boolean updateOnly) {
         if (updateOnly) {
             BitmapText uiTextToUpdate = playerTextMap.get(playerActor);
             uiTextToUpdate.setText(playerName + "(" + playerId + ")");
@@ -758,7 +758,7 @@ public class WorldScene extends Container implements ClientListener {
         playerTextMap.put(playerActor, bitmapText);
     }
 
-    private Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {
+    private Optional<PlayerActor_> getPlayerActorByPlayerId(int playerId) {
         return Optional.ofNullable(playerIdPlayerActorMap.get(playerId));
     }
 

@@ -20,7 +20,6 @@ package com.ancevt.d2d2world.gameobject.area;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2world.D2D2WorldAssets;
-import com.ancevt.d2d2world.constant.AnimationKey;
 import com.ancevt.d2d2world.fx.Particle;
 import com.ancevt.d2d2world.gameobject.Actor;
 import com.ancevt.d2d2world.gameobject.ICollision;
@@ -35,6 +34,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.ancevt.d2d2world.gameobject.IAnimated.FALL;
+import static com.ancevt.d2d2world.gameobject.IAnimated.JUMP;
 
 public class AreaWater extends Area implements IDamaging {
 
@@ -103,9 +105,9 @@ public class AreaWater extends Area implements IDamaging {
                 Integer tact = actorTacts.computeIfAbsent(a, k -> 0);
                 tact++;
                 if (tact < 25) {
-                    a.setAnimation(AnimationKey.JUMP);
+                    a.setAnimation(JUMP);
                 } else {
-                    a.setAnimation(AnimationKey.FALL);
+                    a.setAnimation(FALL);
                 }
 
                 actorTacts.put(a, tact);

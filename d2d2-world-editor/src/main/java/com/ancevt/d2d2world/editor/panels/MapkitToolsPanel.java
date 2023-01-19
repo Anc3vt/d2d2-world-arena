@@ -25,7 +25,7 @@ import com.ancevt.d2d2.panels.DropList;
 import com.ancevt.d2d2.panels.DropListItem;
 import com.ancevt.d2d2.panels.Label;
 import com.ancevt.d2d2.panels.TitledPanel;
-import com.ancevt.d2d2world.gameobject.PlayerActor;
+import com.ancevt.d2d2world.gameobject.PlayerActor_;
 import com.ancevt.d2d2world.gameobject.area.Area;
 import com.ancevt.d2d2world.mapkit.AreaMapkit;
 import com.ancevt.d2d2world.mapkit.Mapkit;
@@ -211,7 +211,7 @@ public class MapkitToolsPanel extends TitledPanel {
 
         for (Mapkit mapkit : mapkits) {
             for (var mapkitItem : mapkit.getItems()) {
-                if (mapkitItem.getGameObjectClass() == PlayerActor.class ||
+                if (mapkitItem.getGameObjectClass() == PlayerActor_.class ||
                         mapkitItem.getId().startsWith("bullet_of_")) continue;
 
                 if ((dropListClass.getSelectedKey() == ALL ||
