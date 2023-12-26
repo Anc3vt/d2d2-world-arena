@@ -81,8 +81,8 @@
             <artifactId>d2d2-world-arena-networking</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.ancevt.d2d2</groupId>
-            <artifactId>d2d2-sockets</artifactId>
+            <groupId>com.ancevt.net</groupId>
+            <artifactId>sockets</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
