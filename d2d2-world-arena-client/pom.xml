@@ -64,7 +64,6 @@
 
         <!-- Ancevt -->
         <ancevt-commons.version>1.0.0.3</ancevt-commons.version>
-        <texttable.version>0.0.1</texttable.version>
 
         <!-- LWJGL -->
         <joml.version>1.10.4</joml.version>
@@ -102,8 +101,9 @@
             <artifactId>commands</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.ancevt.d2d2</groupId>
-            <artifactId>d2d2-sockets</artifactId>
+            <groupId>com.ancevt.net</groupId>
+            <artifactId>sockets</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.ancevt.d2d2world</groupId>

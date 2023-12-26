@@ -97,7 +97,7 @@
             <dependency>
                 <groupId>com.ancevt.util</groupId>
                 <artifactId>texttable</artifactId>
-                <version>0.0.2</version>
+                <version>0.0.4</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.util</groupId>
@@ -107,12 +107,12 @@
             <dependency>
                 <groupId>com.ancevt.d2d2</groupId>
                 <artifactId>d2d2-core</artifactId>
-                <version>0.1.5-SNAPSHOT</version>
+                <version>0.1.5.2-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.ancevt.d2d2</groupId>
-                <artifactId>d2d2-sockets</artifactId>
-                <version>0.0.1</version>
+                <groupId>com.ancevt.net</groupId>
+                <artifactId>sockets</artifactId>
+                <version>0.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.ancevt.d2d2</groupId>
