@@ -43,7 +43,7 @@ public class Scenery extends Sprite implements IGameObject, IRepeatable, IRotata
         setTexture(mapkitItem.getTexture());
 
         if (mapkitItem.getTextureCount(AnimationKey.IDLE) > 1) {
-            addEventListener(Event.EACH_FRAME, e -> {
+            addEventListener(Event.EXIT_FRAME, e -> {
                 frameCounter++;
                 if (frameCounter >= Slowing.SLOWING) {
                     frameCounter = 0;

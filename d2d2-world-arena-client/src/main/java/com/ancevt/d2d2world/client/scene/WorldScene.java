@@ -684,7 +684,7 @@ public class WorldScene extends Container implements ClientListener {
             }
         });
 
-        localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
+        localPlayerActor.addEventListener(Event.EXIT_FRAME, new EventListener() {
             private float oldX;
             private float oldY;
 

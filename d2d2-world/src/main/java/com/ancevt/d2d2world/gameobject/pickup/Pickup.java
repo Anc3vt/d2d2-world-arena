@@ -304,7 +304,7 @@ abstract public class Pickup extends Container implements ICollision, IResettabl
 
     public void startOut() {
         outStarted = true;
-        addEventListener(Event.EACH_FRAME, event -> {
+        addEventListener(Event.EXIT_FRAME, event -> {
             toScale(0.8f, 0.8f);
             if (getScaleX() <= 0.05f) {
                 getWorld().removeGameObject(this, false);

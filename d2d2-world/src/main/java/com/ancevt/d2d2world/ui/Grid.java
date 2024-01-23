@@ -42,7 +42,7 @@ public class Grid extends Container implements IColored {
         setColor(DEFAULT_COLOR);
         setAlpha(0.25f);
 
-        addEventListener(Event.EACH_FRAME, this::eachFrame);
+        addEventListener(Event.EXIT_FRAME, this::eachFrame);
     }
 
     private void eachFrame(Event event) {

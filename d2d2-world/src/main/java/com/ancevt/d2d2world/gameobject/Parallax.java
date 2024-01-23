@@ -50,7 +50,7 @@ public class Parallax extends Sprite implements IGameObject, ISpeedable, IScalab
         setTexture(mapkitItem.getTexture());
 
         if (mapkitItem.getTextureCount(AnimationKey.IDLE) > 1) {
-            addEventListener(this, Event.EACH_FRAME, this::this_eachFrame);
+            addEventListener(this, Event.EXIT_FRAME, this::this_eachFrame);
         }
     }
 
