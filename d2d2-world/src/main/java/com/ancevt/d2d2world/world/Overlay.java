@@ -43,15 +43,15 @@ public class Overlay extends PlainRect {
     public void startIn() {
         if(state == STATE_BLACK) return;
         state = STATE_IN;
-        removeEventListener(this, Event.EACH_FRAME);
-        addEventListener(this, Event.EACH_FRAME, this::eachFrame);
+        removeEventListener(this, Event.ENTER_FRAME);
+        addEventListener(this, Event.ENTER_FRAME, this::eachFrame);
     }
 
     public void startOut() {
         if(state == STATE_DONE) return;
         state = STATE_OUT;
-        removeEventListener(this, Event.EACH_FRAME);
-        addEventListener(this, Event.EACH_FRAME, this::eachFrame);
+        removeEventListener(this, Event.ENTER_FRAME);
+        addEventListener(this, Event.ENTER_FRAME, this::eachFrame);
     }
 
     private void eachFrame(Event event) {
@@ -61,7 +61,7 @@ public class Overlay extends PlainRect {
                 setAlpha(Math.min(alpha, 1.0f));
                 if (alpha >= 1.2f) {
                     setState(STATE_BLACK);
-                    removeEventListener(this, Event.EACH_FRAME);
+                    removeEventListener(this, Event.ENTER_FRAME);
                 }
             }
             case STATE_OUT -> {
@@ -69,7 +69,7 @@ public class Overlay extends PlainRect {
                 setAlpha(Math.max(alpha, 0.0f));
                 if (alpha <= -0.2f) {
                     setState(STATE_DONE);
-                    removeEventListener(this, Event.EACH_FRAME);
+                    removeEventListener(this, Event.ENTER_FRAME);
                 }
             }
         }

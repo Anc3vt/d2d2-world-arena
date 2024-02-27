@@ -176,7 +176,7 @@ public class DestroyableBox extends Container implements
 
         blinkSprite.removeFromParent();
         blinkSprite.setAlpha(1.0f);
-        blinkSprite.removeEventListener(this, Event.EACH_FRAME);
+        blinkSprite.removeEventListener(this, Event.ENTER_FRAME);
 
         if (!destroyed && isOnWorld() && mapkitItem.getDataEntry().containsKey(DataKey.BROKEN_PARTS)) {
 
@@ -417,10 +417,10 @@ public class DestroyableBox extends Container implements
         if (blinkSprite != null) {
             blinkSprite.setAlpha(1f);
             add(blinkSprite);
-            blinkSprite.addEventListener(this, Event.EACH_FRAME, event -> {
+            blinkSprite.addEventListener(this, Event.ENTER_FRAME, event -> {
                 blinkSprite.setAlpha(blinkSprite.getAlpha() - 0.1f);
                 if (blinkSprite.getAlpha() <= 0) {
-                    blinkSprite.removeEventListener(this, Event.EACH_FRAME);
+                    blinkSprite.removeEventListener(this, Event.ENTER_FRAME);
                     blinkSprite.removeFromParent();
                 }
             });

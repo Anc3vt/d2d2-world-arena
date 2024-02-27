@@ -47,7 +47,7 @@ public class LayerNumbers {
 
                 Label label = new Label(world, i, text, gameObject);
 
-                label.addEventListener(Event.EACH_FRAME, e -> checkLabelHitTests(label));
+                label.addEventListener(Event.ENTER_FRAME, e -> checkLabelHitTests(label));
 
                 world.add(label, gameObject.getX(), gameObject.getY());
 

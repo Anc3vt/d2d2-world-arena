@@ -110,7 +110,7 @@ public class SyncMotion {
             }
         });
 
-        stage.addEventListener(Event.EACH_FRAME, event -> SyncMotion.process());
+        stage.addEventListener(Event.ENTER_FRAME, event -> SyncMotion.process());
 
         D2D2.loop();
     }

@@ -52,7 +52,7 @@ public class AmmunitionHud extends Container {
         if(weapon.getAmmunition() < 25) {
             uiAmmunition.setColor(Color.RED);
         } else if(weapon.getAmmunition() < 50) {
-            uiAmmunition.setColor(Color.DARK_YELLOW);
+            uiAmmunition.setColor(Color.YELLOW);
         } else {
             uiAmmunition.setColor(Color.WHITE);
         }
