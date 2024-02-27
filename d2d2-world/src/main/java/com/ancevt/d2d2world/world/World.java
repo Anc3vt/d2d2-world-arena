@@ -486,8 +486,7 @@ public class World extends Container {
     @Override
     public String toString() {
         return "World{" +
-                "currentRoom=" + currentRoom.getId() +
-                ", gameObjects=" + gameObjects.size() +
+                "gameObjects=" + gameObjects.size() +
                 ", playing=" + playing +
                 '}';
     }

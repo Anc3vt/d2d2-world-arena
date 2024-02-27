@@ -31,7 +31,7 @@ public class SelectArea extends BorderedRect {
 
         setBorderColor(STROKE_COLOR);
 
-        addEventListener(Event.EACH_FRAME, e -> setBorderWidth(1 / getAbsoluteScaleX()));
+        addEventListener(Event.ENTER_FRAME, e -> setBorderWidth(1 / getAbsoluteScaleX()));
     }
 
     public void setXY(SelectRectangle selectRectangle) {

@@ -115,14 +115,14 @@ public class ServerWorldScene {
 
     public void start() {
         stage = D2D2.init(new NoRenderBackend(900, 600));
-        stage.addEventListener(this, Event.EACH_FRAME, this::root_eachFrame);
+        stage.addEventListener(this, Event.ENTER_FRAME, this::root_eachFrame);
         fpsMeter = new FpsMeter();
         stage.add(fpsMeter);
         Async.run(D2D2::loop);
     }
 
     public int getFps() {
-        return fpsMeter.getFramesPerSecond();
+        return D2D2.getBackend().getFps();
     }
 
     @SneakyThrows(IOException.class)

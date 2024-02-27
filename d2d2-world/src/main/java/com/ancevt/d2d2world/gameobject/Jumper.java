@@ -53,7 +53,7 @@ public class Jumper extends Sprite implements ICollision, IRotatable, IScalable,
         setTexture(mapkitItem.getTexture());
 
         if (mapkitItem.getTextureCount(AnimationKey.IDLE) > 1) {
-            addEventListener(Event.EACH_FRAME, e -> {
+            addEventListener(Event.ENTER_FRAME, e -> {
                 frameCounter++;
                 if (frameCounter >= Slowing.SLOWING / 2) {
                     frameCounter = 0;

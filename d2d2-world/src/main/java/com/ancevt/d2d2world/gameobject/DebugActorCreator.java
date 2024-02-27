@@ -47,7 +47,7 @@ public class DebugActorCreator {
         world.addGameObject(playerActor, 5, false);
         playerActor.getController().setEnabled(true);
 
-        playerActor.addEventListener(Event.EACH_FRAME, event -> {
+        playerActor.addEventListener(Event.ENTER_FRAME, event -> {
             if (targetPlayerActor != null) {
                 playerActor.setAimXY(targetPlayerActor.getX(), targetPlayerActor.getY());
                 playerActor.addWeapon(AutomaticWeapon.class, 1000);
