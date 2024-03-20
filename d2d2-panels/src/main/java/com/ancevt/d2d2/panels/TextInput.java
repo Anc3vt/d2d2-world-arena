@@ -1,4 +1,20 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.common.BorderedRect;
@@ -8,8 +24,8 @@ import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 import static com.ancevt.d2d2.D2D2.stage;
 
@@ -36,7 +52,7 @@ public class TextInput extends Component implements EventListener {
     private final BorderedRect rect;
     private final BitmapText bitmapText;
     private final PlainRect cursor;
-    private final InteractiveButton touchButton;
+    private final InteractiveContainer touchButton;
 
     public TextInput() {
         rect = new BorderedRect(BACKGROUND_COLOR, BORDER_COLOR);
@@ -46,8 +62,8 @@ public class TextInput extends Component implements EventListener {
         bitmapText.setColor(FOREGROUND_COLOR);
         bitmapText.setX(PADDING);
 
-        touchButton = new InteractiveButton();
-        touchButton.addEventListener(InteractiveButtonEvent.DOWN, e -> {
+        touchButton = new InteractiveContainer();
+        touchButton.addEventListener(InteractiveEvent.DOWN, e -> {
             onTouch();
         });
 
@@ -73,7 +89,8 @@ public class TextInput extends Component implements EventListener {
     @Override
     public void onFocus() {
         rect.setBorderColor(FOCUSED_BORDER_COLOR);
-        stage().addEventListener(this, InputEvent.KEY_DOWN, this, true);
+        stage().removeEventListener(this, InputEvent.KEY_DOWN);
+        stage().addEventListener(this, InputEvent.KEY_DOWN, this);
         relocateCursor();
         add(cursor);
         super.onFocus();
@@ -101,15 +118,15 @@ public class TextInput extends Component implements EventListener {
 
     public void setWidth(float width) {
         rect.setWidth(width);
-        bitmapText.setBoundWidth(width);
+        bitmapText.setWidth(width);
         touchButton.setWidth((int) width);
     }
 
     public void setHeight(float height) {
         rect.setHeight(height);
 
-        bitmapText.setBoundHeight(height - bitmapText.getBitmapFont().getCharHeight());
-        bitmapText.setY((getHeight() - bitmapText.getBitmapFont().getCharHeight()) / 2);
+        bitmapText.setHeight(height - bitmapText.getBitmapFont().getZeroCharHeight());
+        bitmapText.setY((getHeight() - bitmapText.getBitmapFont().getZeroCharHeight()) / 2);
         cursor.setY((getHeight() - cursor.getHeight()) / 2);
         touchButton.setHeight((int) height);
     }

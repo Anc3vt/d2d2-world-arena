@@ -1,15 +1,31 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.client.ui.chat;
 
-import com.ancevt.d2d2.components.Font;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
+import com.ancevt.d2d2.display.text.BitmapText;
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.String.format;
 
-public class ChatMessage extends DisplayObjectContainer {
+public class ChatMessage extends Container {
 
     public static final float DEFAULT_WIDTH = 1000;
     public static final float DEFAULT_HEIGHT = 16;
@@ -18,8 +34,8 @@ public class ChatMessage extends DisplayObjectContainer {
     private final int playerId;
     private final String playerName;
     private final String text;
-    private final UiText nameUiText;
-    private final UiText textUiText;
+    private final BitmapText nameBitmapText;
+    private final BitmapText bitmapText;
     private final Color textColor;
 
     public ChatMessage(int id,
@@ -34,28 +50,30 @@ public class ChatMessage extends DisplayObjectContainer {
         this.playerName = playerName;
         this.text = messageText;
         this.textColor = textColor;
-        nameUiText = new UiText();
-        textUiText = new UiText();
+        nameBitmapText = new BitmapText();
+        nameBitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddleGlow());
+        bitmapText = new BitmapText();
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddleGlow());
 
         String playerNameToShow = format("%s(%d):", playerName, playerId);
 
-        nameUiText.setColor(Color.of(playerColor));
-        textUiText.setColor(textColor);
-        nameUiText.setText(playerNameToShow);
-        nameUiText.setSize(playerNameToShow.length() * Font.getBitmapFont().getCharInfo('0').width() + 10, 30);
+        nameBitmapText.setColor(Color.of(playerColor));
+        bitmapText.setColor(textColor);
+        nameBitmapText.setText(playerNameToShow);
+        nameBitmapText.setSize(playerNameToShow.length() * ComponentFont.getBitmapFontMiddle().getCharInfo('0').width() + 10, 30);
 
-        textUiText.setText(messageText);
-        textUiText.setX(nameUiText.getWidth());
-        textUiText.setWidth(DEFAULT_WIDTH);
-        textUiText.setHeight(DEFAULT_HEIGHT);
+        bitmapText.setText(messageText);
+        bitmapText.setX(nameBitmapText.getWidth() + 8);
+        bitmapText.setWidth(DEFAULT_WIDTH);
+        bitmapText.setHeight(DEFAULT_HEIGHT);
 
-        nameUiText.setHeight(DEFAULT_HEIGHT);
+        nameBitmapText.setHeight(DEFAULT_HEIGHT);
 
-        textUiText.setVertexBleedingFix(0);
-        nameUiText.setVertexBleedingFix(0);
+        bitmapText.setVertexBleedingFix(0);
+        nameBitmapText.setVertexBleedingFix(0);
 
-        add(nameUiText);
-        add(textUiText);
+        add(nameBitmapText);
+        add(bitmapText);
     }
 
     public ChatMessage(int id, String messageText, Color textColor) {
@@ -64,32 +82,22 @@ public class ChatMessage extends DisplayObjectContainer {
         this.playerName = null;
         this.text = messageText;
         this.textColor = textColor;
-        nameUiText = null;
-        textUiText = new UiText();
+        nameBitmapText = null;
+        bitmapText = new BitmapText();
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddleGlow());
 
-        textUiText.setWidth(DEFAULT_WIDTH);
-        textUiText.setHeight(DEFAULT_HEIGHT);
-        textUiText.setColor(textColor);
-        textUiText.setText(messageText);
+        bitmapText.setWidth(DEFAULT_WIDTH);
+        bitmapText.setHeight(DEFAULT_HEIGHT);
+        bitmapText.setColor(textColor);
+        bitmapText.setText(messageText);
 
-        textUiText.setVertexBleedingFix(0);
+        bitmapText.setVertexBleedingFix(0);
 
-        add(textUiText);
-    }
-
-    public void setShadowEnabled(boolean b) {
-        if (nameUiText != null) {
-            nameUiText.setShadowEnabled(b);
-        }
-        textUiText.setShadowEnabled(b);
+        add(bitmapText);
     }
 
     public boolean isFromPlayer() {
         return playerName != null;
-    }
-
-    public boolean isShadowEnabled() {
-        return textUiText.isShadowEnabled();
     }
 
     public int getPlayerId() {
@@ -119,8 +127,8 @@ public class ChatMessage extends DisplayObjectContainer {
                 ", playerId=" + playerId +
                 ", playerName='" + playerName + '\'' +
                 ", text='" + text + '\'' +
-                ", nameUiText=" + nameUiText +
-                ", textUiText=" + textUiText +
+                ", nameUiText=" + nameBitmapText +
+                ", textUiText=" + bitmapText +
                 ", textColor=" + textColor +
                 '}';
     }

@@ -1,4 +1,20 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.client.scene;
 
 import com.ancevt.commons.concurrent.Lock;
@@ -6,7 +22,7 @@ import com.ancevt.commons.hash.MD5;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.debug.FpsMeter;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
 import com.ancevt.d2d2.input.KeyCode;
@@ -39,7 +55,7 @@ import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
-public class GameScene extends DisplayObjectContainer implements ClientListener, FileReceiverManager.FileReceiverManagerListener {
+public class GameScene extends Container implements ClientListener, FileReceiverManager.FileReceiverManagerListener {
 
     public static final int DEFAULT_PORT = 2245;
 
@@ -74,7 +90,6 @@ public class GameScene extends DisplayObjectContainer implements ClientListener,
             switch (e.getKeyCode()) {
                 case KeyCode.PAGE_UP -> Chat.getInstance().setScroll(Chat.getInstance().getScroll() - 10);
                 case KeyCode.PAGE_DOWN -> Chat.getInstance().setScroll(Chat.getInstance().getScroll() + 10);
-                case KeyCode.F8 -> Chat.getInstance().setShadowEnabled(!Chat.getInstance().isShadowEnabled());
                 case KeyCode.F6 -> {
                     if (!Chat.getInstance().isInputOpened()) {
                         Chat.getInstance().openInput();

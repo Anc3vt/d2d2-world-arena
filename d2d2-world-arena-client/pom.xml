@@ -64,7 +64,6 @@
 
         <!-- Ancevt -->
         <ancevt-commons.version>1.0.0.3</ancevt-commons.version>
-        <texttable.version>0.0.1</texttable.version>
 
         <!-- LWJGL -->
         <joml.version>1.10.4</joml.version>
@@ -115,10 +114,6 @@
         </dependency>
         <dependency>
             <groupId>com.ancevt.d2d2</groupId>
-            <artifactId>d2d2-panels</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ancevt.d2d2</groupId>
             <artifactId>d2d2-components</artifactId>
         </dependency>
         <dependency>
@@ -153,10 +148,6 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/natives</directory>
                 <filtering>false</filtering>
             </resource>
             <resource>

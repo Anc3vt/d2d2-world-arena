@@ -1,14 +1,31 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.client.scene;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.commons.concurrent.Lock;
 import com.ancevt.d2d2.backend.lwjgl.GLFWUtils;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.DisplayObject;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.EventListener;
 import com.ancevt.d2d2.event.InputEvent;
@@ -72,7 +89,7 @@ import static com.ancevt.d2d2world.net.dto.client.PlayerChatEventDto.OPEN;
 import static com.ancevt.d2d2world.sound.D2D2WorldSound.PLAYER_SPAWN;
 
 @Slf4j
-public class WorldScene extends DisplayObjectContainer implements ClientListener {
+public class WorldScene extends Container implements ClientListener {
 
     private final World world;
     private final LocalPlayerController localPlayerController = new LocalPlayerController();
@@ -91,7 +108,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
     private final Set<ChatBubble> chatBubbles;
 
     private final PlayerArrowView playerArrowView;
-    private final Map<PlayerActor, UiText> playerTextMap;
+    private final Map<PlayerActor, BitmapText> playerTextMap;
 
     public WorldScene() {
         MapIO.setMapsDirectory("data/maps/");
@@ -637,9 +654,13 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
             overlay.startOut();
         }
 
-        localPlayerActor.addEventListener(ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor), true);
-        localPlayerActor.addEventListener(ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor), true);
-        localPlayerActor.addEventListener(ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn), true);
+        localPlayerActor.removeEventListener(WorldScene.class, ActorEvent.AMMUNITION_CHANGE);
+        localPlayerActor.removeEventListener(WorldScene.class, ActorEvent.SET_WEAPON);
+        localPlayerActor.removeEventListener(WorldScene.class, ActorEvent.ACTOR_DEATH);
+
+        localPlayerActor.addEventListener(WorldScene.class, ActorEvent.AMMUNITION_CHANGE, event -> ammunitionHud.updateFor(localPlayerActor));
+        localPlayerActor.addEventListener(WorldScene.class, ActorEvent.SET_WEAPON, event -> ammunitionHud.updateFor(localPlayerActor));
+        localPlayerActor.addEventListener(WorldScene.class, ActorEvent.ACTOR_DEATH, event -> Async.runLater(2, TimeUnit.SECONDS, overlay::startIn));
 
         localPlayerActor.addEventListener(ActorEvent.ACTOR_ENTER_ROOM, event -> {
             var e = (ActorEvent) event;
@@ -663,7 +684,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
             }
         });
 
-        localPlayerActor.addEventListener(Event.EACH_FRAME, new EventListener() {
+        localPlayerActor.addEventListener(Event.ENTER_FRAME, new EventListener() {
             private float oldX;
             private float oldY;
 
@@ -704,12 +725,12 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
 
     public void playerActorUiText(@NotNull PlayerActor playerActor, int playerId, String playerName, boolean updateOnly) {
         if (updateOnly) {
-            UiText uiTextToUpdate = playerTextMap.get(playerActor);
+            BitmapText uiTextToUpdate = playerTextMap.get(playerActor);
             uiTextToUpdate.setText(playerName + "(" + playerId + ")");
             return;
         }
 
-        UiText uiTextToRemove = playerTextMap.remove(playerActor);
+        BitmapText uiTextToRemove = playerTextMap.remove(playerActor);
         if (uiTextToRemove != null) {
             uiTextToRemove.removeFromParent();
         }
@@ -719,7 +740,7 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
         playerActor.setPlayerName(playerName);
         playerActor.setPlayerId(playerId);
 
-        UiText uiText = new UiText(playerName + "(" + playerId + ")") {
+        BitmapText bitmapText = new BitmapText(playerName + "(" + playerId + ")") {
             @Override
             public void onEachFrame() {
                 this.setXY(
@@ -728,12 +749,13 @@ public class WorldScene extends DisplayObjectContainer implements ClientListener
                 );
             }
         };
-        uiText.setScale(1f, 1f);
-        PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> uiText.setColor(Color.of(player.getColor())));
-        uiText.setVisible(false);
-        Async.runLater(250, TimeUnit.MILLISECONDS, () -> uiText.setVisible(true));
-        stage().add(uiText);
-        playerTextMap.put(playerActor, uiText);
+        bitmapText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
+        bitmapText.setScale(1f, 1f);
+        PLAYER_MANAGER.getPlayerById(playerId).ifPresent(player -> bitmapText.setColor(Color.of(player.getColor())));
+        bitmapText.setVisible(false);
+        Async.runLater(250, TimeUnit.MILLISECONDS, () -> bitmapText.setVisible(true));
+        stage().add(bitmapText);
+        playerTextMap.put(playerActor, bitmapText);
     }
 
     private Optional<PlayerActor> getPlayerActorByPlayerId(int playerId) {

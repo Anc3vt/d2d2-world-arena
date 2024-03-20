@@ -1,8 +1,25 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.editor;
 
+import com.ancevt.d2d2.components.FrameManager;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.display.text.BitmapText;
@@ -19,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorContainer extends DisplayObjectContainer implements EventListener {
+public class EditorContainer extends Container implements EventListener {
 
     private final World world;
 
@@ -96,15 +113,16 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
                 case InputEvent.KEY_DOWN -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), true);
                 case InputEvent.KEY_UP -> editor.key(inputEvent.getKeyCode(), inputEvent.getKeyChar(), false);
                 case InputEvent.MOUSE_DOWN -> {
-                    if (!isMouseAtPanels(x, y) || world.isPlaying()) editor.mouseButton(x, y, worldX, worldY, true, inputEvent.getMouseButton());
+                    if (!isMouseOnPanels(x, y) || world.isPlaying())
+                        editor.mouseButton(x, y, worldX, worldY, true, inputEvent.getMouseButton());
                 }
                 case InputEvent.MOUSE_UP -> editor.mouseButton(x, y, worldX, worldY, false, inputEvent.getMouseButton());
                 case InputEvent.MOUSE_MOVE -> {
-                    if (!isMouseAtPanels(x, y) || world.isPlaying())
+                    //if (!isMouseOnPanels(x, y) || world.isPlaying())
                         editor.mouseMove(x, y, worldX, worldY, inputEvent.isDrag());
                 }
                 case InputEvent.MOUSE_WHEEL -> {
-                    if(isMouseAtPanels(Mouse.getX(), Mouse.getY())) {
+                    if (isMouseOnPanels(Mouse.getX(), Mouse.getY())) {
                         MapkitToolsPanel.getInstance().moveY(inputEvent.getDelta() * 100);
                     }
                 }
@@ -112,8 +130,12 @@ public class EditorContainer extends DisplayObjectContainer implements EventList
         }
     }
 
-    public boolean isMouseAtPanels(float mouseX, float mouseY) {
-        return panels.stream().filter(p->isOnScreen() && p.isVisible()).anyMatch(panel ->
+    public boolean isMouseOnPanels(float mouseX, float mouseY) {
+        if (FrameManager.getInstance().isPointUnderAnyFrame(mouseX, mouseY)) {
+            return true;
+        }
+
+        return panels.stream().filter(p -> isOnScreen() && p.isVisible()).anyMatch(panel ->
                 isMouseAtArea(mouseX, mouseY, panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight()));
     }
 

@@ -1,12 +1,28 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.common.PlainRect;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 public class Title extends Component {
 
@@ -24,7 +40,7 @@ public class Title extends Component {
 	private final BitmapText label;
 	
 	private final DisplayObject owner;
-	private final InteractiveButton titleTouchButton;
+	private final InteractiveContainer titleTouchButton;
 
 	private float oldX;
 	private float oldY;
@@ -44,7 +60,7 @@ public class Title extends Component {
 		label.setText(titleText);
 		
 		label.setX(PADDING);
-		label.setY((HEIGHT - label.getBitmapFont().getCharHeight()) / 2.0f);
+		label.setY((HEIGHT - label.getBitmapFont().getZeroCharHeight()) / 2.0f);
 		
 		add(background);
 		add(label);
@@ -69,16 +85,16 @@ public class Title extends Component {
 		add(borderTop);
 		add(borderBottom);
 		
-		titleTouchButton = new InteractiveButton();
-		titleTouchButton.addEventListener(InteractiveButtonEvent.DOWN, e->{
-			InteractiveButtonEvent touchButtonEvent = (InteractiveButtonEvent)e;
+		titleTouchButton = new InteractiveContainer();
+		titleTouchButton.addEventListener(InteractiveEvent.DOWN, e->{
+			InteractiveEvent touchButtonEvent = (InteractiveEvent)e;
 			oldX = touchButtonEvent.getX();
 			oldY = touchButtonEvent.getY();
 
 		});
 
-		titleTouchButton.addEventListener(InteractiveButtonEvent.DRAG, e->{
-			InteractiveButtonEvent touchButtonEvent = (InteractiveButtonEvent)e;
+		titleTouchButton.addEventListener(InteractiveEvent.DRAG, e->{
+			InteractiveEvent touchButtonEvent = (InteractiveEvent)e;
 			float diffX = touchButtonEvent.getX() - oldX;
 			float diffY = touchButtonEvent.getY() - oldY;
 			owner.moveX(diffX);
@@ -100,7 +116,7 @@ public class Title extends Component {
 		borderRight.setX(width);
 		
 		background.setWidth(width);
-		label.setBounds(getWidth() - PADDING * 2, label.getBitmapFont().getCharHeight());
+		label.setSize(getWidth() - PADDING * 2, label.getBitmapFont().getZeroCharHeight());
 		titleTouchButton.setWidth((int)width);
 	}
 	

@@ -1,4 +1,20 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.D2D2;
@@ -7,8 +23,8 @@ import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.display.texture.Texture;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +51,7 @@ public class DropList extends Component {
     private final BorderedRect rect;
     private final List<DropListItem> items;
     private final BitmapText label;
-    private final InteractiveButton touchButton;
+    private final InteractiveContainer touchButton;
 
     private float width;
     private final float height;
@@ -62,8 +78,8 @@ public class DropList extends Component {
         label.setColor(FOREGROUND_COLOR);
         add(label);
 
-        touchButton = new InteractiveButton(true);
-        touchButton.addEventListener(InteractiveButtonEvent.DOWN, e -> {
+        touchButton = new InteractiveContainer();
+        touchButton.addEventListener(InteractiveEvent.DOWN, e -> {
             if (opened) {
                 openRect.getParent().remove(openRect);
                 opened = false;
@@ -93,7 +109,7 @@ public class DropList extends Component {
         arrow.setX(width - arrow.getWidth());
         arrow.setY((height - arrow.getHeight()) / 2);
         label.setX(PADDING);
-        label.setY((height - label.getBitmapFont().getCharHeight()) / 2);
+        label.setY((height - label.getBitmapFont().getZeroCharHeight()) / 2);
         touchButton.setSize(width, height);
     }
 
@@ -145,15 +161,15 @@ public class DropList extends Component {
             final DropListItem item = items.get(i);
 
             final BitmapText bitmapText = new BitmapText();
-            bitmapText.setBounds(getWidth(), DEFAULT_HEIGHT);
+            bitmapText.setSize(getWidth(), DEFAULT_HEIGHT);
             bitmapText.setText(item.getLabelText());
             bitmapText.setColor(FOREGROUND_COLOR);
             bitmapText.setX(PADDING);
-            bitmapText.setY(i * DEFAULT_HEIGHT + (DEFAULT_HEIGHT - bitmapText.getBitmapFont().getCharHeight()) / 2);
+            bitmapText.setY(i * DEFAULT_HEIGHT + (DEFAULT_HEIGHT - bitmapText.getBitmapFont().getZeroCharHeight()) / 2);
             openRect.add(bitmapText);
 
-            final InteractiveButton button = new InteractiveButton(true);
-            button.addEventListener(InteractiveButtonEvent.DOWN, e->{
+            final InteractiveContainer button = new InteractiveContainer();
+            button.addEventListener(InteractiveEvent.DOWN, e->{
                 select(item.getKey());
                 openRect.getParent().remove(openRect);
                 opened = false;

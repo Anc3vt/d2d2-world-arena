@@ -1,11 +1,27 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2.panels;
 
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.text.BitmapText;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.event.InteractiveEvent;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 
 public class Button extends Panel {
 
@@ -16,7 +32,7 @@ public class Button extends Panel {
     private static final Color DISABLED_COLOR = Color.GRAY;
 
     private final BitmapText label;
-    private final InteractiveButton touchButton;
+    private final InteractiveContainer touchButton;
     private Sprite icon;
     private boolean pressed;
 
@@ -29,9 +45,9 @@ public class Button extends Panel {
         label.setColor(Color.BLACK);
         label.setText(labelText);
 
-        touchButton = new InteractiveButton();
+        touchButton = new InteractiveContainer();
 
-        touchButton.addEventListener(InteractiveButtonEvent.DOWN, e -> {
+        touchButton.addEventListener(InteractiveEvent.DOWN, e -> {
             Focus.setFocusedComponent(this);
 
             borderLeft.setColor(BORDER_COLOR_2);
@@ -42,8 +58,8 @@ public class Button extends Panel {
             pressed = true;
         });
 
-        touchButton.addEventListener(InteractiveButtonEvent.UP, event -> {
-            var e = (InteractiveButtonEvent) event;
+        touchButton.addEventListener(InteractiveEvent.UP, event -> {
+            var e = (InteractiveEvent) event;
 
             borderLeft.setColor(BORDER_COLOR_1);
             borderRight.setColor(BORDER_COLOR_2);
@@ -97,8 +113,8 @@ public class Button extends Panel {
         super.setWidth(width);
 
         if (label != null && touchButton != null) {
-            final int charHeight = label.getBitmapFont().getCharHeight();
-            label.setBounds(width - PADDING * 2, charHeight);
+            final int charHeight = label.getBitmapFont().getZeroCharHeight();
+            label.setSize(width - PADDING * 2, charHeight);
             label.setX(PADDING);
             touchButton.setWidth(width);
         }
@@ -113,7 +129,7 @@ public class Button extends Panel {
         super.setHeight(height);
 
         if (label != null && touchButton != null) {
-            final int charHeight = label.getBitmapFont().getCharHeight();
+            final int charHeight = label.getBitmapFont().getZeroCharHeight();
             touchButton.setHeight(height);
             label.setY(getAbsoluteScaleY() * (height - charHeight) / 2);
         }

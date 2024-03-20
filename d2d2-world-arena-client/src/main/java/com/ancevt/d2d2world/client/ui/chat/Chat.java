@@ -1,17 +1,33 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.client.ui.chat;
 
 import com.ancevt.commons.Holder;
 import com.ancevt.commons.concurrent.Async;
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
-import com.ancevt.d2d2.components.Font;
-import com.ancevt.d2d2.components.UiTextInput;
-import com.ancevt.d2d2.components.UiTextInputEvent;
-import com.ancevt.d2d2.components.UiTextInputProcessor;
+import com.ancevt.d2d2.components.ComponentAssets;
+import com.ancevt.d2d2.components.ComponentFont;
+import com.ancevt.d2d2.components.TextInput;
+import com.ancevt.d2d2.components.TextInputEvent;
 import com.ancevt.d2d2.display.Color;
 import com.ancevt.d2d2.display.DisplayObject;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Stage;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.InputEvent;
@@ -28,7 +44,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class Chat extends DisplayObjectContainer {
+public class Chat extends Container {
 
     private static Chat instace;
 
@@ -44,7 +60,7 @@ public class Chat extends DisplayObjectContainer {
 
     private int alphaTime = ALPHA_TIME;
 
-    private final UiTextInput input;
+    private final TextInput input;
     private final List<ChatMessage> messages;
     private final List<ChatMessage> displayedMessages;
     private final List<String> history;
@@ -56,7 +72,7 @@ public class Chat extends DisplayObjectContainer {
     private int historyIndex;
 
     public Chat() {
-        input = new UiTextInput();
+        input = new TextInput();
         messages = new CopyOnWriteArrayList<>();
         displayedMessages = new CopyOnWriteArrayList<>();
         history = new ArrayList<>();
@@ -66,22 +82,15 @@ public class Chat extends DisplayObjectContainer {
         height = D2D2.stage().getHeight() / 3.0f;
 
         input.setWidth(20);
-        input.addEventListener(UiTextInputEvent.TEXT_ENTER, this::textInputEvent);
-        input.addEventListener(UiTextInputEvent.TEXT_CHANGE, this::textInputEvent);
-        input.addEventListener(UiTextInputEvent.TEXT_INPUT_KEY_DOWN, this::textInputEvent);
+        input.addEventListener(TextInputEvent.ENTER, this::textInputEvent);
+        input.addEventListener(TextInputEvent.TEXT_CHANGE, this::textInputEvent);
+        input.addEventListener(TextInputEvent.KEY_DOWN, this::textInputEvent);
+        input.setComponentFocusRectVisibleEnabled(false);
+        input.setFocusRectVisibleEnabled(false);
 
         loadHistory();
 
         redraw();
-    }
-
-    public void setShadowEnabled(boolean b) {
-        this.shadowEnabled = b;
-        messages.forEach(m -> m.setShadowEnabled(b));
-    }
-
-    public boolean isShadowEnabled() {
-        return shadowEnabled;
     }
 
     public int getLastChatMessageId() {
@@ -230,7 +239,6 @@ public class Chat extends DisplayObjectContainer {
     private void addMessage(@NotNull ChatMessage chatMessage) {
         setAlpha(1.0f);
         alphaTime = ALPHA_TIME;
-        chatMessage.setShadowEnabled(isShadowEnabled());
         messages.add(chatMessage);
 
         if (messages.size() > MAX_MESSAGES) {
@@ -250,6 +258,7 @@ public class Chat extends DisplayObjectContainer {
             setAlpha(1.0f);
             alphaTime = ALPHA_TIME;
             add(input);
+            input.focus();
             dispatchEvent(ChatEvent.builder()
                     .type(ChatEvent.CHAT_INPUT_OPEN)
                     .build());
@@ -275,10 +284,10 @@ public class Chat extends DisplayObjectContainer {
 
     // TODO: split to 3 methods
     public void textInputEvent(Event event) {
-        if (event instanceof UiTextInputEvent uiTextInputEvent) {
+        if (event instanceof TextInputEvent uiTextInputEvent) {
             switch (event.getType()) {
 
-                case UiTextInputEvent.TEXT_CHANGE -> {
+                case TextInputEvent.TEXT_CHANGE -> {
                     setAlpha(1.0f);
                     alphaTime = ALPHA_TIME;
                     String text = uiTextInputEvent.getText();
@@ -287,11 +296,11 @@ public class Chat extends DisplayObjectContainer {
                         input.setText(text.substring(0, INPUT_MAX_LENGTH));
                         return;
                     }
-                    int w = text.length() * Font.getBitmapFont().getCharInfo('0').width();
+                    int w = text.length() * ComponentFont.getBitmapFontMiddle().getCharInfo('0').width();
                     input.setWidth(w + 20);
                 }
 
-                case UiTextInputEvent.TEXT_ENTER -> {
+                case TextInputEvent.ENTER -> {
                     String text = uiTextInputEvent.getText();
                     if (!text.isBlank()) {
                         dispatchEvent(ChatEvent.builder()
@@ -305,7 +314,7 @@ public class Chat extends DisplayObjectContainer {
                     closeInput();
                 }
 
-                case UiTextInputEvent.TEXT_INPUT_KEY_DOWN -> {
+                case TextInputEvent.KEY_DOWN -> {
                     switch (uiTextInputEvent.getKeyCode()) {
                         case KeyCode.UP -> {
                             if (historyIndex == history.size()) {
@@ -366,6 +375,7 @@ public class Chat extends DisplayObjectContainer {
     public static void main(String[] args) {
         Stage stage = D2D2.init(new LWJGLBackend(800, 600, "(floating)"));
         D2D2World.init(false, false);
+        ComponentAssets.init();
 
         stage.setBackgroundColor(Color.of(0x223344));
 
@@ -379,6 +389,7 @@ public class Chat extends DisplayObjectContainer {
                 chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, text, Color.WHITE);
             }
         });
+
         stage.add(chat, 10, 10);
 
         for (int i = 0; i < 10; i++) {
@@ -386,7 +397,6 @@ public class Chat extends DisplayObjectContainer {
             chat.addPlayerMessage(idCounter.getValue(), 1, "Ancevt", 0xFFFF00, "Hello, i'm Ancevt" + i, Color.WHITE);
         }
 
-        UiTextInputProcessor.setEnabled(true);
         stage.addEventListener(InputEvent.KEY_DOWN, event -> {
             InputEvent inputEvent = (InputEvent) event;
             switch (inputEvent.getKeyCode()) {
@@ -398,12 +408,11 @@ public class Chat extends DisplayObjectContainer {
                     chat.setScroll(chat.getScroll() + 10);
                 }
 
-                case KeyCode.F8 -> {
-                    chat.setShadowEnabled(!chat.isShadowEnabled());
-                }
-
                 case KeyCode.F6, KeyCode.T -> {
-                    if (!chat.isInputOpened()) chat.openInput();
+                    if (!chat.isInputOpened())
+                        chat.openInput();
+                    else
+                        chat.closeInput();
                 }
             }
         });

@@ -1,13 +1,29 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.client.scene.intro;
 
-import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.FramedSprite;
 import com.ancevt.d2d2.display.Sprite;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.display.texture.Texture;
 import com.ancevt.d2d2.display.texture.TextureAtlas;
 import com.ancevt.d2d2.display.texture.TextureUrlLoader;
@@ -15,7 +31,9 @@ import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2.event.TextureUrlLoaderEvent;
 import com.ancevt.d2d2world.client.ui.Preloader;
 
-public class ThanksTo extends DisplayObjectContainer {
+import static com.ancevt.d2d2.D2D2.getTextureManager;
+
+public class ThanksTo extends Container {
 
     public static final int IMAGE_WIDTH = 128;
     public static final int IMAGE_HEIGHT = 128;
@@ -40,7 +58,8 @@ public class ThanksTo extends DisplayObjectContainer {
 
         fileSize = 0L;
 
-        UiText uiText = new UiText();
+        BitmapText uiText = new BitmapText();
+        uiText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiText.setText(name);
 
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);
@@ -53,7 +72,8 @@ public class ThanksTo extends DisplayObjectContainer {
         this.textureUrl = textureUrl;
         this.name = name;
         this.fileSize = fileSize;
-        UiText uiText = new UiText();
+        BitmapText uiText = new BitmapText();
+        uiText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiText.setText(name);
         uiText.getTextWidth();
         uiText.setXY((IMAGE_WIDTH - uiText.getTextWidth()) / 2, IMAGE_HEIGHT + 10);
@@ -100,7 +120,7 @@ public class ThanksTo extends DisplayObjectContainer {
 
     private void startGlassEffect() {
         if (glassEffectAtlas == null) {
-            glassEffectAtlas = D2D2.getTextureManager().loadTextureAtlas("thanksto/glare.png");
+            glassEffectAtlas = getTextureManager().loadTextureAtlas("thanksto/glare.png");
         }
 
         Texture[] textures = new Texture[21];
@@ -127,7 +147,7 @@ public class ThanksTo extends DisplayObjectContainer {
 
     public void dispose() {
         if (texture != null) {
-            textureManager().unloadTextureAtlas(texture.getTextureAtlas());
+            getTextureManager().unloadTextureAtlas(texture.getTextureAtlas());
         }
     }
 

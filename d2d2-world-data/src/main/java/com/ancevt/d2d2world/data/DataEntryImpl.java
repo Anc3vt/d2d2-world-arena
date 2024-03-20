@@ -1,4 +1,20 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.data;
 
 import java.util.ArrayList;
@@ -6,7 +22,7 @@ import java.util.List;
 
 class DataEntryImpl implements DataEntry {
 
-    private final List<KV> kvs;
+    private final List<KeyValue> kvs;
 
     DataEntryImpl() {
         kvs = new ArrayList<>();
@@ -31,6 +47,11 @@ class DataEntryImpl implements DataEntry {
     }
 
     @Override
+    public List<KeyValue> getKeyValues() {
+        return List.copyOf(kvs);
+    }
+
+    @Override
     public void add(String key) {
         add(key, null);
     }
@@ -45,17 +66,17 @@ class DataEntryImpl implements DataEntry {
             value = rectangle.stringify();
         }
 
-        kvs.add(new KV(key, value));
+        kvs.add(new KeyValue(key, value));
     }
 
     @Override
     public void remove(String key) {
-        kvs.removeIf(kv -> kv.key.equals(key));
+        kvs.removeIf(kv -> kv.key().equals(key));
     }
 
     @Override
     public boolean containsKey(String key) {
-        return kvs.stream().anyMatch(kv -> kv.key.equals(key));
+        return kvs.stream().anyMatch(kv -> kv.key().equals(key));
     }
 
     @Override
@@ -110,8 +131,8 @@ class DataEntryImpl implements DataEntry {
 
     @Override
     public String getString(String key) {
-        for (KV kv : kvs)
-            if (key.equals(kv.key())) return String.valueOf(kv.value);
+        for (KeyValue kv : kvs)
+            if (key.equals(kv.key())) return String.valueOf(kv.value());
 
         throw new IllegalStateException("no such key: " + key + " in data line " + this);
     }
@@ -155,11 +176,11 @@ class DataEntryImpl implements DataEntry {
     public String stringify() {
         final StringBuilder sb = new StringBuilder();
 
-        for (KV kv : kvs) {
+        for (KeyValue kv : kvs) {
             if (kv.value() != null) {
-                sb.append(kv.key).append(" = ").append(kv.value);
+                sb.append(kv.key()).append(" = ").append(kv.value());
             } else {
-                sb.append(kv.key);
+                sb.append(kv.key());
             }
 
             sb.append(" | ");
@@ -177,6 +198,5 @@ class DataEntryImpl implements DataEntry {
         return "DataEntryImpl{" + stringify() + '}';
     }
 
-    private record KV(String key, Object value) {
-    }
+
 }

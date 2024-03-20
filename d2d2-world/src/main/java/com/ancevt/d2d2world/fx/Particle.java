@@ -1,4 +1,20 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.fx;
 
 import com.ancevt.d2d2.D2D2;
@@ -10,15 +26,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+import static com.ancevt.d2d2.D2D2.getTextureManager;
 import static java.lang.Math.random;
 
-public class Particle extends DisplayObjectContainer {
+public class Particle extends Container {
 
     private FramedSprite framed;
     private ISprite sprite;
 
     private Particle() {
-        Texture texture = textureManager().getTexture("d2d2-world-particle");
+        Texture texture = getTextureManager().getTexture("d2d2-world-particle");
 
         Texture[] textures = new Texture[]{
                 texture.getSubtexture(0, 0, 16, 16),
@@ -52,7 +69,7 @@ public class Particle extends DisplayObjectContainer {
     }
 
     public static @NotNull IDisplayObject miniExplosionDestroyable(Texture[] textures, int amount, Color color, float factor) {
-        DisplayObjectContainer doc = new DisplayObjectContainer() {
+        Container doc = new Container() {
 
             int time = 250;
 
@@ -93,7 +110,7 @@ public class Particle extends DisplayObjectContainer {
 
 
     public static @NotNull IDisplayObject miniExplosion(int amount, Color color, float factor) {
-        DisplayObjectContainer doc = new DisplayObjectContainer() {
+        Container doc = new Container() {
 
             int time = 250;
 
@@ -137,7 +154,7 @@ public class Particle extends DisplayObjectContainer {
     }
 
     public static @NotNull IDisplayObject water(int amount, Color color, float factor) {
-        DisplayObjectContainer doc = new DisplayObjectContainer() {
+        Container doc = new Container() {
 
             int time = 250;
 
@@ -186,7 +203,7 @@ public class Particle extends DisplayObjectContainer {
 
 
     public static @NotNull IDisplayObject bloodExplosion(int amount, Color color) {
-        DisplayObjectContainer doc = new DisplayObjectContainer() {
+        Container doc = new Container() {
 
             int time = 250;
 

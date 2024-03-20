@@ -53,14 +53,12 @@
     </repositories>
 
     <modules>
-        <module>d2d2-panels</module>
         <module>d2d2-world</module>
         <module>d2d2-world-data</module>
         <module>d2d2-world-editor</module>
         <module>d2d2-world-arena-client</module>
         <module>d2d2-world-arena-networking</module>
         <module>d2d2-world-arena-server</module>
-        <module>d2d2-ttf2bmf</module>
     </modules>
 
     <properties>
@@ -215,10 +213,6 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/natives</directory>
                 <filtering>false</filtering>
             </resource>
             <resource>

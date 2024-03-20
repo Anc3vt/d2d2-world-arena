@@ -1,14 +1,31 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.client.ui;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.IDisplayObject;
 import com.ancevt.d2d2.display.Stage;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
 import com.ancevt.d2d2world.client.net.Player;
 
@@ -20,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static com.ancevt.d2d2.D2D2.stage;
 import static java.lang.String.format;
 
-public class TabWindow extends DisplayObjectContainer {
+public class TabWindow extends Container {
 
     private static final float BACKGROUND_ALPHA = 0.75f;
     private static final float STAGE_PADDING = 40.0f;
@@ -30,7 +47,7 @@ public class TabWindow extends DisplayObjectContainer {
     private static final float COLUMN_4 = 600f;
 
     private final PlainRect plainRect;
-    private final UiText uiServerName;
+    private final BitmapText uiServerName;
     private final List<IDisplayObject> texts;
     private List<Player> remotePlayers;
 
@@ -40,8 +57,8 @@ public class TabWindow extends DisplayObjectContainer {
 
         texts = new CopyOnWriteArrayList<>();
 
-        uiServerName = new UiText();
-        uiServerName.setAutoSize(true);
+        uiServerName = new BitmapText();
+        uiServerName.setAutosize(true);
 
         addEventListener(Event.ADD_TO_STAGE, this::addToStage);
     }
@@ -76,10 +93,17 @@ public class TabWindow extends DisplayObjectContainer {
     }
 
     private void addPlayerTexts(int y, int id, String name, int frags, int ping, Color color) {
-        UiText uiId = new UiText(id);
-        UiText uiName = new UiText(name);
-        UiText uiFrags = new UiText(frags);
-        UiText uiPing = new UiText(ping);
+        BitmapText uiId = new BitmapText(id + "");
+        uiId.setBitmapFont(ComponentFont.getBitmapFontMiddle());
+
+        BitmapText uiName = new BitmapText(name + "");
+        uiName.setBitmapFont(ComponentFont.getBitmapFontMiddle());
+
+        BitmapText uiFrags = new BitmapText(frags + "");
+        uiFrags.setBitmapFont(ComponentFont.getBitmapFontMiddle());
+
+        BitmapText uiPing = new BitmapText(ping + "");
+        uiPing.setBitmapFont(ComponentFont.getBitmapFontMiddle());
 
         uiId.setColor(color);
         uiName.setColor(color);
@@ -108,16 +132,20 @@ public class TabWindow extends DisplayObjectContainer {
     private void drawTitle() {
         Color color = Color.GRAY;
 
-        UiText uiId = new UiText("id");
+        BitmapText uiId = new BitmapText("id");
+        uiId.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiId.setColor(color);
 
-        UiText uiName = new UiText("name");
+        BitmapText uiName = new BitmapText("name");
+        uiName.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiName.setColor(color);
 
-        UiText uiFrags = new UiText("frags");
+        BitmapText uiFrags = new BitmapText("frags");
+        uiFrags.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiFrags.setColor(color);
 
-        UiText uiPing = new UiText("ping");
+        BitmapText uiPing = new BitmapText("ping");
+        uiPing.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         uiPing.setColor(color);
 
         add(uiId, COLUMN_1, 30);

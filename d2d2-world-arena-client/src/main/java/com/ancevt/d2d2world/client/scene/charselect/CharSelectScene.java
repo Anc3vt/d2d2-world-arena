@@ -1,19 +1,36 @@
-
+/**
+ * Copyright (C) 2022 the original author or authors.
+ * See the notice.md file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ancevt.d2d2world.client.scene.charselect;
 
 import com.ancevt.d2d2.D2D2;
 import com.ancevt.d2d2.backend.lwjgl.LWJGLBackend;
 import com.ancevt.d2d2.common.BorderedRect;
 import com.ancevt.d2d2.common.PlainRect;
-import com.ancevt.d2d2.components.UiText;
+import com.ancevt.d2d2.components.ComponentFont;
 import com.ancevt.d2d2.display.Color;
-import com.ancevt.d2d2.display.DisplayObjectContainer;
+import com.ancevt.d2d2.display.Container;
 import com.ancevt.d2d2.display.Sprite;
 import com.ancevt.d2d2.display.Stage;
+import com.ancevt.d2d2.display.text.BitmapText;
 import com.ancevt.d2d2.event.Event;
-import com.ancevt.d2d2.event.InteractiveButtonEvent;
+import com.ancevt.d2d2.event.InteractiveEvent;
 import com.ancevt.d2d2.input.Mouse;
-import com.ancevt.d2d2.interactive.InteractiveButton;
+import com.ancevt.d2d2.interactive.InteractiveContainer;
 import com.ancevt.d2d2world.D2D2World;
 import com.ancevt.d2d2world.client.D2D2WorldArenaClientAssets;
 import com.ancevt.d2d2world.constant.AnimationKey;
@@ -35,7 +52,7 @@ import static com.ancevt.d2d2.D2D2.stage;
 import static com.ancevt.d2d2world.client.config.ClientConfig.CONFIG;
 import static com.ancevt.d2d2world.client.config.ClientConfig.DEBUG_CHARACTER;
 
-public class CharSelectScene extends DisplayObjectContainer {
+public class CharSelectScene extends Container {
 
     private final PlainRect bg;
     private final Set<CharSelectItem> charSelectItems;
@@ -45,7 +62,8 @@ public class CharSelectScene extends DisplayObjectContainer {
         add(bg);
         charSelectItems = new HashSet<>();
 
-        UiText uiLabel = new UiText("Select a character:");
+        BitmapText uiLabel = new BitmapText("Select a character:");
+        uiLabel.setBitmapFont(ComponentFont.getBitmapFontMiddle());
         add(uiLabel, 10, 14);
 
         addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
@@ -108,12 +126,12 @@ public class CharSelectScene extends DisplayObjectContainer {
         private final MapkitItem mapkitItem;
     }
 
-    private static class CharSelectItem extends DisplayObjectContainer {
+    private static class CharSelectItem extends Container {
 
         private final MapkitItem mapkitItem;
         private final CharSelectScene charSelectScene;
         private final BorderedRect borderedRect;
-        private final InteractiveButton interactiveButton;
+        private final InteractiveContainer interactiveButton;
         private final PlayerActor playerActor;
         private final Sprite decorDoor;
 
@@ -131,7 +149,7 @@ public class CharSelectScene extends DisplayObjectContainer {
 
             addEventListener(this, Event.ADD_TO_STAGE, this::this_addToStage);
 
-            interactiveButton = new InteractiveButton(true);
+            interactiveButton = new InteractiveContainer();
         }
 
         private void this_addToStage(Event event) {
@@ -148,21 +166,22 @@ public class CharSelectScene extends DisplayObjectContainer {
             playerActor.setWeaponVisible(false);
             add(playerActor);
 
-            UiText uiText = new UiText(mapkitItem.getDataEntry().getString(DataKey.READABLE_NAME));
-            uiText.setAutoSize(true);
-            add(uiText, -uiText.getTextWidth() / 2 + uiText.getCharWidth() / 2, h - 16);
+            BitmapText uiText = new BitmapText(mapkitItem.getDataEntry().getString(DataKey.READABLE_NAME));
+            uiText.setBitmapFont(ComponentFont.getBitmapFontMiddle());
+            uiText.setAutosize(true);
+            add(uiText, -uiText.getTextWidth() / 2f + uiText.getCharWidth() / 2, h - 16);
 
             interactiveButton.setSize(w, h + 20);
-            interactiveButton.addEventListener(this, InteractiveButtonEvent.UP, this::interactiveButton_up);
-            interactiveButton.addEventListener(this, InteractiveButtonEvent.OUT, this::interactiveButton_out);
-            interactiveButton.addEventListener(this, InteractiveButtonEvent.HOVER, this::interactiveButton_hover);
+            interactiveButton.addEventListener(this, InteractiveEvent.UP, this::interactiveButton_up);
+            interactiveButton.addEventListener(this, InteractiveEvent.OUT, this::interactiveButton_out);
+            interactiveButton.addEventListener(this, InteractiveEvent.HOVER, this::interactiveButton_hover);
             add(interactiveButton, borderedRect.getX(), borderedRect.getY());
 
             Mouse.setVisible(true);
         }
 
         private void interactiveButton_up(Event event) {
-            var e = (InteractiveButtonEvent) event;
+            var e = (InteractiveEvent) event;
             if (e.isOnArea()) {
                 charSelectScene.dispatchEvent(CharSelectSceneEvent.builder()
                         .type(CharSelectSceneEvent.CHARACTER_SELECT)
