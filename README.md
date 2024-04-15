@@ -25,8 +25,3 @@ The project comprises the following key modules:
 ### Network Synchronization demo video (Click to watch)
 [![Network Synchronization demo video](doc/preview.png)](https://www.youtube.com/watch?v=Q_bx-7xQQ44)
 
-
-
-## License
-
-D2D2 World Arena is distributed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
